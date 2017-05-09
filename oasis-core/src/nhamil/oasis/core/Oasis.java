@@ -1,4 +1,4 @@
-package nhamil.oasis;
+package nhamil.oasis.core;
 
 public final class Oasis {
 

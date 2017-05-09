@@ -1,7 +1,9 @@
 package nhamil.oasis.input;
 
-import nhamil.oasis.EngineSystem;
+public abstract class InputSystem {
 
-public interface InputSystem extends EngineSystem {
-
+    public abstract Keyboard getKeyboard();
+    
+    public abstract Mouse getMouse();
+    
 }

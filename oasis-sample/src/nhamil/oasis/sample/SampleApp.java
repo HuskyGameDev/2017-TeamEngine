@@ -1,10 +1,10 @@
 package nhamil.oasis.sample;
 
-import nhamil.oasis.Application;
-import nhamil.oasis.Engine;
-import nhamil.oasis.GameLogger;
-import nhamil.oasis.Oasis;
-import nhamil.oasis.testengine.TestEngineFactory;
+import nhamil.oasis.core.Application;
+import nhamil.oasis.core.Config;
+import nhamil.oasis.core.EngineType;
+import nhamil.oasis.core.GameLogger;
+import nhamil.oasis.core.Oasis;
 
 public class SampleApp extends Application {
 
@@ -14,19 +14,20 @@ public class SampleApp extends Application {
     public void onInit() {
         log.info("Initializing...");
         log.info("Graphics System: " + graphics);
-        log.info("Sound System: " + sound);
+        log.info("Sound System: " + audio);
         log.info("Input System: " + input);
         log.info("Done!");
     }
 
     @Override
     public void onUpdate(float dt) {
-        engine.stop();
+        log.debug("Update: dt = " + dt);
+        stop();
     }
 
     @Override
     public void onRender(float lerp) {
-        
+        log.debug("Render: lerp = " + lerp);
     }
 
     @Override
@@ -37,9 +38,13 @@ public class SampleApp extends Application {
     public static void main(String[] args) {
         log.info(Oasis.getEngineInfo());
         
-        SampleApp app = new SampleApp();
-        Engine engine = TestEngineFactory.create(app);
-        engine.start();
+        Config cfg = new Config();
+        cfg.engine = EngineType.TEST;
+        cfg.fps = 60.0f;
+        cfg.ups = 60.0f;
+        
+        Application app = new SampleApp();
+        app.start(cfg);
     }
 
 }

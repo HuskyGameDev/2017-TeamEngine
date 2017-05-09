@@ -1,4 +1,4 @@
-package nhamil.oasis;
+package nhamil.oasis.core;
 
 public class GameLogger {
 
@@ -14,6 +14,10 @@ public class GameLogger {
     
     public void log(LogLevel level, Object message) {
         System.out.println("[" + level.prefix + "][" + prefix + "] " + (message == null ? "null" : message.toString()));
+        
+        if (level == LogLevel.FATAL) {
+            System.exit(1);
+        }
     }
     
     public void fatal(Object msg) {

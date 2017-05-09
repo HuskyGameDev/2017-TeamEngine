@@ -1,9 +1,11 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.EngineSystem;
+public abstract class GraphicsSystem {
 
-public interface GraphicsSystem extends EngineSystem {
-
+    public abstract Display getDisplay();
     
+    public abstract TextureManager getTextureManager();
+    
+    public abstract Renderer getRenderer();
     
 }
