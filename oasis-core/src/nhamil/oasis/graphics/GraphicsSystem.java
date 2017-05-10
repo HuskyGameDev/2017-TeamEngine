@@ -1,11 +1,13 @@
 package nhamil.oasis.graphics;
 
-public abstract class GraphicsSystem {
+public interface GraphicsSystem {
 
-    public abstract Display getDisplay();
+    Display getDisplay();
     
-    public abstract TextureManager getTextureManager();
+    Renderer getRenderer();
     
-    public abstract Renderer getRenderer();
+    TextureManager getTextureManager();
+    
+    ShaderManager getShaderManager();
     
 }

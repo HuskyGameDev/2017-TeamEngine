@@ -4,10 +4,10 @@ import java.awt.image.BufferedImage;
 
 public interface TextureManager {
 
-    Texture fromFile(String filename);
+    void addSearchPath(String path);
     
-    Texture fromImage(BufferedImage image);
+    Texture getFromFile(String filename);
     
-    Texture create(int width, int height);
+    Texture getFromImage(BufferedImage image);
     
 }

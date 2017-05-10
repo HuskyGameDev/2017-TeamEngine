@@ -30,25 +30,13 @@ public class TestEngine extends Engine {
     }
 
     @Override
-    protected void init() {
+    protected void preInit() {
         log.info("Initializing TestEngine");
-        initListener();
     }
 
     @Override
-    protected void update(float dt) {
-        updateListener(dt);
-    }
-
-    @Override
-    protected void render(float lerp) {
-        renderListener(lerp);
-    }
-
-    @Override
-    protected void exit() {
+    protected void postExit() {
         log.info("Shutting down TestEngine");
-        exitListener();
     }
 
 }

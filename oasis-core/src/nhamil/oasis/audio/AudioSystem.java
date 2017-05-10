@@ -1,5 +1,5 @@
 package nhamil.oasis.audio;
 
-public abstract class AudioSystem {
+public interface AudioSystem {
 
 }

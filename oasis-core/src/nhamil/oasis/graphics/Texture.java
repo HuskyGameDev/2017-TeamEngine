@@ -1,10 +1,13 @@
 package nhamil.oasis.graphics;
 
-public interface Texture {
+import java.awt.image.BufferedImage;
 
-    Texture copy();
+public interface Texture {
     
-    TextureRegion getRegion(int x, int y, int w, int h);
+    TextureRegion getRegionStandardCoords(int x, int y, int w, int h);
     TextureRegion getRegion(float x, float y, float w, float h);
+    
+    BufferedImage toBufferedImage();
+    void setContents(BufferedImage img);
     
 }
