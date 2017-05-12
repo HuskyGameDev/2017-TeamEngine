@@ -2,23 +2,24 @@ package nhamil.oasis.graphics;
 
 public interface Renderer {
 
-    void clear(ColorRgba color);
+    int getWidth();
+    int getHeight();
     
-    void setFrameBuffer(FrameBuffer target);
+    void setClearColor(ColorRgba color);
+    void clearScreen();
+    
+    void setFrameBuffer(FrameBuffer fb);
+    void deleteFrameBuffer(FrameBuffer fb);
+
     void setShader(Shader shader);
-    void setColor(ColorRgba color);
-    void setLayer(float layer);
+    void deleteShader(Shader shader);
     
-    void pushTransform();
-    void popTransform();
+    void setTexture(int unit, Texture tex);
+    void deleteTexture(Texture tex);
     
-    void translate(float tx, float ty);
-    void scale(float sx, float sy);
-    void rotate(float rad);
+    void deleteVertexBuffer(VertexBuffer buffer);
     
-    void loadNDC();
-    void loadUnit(float unitSize);
-    void loadScreenCoords();
-    void loadOrtho(float x, float y, float w, float h, float near, float far);
+    void drawMesh(Mesh mesh);
+    void deleteMesh(Mesh mesh);
     
 }

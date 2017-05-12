@@ -6,8 +6,4 @@ public interface GraphicsSystem {
     
     Renderer getRenderer();
     
-    TextureManager getTextureManager();
-    
-    ShaderManager getShaderManager();
-    
 }

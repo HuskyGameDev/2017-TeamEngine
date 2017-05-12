@@ -4,8 +4,6 @@ import nhamil.oasis.audio.AudioSystem;
 import nhamil.oasis.graphics.Display;
 import nhamil.oasis.graphics.GraphicsSystem;
 import nhamil.oasis.graphics.Renderer;
-import nhamil.oasis.graphics.ShaderManager;
-import nhamil.oasis.graphics.TextureManager;
 import nhamil.oasis.input.InputSystem;
 import nhamil.oasis.input.Keyboard;
 import nhamil.oasis.input.Mouse;
@@ -15,8 +13,6 @@ public abstract class Application implements EngineListener {
     private static final GameLogger log = new GameLogger(Application.class);
     
     protected GraphicsSystem graphics;
-    protected TextureManager textures;
-    protected ShaderManager shaders;
     protected Renderer renderer;
     protected Display display;
     protected InputSystem input;
@@ -56,8 +52,6 @@ public abstract class Application implements EngineListener {
         engine.setEngineListener(this);
         
         graphics = engine.getGraphics();
-        textures = graphics.getTextureManager();
-        shaders = graphics.getShaderManager();
         renderer = graphics.getRenderer();
         display = graphics.getDisplay();
         
@@ -66,6 +60,10 @@ public abstract class Application implements EngineListener {
         mouse = input.getMouse();
         
         audio = engine.getAudio();
+        
+        display.setResizable(false);
+        display.setSize(800, 600);
+        display.show();
     }
     
 }

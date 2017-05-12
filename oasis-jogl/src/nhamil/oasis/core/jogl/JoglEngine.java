@@ -3,6 +3,7 @@ package nhamil.oasis.core.jogl;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLEventListener;
 
 import nhamil.oasis.audio.AudioSystem;

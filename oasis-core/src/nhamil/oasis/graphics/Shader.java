@@ -1,10 +1,7 @@
 package nhamil.oasis.graphics;
 
-public interface Shader {
+import nhamil.oasis.core.Asset;
 
-    void setFloat(String var, float val);
-    void setVector2(String var, float x, float y);
-    void setVector3(String var, float x, float y, float z);
-    void setVector4(String var, float x, float y, float z, float w);
-    
+public class Shader extends Asset {
+
 }

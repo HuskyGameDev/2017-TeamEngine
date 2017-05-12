@@ -114,7 +114,7 @@ public class JoglDisplay implements Display {
 
     @Override
     public void setResizable(boolean resize) {
-        frame.setResizable(false);
+        frame.setResizable(resize);
     }
     
 }

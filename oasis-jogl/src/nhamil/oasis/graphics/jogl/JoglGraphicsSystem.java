@@ -5,24 +5,19 @@ import com.jogamp.opengl.GL3;
 import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.GraphicsSystem;
 import nhamil.oasis.graphics.Renderer;
-import nhamil.oasis.graphics.ShaderManager;
-import nhamil.oasis.graphics.TextureManager;
 
 public class JoglGraphicsSystem implements GraphicsSystem {
 
     private JoglDisplay display;
-    private JoglTextureManager textures;
-    private JoglShaderManager shaders;
-    private GL3 gl;
+    private JoglRenderer renderer;
     
     public JoglGraphicsSystem(JoglEngine engine) {
         display = new JoglDisplay(engine);
-        textures = new JoglTextureManager();
-        shaders = new JoglShaderManager();
+        renderer = new JoglRenderer(engine);
     }
     
     public void setGL(GL3 gl) {
-        this.gl = gl;
+        renderer.setGL(gl);
     }
     
     @Override
@@ -31,18 +26,8 @@ public class JoglGraphicsSystem implements GraphicsSystem {
     }
 
     @Override
-    public TextureManager getTextureManager() {
-        return textures;
-    }
-
-    @Override
     public Renderer getRenderer() {
-        // TODO Auto-generated method stub
-        return null;
+        return renderer;
     }
-
-    @Override
-    public ShaderManager getShaderManager() {
-        return shaders;
-    }
+    
 }
