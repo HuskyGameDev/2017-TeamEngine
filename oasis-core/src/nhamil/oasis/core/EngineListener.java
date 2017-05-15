@@ -6,7 +6,7 @@ public interface EngineListener {
     
     void onUpdate(float dt);
     
-    void onRender(float lerp);
+    void onRender();
     
     void onExit();
     

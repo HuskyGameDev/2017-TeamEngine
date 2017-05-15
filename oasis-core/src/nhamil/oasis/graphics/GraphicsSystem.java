@@ -4,6 +4,6 @@ public interface GraphicsSystem {
 
     Display getDisplay();
     
-    Renderer getRenderer();
+    GraphicsDevice getRenderer();
     
 }

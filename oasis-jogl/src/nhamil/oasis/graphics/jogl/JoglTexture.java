@@ -1,0 +1,52 @@
+package nhamil.oasis.graphics.jogl;
+
+import nhamil.oasis.graphics.Bitmap;
+import nhamil.oasis.graphics.Texture;
+
+public class JoglTexture implements Texture {
+
+    private JoglContext gl;
+    private int id = 0;
+    private int width, height;
+    
+    public JoglTexture(JoglContext gl) {
+        this.gl = gl;
+        width = height = 0;
+        id = gl.genTexture();
+    }
+    
+    public JoglTexture(int width, int height, JoglContext gl) {
+        this(gl);
+        int old = gl.genTexture();
+        gl.bindTexture(id);
+        gl.texImage(width, height, null);
+        gl.texParameterMinMagFilter(Filter.Nearest, Filter.Nearest);
+        gl.bindTexture(old);
+    }
+    
+    public int getId() {
+        return id;
+    }
+    
+    @Override
+    public void dispose() {
+        gl.deleteTexture(id);
+        id = 0;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
+    }
+
+    @Override
+    public void setPixelData(Bitmap data) {
+        
+    }
+
+}

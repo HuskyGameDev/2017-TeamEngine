@@ -1,23 +1,28 @@
 package nhamil.oasis.graphics.jogl;
 
-import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GL;
 
 import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.GraphicsSystem;
-import nhamil.oasis.graphics.Renderer;
 
 public class JoglGraphicsSystem implements GraphicsSystem {
 
+    private JoglContext gl;
     private JoglDisplay display;
     private JoglRenderer renderer;
     
     public JoglGraphicsSystem(JoglEngine engine) {
         display = new JoglDisplay(engine);
-        renderer = new JoglRenderer(engine);
+        gl = new JoglContext();
+        renderer = new JoglRenderer(display, gl);
     }
     
-    public void setGL(GL3 gl) {
-        renderer.setGL(gl);
+    public void setGL(GL gl) {
+        this.gl.setGL(gl);
+    }
+    
+    public JoglContext getJoglContext() {
+        return gl;
     }
     
     @Override
@@ -26,7 +31,7 @@ public class JoglGraphicsSystem implements GraphicsSystem {
     }
 
     @Override
-    public Renderer getRenderer() {
+    public JoglRenderer getRenderer() {
         return renderer;
     }
     

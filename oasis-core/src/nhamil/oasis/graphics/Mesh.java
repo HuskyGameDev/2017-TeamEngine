@@ -1,11 +1,7 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.core.Asset;
+import nhamil.oasis.core.Disposable;
 
-public class Mesh extends Asset {
+public interface Mesh extends Disposable {
 
-    public Mesh() {
-        
-    }
-    
 }

@@ -3,7 +3,7 @@ package nhamil.oasis.core;
 import nhamil.oasis.audio.AudioSystem;
 import nhamil.oasis.graphics.Display;
 import nhamil.oasis.graphics.GraphicsSystem;
-import nhamil.oasis.graphics.Renderer;
+import nhamil.oasis.graphics.GraphicsDevice;
 import nhamil.oasis.input.InputSystem;
 import nhamil.oasis.input.Keyboard;
 import nhamil.oasis.input.Mouse;
@@ -13,20 +13,20 @@ public abstract class Application implements EngineListener {
     private static final GameLogger log = new GameLogger(Application.class);
     
     protected GraphicsSystem graphics;
-    protected Renderer renderer;
+    protected GraphicsDevice renderer;
     protected Display display;
     protected InputSystem input;
     protected Keyboard keyboard;
     protected Mouse mouse;
     protected AudioSystem audio;
     
-    private Engine engine;
+    protected Engine engine;
     
     public abstract void onInit();
     
     public abstract void onUpdate(float dt);
     
-    public abstract void onRender(float lerp);
+    public abstract void onRender();
     
     public abstract void onExit();
     
@@ -49,6 +49,8 @@ public abstract class Application implements EngineListener {
             log.fatal("Could not access " + config.engine);
             e.printStackTrace();
         }
+        engine.setFrameRate(config.fps);
+        engine.setUpdateRate(config.ups);
         engine.setEngineListener(this);
         
         graphics = engine.getGraphics();

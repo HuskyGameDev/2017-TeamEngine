@@ -1,7 +1,7 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.core.Asset;
+import nhamil.oasis.core.Disposable;
 
-public class Shader extends Asset {
+public interface Shader extends Disposable {
 
 }

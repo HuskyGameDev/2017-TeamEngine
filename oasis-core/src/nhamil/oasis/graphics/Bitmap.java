@@ -1,5 +1,6 @@
 package nhamil.oasis.graphics;
 
+import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
 
 public class Bitmap {
@@ -11,6 +12,14 @@ public class Bitmap {
         this.width = width;
         this.height = height;
         pixels = IntBuffer.allocate(width * height);
+    }
+    
+    public Bitmap(BufferedImage image) {
+        this(image.getWidth(), image.getHeight());
+        int[] data = new int[width * height];
+        image.getRGB(0, 0, width, height, data, 0, width);
+        pixels.put(data);
+        pixels.flip();
     }
     
     public int getWidth() {
@@ -27,6 +36,10 @@ public class Bitmap {
     
     public void setPixel(int x, int y, int hex) {
         pixels.put(x + y * width, hex);
+    }
+    
+    public IntBuffer getIntBuffer() {
+        return pixels;
     }
     
 }

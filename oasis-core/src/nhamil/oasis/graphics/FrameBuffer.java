@@ -1,42 +1,16 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.core.Asset;
+import nhamil.oasis.core.Disposable;
 
-public class FrameBuffer extends Asset {
+public interface Framebuffer extends Disposable {
 
-    private int width, height;
-    private Texture color;
-    private Texture depth;
+    int getWidth();
+    int getHeight();
     
-    public FrameBuffer(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
+    boolean hasTexture();
+    boolean hasDepthAttachment();
+    boolean hasStencilAttachment();
     
-    public int getWidth() { 
-        return width; 
-    }
-    
-    public int getHeight() { 
-        return height;
-    }
-    
-    public Texture getColorBuffer() { 
-        return color;
-    }
-    
-    public Texture getDepthBuffer() {
-        return depth;
-    }
-    
-    public void setColorBuffer(Texture tex) {
-        color = tex;
-        setNeedsUpdate();
-    }
-    
-    public void setDepthBuffer(Texture tex) {
-        depth = tex;
-        setNeedsUpdate();
-    }
+    Texture getTexture();
     
 }

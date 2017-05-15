@@ -1,11 +1,11 @@
 package nhamil.oasis.graphics.jogl;
 
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JFrame;
-
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 
@@ -16,18 +16,16 @@ import nhamil.oasis.graphics.Display;
 public class JoglDisplay implements Display {
 
     private boolean closed;
-    private JFrame frame;
+    private Frame frame;
     private GLCanvas canvas;
     
     public JoglDisplay(JoglEngine engine) {
         closed = false;
-        frame = new JFrame(Oasis.FULL_NAME);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame = new Frame(Oasis.FULL_NAME);
         frame.setSize(800, 600);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 closed = true;
-                frame.setVisible(false);
             }
         });
         frame.setLocationRelativeTo(null);
@@ -36,11 +34,24 @@ public class JoglDisplay implements Display {
         GLCapabilities caps = new GLCapabilities(profile);
         canvas = new GLCanvas(caps);
         canvas.addGLEventListener(engine);
+        canvas.setAutoSwapBufferMode(false);
         frame.add(canvas);
     }
     
-    public void display() {
+    public void swapBuffers() {
+        canvas.swapBuffers();
+    }
+    
+    public void update() {
         canvas.display();
+    }
+    
+    public void dispose() {
+        canvas.destroy();
+    }
+    
+    public GLContext getContext() {
+        return canvas.getContext();
     }
 
     @Override

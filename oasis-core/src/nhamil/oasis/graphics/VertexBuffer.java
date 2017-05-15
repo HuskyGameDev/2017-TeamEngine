@@ -1,11 +1,7 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.core.Asset;
+import nhamil.oasis.core.Disposable;
 
-public class VertexBuffer extends Asset {
+public interface VertexBuffer extends Disposable {
 
-    public VertexBuffer() {
-        
-    }
-    
 }
