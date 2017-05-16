@@ -11,6 +11,7 @@ public interface Texture extends Disposable {
     
     public int getWidth();
     public int getHeight();
+    public float getAspectRatio();
     
     public void setPixelData(Bitmap data);
     

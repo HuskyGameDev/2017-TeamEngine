@@ -1,10 +1,7 @@
 package nhamil.oasis.core;
 
-import nhamil.oasis.audio.AudioSystem;
 import nhamil.oasis.graphics.Display;
-import nhamil.oasis.graphics.GraphicsSystem;
-import nhamil.oasis.graphics.GraphicsDevice;
-import nhamil.oasis.input.InputSystem;
+import nhamil.oasis.graphics.GraphicsContext;
 import nhamil.oasis.input.Keyboard;
 import nhamil.oasis.input.Mouse;
 
@@ -12,13 +9,10 @@ public abstract class Application implements EngineListener {
 
     private static final GameLogger log = new GameLogger(Application.class);
     
-    protected GraphicsSystem graphics;
-    protected GraphicsDevice renderer;
+    protected GraphicsContext graphics;
     protected Display display;
-    protected InputSystem input;
     protected Keyboard keyboard;
     protected Mouse mouse;
-    protected AudioSystem audio;
     
     protected Engine engine;
     
@@ -54,14 +48,7 @@ public abstract class Application implements EngineListener {
         engine.setEngineListener(this);
         
         graphics = engine.getGraphics();
-        renderer = graphics.getRenderer();
-        display = graphics.getDisplay();
-        
-        input = engine.getInput();
-        keyboard = input.getKeyboard();
-        mouse = input.getMouse();
-        
-        audio = engine.getAudio();
+        display = engine.getDisplay();
         
         display.setResizable(false);
         display.setSize(800, 600);

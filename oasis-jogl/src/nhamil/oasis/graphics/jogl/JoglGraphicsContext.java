@@ -2,26 +2,27 @@ package nhamil.oasis.graphics.jogl;
 
 import com.jogamp.opengl.GL;
 
-import nhamil.oasis.core.GameLogger;
-import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.Bitmap;
 import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.Framebuffer;
-import nhamil.oasis.graphics.GraphicsDevice;
+import nhamil.oasis.graphics.GraphicsContext;
 import nhamil.oasis.graphics.Shader;
 import nhamil.oasis.graphics.Texture;
 
-public class JoglRenderer implements GraphicsDevice {
+public class JoglGraphicsContext implements GraphicsContext {
 
-    private static final GameLogger log = new GameLogger(JoglRenderer.class);
-    
-    private JoglEngine engine;
     private JoglDisplay display;
-    private JoglContext gl;
+    private JoglGlContext gl;
+    private ColorRgba clear = new ColorRgba(0, 0, 0, 0);
+    private Framebuffer framebuffer;
     
-    public JoglRenderer(JoglDisplay display, JoglContext gl) {
+    public JoglGraphicsContext(JoglDisplay display, JoglGlContext gl) {
         this.display = display;
         this.gl = gl;
+    }
+    
+    public void setGL(GL gl) {
+        this.gl.setGL(gl);
     }
     
     @Override
@@ -37,15 +38,21 @@ public class JoglRenderer implements GraphicsDevice {
     @Override
     public void setClearColor(ColorRgba color) {
         gl.clearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        clear = color;
     }
 
     @Override
     public void clearScreen() {
+        if (framebuffer != null) {
+            if (framebuffer.hasTexture()) ((JoglTexture) framebuffer.getTexture()).clear();
+        }
+        
         gl.clear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
     }
 
     @Override
     public void setFrameBuffer(Framebuffer fb) {
+        this.framebuffer = fb;
         if (fb != null) {
             gl.bindFramebuffer(((JoglFramebuffer) fb).getId());
             gl.viewport(0, 0, fb.getWidth(), fb.getHeight());
@@ -69,7 +76,7 @@ public class JoglRenderer implements GraphicsDevice {
     }
 
     @Override
-    public Framebuffer createFrameBuffer(int width, int height, boolean colorBuffer, boolean depthBuffer) {
+    public Framebuffer createFramebuffer(int width, int height, boolean colorBuffer, boolean depthBuffer) {
         JoglFramebuffer fb = new JoglFramebuffer(width, height, colorBuffer, depthBuffer, gl);
         return fb;
     }

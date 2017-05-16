@@ -4,33 +4,40 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 
 import nhamil.oasis.core.Oasis;
-import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.Display;
 
-public class JoglDisplay implements Display {
+public class NewJoglDisplay implements Display, GLEventListener {
 
-    private boolean closed;
+    private GLContext context;
+    
     private Frame frame;
     private GLCanvas canvas;
     
-    public JoglDisplay(JoglEngine engine) {
-        closed = false;
+    private boolean shouldClose = false;
+    
+    public NewJoglDisplay() {
+        context = null;
+        
         frame = new Frame(Oasis.FULL_NAME);
-        frame.setSize(800, 600);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                closed = true;
+                shouldClose = true;
             }
         });
+        
+        frame.setResizable(false);
+        frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         
-        GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLProfile profile = GLProfile.get(GLProfile.GL2ES2);
         GLCapabilities caps = new GLCapabilities(profile);
         caps.setRedBits(8);
         caps.setGreenBits(8);
@@ -39,27 +46,19 @@ public class JoglDisplay implements Display {
         caps.setDepthBits(32);
         caps.setStencilBits(8);
         canvas = new GLCanvas(caps);
-        canvas.addGLEventListener(engine);
         canvas.setAutoSwapBufferMode(false);
+        
         frame.add(canvas);
+    }
+    
+    public GLContext getContext() {
+        return context;
     }
     
     public void swapBuffers() {
         canvas.swapBuffers();
     }
     
-    public void update() {
-        canvas.display();
-    }
-    
-    public void dispose() {
-        canvas.destroy();
-    }
-    
-    public GLContext getContext() {
-        return canvas.getContext();
-    }
-
     @Override
     public String getTitle() {
         return frame.getTitle();
@@ -88,40 +87,18 @@ public class JoglDisplay implements Display {
     }
 
     @Override
-    public boolean isFullscreen() {
-        return false;
-    }
-
-    @Override
-    public boolean canFullscreen() {
-        return false;
-    }
-
-    @Override
-    public void setFullscreen(boolean full) {
-        
-    }
-    
-    @Override
-    public boolean shouldClose() {
-        return closed;
-    }
-
-    @Override
     public void show() {
         frame.setVisible(true);
-        closed = false;
     }
 
     @Override
     public void hide() {
         frame.setVisible(false);
-        closed = true;
     }
 
     @Override
     public boolean isVisible() {
-        return !closed;
+        return frame.isVisible();
     }
 
     @Override
@@ -135,8 +112,50 @@ public class JoglDisplay implements Display {
     }
 
     @Override
+    public boolean isFullscreen() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean canFullscreen() {
+        // TODO FINISH
+        return false;
+    }
+
+    @Override
+    public void setFullscreen(boolean full) {
+        // TODO FINISH
+    }
+
+    @Override
+    public boolean shouldClose() {
+        return shouldClose;
+    }
+
+    @Override
+    public void init(GLAutoDrawable drawable) {
+        context = drawable.getContext();
+    }
+
+    @Override
+    public void dispose(GLAutoDrawable drawable) {
+        context = drawable.getContext();
+    }
+
+    @Override
+    public void display(GLAutoDrawable drawable) {
+        context = drawable.getContext();
+    }
+
+    @Override
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        context = drawable.getContext();
+    }
+    
+    @Override
     public float getAspectRatio() {
         return (float) getWidth() / getHeight();
     }
-    
+
 }

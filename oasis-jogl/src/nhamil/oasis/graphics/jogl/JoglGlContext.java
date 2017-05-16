@@ -3,23 +3,24 @@ package nhamil.oasis.graphics.jogl;
 import java.nio.IntBuffer;
 
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 
 import nhamil.oasis.graphics.Texture;
 
-public class JoglContext {
+public class JoglGlContext {
 
     private GL3 gl;
     
     private int boundFbo = 0;
     private int boundTex = 0;
     
-    public JoglContext() {
+    public JoglGlContext() {
         gl = null;
     }
     
     public void setGL(GL gl) {
-        this.gl = (GL3) gl;
+        this.gl = gl.getGL3();
     }
     
     public GL getGL() {
@@ -54,15 +55,20 @@ public class JoglContext {
     
     public void bindFramebuffer(int id) {
         gl.glBindFramebuffer(GL.GL_FRAMEBUFFER, id);
+        gl.glDrawBuffers(1, new int[] { GL.GL_COLOR_ATTACHMENT0 }, 0);
         boundFbo = id;
     }
     
     public void framebufferTextureColor(int id) {
-        gl.glFramebufferTexture(GL.GL_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, id, 0);
+        gl.glFramebufferTexture2D(GL.GL_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, id, 0);
     }
     
-    public void framebufferRenderbuffer(int rbo) {
+    public void framebufferRenderbufferDepth(int rbo) {
         gl.glFramebufferRenderbuffer(GL.GL_FRAMEBUFFER, GL.GL_DEPTH_ATTACHMENT, GL.GL_RENDERBUFFER, rbo);
+    }
+    
+    public void framebufferRenderbufferColor(int rbo) {
+        gl.glFramebufferRenderbuffer(GL.GL_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_RENDERBUFFER, rbo);
     }
     
     public void deleteFramebuffer(int id) {
@@ -111,6 +117,10 @@ public class JoglContext {
         gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL.GL_DEPTH_COMPONENT32, width, height);
     }
     
+    public void renderbufferStorageColor(int width, int height) {
+        gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL.GL_RGBA, width, height);
+    }
+    
     public void bindRenderbuffer(int rbo) {
         gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, rbo);
     }
@@ -129,6 +139,11 @@ public class JoglContext {
             // TODO EXCEPTION? ?
             return 0;
         }
+    }
+
+    public boolean checkFramebufferStatus() {
+        int status = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
+        return status == GL.GL_FRAMEBUFFER_COMPLETE;
     }
     
 }

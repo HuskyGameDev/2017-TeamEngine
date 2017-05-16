@@ -1,6 +1,6 @@
 package nhamil.oasis.graphics;
 
-public interface GraphicsDevice {
+public interface GraphicsContext {
 
     int getWidth();
     int getHeight();
@@ -8,7 +8,7 @@ public interface GraphicsDevice {
     void setClearColor(ColorRgba color);
     void clearScreen();
     
-    Framebuffer createFrameBuffer(int width, int height, boolean colorBuffer, boolean depthBuffer);
+    Framebuffer createFramebuffer(int width, int height, boolean colorBuffer, boolean depthBuffer);
     void setFrameBuffer(Framebuffer fb);
 
     Shader createShader();

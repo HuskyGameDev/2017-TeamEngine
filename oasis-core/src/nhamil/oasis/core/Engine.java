@@ -1,8 +1,7 @@
 package nhamil.oasis.core;
 
-import nhamil.oasis.audio.AudioSystem;
-import nhamil.oasis.graphics.GraphicsSystem;
-import nhamil.oasis.input.InputSystem;
+import nhamil.oasis.graphics.Display;
+import nhamil.oasis.graphics.GraphicsContext;
 
 public interface Engine {
 
@@ -19,10 +18,8 @@ public interface Engine {
     
     void setUpdateRate(float ups);
     
-    GraphicsSystem getGraphics();
+    Display getDisplay();
     
-    AudioSystem getAudio();
-    
-    InputSystem getInput();
+    GraphicsContext getGraphics();
     
 }

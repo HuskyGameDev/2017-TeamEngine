@@ -8,6 +8,7 @@ public interface Display {
     int getWidth();
     int getHeight();
     void setSize(int width, int height);
+    float getAspectRatio();
     
     void show();
     void hide();
@@ -20,6 +21,6 @@ public interface Display {
     boolean canFullscreen();
     void setFullscreen(boolean full);
     
-    boolean isClosed();
+    boolean shouldClose();
     
 }

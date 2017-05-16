@@ -8,15 +8,12 @@ import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.Threading;
 
-import nhamil.oasis.audio.AudioSystem;
 import nhamil.oasis.core.Engine;
 import nhamil.oasis.core.EngineListener;
 import nhamil.oasis.core.GameLogger;
-import nhamil.oasis.core.test.TestAudio;
-import nhamil.oasis.core.test.TestInput;
+import nhamil.oasis.graphics.jogl.JoglGlContext;
 import nhamil.oasis.graphics.jogl.JoglDisplay;
-import nhamil.oasis.graphics.jogl.JoglGraphicsSystem;
-import nhamil.oasis.input.InputSystem;
+import nhamil.oasis.graphics.jogl.JoglGraphicsContext;
 import nhamil.oasis.util.Timer;
 
 public class JoglEngine implements Engine, GLEventListener, Runnable {
@@ -32,7 +29,7 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
     private float targetUps;
     private Thread thread;
 
-    private JoglGraphicsSystem graphics;
+    private JoglGraphicsContext graphics;
     private JoglDisplay display;
 
     private Object contextWait = new Object();
@@ -45,8 +42,8 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         targetFps = Engine.DEFAULT_FRAME_RATE;
         targetUps = Engine.DEFAULT_UPDATE_RATE;
 
-        graphics = new JoglGraphicsSystem(this);
-        display = graphics.getDisplay();
+        display = new JoglDisplay(this);
+        graphics = new JoglGraphicsContext(display, new JoglGlContext());
         
         context = display.getContext();
         
@@ -126,18 +123,13 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
     }
 
     @Override
-    public JoglGraphicsSystem getGraphics() {
+    public JoglGraphicsContext getGraphics() {
         return graphics;
     }
-
+    
     @Override
-    public AudioSystem getAudio() {
-        return new TestAudio();
-    }
-
-    @Override
-    public InputSystem getInput() {
-        return new TestInput();
+    public JoglDisplay getDisplay() {
+        return display;
     }
 
     public void run() {

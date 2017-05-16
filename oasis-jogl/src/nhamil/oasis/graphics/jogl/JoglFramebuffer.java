@@ -5,13 +5,13 @@ import nhamil.oasis.graphics.Texture;
 
 public class JoglFramebuffer implements Framebuffer {
 
-    private JoglContext gl;
+    private JoglGlContext gl;
     private int width, height;
     private int id = 0;
     private JoglTexture color;
     private int depth;
     
-    public JoglFramebuffer(int width, int height, boolean color, boolean depth, JoglContext gl) {
+    public JoglFramebuffer(int width, int height, boolean color, boolean depth, JoglGlContext gl) {
         id = gl.genFramebuffer();
         this.width = width;
         this.height = height;
@@ -25,8 +25,16 @@ public class JoglFramebuffer implements Framebuffer {
             this.depth = gl.genRenderbuffer();
             gl.bindRenderbuffer(this.depth);
             gl.renderbufferStorageDepth(width, height);
-            gl.framebufferRenderbuffer(this.depth);
+            gl.framebufferRenderbufferDepth(this.depth);
         }
+        
+        if (gl.checkFramebufferStatus()) {
+            System.out.println("Framebuffer good");
+        }
+        else {
+            System.out.println("Framebuffer bad");
+        }
+        
         gl.bindFramebuffer(oldId);
     }
     
