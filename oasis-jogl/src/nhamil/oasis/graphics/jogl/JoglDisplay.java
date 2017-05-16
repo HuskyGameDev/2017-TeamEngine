@@ -47,12 +47,11 @@ public class JoglDisplay implements Display, GLEventListener {
         
         GLProfile profile = GLProfile.get(GLProfile.GL2);
         GLCapabilities caps = new GLCapabilities(profile);
-        caps.setRedBits(8);
-        caps.setGreenBits(8);
-        caps.setBlueBits(8);
-        caps.setAlphaBits(8);
-        caps.setDepthBits(32);
-        caps.setStencilBits(8);
+//        caps.setRedBits(8);
+//        caps.setGreenBits(8);
+//        caps.setBlueBits(8);
+//        caps.setAlphaBits(8);
+//        caps.setStencilBits(8);
         
         canvas = new GLCanvas(caps);
         canvas.setAutoSwapBufferMode(false);
