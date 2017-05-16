@@ -9,10 +9,26 @@ public interface Texture extends Disposable {
         Linear;
     }
     
-    public int getWidth();
-    public int getHeight();
-    public float getAspectRatio();
+    public enum Wrap {
+        Repeat, 
+        MirroredRepeat, 
+        Clamp, 
+    }
     
-    public void setPixelData(Bitmap data);
+    int getWidth();
+    int getHeight();
+    float getAspectRatio();
+    
+    Filter getMinFilter();
+    Filter getMaxFilter();
+    void setMinFilter(Filter filter);
+    void setMaxFilter(Filter filter);
+    void setFilter(Filter both);
+    void setFilter(Filter min, Filter max);
+    
+    Wrap getWrap();
+    void setWrap(Wrap wrap);
+    
+    void setPixelData(Bitmap data);
     
 }

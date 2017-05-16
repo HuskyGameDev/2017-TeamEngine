@@ -12,6 +12,7 @@ import nhamil.oasis.core.Oasis;
 import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.Framebuffer;
+import nhamil.oasis.graphics.Texture;
 import nhamil.oasis.graphics.jogl.JoglGraphicsContext;
 import nhamil.oasis.graphics.jogl.JoglShaderProgram;
 import nhamil.oasis.math.FastMath;
@@ -44,7 +45,9 @@ public class SampleApp extends Application {
         log.info("Initializing...");
         log.info("Graphics System: " + graphics);
         
-        fb = graphics.createFramebuffer(4096, 4096, true, true);
+        fb = graphics.createFramebuffer(32, 32, true, true);
+//        fb.getTexture().setFilter(Texture.Filter.Linear);
+//        fb.getTexture().setWrap(Texture.Wrap.MirroredRepeat);
         
         display.setResizable(true);
         display.setSize(640, 400);
@@ -57,6 +60,7 @@ public class SampleApp extends Application {
     }
 
     float angle = 0.0f;
+    int ticks = 0;
     
     @Override
     public void onUpdate(float dt) {
@@ -64,18 +68,16 @@ public class SampleApp extends Application {
             stop();
         }
         
+        ticks++;
         angle += 5.0f / 60.0f;
-    }
-    
-    @Override
-    public void onRender() {
-        GL2 gl = GLContext.getCurrentGL().getGL2();
-        GLU glu = new GLU();
         
         graphics.setFrameBuffer(fb);
         graphics.setClearColor(new ColorRgba(0.2f, 0.5f, 1.0f, 1.0f));
         graphics.clearScreen();
 
+        GL2 gl = GLContext.getCurrentGL().getGL2();
+        GLU glu = new GLU();
+        
         gl.glUseProgram(shader.getId());
         
         gl.glMatrixMode(GL2.GL_PROJECTION);
@@ -106,7 +108,13 @@ public class SampleApp extends Application {
         graphics.setFrameBuffer(null);
         graphics.setClearColor(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
         graphics.clearScreen();
-
+    }
+    
+    @Override
+    public void onRender() {
+        GL2 gl = GLContext.getCurrentGL().getGL2();
+        GLU glu = new GLU();
+        
         gl.glUseProgram(0);
         
         gl.glMatrixMode(GL2.GL_PROJECTION);

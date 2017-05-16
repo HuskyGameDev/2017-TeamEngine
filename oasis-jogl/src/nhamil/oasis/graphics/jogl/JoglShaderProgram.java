@@ -11,16 +11,12 @@ public class JoglShaderProgram implements ShaderProgram {
 
     private static final GameLogger log = new GameLogger(JoglShaderProgram.class);
     
-    private String vSource;
-    private String fSource;
     private JoglGlWrapper gl;
     
     private int id;
     private boolean valid;
     
     public JoglShaderProgram(String vSource, String fSource, JoglGlWrapper gl) {
-        this.vSource = vSource;
-        this.fSource = fSource;
         this.gl = gl;
         
         int vId, fId;

@@ -160,6 +160,11 @@ public class JoglGlWrapper {
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, filter(max));
     }
     
+    public void texParameterWrap(Texture.Wrap wrap) {
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, wrap(wrap));
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, wrap(wrap));
+    }
+    
     public int genRenderbuffer() {
         int[] id = new int[1];
         gl.glGenRenderbuffers(1, id, 0);
@@ -190,6 +195,20 @@ public class JoglGlWrapper {
             return GL.GL_LINEAR;
         default: 
             // TODO EXCEPTION? ?
+            return 0;
+        }
+    }
+    
+    private int wrap(Texture.Wrap wrap) {
+        switch (wrap) {
+        case Clamp: 
+            return GL.GL_CLAMP_TO_EDGE;
+        case Repeat: 
+            return GL.GL_REPEAT;
+        case MirroredRepeat: 
+            return GL.GL_MIRRORED_REPEAT;
+        default:
+            // TODO EXCEPTION ?
             return 0;
         }
     }
