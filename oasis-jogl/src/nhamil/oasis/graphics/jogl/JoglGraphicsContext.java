@@ -1,28 +1,40 @@
 package nhamil.oasis.graphics.jogl;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import com.jogamp.opengl.GL;
 
+import nhamil.oasis.core.GameLogger;
+import nhamil.oasis.core.Oasis;
 import nhamil.oasis.graphics.Bitmap;
 import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.Framebuffer;
 import nhamil.oasis.graphics.GraphicsContext;
-import nhamil.oasis.graphics.Shader;
+import nhamil.oasis.graphics.ShaderProgram;
 import nhamil.oasis.graphics.Texture;
 
 public class JoglGraphicsContext implements GraphicsContext {
 
+    private static final GameLogger log = new GameLogger(JoglGraphicsContext.class);
+    
     private JoglDisplay display;
-    private JoglGlContext gl;
-    private ColorRgba clear = new ColorRgba(0, 0, 0, 0);
+    private JoglGlWrapper gl;
     private Framebuffer framebuffer;
     
-    public JoglGraphicsContext(JoglDisplay display, JoglGlContext gl) {
+    private JoglShaderProgram defaultShader;
+    
+    public JoglGraphicsContext(JoglDisplay display, JoglGlWrapper gl) {
         this.display = display;
         this.gl = gl;
     }
     
-    public void setGL(GL gl) {
-        this.gl.setGL(gl);
+    public JoglShaderProgram getDefaultShader() {
+        return defaultShader;
+    }
+    
+    public void init() {
+        createDefaultShader();
     }
     
     @Override
@@ -38,7 +50,6 @@ public class JoglGraphicsContext implements GraphicsContext {
     @Override
     public void setClearColor(ColorRgba color) {
         gl.clearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-        clear = color;
     }
 
     @Override
@@ -82,8 +93,8 @@ public class JoglGraphicsContext implements GraphicsContext {
     }
 
     @Override
-    public Shader createShader() {
-        return null;
+    public ShaderProgram createShaderProgram(String vSource, String fSource) {
+        return new JoglShaderProgram(vSource, fSource, gl);
     }
 
     @Override
@@ -97,7 +108,39 @@ public class JoglGraphicsContext implements GraphicsContext {
     }
 
     @Override
-    public void setShader(Shader shader) {
+    public void setShaderProgram(ShaderProgram shader) {
         
+    }
+    
+    private void createDefaultShader() {
+        String vFile = Oasis.DEFAULT_SHADER_FOLDER + "default_color.vert";
+        String fFile = Oasis.DEFAULT_SHADER_FOLDER + "default_color.frag";
+        log.debug("Vertex File: " + vFile);
+        log.debug("Fragment File: " + fFile);
+        
+        String vs = getFileContents(vFile);
+        String fs = getFileContents(fFile);
+        
+        log.debug("Vertex source " + (vs.equals("") ? "not found" : "found"));
+        log.debug("Fragment source " + (fs.equals("") ? "not found" : "found"));
+        
+        defaultShader = (JoglShaderProgram) createShaderProgram(vs, fs);
+    }
+    
+    private String getFileContents(String file) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            BufferedReader vRead = new BufferedReader(new FileReader(file));
+            
+            String line;
+            while ((line = vRead.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            
+            vRead.close();
+        } catch (Exception e) {
+            log.warning("Problem reading file " + file);
+        }
+        return sb.toString();
     }
 }

@@ -1,17 +1,20 @@
 package nhamil.oasis.graphics.jogl;
 
+import nhamil.oasis.core.GameLogger;
 import nhamil.oasis.graphics.Framebuffer;
 import nhamil.oasis.graphics.Texture;
 
 public class JoglFramebuffer implements Framebuffer {
 
-    private JoglGlContext gl;
+    private static final GameLogger log = new GameLogger(JoglFramebuffer.class);
+    
+    private JoglGlWrapper gl;
     private int width, height;
     private int id = 0;
     private JoglTexture color;
     private int depth;
     
-    public JoglFramebuffer(int width, int height, boolean color, boolean depth, JoglGlContext gl) {
+    public JoglFramebuffer(int width, int height, boolean color, boolean depth, JoglGlWrapper gl) {
         id = gl.genFramebuffer();
         this.width = width;
         this.height = height;
@@ -29,10 +32,10 @@ public class JoglFramebuffer implements Framebuffer {
         }
         
         if (gl.checkFramebufferStatus()) {
-            System.out.println("Framebuffer good");
+            log.debug("Framebuffer good");
         }
         else {
-            System.out.println("Framebuffer bad");
+            log.debug("Framebuffer bad");
         }
         
         gl.bindFramebuffer(oldId);

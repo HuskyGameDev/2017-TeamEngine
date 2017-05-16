@@ -4,30 +4,45 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 
+import nhamil.oasis.core.GameLogger;
 import nhamil.oasis.core.Oasis;
-import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.Display;
 
-public class JoglDisplay implements Display {
+public class JoglDisplay implements Display, GLEventListener {
 
-    private boolean closed;
+    private static final GameLogger log = new GameLogger(JoglDisplay.class);
+    
+    public Object contextWait = new Object();
+    
+    private GLContext context;
     private Frame frame;
     private GLCanvas canvas;
+    private boolean shouldClose = false;
+    private JoglGraphicsContext graphics;
+    private JoglGlWrapper glWrapper;
     
-    public JoglDisplay(JoglEngine engine) {
-        closed = false;
+    public JoglDisplay() {
+        context = null;
+        
         frame = new Frame(Oasis.FULL_NAME);
-        frame.setSize(800, 600);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                closed = true;
+                shouldClose = true;
             }
         });
+        
+        frame.setResizable(false);
+        frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         
         GLProfile profile = GLProfile.get(GLProfile.GL2);
@@ -38,28 +53,33 @@ public class JoglDisplay implements Display {
         caps.setAlphaBits(8);
         caps.setDepthBits(32);
         caps.setStencilBits(8);
+        
         canvas = new GLCanvas(caps);
-        canvas.addGLEventListener(engine);
         canvas.setAutoSwapBufferMode(false);
+        canvas.addGLEventListener(this);
         frame.add(canvas);
+        
+        glWrapper = new JoglGlWrapper();
+        graphics = new JoglGraphicsContext(this, glWrapper);
+    }
+    
+    public JoglGraphicsContext getGraphics() {
+        return graphics;
+    }
+    
+    public GLContext getContext() {
+        return context;
     }
     
     public void swapBuffers() {
         canvas.swapBuffers();
     }
     
-    public void update() {
-        canvas.display();
+    public void updateGl() {
+        context.makeCurrent();
+        glWrapper.setGL(context.getGL());
     }
     
-    public void dispose() {
-        canvas.destroy();
-    }
-    
-    public GLContext getContext() {
-        return canvas.getContext();
-    }
-
     @Override
     public String getTitle() {
         return frame.getTitle();
@@ -88,40 +108,18 @@ public class JoglDisplay implements Display {
     }
 
     @Override
-    public boolean isFullscreen() {
-        return false;
-    }
-
-    @Override
-    public boolean canFullscreen() {
-        return false;
-    }
-
-    @Override
-    public void setFullscreen(boolean full) {
-        
-    }
-    
-    @Override
-    public boolean shouldClose() {
-        return closed;
-    }
-
-    @Override
     public void show() {
         frame.setVisible(true);
-        closed = false;
     }
 
     @Override
     public void hide() {
         frame.setVisible(false);
-        closed = true;
     }
 
     @Override
     public boolean isVisible() {
-        return !closed;
+        return frame.isVisible();
     }
 
     @Override
@@ -135,8 +133,66 @@ public class JoglDisplay implements Display {
     }
 
     @Override
+    public boolean isFullscreen() {
+        // TODO FINISH
+        return false;
+    }
+
+    @Override
+    public boolean canFullscreen() {
+        // TODO FINISH
+        return false;
+    }
+
+    @Override
+    public void setFullscreen(boolean full) {
+        // TODO FINISH
+    }
+
+    @Override
+    public boolean shouldClose() {
+        return shouldClose;
+    }
+
+    @Override
+    public void init(GLAutoDrawable drawable) {
+        context = drawable.getContext();
+        
+        GL2ES2 gl = drawable.getGL().getGL2();
+        gl.setSwapInterval(0);
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        
+        log.info("GL Version: " + gl.glGetString(GL.GL_VERSION));
+        log.info("GLSL Version: " + gl.glGetString(GL2.GL_SHADING_LANGUAGE_VERSION));
+        
+        synchronized (contextWait) {
+            context = drawable.getContext();
+            glWrapper.setGL(context.getGL());
+            graphics.init();
+            
+            log.debug("Changed context: " + context.getGLVersion());
+            contextWait.notify();
+        }
+    }
+
+    @Override
+    public void dispose(GLAutoDrawable drawable) {
+        context = drawable.getContext();
+    }
+
+    @Override
+    public void display(GLAutoDrawable drawable) {
+        context = drawable.getContext();
+    }
+
+    @Override
+    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+        context = drawable.getContext();
+    }
+    
+    @Override
     public float getAspectRatio() {
         return (float) getWidth() / getHeight();
     }
-    
+
 }

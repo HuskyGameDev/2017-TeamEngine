@@ -4,23 +4,25 @@ import java.nio.IntBuffer;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL3;
 
+import nhamil.oasis.core.GameLogger;
 import nhamil.oasis.graphics.Texture;
 
-public class JoglGlContext {
+public class JoglGlWrapper {
 
-    private GL3 gl;
+    private static final GameLogger log = new GameLogger(JoglGlWrapper.class);
+    
+    private GL2 gl;
     
     private int boundFbo = 0;
     private int boundTex = 0;
     
-    public JoglGlContext() {
+    public JoglGlWrapper() {
         gl = null;
     }
     
     public void setGL(GL gl) {
-        this.gl = gl.getGL3();
+        this.gl = gl.getGL2();
     }
     
     public GL getGL() {
@@ -73,6 +75,57 @@ public class JoglGlContext {
     
     public void deleteFramebuffer(int id) {
         gl.glDeleteFramebuffers(1, new int[] { id }, 0);
+    }
+    
+    public int createShaderVertex() {
+        return gl.glCreateShader(GL2.GL_VERTEX_SHADER);
+    }
+    
+    public int createShaderFragment() {
+        return gl.glCreateShader(GL2.GL_FRAGMENT_SHADER);
+    }
+    
+    public boolean setSourceAndCompile(int id, String source) {
+        gl.glShaderSource(id, 1, new String[] { source }, new int[] { source.length() }, 0);
+        gl.glCompileShader(id);
+        int[] status = new int[1];
+        gl.glGetShaderiv(id, GL2.GL_COMPILE_STATUS, status, 0);
+        if (status[0] == 0) {
+            int[] length = new int[1];
+            byte[] text = new byte[512];
+            gl.glGetShaderInfoLog(id, 512, length, 0, text, 0);
+            log.warning("Compile Error: " + new String(text).trim());
+            return false;
+        }
+        return true;
+    }
+    
+    public void deleteShader(int id) {
+        gl.glDeleteShader(id);
+    }
+    
+    public int createProgram() {
+        return gl.glCreateProgram();
+    }
+    
+    public boolean attachAndLink(int id, int vId, int fId) {
+        gl.glAttachShader(id, vId);
+        gl.glAttachShader(id, fId);
+        gl.glLinkProgram(id);
+        int[] status = new int[1];
+        gl.glGetProgramiv(id, GL2.GL_LINK_STATUS, status, 0);
+        if (status[0] == 0) {
+            int[] length = new int[1];
+            byte[] text = new byte[512];
+            gl.glGetProgramInfoLog(id, 512, length, 0, text, 0);
+            log.warning("Compile Error: " + new String(text).trim());
+            return false;
+        }
+        return true;
+    }
+    
+    public void deleteProgram(int id) {
+        gl.glDeleteProgram(id);
     }
     
     public int genTexture() {

@@ -52,7 +52,6 @@ public abstract class Application implements EngineListener {
         
         display.setResizable(false);
         display.setSize(800, 600);
-        display.show();
     }
     
 }

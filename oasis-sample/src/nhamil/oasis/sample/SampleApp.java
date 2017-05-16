@@ -12,6 +12,8 @@ import nhamil.oasis.core.Oasis;
 import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.Framebuffer;
+import nhamil.oasis.graphics.jogl.JoglGraphicsContext;
+import nhamil.oasis.graphics.jogl.JoglShaderProgram;
 import nhamil.oasis.math.FastMath;
 
 public class SampleApp extends Application {
@@ -19,6 +21,23 @@ public class SampleApp extends Application {
     private static final GameLogger log = new GameLogger(SampleApp.class);
     
     private Framebuffer fb;
+    private JoglShaderProgram shader;
+    
+    private String vSource = ""
+            + "#version 120\n "
+            + "varying vec4 fragColor; "
+            + "void main() "
+            + "{ "
+            + "    fragColor = gl_Color; "
+            + "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "
+            + "}";
+    private String fSource = ""
+            + "#version 120\n "
+            + "varying vec4 fragColor; "
+            + "void main() "
+            + "{ "
+            + "    gl_FragColor = fragColor; "
+            + "}";
     
     @Override
     public void onInit() {
@@ -28,6 +47,11 @@ public class SampleApp extends Application {
         fb = graphics.createFramebuffer(4096, 4096, true, true);
         
         display.setResizable(true);
+        display.setSize(640, 400);
+        
+        shader = (JoglShaderProgram) ((JoglGraphicsContext) graphics).createShaderProgram(vSource, fSource);
+        
+        log.info("Shader valid: " + shader.isValid());
         
         log.info("Done!");
     }
@@ -49,9 +73,11 @@ public class SampleApp extends Application {
         GLU glu = new GLU();
         
         graphics.setFrameBuffer(fb);
-        graphics.setClearColor(new ColorRgba(angle * 0.2f % 1.0f, 0.5f, 1.0f, 1.0f));
+        graphics.setClearColor(new ColorRgba(0.2f, 0.5f, 1.0f, 1.0f));
         graphics.clearScreen();
 
+        gl.glUseProgram(shader.getId());
+        
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(70.0f, 1.0f, 0.1f, 1000.0f);
@@ -63,7 +89,7 @@ public class SampleApp extends Application {
         
         gl.glBegin(GL.GL_TRIANGLES);
             gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-            gl.glVertex3f(-0.95f, -0.5f, -0.5f);
+            gl.glVertex3f(-0.5f, -0.5f, -0.5f);
             gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
             gl.glVertex3f(0.5f, -0.5f, -0.5f);
             gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
@@ -72,15 +98,17 @@ public class SampleApp extends Application {
             gl.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
             gl.glVertex3f(-0.5f, 0.5f, -1.5f);
             gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, -0.4f, -1.5f);
+            gl.glVertex3f(0.5f, -0.4f, -1.0f);
             gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, -1.5f);
+            gl.glVertex3f(0.5f, 0.5f, -0.5f);
         gl.glEnd();
 
         graphics.setFrameBuffer(null);
         graphics.setClearColor(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
         graphics.clearScreen();
 
+        gl.glUseProgram(0);
+        
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(70.0f, display.getAspectRatio(), 0.1f, 1000.0f);

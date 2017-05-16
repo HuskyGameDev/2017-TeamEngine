@@ -5,17 +5,17 @@ import nhamil.oasis.graphics.Texture;
 
 public class JoglTexture implements Texture {
 
-    private JoglGlContext gl;
+    private JoglGlWrapper gl;
     private int id = 0;
     private int width, height;
     
-    public JoglTexture(JoglGlContext gl) {
+    public JoglTexture(JoglGlWrapper gl) {
         this.gl = gl;
         width = height = 0;
         id = gl.genTexture();
     }
     
-    public JoglTexture(int width, int height, JoglGlContext gl) {
+    public JoglTexture(int width, int height, JoglGlWrapper gl) {
         this(gl);
         int old = gl.genTexture();
         this.width = width;

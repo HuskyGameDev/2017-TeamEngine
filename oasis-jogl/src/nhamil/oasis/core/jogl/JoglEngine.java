@@ -2,24 +2,17 @@ package nhamil.oasis.core.jogl;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLContext;
-import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.Threading;
 
 import nhamil.oasis.core.Engine;
 import nhamil.oasis.core.EngineListener;
 import nhamil.oasis.core.GameLogger;
-import nhamil.oasis.graphics.jogl.JoglGlContext;
 import nhamil.oasis.graphics.jogl.JoglDisplay;
 import nhamil.oasis.graphics.jogl.JoglGraphicsContext;
 import nhamil.oasis.util.Timer;
 
-public class JoglEngine implements Engine, GLEventListener, Runnable {
+public class JoglEngine implements Engine, Runnable {
 
-    public static GLContext context = null;
-    
     private static final GameLogger log = new GameLogger(JoglEngine.class);
 
     private volatile boolean running;
@@ -29,11 +22,9 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
     private float targetUps;
     private Thread thread;
 
-    private JoglGraphicsContext graphics;
+    
     private JoglDisplay display;
 
-    private Object contextWait = new Object();
-    
     public JoglEngine() {
         running = false;
         listener = null;
@@ -42,47 +33,7 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         targetFps = Engine.DEFAULT_FRAME_RATE;
         targetUps = Engine.DEFAULT_UPDATE_RATE;
 
-        display = new JoglDisplay(this);
-        graphics = new JoglGraphicsContext(display, new JoglGlContext());
-        
-        context = display.getContext();
-        
-        log.debug("Assigned OpenGL context: " + context);
-    }
-
-    @Override
-    public void init(GLAutoDrawable drawable) {
-        log.debug("Initializing GLCanvas");
-        
-        GL3 gl = drawable.getGL().getGL3();
-        gl.setSwapInterval(0);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        
-        synchronized (contextWait) {
-            context = drawable.getContext();
-            graphics.setGL(context.getGL());
-            
-            log.debug("Changed context: " + context.getGLVersion());
-            contextWait.notify();
-        }
-    }
-
-    @Override
-    public void dispose(GLAutoDrawable drawable) {
-        graphics.setGL(context.getGL().getGL3());
-        log.debug("Disposing GLCanvas");
-    }
-
-    @Override
-    public void display(GLAutoDrawable drawable) {
-        GL3 gl = drawable.getGL().getGL3();
-        gl.glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-    }
-
-    @Override
-    public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-
+        display = new JoglDisplay();
     }
 
     @Override
@@ -93,6 +44,7 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         }
         running = true;
         thread = new Thread(this, "JOGL Engine");
+        display.show();
         thread.start();
     }
 
@@ -124,7 +76,7 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
 
     @Override
     public JoglGraphicsContext getGraphics() {
-        return graphics;
+        return display.getGraphics();
     }
     
     @Override
@@ -134,9 +86,9 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
 
     public void run() {
         try {
-            synchronized (contextWait) {
+            synchronized (display.contextWait) {
                 log.debug("Waiting for GLContext");
-                contextWait.wait();
+                display.contextWait.wait();
             }
         }
         catch (Exception e) {
@@ -188,6 +140,7 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         }
 
         exit();
+        System.exit(0);
 
         try {
             thread.join();
@@ -200,7 +153,7 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         try {
             Threading.invokeOnOpenGLThread(true, new Runnable() {
                 public void run() {
-                    context.makeCurrent();
+                    display.updateGl();
                     listener.onInit();
                 }
             });
@@ -214,7 +167,7 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         try {
             Threading.invokeOnOpenGLThread(true, new Runnable() {
                 public void run() {
-                    context.makeCurrent();
+                    display.updateGl();
                     listener.onUpdate(dt);
                 }
             });
@@ -228,8 +181,8 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         try {
             Threading.invokeOnOpenGLThread(true, new Runnable() {
                 public void run() {
-                    context.makeCurrent();
-                    GL3 gl = context.getGL().getGL3();
+                    display.updateGl();
+                    GL gl = display.getContext().getGL();
                     gl.glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
                     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
                     listener.onRender();
@@ -246,10 +199,10 @@ public class JoglEngine implements Engine, GLEventListener, Runnable {
         try {
             Threading.invokeOnOpenGLThread(true, new Runnable() {
                 public void run() {
-                    context.makeCurrent();
+                    display.updateGl();
                     log.debug("Exit engine");
                     listener.onExit();
-                    System.exit(0);
+                    display.hide();
                 }
             });
         } catch (Exception e) {
