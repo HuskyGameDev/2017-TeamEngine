@@ -7,7 +7,6 @@ import nhamil.oasis.math.Vector3;
 
 public interface ShaderProgram extends Disposable {
 
-    void setInt(String name, int i);
     void setFloat(String name, float f);
     
     void setVector2(String name, Vector2 r);

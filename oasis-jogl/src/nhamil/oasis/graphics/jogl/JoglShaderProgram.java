@@ -63,12 +63,6 @@ public class JoglShaderProgram implements ShaderProgram {
     }
 
     @Override
-    public void setInt(String name, int i) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void setFloat(String name, float f) {
         // TODO Auto-generated method stub
         
