@@ -21,15 +21,16 @@ public class SampleApp extends Application {
 
     private static final GameLogger log = new GameLogger(SampleApp.class);
     
-    private Framebuffer fb;
+    private Framebuffer fb1, fb2;
     private JoglShaderProgram shader;
     
     private String vSource = ""
             + "#version 120\n "
             + "varying vec4 fragColor; "
+            + "uniform float scale = 0.5;"
             + "void main() "
             + "{ "
-            + "    fragColor = gl_Color; "
+            + "    fragColor = gl_Color * scale; "
             + "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "
             + "}";
     private String fSource = ""
@@ -45,9 +46,13 @@ public class SampleApp extends Application {
         log.info("Initializing...");
         log.info("Graphics System: " + graphics);
         
-        fb = graphics.createFramebuffer(32, 32, true, true);
-//        fb.getTexture().setFilter(Texture.Filter.Linear);
-//        fb.getTexture().setWrap(Texture.Wrap.MirroredRepeat);
+        fb1 = graphics.createFramebuffer(32, 32, true, true);
+        fb1.getTexture().setFilter(Texture.Filter.Nearest);
+        fb1.getTexture().setWrap(Texture.Wrap.Clamp);
+        
+        fb2 = graphics.createFramebuffer(1024, 1024, true, true);
+        fb2.getTexture().setFilter(Texture.Filter.Nearest);
+        fb2.getTexture().setWrap(Texture.Wrap.Clamp);
         
         display.setResizable(true);
         display.setSize(640, 400);
@@ -71,14 +76,15 @@ public class SampleApp extends Application {
         ticks++;
         angle += 5.0f / 60.0f;
         
-        graphics.setFrameBuffer(fb);
+        graphics.setFrameBuffer(fb1);
         graphics.setClearColor(new ColorRgba(0.2f, 0.5f, 1.0f, 1.0f));
         graphics.clearScreen();
 
         GL2 gl = GLContext.getCurrentGL().getGL2();
         GLU glu = new GLU();
         
-        gl.glUseProgram(shader.getId());
+        graphics.setShaderProgram(shader);
+        shader.setFloat("scale", (float) ticks % 60 / 60.0f);
         
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -87,7 +93,7 @@ public class SampleApp extends Application {
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
         gl.glTranslatef(0, 0, -2);
-        gl.glRotatef(angle * 10, 0, 1, 0);
+        gl.glRotatef(angle * 100, 0, 1, 0);
         
         gl.glBegin(GL.GL_TRIANGLES);
             gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
@@ -108,6 +114,45 @@ public class SampleApp extends Application {
         graphics.setFrameBuffer(null);
         graphics.setClearColor(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
         graphics.clearScreen();
+        
+        ////////////////////////////////////////////////////////////////////////
+        
+        graphics.setFrameBuffer(fb2);
+        graphics.setClearColor(new ColorRgba(0.0f, 0.2f, 0.8f, 1.0f));
+        graphics.clearScreen();
+
+        graphics.setShaderProgram(null);
+        graphics.setTexture(0, fb1.getTexture());
+        
+        gl.glMatrixMode(GL2.GL_PROJECTION);
+        gl.glLoadIdentity();
+        glu.gluPerspective(70.0f, 1.0f, 0.1f, 1000.0f);
+        
+        gl.glMatrixMode(GL2.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glTranslatef(0, 0, -2);
+        gl.glRotatef(angle * 10, 0, 1, 0);
+        
+        gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        gl.glBegin(GL.GL_TRIANGLES);
+            gl.glTexCoord2f(0.0f, 0.0f);
+            gl.glVertex3f(-0.5f, -0.5f, -0.5f);
+            gl.glTexCoord2f(1.0f, 0.0f);
+            gl.glVertex3f(0.5f, -0.5f, -0.5f);
+            gl.glTexCoord2f(1.0f, 1.0f);
+            gl.glVertex3f(0.5f, 0.5f, -0.5f);
+    
+            gl.glTexCoord2f(0.0f, 1.0f);
+            gl.glVertex3f(-0.5f, 0.5f, -1.5f);
+            gl.glTexCoord2f(1.0f, 0.0f);
+            gl.glVertex3f(0.5f, -0.4f, -1.0f);
+            gl.glTexCoord2f(1.0f, 1.0f);
+            gl.glVertex3f(0.5f, 0.5f, -0.5f);
+        gl.glEnd();
+
+        graphics.setFrameBuffer(null);
+        graphics.setClearColor(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
+        graphics.clearScreen();
     }
     
     @Override
@@ -115,13 +160,13 @@ public class SampleApp extends Application {
         GL2 gl = GLContext.getCurrentGL().getGL2();
         GLU glu = new GLU();
         
-        gl.glUseProgram(0);
-        
+        graphics.setShaderProgram(null);
+
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
         glu.gluPerspective(70.0f, display.getAspectRatio(), 0.1f, 1000.0f);
 //        glu.gluOrtho2D(-display.getAspectRatio(), display.getAspectRatio(), -1, 1);
-        graphics.setTexture(0, fb.getTexture());
+        graphics.setTexture(0, fb2.getTexture());
         gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);

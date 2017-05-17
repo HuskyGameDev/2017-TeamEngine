@@ -16,6 +16,7 @@ public class JoglGlWrapper {
     
     private int boundFbo = 0;
     private int boundTex = 0;
+    private int boundProg = 0;
     
     public JoglGlWrapper() {
         gl = null;
@@ -35,6 +36,10 @@ public class JoglGlWrapper {
     
     public int getBoundTexture() {
         return boundTex;
+    }
+    
+    public int getBoundProgram() {
+        return boundProg;
     }
     
     public void clearColor(float r, float g, float b, float a) {
@@ -126,6 +131,39 @@ public class JoglGlWrapper {
     
     public void deleteProgram(int id) {
         gl.glDeleteProgram(id);
+    }
+    
+    public void useProgram(int id) {
+        gl.glUseProgram(id);
+        boundProg = id;
+    }
+    
+    public int uniformLocation(int id, String name) {
+        return gl.glGetUniformLocation(id, name);
+    }
+    
+    public void uniformInt(int loc, int val) {
+        gl.glUniform1i(loc, val);
+    }
+    
+    public void uniformFloat(int loc, float val) {
+        gl.glUniform1f(loc, val);
+    }
+    
+    public void uniformVector2(int loc, float x, float y) {
+        gl.glUniform2f(loc, x, y);
+    }
+    
+    public void uniformVector3(int loc, float x, float y, float z) {
+        gl.glUniform3f(loc, x, y, z);
+    }
+    
+    public void uniformVector4(int loc, float x, float y, float z, float w) {
+        gl.glUniform4f(loc, x, y, z, w);
+    }
+    
+    public void uniformMatrix4(int loc, boolean transpose, float[] mat) {
+        gl.glUniformMatrix4fv(loc, 1, transpose, mat, 0);
     }
     
     public int genTexture() {

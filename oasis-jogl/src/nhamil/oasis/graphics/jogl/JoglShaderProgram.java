@@ -60,44 +60,59 @@ public class JoglShaderProgram implements ShaderProgram {
 
     @Override
     public void setFloat(String name, float f) {
-        // TODO Auto-generated method stub
-        
+        int old = gl.getBoundProgram();
+        gl.useProgram(id);
+        log.debug("Program ID: " + id + ", Uniform ID: " + gl.uniformLocation(id, name));
+        gl.uniformFloat(gl.uniformLocation(id, name), f);
+        gl.useProgram(old);
     }
 
     @Override
     public void setVector2(String name, Vector2 r) {
-        // TODO Auto-generated method stub
-        
+        int old = gl.getBoundProgram();
+        gl.useProgram(id);
+        gl.uniformVector2(gl.uniformLocation(id, name), r.x, r.y);
+        gl.useProgram(old);
     }
 
     @Override
     public void setVector3(String name, Vector3 r) {
-        // TODO Auto-generated method stub
-        
+        int old = gl.getBoundProgram();
+        gl.useProgram(id);
+        gl.uniformVector3(gl.uniformLocation(id, name), r.x, r.y, r.z);
+        gl.useProgram(old);
     }
 
     @Override
     public void setVector3(String name, ColorRgba col) {
-        // TODO Auto-generated method stub
-        
+        int old = gl.getBoundProgram();
+        gl.useProgram(id);
+        gl.uniformVector3(gl.uniformLocation(id, name), col.getRed(), col.getGreen(), col.getBlue());
+        gl.useProgram(old);
     }
 
     @Override
     public void setVector4(String name, ColorRgba col) {
-        // TODO Auto-generated method stub
-        
+        int old = gl.getBoundProgram();
+        gl.useProgram(id);
+        gl.uniformVector4(gl.uniformLocation(id, name), col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha());
+        gl.useProgram(old);
     }
 
     @Override
     public void setMatrix4(String name, Matrix4 r) {
-        // TODO Auto-generated method stub
-        
+        int old = gl.getBoundProgram();
+        gl.useProgram(id);
+        gl.uniformMatrix4(gl.uniformLocation(id, name), false, r.m);
+        gl.useProgram(old);
     }
 
     @Override
     public void setTextureUnit(String name, int i) {
-        // TODO Auto-generated method stub
-        
+        int old = gl.getBoundProgram();
+        gl.useProgram(id);
+        gl.uniformInt(gl.uniformLocation(id, name), i);
+        gl.useProgram(old);
     }
 
     @Override

@@ -109,7 +109,12 @@ public class JoglGraphicsContext implements GraphicsContext {
 
     @Override
     public void setShaderProgram(ShaderProgram shader) {
-        
+        if (shader == null) {
+            gl.useProgram(0);
+        }
+        else {
+            gl.useProgram(((JoglShaderProgram) shader).getId());
+        }
     }
     
     private void createDefaultShader() {
