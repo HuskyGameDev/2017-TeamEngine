@@ -46,7 +46,7 @@ public class SampleApp extends Application {
         log.info("Initializing...");
         log.info("Graphics System: " + graphics);
         
-        fb1 = graphics.createFramebuffer(32, 32, true, true);
+        fb1 = graphics.createFramebuffer(1024, 1024, true, true);
         fb1.getTexture().setFilter(Texture.Filter.Nearest);
         fb1.getTexture().setWrap(Texture.Wrap.Clamp);
         
@@ -77,7 +77,7 @@ public class SampleApp extends Application {
         angle += 5.0f / 60.0f;
         
         graphics.setFrameBuffer(fb1);
-        graphics.setClearColor(new ColorRgba(0.2f, 0.5f, 1.0f, 1.0f));
+        graphics.setClearColor(new ColorRgba(0.8f, 0.8f, 1.0f, 1.0f));
         graphics.clearScreen();
 
         GL2 gl = GLContext.getCurrentGL().getGL2();
@@ -111,14 +111,10 @@ public class SampleApp extends Application {
             gl.glVertex3f(0.5f, 0.5f, -0.5f);
         gl.glEnd();
 
-        graphics.setFrameBuffer(null);
-        graphics.setClearColor(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
-        graphics.clearScreen();
-        
         ////////////////////////////////////////////////////////////////////////
         
         graphics.setFrameBuffer(fb2);
-        graphics.setClearColor(new ColorRgba(0.0f, 0.2f, 0.8f, 1.0f));
+        graphics.setClearColor(new ColorRgba(0.3f, 0.3f, 0.6f, 1.0f));
         graphics.clearScreen();
 
         graphics.setShaderProgram(null);
@@ -159,6 +155,12 @@ public class SampleApp extends Application {
     public void onRender() {
         GL2 gl = GLContext.getCurrentGL().getGL2();
         GLU glu = new GLU();
+        
+
+        graphics.setFrameBuffer(null);
+        graphics.setClearColor(new ColorRgba(0.4f, 0.7f, 1.0f, 1.0f));
+        graphics.clearScreen();
+        
         
         graphics.setShaderProgram(null);
 
