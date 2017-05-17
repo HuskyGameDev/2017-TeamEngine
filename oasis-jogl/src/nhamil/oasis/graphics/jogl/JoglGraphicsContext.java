@@ -61,7 +61,7 @@ public class JoglGraphicsContext implements GraphicsContext {
 
     @Override
     public FrameBuffer createFrameBuffer(int width, int height) {
-        JoglFrameBuffer2 fb = new JoglFrameBuffer2(width, height, gl);
+        JoglFrameBuffer fb = new JoglFrameBuffer(width, height, gl);
         return fb;
     }
 

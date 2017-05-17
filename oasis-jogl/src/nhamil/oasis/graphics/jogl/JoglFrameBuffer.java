@@ -7,9 +7,9 @@ import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.FrameBuffer;
 import nhamil.oasis.graphics.Texture;
 
-public class JoglFrameBuffer2 implements FrameBuffer {
+public class JoglFrameBuffer implements FrameBuffer {
 
-    private static final GameLogger log = new GameLogger(JoglFrameBuffer2.class);
+    private static final GameLogger log = new GameLogger(JoglFrameBuffer.class);
     
     private JoglGlWrapper gl;
     private int width, height;
@@ -19,7 +19,7 @@ public class JoglFrameBuffer2 implements FrameBuffer {
     private JoglTexture colorTex, depthTex;
     private int colorBuffer, depthBuffer;
     
-    public JoglFrameBuffer2(int width, int height, JoglGlWrapper gl) {
+    public JoglFrameBuffer(int width, int height, JoglGlWrapper gl) {
         this.gl = gl;
         id = gl.genFramebuffer();
         this.width = width;
