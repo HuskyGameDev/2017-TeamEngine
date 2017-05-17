@@ -168,6 +168,7 @@ public class JoglEngine implements Engine, Runnable {
             Threading.invokeOnOpenGLThread(true, new Runnable() {
                 public void run() {
                     display.updateGl();
+                    display.getGraphics().newFrame();
                     listener.onUpdate(dt);
                 }
             });
@@ -182,6 +183,7 @@ public class JoglEngine implements Engine, Runnable {
             Threading.invokeOnOpenGLThread(true, new Runnable() {
                 public void run() {
                     display.updateGl();
+                    display.getGraphics().newFrame();
                     GL gl = display.getContext().getGL();
                     gl.glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
                     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);

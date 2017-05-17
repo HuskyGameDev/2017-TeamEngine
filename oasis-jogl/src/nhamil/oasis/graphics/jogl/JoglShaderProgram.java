@@ -62,7 +62,6 @@ public class JoglShaderProgram implements ShaderProgram {
     public void setFloat(String name, float f) {
         int old = gl.getBoundProgram();
         gl.useProgram(id);
-        log.debug("Program ID: " + id + ", Uniform ID: " + gl.uniformLocation(id, name));
         gl.uniformFloat(gl.uniformLocation(id, name), f);
         gl.useProgram(old);
     }
@@ -103,7 +102,7 @@ public class JoglShaderProgram implements ShaderProgram {
     public void setMatrix4(String name, Matrix4 r) {
         int old = gl.getBoundProgram();
         gl.useProgram(id);
-        gl.uniformMatrix4(gl.uniformLocation(id, name), false, r.m);
+        gl.uniformMatrix4(gl.uniformLocation(id, name), false, r.get(new float[16]));
         gl.useProgram(old);
     }
 

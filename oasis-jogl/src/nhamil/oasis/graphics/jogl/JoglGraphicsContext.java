@@ -1,12 +1,8 @@
 package nhamil.oasis.graphics.jogl;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-
 import com.jogamp.opengl.GL;
 
 import nhamil.oasis.core.GameLogger;
-import nhamil.oasis.core.Oasis;
 import nhamil.oasis.graphics.Bitmap;
 import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.Framebuffer;
@@ -37,6 +33,12 @@ public class JoglGraphicsContext implements GraphicsContext {
         createDefaultShader();
     }
     
+    public void newFrame() {
+        setFramebuffer(null);
+        setShaderProgram(null);
+        setTexture(0, null);
+    }
+    
     @Override
     public int getWidth() {
         return display.getWidth();
@@ -62,7 +64,7 @@ public class JoglGraphicsContext implements GraphicsContext {
     }
 
     @Override
-    public void setFrameBuffer(Framebuffer fb) {
+    public void setFramebuffer(Framebuffer fb) {
         this.framebuffer = fb;
         if (fb != null) {
             gl.bindFramebuffer(((JoglFramebuffer) fb).getId());
@@ -118,34 +120,34 @@ public class JoglGraphicsContext implements GraphicsContext {
     }
     
     private void createDefaultShader() {
-        String vFile = Oasis.DEFAULT_SHADER_FOLDER + "default_color.vert";
-        String fFile = Oasis.DEFAULT_SHADER_FOLDER + "default_color.frag";
-        log.debug("Vertex File: " + vFile);
-        log.debug("Fragment File: " + fFile);
-        
-        String vs = getFileContents(vFile);
-        String fs = getFileContents(fFile);
-        
-        log.debug("Vertex source " + (vs.equals("") ? "not found" : "found"));
-        log.debug("Fragment source " + (fs.equals("") ? "not found" : "found"));
-        
-        defaultShader = (JoglShaderProgram) createShaderProgram(vs, fs);
+//        String vFile = Oasis.DEFAULT_SHADER_FOLDER + "default_color.vert";
+//        String fFile = Oasis.DEFAULT_SHADER_FOLDER + "default_color.frag";
+//        log.debug("Vertex File: " + vFile);
+//        log.debug("Fragment File: " + fFile);
+//        
+//        String vs = getFileContents(vFile);
+//        String fs = getFileContents(fFile);
+//        
+//        log.debug("Vertex source " + (vs.equals("") ? "not found" : "found"));
+//        log.debug("Fragment source " + (fs.equals("") ? "not found" : "found"));
+//        
+//        defaultShader = (JoglShaderProgram) createShaderProgram(vs, fs);
     }
-    
-    private String getFileContents(String file) {
-        StringBuilder sb = new StringBuilder();
-        try {
-            BufferedReader vRead = new BufferedReader(new FileReader(file));
-            
-            String line;
-            while ((line = vRead.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            
-            vRead.close();
-        } catch (Exception e) {
-            log.warning("Problem reading file " + file);
-        }
-        return sb.toString();
-    }
+
+//    private String getFileContents(String file) {
+//        StringBuilder sb = new StringBuilder();
+//        try {
+//            BufferedReader vRead = new BufferedReader(new FileReader(file));
+//            
+//            String line;
+//            while ((line = vRead.readLine()) != null) {
+//                sb.append(line + "\n");
+//            }
+//            
+//            vRead.close();
+//        } catch (Exception e) {
+//            log.warning("Problem reading file " + file);
+//        }
+//        return sb.toString();
+//    }
 }

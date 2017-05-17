@@ -15,30 +15,29 @@ import nhamil.oasis.graphics.Framebuffer;
 import nhamil.oasis.graphics.Texture;
 import nhamil.oasis.graphics.jogl.JoglGraphicsContext;
 import nhamil.oasis.graphics.jogl.JoglShaderProgram;
-import nhamil.oasis.math.FastMath;
+import nhamil.oasis.math.Matrix4;
+import nhamil.oasis.math.Vector3;
 
 public class SampleApp extends Application {
 
     private static final GameLogger log = new GameLogger(SampleApp.class);
     
-    private Framebuffer fb1, fb2;
+    private Framebuffer fb;
     private JoglShaderProgram shader;
     
     private String vSource = ""
             + "#version 120\n "
-            + "varying vec4 fragColor; "
-            + "uniform float scale = 0.5;"
+            + "uniform mat4 ModelView;"
             + "void main() "
             + "{ "
-            + "    fragColor = gl_Color * scale; "
-            + "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex; "
+            + "  gl_FrontColor = gl_Color; "
+            + "  gl_Position = gl_ModelViewProjectionMatrix * ModelView * gl_Vertex; "
             + "}";
     private String fSource = ""
             + "#version 120\n "
-            + "varying vec4 fragColor; "
             + "void main() "
             + "{ "
-            + "    gl_FragColor = fragColor; "
+            + "  gl_FragColor = gl_Color; "
             + "}";
     
     @Override
@@ -46,19 +45,14 @@ public class SampleApp extends Application {
         log.info("Initializing...");
         log.info("Graphics System: " + graphics);
         
-        fb1 = graphics.createFramebuffer(1024, 1024, true, true);
-        fb1.getTexture().setFilter(Texture.Filter.Nearest);
-        fb1.getTexture().setWrap(Texture.Wrap.Clamp);
-        
-        fb2 = graphics.createFramebuffer(1024, 1024, true, true);
-        fb2.getTexture().setFilter(Texture.Filter.Nearest);
-        fb2.getTexture().setWrap(Texture.Wrap.Clamp);
+        fb = graphics.createFramebuffer(1024, 1024, true, true);
+        fb.getTexture().setFilter(Texture.Filter.Linear);
+        fb.getTexture().setWrap(Texture.Wrap.Clamp);
         
         display.setResizable(true);
         display.setSize(640, 400);
         
         shader = (JoglShaderProgram) ((JoglGraphicsContext) graphics).createShaderProgram(vSource, fSource);
-        
         log.info("Shader valid: " + shader.isValid());
         
         log.info("Done!");
@@ -73,18 +67,18 @@ public class SampleApp extends Application {
             stop();
         }
         
-        ticks++;
-        angle += 5.0f / 60.0f;
-        
-        graphics.setFrameBuffer(fb1);
-        graphics.setClearColor(new ColorRgba(0.8f, 0.8f, 1.0f, 1.0f));
-        graphics.clearScreen();
-
         GL2 gl = GLContext.getCurrentGL().getGL2();
         GLU glu = new GLU();
         
+        ticks++;
+        angle += 5.0f / 60.0f;
+        
+        graphics.setFramebuffer(fb);
+        graphics.setClearColor(new ColorRgba(0.8f, 0.8f, 0.8f, 1.0f));
+        graphics.clearScreen();
+
         graphics.setShaderProgram(shader);
-        shader.setFloat("scale", (float) ticks % 60 / 60.0f);
+        shader.setMatrix4("ModelView", new Matrix4().setScale(new Vector3(1.0f, 1.0f, 1.0f)));
         
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -92,63 +86,31 @@ public class SampleApp extends Application {
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
-        gl.glTranslatef(0, 0, -2);
-        gl.glRotatef(angle * 100, 0, 1, 0);
+//        gl.glTranslatef(0, 0, -2);
+//        gl.glRotatef(angle * 10, 0, 1, 0);
+        
+        Matrix4 m = new Matrix4().setIdentity();
+        
+        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
+        m.multiplySelf(new Matrix4().setScale(new Vector3(2, 2, 2)));
+        
+        shader.setMatrix4("ModelView", m);
         
         gl.glBegin(GL.GL_TRIANGLES);
             gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-            gl.glVertex3f(-0.5f, -0.5f, -0.5f);
+            gl.glVertex3f(-0.5f, -0.5f, 0.0f);
             gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-            gl.glVertex3f(0.5f, -0.5f, -0.5f);
+            gl.glVertex3f(0.5f, -0.5f, 0.0f);
             gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, -0.5f);
+            gl.glVertex3f(0.5f, 0.5f, 0.0f);
     
             gl.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-            gl.glVertex3f(-0.5f, 0.5f, -1.5f);
+            gl.glVertex3f(-0.5f, 0.5f, 0.5f);
             gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, -0.4f, -1.0f);
+            gl.glVertex3f(0.5f, -0.4f, 0.2f);
             gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, -0.5f);
+            gl.glVertex3f(0.5f, 0.5f, 0.0f);
         gl.glEnd();
-
-        ////////////////////////////////////////////////////////////////////////
-        
-        graphics.setFrameBuffer(fb2);
-        graphics.setClearColor(new ColorRgba(0.3f, 0.3f, 0.6f, 1.0f));
-        graphics.clearScreen();
-
-        graphics.setShaderProgram(null);
-        graphics.setTexture(0, fb1.getTexture());
-        
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadIdentity();
-        glu.gluPerspective(70.0f, 1.0f, 0.1f, 1000.0f);
-        
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
-        gl.glTranslatef(0, 0, -2);
-        gl.glRotatef(angle * 10, 0, 1, 0);
-        
-        gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        gl.glBegin(GL.GL_TRIANGLES);
-            gl.glTexCoord2f(0.0f, 0.0f);
-            gl.glVertex3f(-0.5f, -0.5f, -0.5f);
-            gl.glTexCoord2f(1.0f, 0.0f);
-            gl.glVertex3f(0.5f, -0.5f, -0.5f);
-            gl.glTexCoord2f(1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, -0.5f);
-    
-            gl.glTexCoord2f(0.0f, 1.0f);
-            gl.glVertex3f(-0.5f, 0.5f, -1.5f);
-            gl.glTexCoord2f(1.0f, 0.0f);
-            gl.glVertex3f(0.5f, -0.4f, -1.0f);
-            gl.glTexCoord2f(1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, -0.5f);
-        gl.glEnd();
-
-        graphics.setFrameBuffer(null);
-        graphics.setClearColor(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
-        graphics.clearScreen();
     }
     
     @Override
@@ -156,43 +118,25 @@ public class SampleApp extends Application {
         GL2 gl = GLContext.getCurrentGL().getGL2();
         GLU glu = new GLU();
         
-
-        graphics.setFrameBuffer(null);
+        graphics.setFramebuffer(null);
         graphics.setClearColor(new ColorRgba(0.4f, 0.7f, 1.0f, 1.0f));
         graphics.clearScreen();
-        
-        
         graphics.setShaderProgram(null);
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective(70.0f, display.getAspectRatio(), 0.1f, 1000.0f);
-//        glu.gluOrtho2D(-display.getAspectRatio(), display.getAspectRatio(), -1, 1);
-        graphics.setTexture(0, fb2.getTexture());
+//        glu.gluPerspective(70.0f, display.getAspectRatio(), 0.1f, 1000.0f);
+        glu.gluOrtho2D(-display.getAspectRatio(), display.getAspectRatio(), -1, 1);
+        graphics.setTexture(0, fb.getTexture());
         gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
-        
         gl.glLoadIdentity();
-        gl.glTranslatef(0, 0, -2);
-        gl.glRotatef(FastMath.cos(angle * 0.2f) * 20.0f, 0, 1, 0);
-        gl.glRotatef(FastMath.cos(angle * 0.33f) * 6.0f, 0, 0, 1);
-        drawFb(gl);
-        
-        gl.glLoadIdentity();
-        gl.glTranslatef(2.5f, 0, -3);
-        gl.glRotatef(FastMath.cos(angle * 0.41f) * 30.0f, 0, 1, 0);
-        gl.glRotatef(FastMath.cos(angle * 0.13f) * 2.0f, 0, 0, 1);
-        drawFb(gl);
-        
-        gl.glLoadIdentity();
-        gl.glTranslatef(-2.5f, 0, -3);
-        gl.glRotatef(FastMath.cos(angle * 0.23f) * 10.0f, 0, 1, 0);
-        gl.glRotatef(FastMath.cos(angle * 0.51f) * 10.0f, 0, 0, 1);
         drawFb(gl);
     }
     
     private void drawFb(GL2 gl) {
+        gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         gl.glBegin(GL.GL_TRIANGLES);
             gl.glTexCoord2f(0.0f, 0.0f);
             gl.glVertex3f(-0.9f, -0.9f, 0.0f);

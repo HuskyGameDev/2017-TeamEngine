@@ -69,7 +69,7 @@ public class JoglTexture implements Texture {
         int old = gl.genTexture();
         gl.bindTexture(id);
         gl.texImage(width, height, null);
-        gl.texParameterMinMagFilter(minFilter, maxFilter);
+//        gl.texParameterMinMagFilter(minFilter, maxFilter);
         gl.bindTexture(old);
     }
 

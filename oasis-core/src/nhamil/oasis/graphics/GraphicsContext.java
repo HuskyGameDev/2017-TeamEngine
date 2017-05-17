@@ -9,7 +9,7 @@ public interface GraphicsContext {
     void clearScreen();
     
     Framebuffer createFramebuffer(int width, int height, boolean colorBuffer, boolean depthBuffer);
-    void setFrameBuffer(Framebuffer fb);
+    void setFramebuffer(Framebuffer fb);
 
     ShaderProgram createShaderProgram(String vSource, String fSource);
     void setShaderProgram(ShaderProgram shader);

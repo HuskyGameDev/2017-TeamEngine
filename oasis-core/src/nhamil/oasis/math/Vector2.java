@@ -109,6 +109,7 @@ public class Vector2 {
     
     public boolean equals(Object obj) {
         if (obj == this) return true;
+        if (obj == null) return false;
         if (!(obj instanceof Vector2)) return false;
         
         Vector2 r = (Vector2) obj;
