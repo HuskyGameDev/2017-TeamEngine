@@ -213,8 +213,16 @@ public class JoglGlWrapper {
         gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_INT, pixels);
     }
     
+    public void texSubImage(int width, int height, IntBuffer pixels) {
+        gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_INT, pixels);
+    }
+    
     public void texImageDepth(int width, int height, IntBuffer pixels) {
         gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_DEPTH_COMPONENT32, width, height, 0, GL2.GL_DEPTH_COMPONENT, GL.GL_FLOAT, pixels);
+    }
+    
+    public void texSubImageDepth(int width, int height, IntBuffer pixels) {
+        gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_DEPTH_COMPONENT32, width, height, 0, GL2.GL_DEPTH_COMPONENT, GL.GL_FLOAT, pixels);
     }
     
     public void texParameterMinMagFilter(Texture.Filter min, Texture.Filter max) {

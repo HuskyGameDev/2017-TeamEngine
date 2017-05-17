@@ -46,7 +46,7 @@ public class SampleApp extends Application {
         
         fb = graphics.createFrameBuffer(2048, 2048);
         fb.setColorAttachmentType(FrameBuffer.AttachmentType.Texture);
-        fb.setDepthAttachmentType(FrameBuffer.AttachmentType.RenderBuffer);
+        fb.setDepthAttachmentType(FrameBuffer.AttachmentType.Texture);
         fb.getColorTexture().setFilter(Texture.Filter.Linear, Texture.Filter.Linear);
         fb.getColorTexture().setWrap(Texture.Wrap.Clamp, Texture.Wrap.Clamp);
         log.info("FrameBuffer valid: " + fb.isValid());
@@ -84,7 +84,7 @@ public class SampleApp extends Application {
         
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
-        glu.gluPerspective(70.0f, 1.0f, 0.1f, 1000.0f);
+        glu.gluPerspective(70.0f, 1.0f, 1.2f, 5.0f);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
@@ -130,13 +130,19 @@ public class SampleApp extends Application {
         gl.glLoadIdentity();
 //        glu.gluPerspective(70.0f, display.getAspectRatio(), 0.1f, 1000.0f);
         glu.gluOrtho2D(-display.getAspectRatio(), display.getAspectRatio(), -1, 1);
-        fb.getColorTexture().bind(0);
         gl.glEnable(GL.GL_TEXTURE);
         gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
+        gl.glTranslatef(-1.0f, 0, 0);
+        fb.getColorTexture().bind(0);
+        drawFb(gl);
+        
+        gl.glLoadIdentity();
+        gl.glTranslatef(1.0f, 0, 0);
+        fb.getDepthTexture().bind(0);
         drawFb(gl);
     }
     

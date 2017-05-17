@@ -76,8 +76,12 @@ public class JoglTexture implements Texture {
     public void clear() {
         int old = gl.genTexture();
         gl.bindTexture(id);
-        gl.texImage(width, height, null);
-        // TODO UPDATE FILTER AND WRAP ? DON'T THINK SO
+        if (type == Type.Color) {
+            gl.texSubImage(width, height, null);
+        }
+        else if (type == Type.Depth) {
+            gl.texSubImageDepth(width, height, null);
+        }
         gl.bindTexture(old);
     }
 

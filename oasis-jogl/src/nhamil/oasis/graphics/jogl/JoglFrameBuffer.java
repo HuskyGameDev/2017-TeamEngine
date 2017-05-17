@@ -140,8 +140,6 @@ public class JoglFrameBuffer implements FrameBuffer {
         case Texture: 
             if (depthType == AttachmentType.RenderBuffer) setDepthAttachmentType(AttachmentType.None);
             log.debug("Attaching depth texture");
-            // TODO FIX DEPTH TEXTURE
-            log.warning("Currently depth textures may not work!");
             depthTex = new JoglTexture(width, height, Texture.Type.Depth, gl);
             gl.framebufferTextureDepth(depthTex.getId());
             depthType = AttachmentType.Texture;
