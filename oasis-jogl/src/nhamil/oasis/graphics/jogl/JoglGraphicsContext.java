@@ -21,6 +21,8 @@ public class JoglGraphicsContext implements GraphicsContext {
     
     private JoglShaderProgram defaultShader;
     
+    private ColorRgba clearColor = new ColorRgba(0, 0, 0, 1);
+    
     public JoglGraphicsContext(JoglDisplay display, JoglGlWrapper gl) {
         this.display = display;
         this.gl = gl;
@@ -32,7 +34,7 @@ public class JoglGraphicsContext implements GraphicsContext {
     }
     
     public void init() {
-        
+        log.debug("Initializing graphics context");
     }
     
     public void newFrame() {
@@ -51,11 +53,13 @@ public class JoglGraphicsContext implements GraphicsContext {
 
     @Override
     public void setScreenClearColor(ColorRgba color) {
-        gl.clearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+        clearColor = color;
     }
 
     @Override
     public void clearScreen() {
+        gl.bindFramebuffer(0);
+        gl.clearColor(clearColor);
         gl.clear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
     }
 

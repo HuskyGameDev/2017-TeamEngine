@@ -4,7 +4,6 @@ import java.nio.IntBuffer;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL3;
 
 import nhamil.oasis.core.GameLogger;
 import nhamil.oasis.graphics.ColorRgba;
@@ -264,7 +263,7 @@ public class JoglGlWrapper {
         case Linear: 
             return GL.GL_LINEAR;
         default: 
-            // TODO EXCEPTION? ?
+            log.warning("Unknown filter mode: " + filter);
             return 0;
         }
     }
@@ -278,7 +277,7 @@ public class JoglGlWrapper {
         case MirroredRepeat: 
             return GL.GL_MIRRORED_REPEAT;
         default:
-            // TODO EXCEPTION ?
+            log.warning("Unknown warp mode: " + wrap);
             return 0;
         }
     }
