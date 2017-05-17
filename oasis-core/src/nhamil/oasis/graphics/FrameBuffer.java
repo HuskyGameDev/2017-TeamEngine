@@ -1,16 +1,34 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.core.Disposable;
+public interface FrameBuffer {
 
-public interface Framebuffer extends Disposable {
-
+    public enum AttachmentType {
+        None, 
+        Texture, 
+        RenderBuffer;
+    }
+    
+    void dispose();
+    
+    boolean isValid();
+    
+    void setClearColor(ColorRgba color);
+    void clear();
+    
+    void bind();
+    void unbind();
+    
     int getWidth();
     int getHeight();
+    void setSize(int width, int height);
     
-    boolean hasTexture();
-    boolean hasDepthAttachment();
-    boolean hasStencilAttachment();
+    void setColorAttachmentType(AttachmentType type);
+    void setDepthAttachmentType(AttachmentType type);
     
-    Texture getTexture();
+    AttachmentType getColorAttachmentType();
+    AttachmentType getDepthAttachmentType();
+    
+    Texture getColorTexture();
+    Texture getDepthTexture();
     
 }

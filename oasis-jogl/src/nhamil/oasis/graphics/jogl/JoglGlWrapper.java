@@ -4,14 +4,17 @@ import java.nio.IntBuffer;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL3;
 
 import nhamil.oasis.core.GameLogger;
+import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.Texture;
 
 public class JoglGlWrapper {
 
     private static final GameLogger log = new GameLogger(JoglGlWrapper.class);
     
+    private JoglGraphicsContext context;
     private GL2 gl;
     
     private int boundFbo = 0;
@@ -20,6 +23,15 @@ public class JoglGlWrapper {
     
     public JoglGlWrapper() {
         gl = null;
+        context = null;
+    }
+    
+    public void setContext(JoglGraphicsContext c) {
+        context = c;
+    }
+    
+    public JoglGraphicsContext getContext() {
+        return context;
     }
     
     public void setGL(GL gl) {
@@ -46,6 +58,10 @@ public class JoglGlWrapper {
         gl.glClearColor(r, g, b, a);
     }
     
+    public void clearColor(ColorRgba c) {
+        clearColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+    }
+    
     public void clear(int mask) {
         gl.glClear(mask);
     }
@@ -68,6 +84,10 @@ public class JoglGlWrapper {
     
     public void framebufferTextureColor(int id) {
         gl.glFramebufferTexture2D(GL.GL_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_TEXTURE_2D, id, 0);
+    }
+    
+    public void framebufferTextureDepth(int id) {
+        gl.glFramebufferTexture2D(GL.GL_FRAMEBUFFER, GL.GL_DEPTH_ATTACHMENT, GL.GL_TEXTURE_2D, id, 0);
     }
     
     public void framebufferRenderbufferDepth(int rbo) {
@@ -193,14 +213,18 @@ public class JoglGlWrapper {
         gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_INT, pixels);
     }
     
+    public void texImageDepth(int width, int height, IntBuffer pixels) {
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_DEPTH_COMPONENT32, width, height, 0, GL2.GL_DEPTH_COMPONENT, GL.GL_FLOAT, pixels);
+    }
+    
     public void texParameterMinMagFilter(Texture.Filter min, Texture.Filter max) {
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, filter(min));
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, filter(max));
     }
     
-    public void texParameterWrap(Texture.Wrap wrap) {
-        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, wrap(wrap));
-        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, wrap(wrap));
+    public void texParameterWrap(Texture.Wrap uWrap, Texture.Wrap vWrap) {
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, wrap(uWrap));
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, wrap(vWrap));
     }
     
     public int genRenderbuffer() {

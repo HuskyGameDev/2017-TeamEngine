@@ -1,7 +1,21 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.core.Disposable;
+public interface Mesh {
 
-public interface Mesh extends Disposable {
-
+    public enum Type {
+        Triangle, 
+        Line;
+    }
+    
+    void dispose();
+    
+    VertexDefinition getVertexDefinition();
+    
+    Type getType();
+    void setType(Type type);
+    
+    void setVertices(Vertex[] verts);
+    void setIndices(int[] inds);
+    void setIndices(Integer[] inds);
+    
 }

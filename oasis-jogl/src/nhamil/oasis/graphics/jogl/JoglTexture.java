@@ -9,7 +9,8 @@ public class JoglTexture implements Texture {
     private int id = 0;
     private int width, height;
     private Filter minFilter, maxFilter;
-    private Wrap wrap;
+    private Wrap uWrap, vWrap;
+    private Type type;
     
     public JoglTexture(JoglGlWrapper gl) {
         this.gl = gl;
@@ -17,22 +18,29 @@ public class JoglTexture implements Texture {
         id = gl.genTexture();
         minFilter = Filter.Nearest;
         maxFilter = Filter.Nearest;
-        wrap = Wrap.Clamp;
-        int old = gl.genTexture();
+        uWrap = Wrap.Clamp;
+        vWrap = Wrap.Clamp;
+        type = Type.Color;
+        
         gl.bindTexture(id);
         gl.texParameterMinMagFilter(minFilter, maxFilter);
-        gl.texParameterWrap(wrap);
-        gl.bindTexture(old);
+        gl.texParameterWrap(uWrap, vWrap);
     }
     
     public JoglTexture(int width, int height, JoglGlWrapper gl) {
         this(gl);
         this.width = width;
         this.height = height;
-        int old = gl.genTexture();
-        gl.bindTexture(id);
+        bind();
         gl.texImage(width, height, null);
-        gl.bindTexture(old);
+    }
+    
+    public JoglTexture(int width, int height, Type type, JoglGlWrapper gl) {
+        this(gl);
+        this.width = width;
+        this.height = height;
+        bind();
+        gl.texImageDepth(width, height, null);
     }
     
     public int getId() {
@@ -57,7 +65,7 @@ public class JoglTexture implements Texture {
 
     @Override
     public void setPixelData(Bitmap data) {
-        
+        // TODO FINISH
     }
 
     @Override
@@ -69,7 +77,7 @@ public class JoglTexture implements Texture {
         int old = gl.genTexture();
         gl.bindTexture(id);
         gl.texImage(width, height, null);
-//        gl.texParameterMinMagFilter(minFilter, maxFilter);
+        // TODO UPDATE FILTER AND WRAP ? DON'T THINK SO
         gl.bindTexture(old);
     }
 
@@ -99,33 +107,6 @@ public class JoglTexture implements Texture {
         }
     }
     
-    @Override
-    public void setFilter(Filter min, Filter max) {
-        if (this.maxFilter != max || this.minFilter != min) {
-            maxFilter = max;
-            minFilter = min;
-            updateFilter();
-        }
-    }
-    
-    @Override
-    public void setFilter(Filter both) {
-        setFilter(both, both);
-    }
-    
-    @Override
-    public Wrap getWrap() {
-        return wrap;
-    }
-    
-    @Override
-    public void setWrap(Wrap wrap) {
-        if (this.wrap != wrap) {
-            this.wrap = wrap;
-            updateWrap();
-        }
-    }
-    
     private void updateFilter() {
         int old = gl.genTexture();
         gl.bindTexture(id);
@@ -136,8 +117,71 @@ public class JoglTexture implements Texture {
     private void updateWrap() {
         int old = gl.genTexture();
         gl.bindTexture(id);
-        // TODO
+        gl.texParameterWrap(uWrap, vWrap);
         gl.bindTexture(old);
+    }
+
+    @Override
+    public void bind(int unit) {
+        gl.activeTexture(unit);
+        gl.bindTexture(id);
+    }
+    
+    @Override
+    public void bind() {
+        gl.bindTexture(id);
+    }
+
+    @Override
+    public void unbind() {
+        gl.bindTexture(0);
+    }
+
+    @Override
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public Wrap getUWrap() {
+        return uWrap;
+    }
+
+    @Override
+    public Wrap getVWrap() {
+        return vWrap;
+    }
+
+    @Override
+    public void setUWrap(Wrap wrap) {
+        uWrap = wrap;
+        updateWrap();
+    }
+
+    @Override
+    public void setVWrap(Wrap wrap) {
+        vWrap = wrap;
+        updateWrap();
+    }
+
+    @Override
+    public Bitmap getPixelData() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setFilter(Filter min, Filter max) {
+        this.minFilter = min;
+        this.maxFilter = max;
+        updateFilter();
+    }
+
+    @Override
+    public void setWrap(Wrap u, Wrap v) {
+        this.uWrap = u;
+        this.vWrap = v;
+        updateWrap();
     }
 
 }

@@ -1,8 +1,11 @@
 package nhamil.oasis.graphics;
 
-import nhamil.oasis.core.Disposable;
+public interface Texture {
 
-public interface Texture extends Disposable {
+    public enum Type {
+        Color,
+        Depth;
+    }
 
     public enum Filter {
         Nearest, 
@@ -15,20 +18,35 @@ public interface Texture extends Disposable {
         Clamp, 
     }
     
+    void dispose();
+    
+    void clear();
+    
+    void bind(int unit);
+    void bind();
+    void unbind();
+    
     int getWidth();
     int getHeight();
     float getAspectRatio();
     
+    Type getType();
+    
     Filter getMinFilter();
     Filter getMaxFilter();
-    void setMinFilter(Filter filter);
-    void setMaxFilter(Filter filter);
-    void setFilter(Filter both);
-    void setFilter(Filter min, Filter max);
     
-    Wrap getWrap();
-    void setWrap(Wrap wrap);
+    void setFilter(Filter min, Filter max);
+    void setMinFilter(Filter min);
+    void setMaxFilter(Filter max);
+    
+    Wrap getUWrap();
+    Wrap getVWrap();
+    
+    void setWrap(Wrap u, Wrap v);
+    void setUWrap(Wrap wrap);
+    void setVWrap(Wrap wrap);
     
     void setPixelData(Bitmap data);
+    Bitmap getPixelData();
     
 }

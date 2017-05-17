@@ -1,5 +1,7 @@
 package nhamil.oasis.graphics;
 
+import nhamil.oasis.math.Vector4;
+
 public class ColorRgba {
 
     private float r, g, b, a;
@@ -25,6 +27,10 @@ public class ColorRgba {
     
     public float getAlpha() {
         return a;
+    }
+
+    public Vector4 asVector4() {
+        return new Vector4(r, g, b, a);
     }
     
 }

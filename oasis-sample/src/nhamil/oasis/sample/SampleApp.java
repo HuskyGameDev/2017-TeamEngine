@@ -11,10 +11,9 @@ import nhamil.oasis.core.GameLogger;
 import nhamil.oasis.core.Oasis;
 import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.ColorRgba;
-import nhamil.oasis.graphics.Framebuffer;
+import nhamil.oasis.graphics.FrameBuffer;
+import nhamil.oasis.graphics.ShaderProgram;
 import nhamil.oasis.graphics.Texture;
-import nhamil.oasis.graphics.jogl.JoglGraphicsContext;
-import nhamil.oasis.graphics.jogl.JoglShaderProgram;
 import nhamil.oasis.math.Matrix4;
 import nhamil.oasis.math.Vector3;
 
@@ -22,8 +21,8 @@ public class SampleApp extends Application {
 
     private static final GameLogger log = new GameLogger(SampleApp.class);
     
-    private Framebuffer fb;
-    private JoglShaderProgram shader;
+    private FrameBuffer fb;
+    private ShaderProgram shader;
     
     private String vSource = ""
             + "#version 120\n "
@@ -45,14 +44,17 @@ public class SampleApp extends Application {
         log.info("Initializing...");
         log.info("Graphics System: " + graphics);
         
-        fb = graphics.createFramebuffer(1024, 1024, true, true);
-        fb.getTexture().setFilter(Texture.Filter.Linear);
-        fb.getTexture().setWrap(Texture.Wrap.Clamp);
+        fb = graphics.createFrameBuffer(2048, 2048);
+        fb.setColorAttachmentType(FrameBuffer.AttachmentType.Texture);
+        fb.setDepthAttachmentType(FrameBuffer.AttachmentType.RenderBuffer);
+        fb.getColorTexture().setFilter(Texture.Filter.Linear, Texture.Filter.Linear);
+        fb.getColorTexture().setWrap(Texture.Wrap.Clamp, Texture.Wrap.Clamp);
+        log.info("FrameBuffer valid: " + fb.isValid());
         
         display.setResizable(true);
         display.setSize(640, 400);
         
-        shader = (JoglShaderProgram) ((JoglGraphicsContext) graphics).createShaderProgram(vSource, fSource);
+        shader = graphics.createShaderProgram(vSource, fSource);
         log.info("Shader valid: " + shader.isValid());
         
         log.info("Done!");
@@ -73,12 +75,12 @@ public class SampleApp extends Application {
         ticks++;
         angle += 5.0f / 60.0f;
         
-        graphics.setFramebuffer(fb);
-        graphics.setClearColor(new ColorRgba(0.8f, 0.8f, 0.8f, 1.0f));
-        graphics.clearScreen();
+        fb.bind();
+        fb.setClearColor(new ColorRgba(0.8f, 0.8f, 0.8f, 1.0f));
+        fb.clear();
 
-        graphics.setShaderProgram(shader);
-        shader.setMatrix4("ModelView", new Matrix4().setScale(new Vector3(1.0f, 1.0f, 1.0f)));
+        shader.bind();
+        shader.setUniform("ModelView", new Matrix4().setScale(new Vector3(1.0f, 1.0f, 1.0f)));
         
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
@@ -86,15 +88,13 @@ public class SampleApp extends Application {
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         gl.glLoadIdentity();
-//        gl.glTranslatef(0, 0, -2);
-//        gl.glRotatef(angle * 10, 0, 1, 0);
+        gl.glTranslatef(0, 0, -2);
+        gl.glRotatef(angle * 10, 0, 1, 0);
         
         Matrix4 m = new Matrix4().setIdentity();
-        
-        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
-        m.multiplySelf(new Matrix4().setScale(new Vector3(2, 2, 2)));
-        
-        shader.setMatrix4("ModelView", m);
+//        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
+//        m.multiplySelf(new Matrix4().setScale(new Vector3(2, 2, 2)));
+        shader.setUniform("ModelView", m);
         
         gl.glBegin(GL.GL_TRIANGLES);
             gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
@@ -109,8 +109,11 @@ public class SampleApp extends Application {
             gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
             gl.glVertex3f(0.5f, -0.4f, 0.2f);
             gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, 0.0f);
+            gl.glVertex3f(0.5f, 0.5f, -0.5f);
         gl.glEnd();
+        
+        shader.unbind();
+        fb.unbind();
     }
     
     @Override
@@ -118,16 +121,18 @@ public class SampleApp extends Application {
         GL2 gl = GLContext.getCurrentGL().getGL2();
         GLU glu = new GLU();
         
-        graphics.setFramebuffer(null);
-        graphics.setClearColor(new ColorRgba(0.4f, 0.7f, 1.0f, 1.0f));
+//        graphics.setFramebuffer(null);
+        graphics.setScreenClearColor(new ColorRgba(0.4f, 0.7f, 1.0f, 1.0f));
         graphics.clearScreen();
-        graphics.setShaderProgram(null);
+//        graphics.setShaderProgram(null);
 
         gl.glMatrixMode(GL2.GL_PROJECTION);
         gl.glLoadIdentity();
 //        glu.gluPerspective(70.0f, display.getAspectRatio(), 0.1f, 1000.0f);
         glu.gluOrtho2D(-display.getAspectRatio(), display.getAspectRatio(), -1, 1);
-        graphics.setTexture(0, fb.getTexture());
+        fb.getColorTexture().bind(0);
+        gl.glEnable(GL.GL_TEXTURE);
+        gl.glEnable(GL.GL_TEXTURE_2D);
         gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
