@@ -138,6 +138,10 @@ public class JoglGlWrapper {
     public boolean attachAndLink(int id, int vId, int fId) {
         gl.glAttachShader(id, vId);
         gl.glAttachShader(id, fId);
+        gl.glBindAttribLocation(id, 0, "Position");
+        gl.glBindAttribLocation(id, 1, "Normal");
+        gl.glBindAttribLocation(id, 2, "TexCoord");
+        gl.glBindAttribLocation(id, 3, "Color");
         gl.glLinkProgram(id);
         int[] status = new int[1];
         gl.glGetProgramiv(id, GL2.GL_LINK_STATUS, status, 0);
@@ -317,7 +321,27 @@ public class JoglGlWrapper {
     }
     
     public void vertexAttribPointer(int index, int size, int glType, int stride, int offset) {
-        gl.glVertexAttribPointer(index, size, glType, false, stride, 0);
+        gl.glVertexAttribPointer(index, size, glType, false, stride, offset);
+    }
+    
+    public void drawArrays(Mesh.Primitive prim, int size) {
+        gl.glDrawArrays(primitive(prim), 0, size);
+    }
+    
+    private int primitive(Mesh.Primitive prim) {
+        switch (prim) {
+        case Triangles:
+            return GL.GL_TRIANGLES;
+        case TriangleStrip:
+            return GL.GL_TRIANGLE_STRIP;
+        case TriangleFan:
+            return GL.GL_TRIANGLE_FAN;
+        case Lines:
+            return GL.GL_LINES;
+        default:
+            log.warning("Unknown primitive type: " + prim);
+            return 0;
+        }
     }
     
     private int usage(Mesh.UsageHint hint) {
@@ -363,6 +387,10 @@ public class JoglGlWrapper {
     public boolean checkFramebufferStatus() {
         int status = gl.glCheckFramebufferStatus(GL.GL_FRAMEBUFFER);
         return status == GL.GL_FRAMEBUFFER_COMPLETE;
+    }
+
+    public int getAttribLocation(int id, String name) {
+        return gl.glGetAttribLocation(id, name);
     }
     
 }

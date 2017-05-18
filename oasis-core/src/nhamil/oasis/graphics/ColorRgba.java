@@ -29,7 +29,7 @@ public class ColorRgba {
         return a;
     }
 
-    public Vector4 asVector4() {
+    public Vector4 toVector4() {
         return new Vector4(r, g, b, a);
     }
     

@@ -3,10 +3,10 @@ package nhamil.oasis.graphics;
 public interface Mesh {
 
     public enum Primitive {
-        Triangle, 
+        Triangles, 
         TriangleStrip, 
         TriangleFan,
-        Line;
+        Lines;
     }
     
     public enum UsageHint {
@@ -17,10 +17,10 @@ public interface Mesh {
     
     void dispose();
     
+    void draw();
+    
     void bind();
     void unbind();
-    
-    VertexDefinition getVertexDefinition();
     
     Primitive getPrimitive();
     void setPrimitive(Primitive type);

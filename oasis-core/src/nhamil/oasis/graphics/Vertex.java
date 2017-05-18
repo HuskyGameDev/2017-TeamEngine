@@ -1,76 +1,60 @@
 package nhamil.oasis.graphics;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import nhamil.oasis.math.Vector2;
 import nhamil.oasis.math.Vector3;
 import nhamil.oasis.math.Vector4;
 
 public class Vertex {
 
-    private Map<String, Float> floats;
-    private Map<String, Vector2> vec2;
-    private Map<String, Vector3> vec3;
-    private Map<String, Vector4> vec4;
+    public static final int TOTAL_FLOATS = 3 + 3 + 2 + 4;
+    public static final int OFFSET_POSITION = 0;
+    public static final int OFFSET_NORMAL = OFFSET_POSITION + 3;
+    public static final int OFFSET_TEX_COORD = OFFSET_NORMAL + 3;
+    public static final int OFFSET_COLOR = OFFSET_TEX_COORD + 2;
+    
+    private Vector3 position;
+    private Vector3 normal;
+    private Vector2 texCoord;
+    private Vector4 color;
     
     public Vertex() {
-        floats = new HashMap<>();
-        vec2 = new HashMap<>();
-        vec3 = new HashMap<>();
-        vec4 = new HashMap<>();
+        position = new Vector3();
+        normal = new Vector3();
+        texCoord = new Vector2();
+        color = new Vector4();
     }
     
-    public void put(String name, float val) {
-        floats.put(name, val);
+    public Vertex setPosition(Vector3 r) {
+        position.set(r); 
+        return this;
     }
     
-    public void put(String name, Vector2 val) {
-        vec2.put(name, val.copy());
+    public Vertex setNormal(Vector3 r) {
+        normal.set(r);
+        return this;
     }
     
-    public void put(String name, Vector3 val) {
-        vec3.put(name, val.copy());
+    public Vertex setTexCoord(Vector2 r) {
+        texCoord.set(r);
+        return this;
     }
     
-    public void put(String name, ColorRgba val) {
-        vec4.put(name, val.asVector4());
+    public Vertex setColor(Vector4 r) {
+        color.set(r);
+        return this;
     }
     
-    public boolean hasFloat(String name) {
-        return floats.get(name) != null;
+    public Vertex setColor(ColorRgba col) {
+        color.set(col.toVector4());
+        return this;
     }
     
-    public boolean hasVector2(String name) {
-        return vec2.get(name) != null;
-    }
+    public Vector3 getPosition() { return position; }
     
-    public boolean hasVector3(String name) {
-        return vec3.get(name) != null;
-    }
+    public Vector3 getNormal() { return normal; }
     
-    public boolean hasVector4(String name) {
-        return vec4.get(name) != null;
-    }
+    public Vector2 getTexCoord() { return texCoord; }
     
-    public float getFloat(String name) {
-        Float val = floats.get(name);
-        return val == null ? 0.0f : val.floatValue();
-    }
-    
-    public Vector2 getVector2(String name) {
-        Vector2 val = vec2.get(name);
-        return val == null ? new Vector2() : val.copy();
-    }
-    
-    public Vector3 getVector3(String name) {
-        Vector3 val = vec3.get(name);
-        return val == null ? new Vector3() : val.copy();
-    }
-    
-    public Vector4 getVector4(String name) {
-        Vector4 val = vec4.get(name);
-        return val == null ? new Vector4() : val.copy();
-    }
+    public Vector4 getColor() { return color; }
     
 }

@@ -29,7 +29,7 @@ public class JoglShaderProgram implements ShaderProgram {
             gl.deleteShader(vId);
             valid = false;
         }
-
+        
         fId = gl.createShaderFragment();
         if (!gl.setSourceAndCompile(fId, fSource)) {
             log.warning("Failed to compile fragment shader");
@@ -44,7 +44,12 @@ public class JoglShaderProgram implements ShaderProgram {
             gl.deleteProgram(id);
             valid = false;
         }
-
+        
+        log.debug("Attribute location of \"Position\": " + gl.getAttribLocation(id, "Position"));
+        log.debug("Attribute location of \"Normal\": " + gl.getAttribLocation(id, "Normal"));
+        log.debug("Attribute location of \"TexCoord\": " + gl.getAttribLocation(id, "TexCoord"));
+        log.debug("Attribute location of \"Color\": " + gl.getAttribLocation(id, "Color"));
+        
         gl.deleteShader(vId);
         gl.deleteShader(fId);
     }

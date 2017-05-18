@@ -12,9 +12,9 @@ import nhamil.oasis.core.Oasis;
 import nhamil.oasis.core.jogl.JoglEngine;
 import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.FrameBuffer;
+import nhamil.oasis.graphics.Mesh;
 import nhamil.oasis.graphics.ShaderProgram;
-import nhamil.oasis.graphics.Texture;
-import nhamil.oasis.math.FastMath;
+import nhamil.oasis.graphics.Vertex;
 import nhamil.oasis.math.Matrix4;
 import nhamil.oasis.math.Vector3;
 
@@ -24,21 +24,27 @@ public class SampleApp extends Application {
     
     private FrameBuffer fb;
     private ShaderProgram shader;
+    private Mesh triMesh;
     
     private String vSource = ""
             + "#version 120\n "
-            + "uniform mat4 ModelView;"
-            + "uniform mat4 Projection;"
+            + "attribute vec3 Position; "
+            + "attribute vec4 Color; "
+            + "uniform mat4 Model; "
+            + "uniform mat4 View; "
+            + "uniform mat4 Projection; "
+            + "varying vec4 FragColor; "
             + "void main() "
             + "{ "
-            + "  gl_FrontColor = gl_Color; "
-            + "  gl_Position = Projection * gl_ModelViewMatrix * gl_Vertex; "
+            + "  FragColor = Color; "
+            + "  gl_Position = Projection * View * Model * vec4(Position, 1.0); "
             + "}";
     private String fSource = ""
             + "#version 120\n "
+            + "varying vec4 FragColor; "
             + "void main() "
             + "{ "
-            + "  gl_FragColor = gl_Color; "
+            + "  gl_FragColor = FragColor; "
             + "}";
     
     @Override
@@ -53,6 +59,20 @@ public class SampleApp extends Application {
         
         display.setResizable(true);
         display.setSize(800, 400);
+        
+        triMesh = graphics.createMesh();
+        
+        Vertex[] verts = new Vertex[] {
+                new Vertex().setPosition(new Vector3(-0.5f, -0.5f, 0.0f)).setColor(new ColorRgba(1.0f, 0.0f, 0.0f, 1.0f)),
+                new Vertex().setPosition(new Vector3(0.5f, -0.5f, 0.0f)).setColor(new ColorRgba(0.0f, 1.0f, 0.0f, 1.0f)),
+                new Vertex().setPosition(new Vector3(0.5f, 0.5f, 0.0f)).setColor(new ColorRgba(0.0f, 0.0f, 1.0f, 1.0f)),
+                
+                new Vertex().setPosition(new Vector3(-0.5f, 0.5f, 0.5f)).setColor(new ColorRgba(1.0f, 1.0f, 0.0f, 1.0f)),
+                new Vertex().setPosition(new Vector3(0.5f, -0.4f, 0.2f)).setColor(new ColorRgba(1.0f, 0.0f, 1.0f, 1.0f)),
+                new Vertex().setPosition(new Vector3(0.5f, 0.5f, -0.5f)).setColor(new ColorRgba(0.0f, 1.0f, 1.0f, 1.0f)),
+        };
+        triMesh.setPrimitive(Mesh.Primitive.Triangles);
+        triMesh.setVertices(verts);
         
         shader = graphics.createShaderProgram(vSource, fSource);
         log.info("Shader valid: " + shader.isValid());
@@ -80,40 +100,39 @@ public class SampleApp extends Application {
         fb.clear();
 
         shader.bind();
-        shader.setUniform("ModelView", new Matrix4().setScale(new Vector3(1.0f, 1.0f, 1.0f)));
-        
-        gl.glMatrixMode(GL2.GL_PROJECTION);
-        gl.glLoadIdentity();
-        glu.gluPerspective(70.0f, 1.0f, 1.2f, 5.0f);
-        
-        gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glLoadIdentity();
-        gl.glTranslatef(0, 0, -2);
-        gl.glRotatef(angle * 10, 0, 1, 0);
         
         Matrix4 m = new Matrix4().setIdentity();
+        m.setIdentity();
+        shader.setUniform("View", m);
+        
+//        m.setIdentity();
 //        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
-//        m.multiplySelf(new Matrix4().setScale(new Vector3(2, 2, 2)));
-        shader.setUniform("ModelView", m);
+////        m.multiplySelf(new Matrix4().setRotationZ(angle * 7));
+//        m.multiplySelf(new Matrix4().setRotationY(angle * 10));
+////        m.multiplySelf(new Matrix4().setRotationX(angle * 3));
+//        shader.setUniform("Model", m);
+//        
+//        m.setPerspective(70.0f, 1.0f, 0.5f, 5.0f);
+////        m.setIdentity();
+//        shader.setUniform("Projection", m);
+//        
+//        triMesh.draw();
         
-        m.setPerspective(70.0f, 1.0f, 1.2f, 5.0f);
-        shader.setUniform("Projection", m);
-        
-        gl.glBegin(GL.GL_TRIANGLES);
-            gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-            gl.glVertex3f(-0.5f, -0.5f, 0.0f);
-            gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-            gl.glVertex3f(0.5f, -0.5f, 0.0f);
-            gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, 0.0f);
-    
-            gl.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-            gl.glVertex3f(-0.5f, 0.5f, 0.5f);
-            gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, -0.4f, 0.2f);
-            gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-            gl.glVertex3f(0.5f, 0.5f, -0.5f);
-        gl.glEnd();
+//        gl.glBegin(GL.GL_TRIANGLES);
+//            gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+//            gl.glVertex3f(-0.5f, -0.5f, 0.0f);
+//            gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
+//            gl.glVertex3f(0.5f, -0.5f, 0.0f);
+//            gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+//            gl.glVertex3f(0.5f, 0.5f, 0.0f);
+//    
+//            gl.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+//            gl.glVertex3f(-0.5f, 0.5f, 0.5f);
+//            gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+//            gl.glVertex3f(0.5f, -0.4f, 0.2f);
+//            gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
+//            gl.glVertex3f(0.5f, 0.5f, -0.5f);
+//        gl.glEnd();
         
         shader.unbind();
         fb.unbind();
@@ -139,15 +158,34 @@ public class SampleApp extends Application {
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
         
-        gl.glLoadIdentity();
-        gl.glTranslatef(-1.0f, 0, 0);
-        fb.getColorTexture().bind(0);
-        drawFb(gl);
+        shader.bind();
         
-        gl.glLoadIdentity();
-        gl.glTranslatef(1.0f, 0, 0);
-        fb.getDepthTexture().bind(0);
-        drawFb(gl);
+        Matrix4 m = new Matrix4().setIdentity();
+        m.setIdentity();
+        shader.setUniform("View", m);
+        
+        m.setIdentity();
+        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
+//        m.multiplySelf(new Matrix4().setRotationZ(angle * 7));
+        m.multiplySelf(new Matrix4().setRotationY(angle * 10));
+//        m.multiplySelf(new Matrix4().setRotationX(angle * 3));
+        shader.setUniform("Model", m);
+        
+        m.setPerspective(70.0f, display.getAspectRatio(), 0.5f, 5.0f);
+//        m.setIdentity();
+        shader.setUniform("Projection", m);
+        
+        triMesh.draw();
+        
+//        gl.glLoadIdentity();
+//        gl.glTranslatef(-1.0f, 0, 0);
+//        fb.getColorTexture().bind(0);
+//        drawFb(gl);
+//        
+//        gl.glLoadIdentity();
+//        gl.glTranslatef(1.0f, 0, 0);
+//        fb.getDepthTexture().bind(0);
+//        drawFb(gl);
     }
     
     private void drawFb(GL2 gl) {

@@ -85,6 +85,39 @@ public class Matrix4 {
         return this;
     }
     
+    public Matrix4 setRotationX(float angle) {
+        setIdentity();
+        float c = FastMath.cos(angle);
+        float s = FastMath.sin(angle);
+        m[M11] = c;
+        m[M12] = -s;
+        m[M21] = s;
+        m[M22] = c;
+        return this;
+    }
+    
+    public Matrix4 setRotationY(float angle) {
+        setIdentity();
+        float c = FastMath.cos(angle);
+        float s = FastMath.sin(angle);
+        m[M00] = c;
+        m[M02] = s;
+        m[M20] = -s;
+        m[M22] = c;
+        return this;
+    }
+    
+    public Matrix4 setRotationZ(float angle) {
+        setIdentity();
+        float c = FastMath.cos(angle);
+        float s = FastMath.sin(angle);
+        m[M00] = c;
+        m[M01] = -s;
+        m[M10] = s;
+        m[M11] = c;
+        return this;
+    }
+    
     public Matrix4 setPerspective(float fov, float ratio, float near, float far) {
         setZero();
         fov = 1.0f / FastMath.tan(fov * 0.5f);

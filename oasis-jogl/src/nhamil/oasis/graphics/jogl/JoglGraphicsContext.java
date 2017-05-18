@@ -7,10 +7,8 @@ import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.FrameBuffer;
 import nhamil.oasis.graphics.GraphicsContext;
 import nhamil.oasis.graphics.Mesh;
-import nhamil.oasis.graphics.Renderer;
 import nhamil.oasis.graphics.ShaderProgram;
 import nhamil.oasis.graphics.Texture;
-import nhamil.oasis.graphics.VertexDefinition;
 
 public class JoglGraphicsContext implements GraphicsContext {
 
@@ -85,15 +83,8 @@ public class JoglGraphicsContext implements GraphicsContext {
     }
 
     @Override
-    public Mesh createMesh(VertexDefinition def) {
-        // TODO FINISH
-        return null;
-    }
-
-    @Override
-    public Renderer createRenderer() {
-        // TODO FINISH
-        return null;
+    public Mesh createMesh() {
+        return new JoglMesh(gl);
     }
 
 }

@@ -12,7 +12,6 @@ public interface GraphicsContext {
     ShaderProgram createShaderProgram(String vSource, String fSource);
     Texture createTexture(int width, int height, Texture.Format format);
     Texture createTexture(int width, int height);
-    Mesh createMesh(VertexDefinition def);
-    Renderer createRenderer();
+    Mesh createMesh();
     
 }
