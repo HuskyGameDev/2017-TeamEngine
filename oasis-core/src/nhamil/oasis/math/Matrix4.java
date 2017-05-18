@@ -85,6 +85,17 @@ public class Matrix4 {
         return this;
     }
     
+    public Matrix4 setPerspective(float fov, float ratio, float near, float far) {
+        setZero();
+        fov = 1.0f / FastMath.tan(fov * 0.5f);
+        m[M00] = fov / ratio;
+        m[M11] = fov;
+        m[M22] = (far + near) / (near - far);
+        m[M23] = 2 * far * near / (near - far);
+        m[M32] = -1;
+        return this;
+    }
+    
     public Matrix4 multiplySelf(Matrix4 r) {
         m = mul(r);
         return this;

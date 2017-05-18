@@ -18,16 +18,16 @@ public final class FastMath {
         return deg * PI * INV_DEG_HALF;
     }
     
-    public static float cos(float rad) {
-        return (float) Math.cos(rad);
+    public static float cos(float deg) {
+        return (float) Math.cos(toRadians(deg));
     }
     
-    public static float sin(float rad) {
-        return (float) Math.sin(rad);
+    public static float sin(float deg) {
+        return (float) Math.sin(toRadians(deg));
     }
     
-    public static float tan(float rad) {
-        return (float) Math.tan(rad);
+    public static float tan(float deg) {
+        return (float) Math.tan(toRadians(deg));
     }
     
     public static float sqrt(float x) {

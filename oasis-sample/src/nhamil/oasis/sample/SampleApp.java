@@ -14,6 +14,7 @@ import nhamil.oasis.graphics.ColorRgba;
 import nhamil.oasis.graphics.FrameBuffer;
 import nhamil.oasis.graphics.ShaderProgram;
 import nhamil.oasis.graphics.Texture;
+import nhamil.oasis.math.FastMath;
 import nhamil.oasis.math.Matrix4;
 import nhamil.oasis.math.Vector3;
 
@@ -27,10 +28,11 @@ public class SampleApp extends Application {
     private String vSource = ""
             + "#version 120\n "
             + "uniform mat4 ModelView;"
+            + "uniform mat4 Projection;"
             + "void main() "
             + "{ "
             + "  gl_FrontColor = gl_Color; "
-            + "  gl_Position = gl_ModelViewProjectionMatrix * ModelView * gl_Vertex; "
+            + "  gl_Position = Projection * gl_ModelViewMatrix * gl_Vertex; "
             + "}";
     private String fSource = ""
             + "#version 120\n "
@@ -47,12 +49,10 @@ public class SampleApp extends Application {
         fb = graphics.createFrameBuffer(2048, 2048);
         fb.setColorAttachmentType(FrameBuffer.AttachmentType.Texture);
         fb.setDepthAttachmentType(FrameBuffer.AttachmentType.Texture);
-//        fb.getColorTexture().setFilter(Texture.Filter.Linear, Texture.Filter.Linear);
-//        fb.getColorTexture().setWrap(Texture.Wrap.Clamp, Texture.Wrap.Clamp);
         log.info("FrameBuffer valid: " + fb.isValid());
         
         display.setResizable(true);
-        display.setSize(640, 400);
+        display.setSize(800, 400);
         
         shader = graphics.createShaderProgram(vSource, fSource);
         log.info("Shader valid: " + shader.isValid());
@@ -95,6 +95,9 @@ public class SampleApp extends Application {
 //        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
 //        m.multiplySelf(new Matrix4().setScale(new Vector3(2, 2, 2)));
         shader.setUniform("ModelView", m);
+        
+        m.setPerspective(70.0f, 1.0f, 1.2f, 5.0f);
+        shader.setUniform("Projection", m);
         
         gl.glBegin(GL.GL_TRIANGLES);
             gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
