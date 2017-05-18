@@ -134,7 +134,7 @@ public class JoglEngine implements Engine, Runnable {
             
             if (secondTimer.getTime() >= 1.0) {
                 secondTimer.reset();
-                log.info("Time: " + String.format("%1.0f", time.getTime()) + "s, Frames: " + frames + ", Ticks: " + ticks);
+                log.debug("Time: " + String.format("%1.0f", time.getTime()) + "s, Frames: " + frames + ", Ticks: " + ticks);
                 frames = ticks = 0;
             }
         }
