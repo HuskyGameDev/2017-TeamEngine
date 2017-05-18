@@ -1,6 +1,7 @@
 package nhamil.oasis.graphics.jogl;
 
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 
 import nhamil.oasis.core.GameLogger;
 import nhamil.oasis.graphics.ColorRgba;
@@ -33,6 +34,7 @@ public class JoglGraphicsContext implements GraphicsContext {
     
     public void init() {
         log.debug("Initializing graphics context");
+//        gl.getGL().glEnable(GL2.GL_FRAMEBUFFER_SRGB);
     }
     
     public void newFrame() {

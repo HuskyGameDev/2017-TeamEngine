@@ -71,6 +71,12 @@ public class JoglShaderProgram implements ShaderProgram {
         gl.deleteProgram(id);
         id = 0;
     }
+    
+    @Override
+    public void setUniform(String name, int i) {
+        bind();
+        gl.uniformInt(gl.uniformLocation(id, name), i);
+    }
 
     @Override
     public void setUniform(String name, float f) {

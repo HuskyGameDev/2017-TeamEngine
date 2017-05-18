@@ -14,6 +14,7 @@ public interface ShaderProgram {
     
     boolean isValid();
     
+    void setUniform(String name, int i);
     void setUniform(String name, float f);
     void setUniform(String name, Vector2 r);
     void setUniform(String name, Vector3 r);

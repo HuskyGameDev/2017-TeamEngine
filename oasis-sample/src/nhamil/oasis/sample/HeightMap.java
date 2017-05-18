@@ -59,7 +59,8 @@ public class HeightMap {
         Vertex vert = new Vertex().setPosition(new Vector3(x, y, z));
         
         if (flat) {
-            return vert.setColor(new ColorRgba(0.5f, 0.5f, 1.5f, 1.0f));
+            System.out.printf("%08X\n", new ColorRgba(0.35f, 0.15f, 0.7f, 1.0f).toArgbHex());
+            return vert.setColor(new ColorRgba(0.35f, 0.15f, 0.7f, 1.0f));
         }
         else {
             return vert.setColor(new ColorRgba(0.5f, y, 0.5f, 1.0f));
