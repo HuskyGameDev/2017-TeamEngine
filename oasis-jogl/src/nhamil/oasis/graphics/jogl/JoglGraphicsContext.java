@@ -73,6 +73,11 @@ public class JoglGraphicsContext implements GraphicsContext {
     public ShaderProgram createShaderProgram(String vSource, String fSource) {
         return new JoglShaderProgram(vSource, fSource, gl);
     }
+    
+    @Override
+    public Texture createTexture(int width, int height, Texture.Format format) {
+        return new JoglTexture(width, height, format, gl);
+    }
 
     @Override
     public Texture createTexture(int width, int height) {

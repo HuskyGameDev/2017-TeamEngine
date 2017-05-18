@@ -47,8 +47,8 @@ public class SampleApp extends Application {
         fb = graphics.createFrameBuffer(2048, 2048);
         fb.setColorAttachmentType(FrameBuffer.AttachmentType.Texture);
         fb.setDepthAttachmentType(FrameBuffer.AttachmentType.Texture);
-        fb.getColorTexture().setFilter(Texture.Filter.Linear, Texture.Filter.Linear);
-        fb.getColorTexture().setWrap(Texture.Wrap.Clamp, Texture.Wrap.Clamp);
+//        fb.getColorTexture().setFilter(Texture.Filter.Linear, Texture.Filter.Linear);
+//        fb.getColorTexture().setWrap(Texture.Wrap.Clamp, Texture.Wrap.Clamp);
         log.info("FrameBuffer valid: " + fb.isValid());
         
         display.setResizable(true);
@@ -135,6 +135,7 @@ public class SampleApp extends Application {
         gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         
         gl.glMatrixMode(GL2.GL_MODELVIEW);
+        
         gl.glLoadIdentity();
         gl.glTranslatef(-1.0f, 0, 0);
         fb.getColorTexture().bind(0);

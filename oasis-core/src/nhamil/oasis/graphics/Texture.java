@@ -2,8 +2,9 @@ package nhamil.oasis.graphics;
 
 public interface Texture {
 
-    public enum Type {
-        Color,
+    public enum Format {
+        Rgba,
+        RgbaFloat,
         Depth;
     }
 
@@ -30,7 +31,7 @@ public interface Texture {
     int getHeight();
     float getAspectRatio();
     
-    Type getType();
+    Format getFormat();
     
     Filter getMinFilter();
     Filter getMaxFilter();

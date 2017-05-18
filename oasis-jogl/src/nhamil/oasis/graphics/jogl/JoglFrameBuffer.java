@@ -79,6 +79,13 @@ public class JoglFrameBuffer implements FrameBuffer {
     public void bind() {
         gl.bindFramebuffer(id);
         gl.viewport(0, 0, width, height);
+        // TODO glDrawBuffer(GL_NONE); glReadBuffer(GL_NONE);
+        if (colorType == AttachmentType.None) {
+            gl.drawReadBuffer(GL.GL_NONE);
+        }
+        else {
+            gl.drawReadBuffer(GL.GL_COLOR_ATTACHMENT0);
+        }
     }
 
     @Override
@@ -100,7 +107,7 @@ public class JoglFrameBuffer implements FrameBuffer {
         case Texture: 
             if (colorType == AttachmentType.RenderBuffer) setColorAttachmentType(AttachmentType.None);
             log.debug("Attaching color texture");
-            colorTex = new JoglTexture(width, height, gl);
+            colorTex = new JoglTexture(width, height, Texture.Format.Rgba, gl);
             gl.framebufferTextureColor(colorTex.getId());
             colorType = AttachmentType.Texture;
             break;
@@ -140,7 +147,7 @@ public class JoglFrameBuffer implements FrameBuffer {
         case Texture: 
             if (depthType == AttachmentType.RenderBuffer) setDepthAttachmentType(AttachmentType.None);
             log.debug("Attaching depth texture");
-            depthTex = new JoglTexture(width, height, Texture.Type.Depth, gl);
+            depthTex = new JoglTexture(width, height, Texture.Format.Depth, gl);
             gl.framebufferTextureDepth(depthTex.getId());
             depthType = AttachmentType.Texture;
             break;

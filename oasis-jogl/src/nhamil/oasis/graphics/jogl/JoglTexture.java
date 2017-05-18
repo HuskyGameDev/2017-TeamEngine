@@ -10,7 +10,7 @@ public class JoglTexture implements Texture {
     private int width, height;
     private Filter minFilter, maxFilter;
     private Wrap uWrap, vWrap;
-    private Type type;
+    private Format type;
     
     public JoglTexture(JoglGlWrapper gl) {
         this.gl = gl;
@@ -20,7 +20,7 @@ public class JoglTexture implements Texture {
         maxFilter = Filter.Nearest;
         uWrap = Wrap.Clamp;
         vWrap = Wrap.Clamp;
-        type = Type.Color;
+        type = Format.Rgba;
         
         gl.bindTexture(id);
         gl.texParameterMinMagFilter(minFilter, maxFilter);
@@ -35,12 +35,22 @@ public class JoglTexture implements Texture {
         gl.texImage(width, height, null);
     }
     
-    public JoglTexture(int width, int height, Type type, JoglGlWrapper gl) {
+    public JoglTexture(int width, int height, Format type, JoglGlWrapper gl) {
         this(gl);
         this.width = width;
         this.height = height;
         bind();
-        gl.texImageDepth(width, height, null);
+        switch (type) {
+        case Depth: 
+            gl.texImageDepth(width, height, null);
+            break;
+        case Rgba:
+            gl.texImage(width, height, null);
+            break;
+        case RgbaFloat:
+            gl.texImageFloat(width, height, null);
+            break;
+        }
     }
     
     public int getId() {
@@ -76,11 +86,14 @@ public class JoglTexture implements Texture {
     public void clear() {
         int old = gl.genTexture();
         gl.bindTexture(id);
-        if (type == Type.Color) {
+        if (type == Format.Rgba) {
             gl.texSubImage(width, height, null);
         }
-        else if (type == Type.Depth) {
+        else if (type == Format.Depth) {
             gl.texSubImageDepth(width, height, null);
+        }
+        else if (type == Format.RgbaFloat) {
+            gl.texSubImageFloat(width, height, null);
         }
         gl.bindTexture(old);
     }
@@ -142,7 +155,7 @@ public class JoglTexture implements Texture {
     }
 
     @Override
-    public Type getType() {
+    public Format getFormat() {
         return type;
     }
 

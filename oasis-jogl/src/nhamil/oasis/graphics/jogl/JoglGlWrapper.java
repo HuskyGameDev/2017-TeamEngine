@@ -1,5 +1,7 @@
 package nhamil.oasis.graphics.jogl;
 
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import com.jogamp.opengl.GL;
@@ -7,6 +9,7 @@ import com.jogamp.opengl.GL2;
 
 import nhamil.oasis.core.GameLogger;
 import nhamil.oasis.graphics.ColorRgba;
+import nhamil.oasis.graphics.Mesh;
 import nhamil.oasis.graphics.Texture;
 
 public class JoglGlWrapper {
@@ -157,6 +160,11 @@ public class JoglGlWrapper {
         boundProg = id;
     }
     
+    public void drawReadBuffer(int buffers) {
+        gl.glDrawBuffer(buffers);
+        gl.glReadBuffer(buffers);
+    }
+    
     public int uniformLocation(int id, String name) {
         return gl.glGetUniformLocation(id, name);
     }
@@ -216,7 +224,15 @@ public class JoglGlWrapper {
         gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_INT, pixels);
     }
     
-    public void texImageDepth(int width, int height, IntBuffer pixels) {
+    public void texImageFloat(int width, int height, FloatBuffer pixels) {
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA16F, width, height, 0, GL.GL_RGBA, GL.GL_FLOAT, pixels);
+    }
+    
+    public void texSubImageFloat(int width, int height, FloatBuffer pixels) {
+        gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA16F, width, height, 0, GL.GL_RGBA, GL.GL_FLOAT, pixels);
+    }
+    
+    public void texImageDepth(int width, int height, FloatBuffer pixels) {
         gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_DEPTH_COMPONENT32, width, height, 0, GL2.GL_DEPTH_COMPONENT, GL.GL_FLOAT, pixels);
     }
     
@@ -254,6 +270,68 @@ public class JoglGlWrapper {
     
     public void deleteRenderbuffer(int id) {
         gl.glDeleteRenderbuffers(0, new int[] { id }, 0);
+    }
+    
+    public int genVertexArray() {
+        int[] id = new int[1];
+        gl.glGenVertexArrays(1, id, 0);
+        return id[0];
+    }
+    
+    public void deleteVertexArray(int id) {
+        gl.glDeleteVertexArrays(1, new int[] { id }, 0);
+    }
+    
+    public void bindVertexArray(int id) {
+        gl.glBindVertexArray(id);
+    }
+    
+    public int genBuffer() {
+        int[] id = new int[1];
+        gl.glGenBuffers(1, id, 0);
+        return id[0];
+    }
+    
+    public void deleteBuffer(int id) {
+        gl.glDeleteBuffers(1, new int[] { id }, 0);
+    }
+    
+    public void bindBuffer(int bufferType, int id) {
+        gl.glBindBuffer(bufferType, id);
+    }
+    
+    public void bufferData(int bufferType, int size, Buffer data, Mesh.UsageHint hint) {
+        gl.glBufferData(bufferType, size, data, usage(hint));
+    }
+    
+    public void bufferSubData(int bufferType, int size, Buffer data) {
+        gl.glBufferSubData(bufferType, 0, size, data);
+    }
+    
+    public void enableVertexAttribArray(int unit) {
+        gl.glEnableVertexAttribArray(unit);
+    }
+    
+    public void disableVertexAttribArray(int unit) {
+        gl.glDisableVertexAttribArray(unit);
+    }
+    
+    public void vertexAttribPointer(int index, int size, int glType, int stride, int offset) {
+        gl.glVertexAttribPointer(index, size, glType, false, stride, 0);
+    }
+    
+    private int usage(Mesh.UsageHint hint) {
+        switch (hint) {
+        case Static:
+            return GL.GL_STATIC_DRAW;
+        case Dynamic:
+            return GL.GL_DYNAMIC_DRAW;
+        case Stream:
+            return GL2.GL_STREAM_DRAW;
+        default:
+            log.warning("Unknown usage hint: " + hint);
+            return 0;
+        }
     }
     
     private int filter(Texture.Filter filter) {

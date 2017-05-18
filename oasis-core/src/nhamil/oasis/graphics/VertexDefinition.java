@@ -31,6 +31,10 @@ public class VertexDefinition {
         public int getFloatCount() {
             return numFloats;
         }
+        
+        public int getSize() {
+            return numFloats * 4;
+        }
     }
     
     public class AttributeBinding {
@@ -52,11 +56,13 @@ public class VertexDefinition {
     }
     
     private List<AttributeBinding> attribs;
+    private int size;
     private boolean finish;
     
     public VertexDefinition() {
         attribs = new ArrayList<>();
         finish = false;
+        size = 0;
     }
     
     public VertexDefinition finish() {
@@ -74,6 +80,7 @@ public class VertexDefinition {
         }
         
         attribs.add(new AttributeBinding(name, attrib));
+        size += attrib.getSize();
         return this;
     }
     
@@ -83,6 +90,10 @@ public class VertexDefinition {
     
     public AttributeBinding getAttribute(int index) {
         return attribs.get(index);
+    }
+    
+    public int getSize() {
+        return size;
     }
     
 }
