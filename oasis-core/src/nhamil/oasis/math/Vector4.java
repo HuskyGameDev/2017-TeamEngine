@@ -2,7 +2,7 @@ package nhamil.oasis.math;
 
 public class Vector4 {
 
-    public float x, y, z, w;
+    protected float x, y, z, w;
     
     public Vector4() {
         this(0.0f, 0.0f, 0.0f, 0.0f);

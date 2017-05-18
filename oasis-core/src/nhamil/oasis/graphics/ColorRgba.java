@@ -28,7 +28,7 @@ public class ColorRgba {
     public float getAlpha() {
         return a;
     }
-
+    
     public Vector4 toVector4() {
         return new Vector4(r, g, b, a);
     }

@@ -116,25 +116,22 @@ public class JoglMesh implements Mesh {
             Vector3 norm = verts[i].getNormal();
             Vector2 tex = verts[i].getTexCoord();
             Vector4 col = verts[i].getColor();
+            
             buffer.put(pos.getX());
             buffer.put(pos.getY());
             buffer.put(pos.getZ());
-            log.debug("Position: " + pos);
             
             buffer.put(norm.getX());
             buffer.put(norm.getY());
             buffer.put(norm.getZ());
-            log.debug("Normal:   " + norm);
             
             buffer.put(tex.getX());
             buffer.put(tex.getY());
-            log.debug("TexCoord: " + tex);
             
             buffer.put(col.getX());
             buffer.put(col.getY());
             buffer.put(col.getZ());
             buffer.put(col.getW());
-            log.debug("Color:    " + col);
         }
         buffer.flip();
         
@@ -152,7 +149,7 @@ public class JoglMesh implements Mesh {
         }
         
         curVboSize = totalSize;
-        log.debug("vboSize: " + vboSize + ", curVboSize: " + curVboSize + ", draw: " + prim);
+        log.debug("vboSize: " + vboSize + ", curVboSize: " + curVboSize + ", triangles: " + (verts.length / 3));
     }
 
     @Override

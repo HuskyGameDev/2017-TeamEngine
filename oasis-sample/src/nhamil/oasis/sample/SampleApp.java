@@ -24,7 +24,7 @@ public class SampleApp extends Application {
     
     private FrameBuffer fb;
     private ShaderProgram shader;
-    private Mesh triMesh;
+    private Mesh triMesh, water;
     
     private String vSource = ""
             + "#version 120\n "
@@ -61,18 +61,13 @@ public class SampleApp extends Application {
         display.setSize(800, 400);
         
         triMesh = graphics.createMesh();
+        HeightMap map = new HeightMap(512, 512);
+        map.setMesh(triMesh, new Vector3(-10, 0, -10), new Vector3(10, 1, 10));
         
-        Vertex[] verts = new Vertex[] {
-                new Vertex().setPosition(new Vector3(-0.5f, -0.5f, 0.0f)).setColor(new ColorRgba(1.0f, 0.0f, 0.0f, 1.0f)),
-                new Vertex().setPosition(new Vector3(0.5f, -0.5f, 0.0f)).setColor(new ColorRgba(0.0f, 1.0f, 0.0f, 1.0f)),
-                new Vertex().setPosition(new Vector3(0.5f, 0.5f, 0.0f)).setColor(new ColorRgba(0.0f, 0.0f, 1.0f, 1.0f)),
-                
-                new Vertex().setPosition(new Vector3(-0.5f, 0.5f, 0.5f)).setColor(new ColorRgba(1.0f, 1.0f, 0.0f, 1.0f)),
-                new Vertex().setPosition(new Vector3(0.5f, -0.4f, 0.2f)).setColor(new ColorRgba(1.0f, 0.0f, 1.0f, 1.0f)),
-                new Vertex().setPosition(new Vector3(0.5f, 0.5f, -0.5f)).setColor(new ColorRgba(0.0f, 1.0f, 1.0f, 1.0f)),
-        };
-        triMesh.setPrimitive(Mesh.Primitive.Triangles);
-        triMesh.setVertices(verts);
+        water = graphics.createMesh();
+        map = new HeightMap(1, 1);
+        map.setFlat(true, 0.5f);
+        map.setMesh(water, new Vector3(-10, 0, -10), new Vector3(10, 1, 10));
         
         shader = graphics.createShaderProgram(vSource, fSource);
         log.info("Shader valid: " + shader.isValid());
@@ -89,53 +84,8 @@ public class SampleApp extends Application {
             stop();
         }
         
-        GL2 gl = GLContext.getCurrentGL().getGL2();
-        GLU glu = new GLU();
-        
         ticks++;
         angle += 5.0f / 60.0f;
-        
-        fb.bind();
-        fb.setClearColor(new ColorRgba(0.8f, 0.8f, 0.8f, 1.0f));
-        fb.clear();
-
-        shader.bind();
-        
-        Matrix4 m = new Matrix4().setIdentity();
-        m.setIdentity();
-        shader.setUniform("View", m);
-        
-//        m.setIdentity();
-//        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
-////        m.multiplySelf(new Matrix4().setRotationZ(angle * 7));
-//        m.multiplySelf(new Matrix4().setRotationY(angle * 10));
-////        m.multiplySelf(new Matrix4().setRotationX(angle * 3));
-//        shader.setUniform("Model", m);
-//        
-//        m.setPerspective(70.0f, 1.0f, 0.5f, 5.0f);
-////        m.setIdentity();
-//        shader.setUniform("Projection", m);
-//        
-//        triMesh.draw();
-        
-//        gl.glBegin(GL.GL_TRIANGLES);
-//            gl.glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-//            gl.glVertex3f(-0.5f, -0.5f, 0.0f);
-//            gl.glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
-//            gl.glVertex3f(0.5f, -0.5f, 0.0f);
-//            gl.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-//            gl.glVertex3f(0.5f, 0.5f, 0.0f);
-//    
-//            gl.glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-//            gl.glVertex3f(-0.5f, 0.5f, 0.5f);
-//            gl.glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-//            gl.glVertex3f(0.5f, -0.4f, 0.2f);
-//            gl.glColor4f(0.0f, 1.0f, 1.0f, 1.0f);
-//            gl.glVertex3f(0.5f, 0.5f, -0.5f);
-//        gl.glEnd();
-        
-        shader.unbind();
-        fb.unbind();
     }
     
     @Override
@@ -165,17 +115,18 @@ public class SampleApp extends Application {
         shader.setUniform("View", m);
         
         m.setIdentity();
-        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, 0, -2)));
-//        m.multiplySelf(new Matrix4().setRotationZ(angle * 7));
-        m.multiplySelf(new Matrix4().setRotationY(angle * 10));
+        m.multiplySelf(new Matrix4().setTranslation(new Vector3(0, -0.75f, -2)));
+        m.multiplySelf(new Matrix4().setRotationX(25f));
+        m.multiplySelf(new Matrix4().setRotationY(angle));
 //        m.multiplySelf(new Matrix4().setRotationX(angle * 3));
         shader.setUniform("Model", m);
         
-        m.setPerspective(70.0f, display.getAspectRatio(), 0.5f, 5.0f);
+        m.setPerspective(70.0f, display.getAspectRatio(), 0.1f, 100.0f);
 //        m.setIdentity();
         shader.setUniform("Projection", m);
         
         triMesh.draw();
+        water.draw();
         
 //        gl.glLoadIdentity();
 //        gl.glTranslatef(-1.0f, 0, 0);

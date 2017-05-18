@@ -4,7 +4,7 @@ import nhamil.oasis.util.QuickHash;
 
 public class Vector2 {
 
-    public float x, y;
+    protected float x, y;
     
     public Vector2(float x, float y) {
         set(x, y);

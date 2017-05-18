@@ -81,19 +81,19 @@ public class JoglShaderProgram implements ShaderProgram {
     @Override
     public void setUniform(String name, Vector2 r) {
         bind();
-        gl.uniformVector2(gl.uniformLocation(id, name), r.x, r.y);
+        gl.uniformVector2(gl.uniformLocation(id, name), r.getX(), r.getY());
     }
 
     @Override
     public void setUniform(String name, Vector3 r) {
         bind();
-        gl.uniformVector3(gl.uniformLocation(id, name), r.x, r.y, r.z);
+        gl.uniformVector3(gl.uniformLocation(id, name), r.getX(), r.getY(), r.getZ());
     }
 
     @Override
     public void setUniform(String name, Vector4 r) {
         bind();
-        gl.uniformVector4(gl.uniformLocation(id, name), r.x, r.y, r.z, r.w);
+        gl.uniformVector4(gl.uniformLocation(id, name), r.getX(), r.getY(), r.getZ(), r.getW());
     }
 
     @Override
