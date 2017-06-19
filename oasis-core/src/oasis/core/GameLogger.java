@@ -13,7 +13,12 @@ public class GameLogger {
     }
     
     public void log(LogLevel level, Object message) {
-        System.out.println("[" + level.prefix + "][" + prefix + "] " + (message == null ? "null" : message.toString()));
+        if (level.ordinal() <= LogLevel.SEVERE.ordinal()) { 
+            System.err.println("[" + level.prefix + "][" + prefix + "] " + (message == null ? "null" : message.toString()));
+        }
+        else { 
+            System.out.println("[" + level.prefix + "][" + prefix + "] " + (message == null ? "null" : message.toString()));
+        }
         
         if (level == LogLevel.FATAL) {
             System.exit(1);

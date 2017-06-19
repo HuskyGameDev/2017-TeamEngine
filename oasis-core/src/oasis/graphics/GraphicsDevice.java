@@ -1,33 +1,30 @@
 package oasis.graphics;
 
+import oasis.graphics.vertex.IndexBuffer;
+import oasis.graphics.vertex.VertexArray;
+import oasis.graphics.vertex.VertexBuffer;
+
 public interface GraphicsDevice {
 
     // rendering
     
-    void setClearColor(ColorRgba color); 
+    // TODO blending
     
-    void clearScreen(); 
-    
-    void setFrameBuffer(FrameBuffer frameBuffer); 
+    void clearScreen(ColorRgba color); 
     
     void setShader(Shader shader); 
     
     void setVertexArray(VertexArray vertArray); 
     
-    void drawArrays(PrimitiveType type, int start, int count); 
+    void drawArrays(Primitive primitive, int start, int count); 
+    
+    void drawArraysIndexed(Primitive primitive, int start, int count); 
     
     // resource util
     
-    void update(Texture2D texture); 
-    
-    void update(Shader shader); 
-    
-    void update(VertexArray vertArray); 
-    
-    void update(VertexBuffer vertBuffer); 
-    
-    void update(IndexBuffer indexBuffer); 
-
-    void update(FrameBuffer framebuffer); 
+    void update(IndexBuffer ibo); 
+    void update(VertexBuffer vbo); 
+    void update(VertexArray vao); 
+    void update(Shader Shader); 
     
 }

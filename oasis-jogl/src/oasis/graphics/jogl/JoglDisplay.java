@@ -12,6 +12,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.GLRunnable;
 import com.jogamp.opengl.awt.GLCanvas;
 
 import oasis.core.GameLogger;
@@ -27,9 +28,8 @@ public class JoglDisplay implements Display, GLEventListener {
     private GLContext context;
     private Frame frame;
     private GLCanvas canvas;
+    private JoglGraphicsDevice device; 
     private boolean shouldClose = false;
-    private JoglGraphicsContext graphics;
-    private JoglGlWrapper glWrapper;
     
     public JoglDisplay() {
         context = null;
@@ -51,7 +51,7 @@ public class JoglDisplay implements Display, GLEventListener {
         caps.setGreenBits(8);
         caps.setBlueBits(8);
         caps.setAlphaBits(8);
-//        caps.setDepthBits(32);
+        caps.setDepthBits(32);
 //        caps.setStencilBits(8);
         
         canvas = new GLCanvas(caps);
@@ -59,12 +59,22 @@ public class JoglDisplay implements Display, GLEventListener {
         canvas.addGLEventListener(this);
         frame.add(canvas);
         
-        glWrapper = new JoglGlWrapper();
-        graphics = new JoglGraphicsContext(this, glWrapper);
+        device = new JoglGraphicsDevice(); 
     }
     
-    public JoglGraphicsContext getGraphics() {
-        return graphics;
+    public void invoke(final Runnable run) { 
+        canvas.invoke(true, new GLRunnable() {
+            @Override
+            public boolean run(GLAutoDrawable drawable) {
+                device.setOglContext(drawable.getGL());
+                run.run();
+                return true;
+            }
+        });
+    }
+    
+    public JoglGraphicsDevice getGraphics() {
+        return device;
     }
     
     public GLContext getContext() {
@@ -75,9 +85,9 @@ public class JoglDisplay implements Display, GLEventListener {
         canvas.swapBuffers();
     }
     
-    public void updateGl() {
+    public void updateOgl() {
         context.makeCurrent();
-        glWrapper.setGL(context.getGL());
+        device.setOglContext(context.getGL());
     }
     
     @Override
@@ -167,8 +177,7 @@ public class JoglDisplay implements Display, GLEventListener {
         
         synchronized (contextWait) {
             context = drawable.getContext();
-            glWrapper.setGL(context.getGL());
-            graphics.init();
+            device.setOglContext(context.getGL());
             
             log.debug("Changed context: " + context.getGLVersion());
             contextWait.notify();

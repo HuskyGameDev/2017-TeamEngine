@@ -1,11 +1,9 @@
 package oasis.sample;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import oasis.graphics.ColorRgba;
-import oasis.graphics.Mesh;
-import oasis.graphics.vertex.VertexDeclaration;
+import oasis.graphics.vertex.BasicVertex;
 import oasis.math.FastMath;
 import oasis.math.Vector3;
 import oasis.util.QuickHash;
@@ -16,10 +14,11 @@ public class HeightMap {
     private boolean flat = false;
     private float yVal = 0.5f;
     
+    private int seed = (int)System.nanoTime(); 
+    
     public HeightMap(int uSamples, int vSamples) {
         width = uSamples;
         height = vSamples;
-        generate(new Random());
     }
     
     public void setFlat(boolean flat, float yVal) {
@@ -27,11 +26,8 @@ public class HeightMap {
         this.yVal = yVal;
     }
     
-    public void generate(Random r) {
-    }
-    
-    public void setMesh(Mesh mesh, Vector3 min, Vector3 max) {
-        ArrayList<VertexDeclaration> verts = new ArrayList<>();
+    public BasicVertex[] genVertices(Vector3 min, Vector3 max) {
+        ArrayList<BasicVertex> verts = new ArrayList<>();
         
         for (int x = 0; x < width - 0; x++) {
             for (int y = 0; y < height - 0; y++) {
@@ -45,10 +41,10 @@ public class HeightMap {
             }
         }
         
-        mesh.setVertices(verts.toArray(new VertexDeclaration[verts.size()]));
+        return verts.toArray(new BasicVertex[verts.size()]); 
     }
     
-    private VertexDeclaration getVertex(int u, int v, Vector3 min, Vector3 max) {
+    private BasicVertex getVertex(int u, int v, Vector3 min, Vector3 max) {
         float uFrac = (float) u / width;
         float vFrac = (float) v / height;
         
@@ -56,26 +52,30 @@ public class HeightMap {
         float z = FastMath.lerp(min.getZ(), max.getZ(), vFrac);
         float y = FastMath.lerp(min.getY(), max.getY(), flat ? yVal : fractal(x, z, 5, 0.65f));
         
-        VertexDeclaration vert = new VertexDeclaration().setPosition(new Vector3(x, y, z));
+        BasicVertex vert = new BasicVertex(); 
+        vert.position = new Vector3(x, y, z);
         
         if (flat) {
-            System.out.printf("%08X\n", new ColorRgba(0.35f, 0.15f, 0.7f, 1.0f).toArgbHex());
-            return vert.setColor(new ColorRgba(0.35f, 0.15f, 0.7f, 1.0f));
+            vert.color = new ColorRgba(0.35f, 0.15f, 0.7f, 1.0f).toVector4();
         }
         else {
-            return vert.setColor(new ColorRgba(0.5f, y, 0.5f, 1.0f));
+            vert.color = new ColorRgba(0.5f, fractal(x, z, 5, 0.65f), 0.5f, 1.0f).toVector4();
         }
+        
+        vert.normal = new Vector3(0, 1, 0); 
+        
+        return vert; 
     }
     
     private float fractal(float x, float y, int it, float pers) {
-        float freq = 1.0f;
+        float freq = 0.2f;
         float amp = 1.0f;
         
         float sum = 0.0f;
         float total = 0.0f;
         
         for (int i = 0; i < it; i++) {
-            sum += amp * noise(x * freq + freq, y * freq + freq);
+            sum += amp * noise(x * freq + freq, y * freq + freq, seed + i);
             total += amp;
             
             amp *= pers;
@@ -85,7 +85,7 @@ public class HeightMap {
         return sum / total;
     }
     
-    private float noise(float u, float v) {
+    private float noise(float u, float v, int seed) {
         int u0 = (int) Math.floor(u);
         int u1 = u0 + 1;
         float ua = u - u0;
@@ -96,10 +96,10 @@ public class HeightMap {
         float va = v - v0;
         va = 0.5f * (1 - FastMath.cos(FastMath.toDegrees(va * FastMath.PI)));
         
-        float v00 = noisei(u0, v0);
-        float v01 = noisei(u0, v1);
-        float v10 = noisei(u1, v0);
-        float v11 = noisei(u1, v1);
+        float v00 = noisei(u0, v0, seed);
+        float v01 = noisei(u0, v1, seed);
+        float v10 = noisei(u1, v0, seed);
+        float v11 = noisei(u1, v1, seed);
         
         float i0 = FastMath.lerp(v00, v10, ua);
         float i1 = FastMath.lerp(v01, v11, ua);
@@ -107,8 +107,8 @@ public class HeightMap {
         return FastMath.lerp(i0, i1, va);
     }
     
-    private float noisei(int x, int y) {
-        return (float) Math.abs(QuickHash.compute(x, y)) / Integer.MAX_VALUE;
+    private float noisei(int x, int y, int seed) {
+        return (float) Math.abs(QuickHash.compute(x, y, seed)) / Integer.MAX_VALUE;
     }
     
 }

@@ -1,39 +1,50 @@
 package oasis.graphics;
 
-import oasis.util.QuickHash;
-
 public class Uniform {
 
-    public enum Type {
-        UNKNOWN, 
-        INT, 
-        FLOAT, 
-        VECTOR2, 
-        VECTOR3, 
+    public enum Type { 
         MATRIX4, 
-        SAMPLER, // don't really need a sampler type since it just an int, but I will keep it for now
     }
     
-    private String name; 
-    private Type type; 
+    private final Type type; 
+    private final String name; 
+    private Object value; 
     
-    public Uniform(String name, Type type) {
-        this.name = name; 
+    private boolean dirty = true; 
+    
+    public Uniform(String name, Type type) { 
         this.type = type; 
+        this.name = name; 
+        value = null; 
     }
     
     // getters
     
-    public String getName() { 
-        return name; 
+    public boolean isDirty() { 
+        return dirty; 
     }
     
     public Type getType() { 
         return type; 
     }
     
-    public int hashCode() {
-        return QuickHash.compute(QuickHash.compute(name), type.hashCode()); 
+    public String getName() { 
+        return name; 
+    }
+    
+    public Object getValue() { 
+        return value; 
+    }
+    
+    // setters 
+    
+    public void setDirty(boolean dirty) { 
+        this.dirty = dirty; 
+    }
+    
+    public void setValue(Object object) { 
+        value = object; 
+        dirty = true; 
     }
     
 }

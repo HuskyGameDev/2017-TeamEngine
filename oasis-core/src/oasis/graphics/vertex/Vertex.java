@@ -2,6 +2,8 @@ package oasis.graphics.vertex;
 
 public interface Vertex {
 
-    VertexDeclaration getVertexDeclaration(); 
+    boolean hasElement(VertexElement elem);  
+    
+    void getFloats(VertexElement elem, float[] out); 
     
 }

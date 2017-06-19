@@ -43,7 +43,7 @@ public abstract class Application implements EngineListener {
         engine.setUpdateRate(config.ups);
         engine.setEngineListener(this);
         
-        graphics = engine.getGraphics();
+        graphics = engine.getGraphicsDevice();
         display = engine.getDisplay();
         
         display.setResizable(false);

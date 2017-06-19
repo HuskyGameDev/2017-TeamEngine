@@ -1,6 +1,6 @@
 package oasis.graphics;
 
-public enum PrimitiveType {
+public enum Primitive {
     POINT_LIST(1), 
     LINE_LIST(2), 
     LINE_STRIP(2), 
@@ -10,7 +10,7 @@ public enum PrimitiveType {
     
     private final int points; 
     
-    private PrimitiveType(int points) { 
+    private Primitive(int points) { 
         this.points = points; 
     }
     
