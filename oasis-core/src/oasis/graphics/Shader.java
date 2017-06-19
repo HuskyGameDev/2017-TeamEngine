@@ -1,36 +1,16 @@
 package oasis.graphics;
 
-import java.util.HashMap;
-
 import oasis.math.Matrix4;
+import oasis.math.Vector3;
 
-public class Shader extends GraphicsResource {
+public interface Shader {
 
-    private String vSource, fSource; 
-    private HashMap<String, Uniform> uniformMap; 
+    String getVertexSource(); 
     
-    public Shader(GraphicsDevice graphics, String vertexSource, String fragmentSource) {
-        this.vSource = vertexSource; 
-        this.fSource = fragmentSource; 
-        uniformMap = new HashMap<>(); 
-        
-        graphics.update(this); 
-    }
+    String getFragmentSource(); 
     
-    // getters
+    void setVector3(String name, Vector3 value); 
     
-    public String getVertexSource() { 
-        return vSource; 
-    }
-    
-    public String getFragmentSource() { 
-        return fSource; 
-    }
-    
-    // setters 
-    
-    public void setMatrix4(String name, Matrix4 mat) { 
-        // TODO
-    }
+    void setMatrix4(String name, Matrix4 value); 
     
 }

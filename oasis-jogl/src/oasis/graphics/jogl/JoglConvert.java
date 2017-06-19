@@ -5,8 +5,8 @@ import java.util.HashMap;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
-import oasis.graphics.Attribute;
 import oasis.graphics.Primitive;
+import oasis.graphics.vertex.Attribute;
 import oasis.graphics.vertex.BufferUsage;
 
 public class JoglConvert {

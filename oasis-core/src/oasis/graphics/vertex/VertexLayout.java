@@ -1,23 +1,21 @@
 package oasis.graphics.vertex;
 
-import oasis.graphics.Attribute;
-
 public class VertexLayout {
 
-    public static final VertexLayout LAYOUT_POSITION_0_3_COLOR_0_4 = new VertexLayout(
-            new VertexElement(Attribute.POSITION, 0, 3), 
-            new VertexElement(Attribute.COLOR, 0, 4)); 
+    public static final VertexLayout LAYOUT_POSITION_3_COLOR_4 = new VertexLayout(
+            new VertexElement(Attribute.POSITION, 3), 
+            new VertexElement(Attribute.COLOR, 4)); 
     
-    public static final VertexLayout LAYOUT_POSITION_0_3_NORMAL_0_3_COLOR_0_4 = new VertexLayout(
-            new VertexElement(Attribute.POSITION, 0, 3), 
-            new VertexElement(Attribute.NORMAL, 0, 3), 
-            new VertexElement(Attribute.COLOR, 0, 4));
+    public static final VertexLayout LAYOUT_POSITION_3_NORMAL_3_COLOR_4 = new VertexLayout(
+            new VertexElement(Attribute.POSITION, 3), 
+            new VertexElement(Attribute.NORMAL, 3), 
+            new VertexElement(Attribute.COLOR, 4));
     
-    public static final VertexLayout LAYOUT_POSITION_0_3_NORMAL_0_3_COLOR_0_4_TEXTURE_0_2 = new VertexLayout(
-            new VertexElement(Attribute.POSITION, 0, 3), 
-            new VertexElement(Attribute.NORMAL, 0, 3), 
-            new VertexElement(Attribute.COLOR, 0, 4), 
-            new VertexElement(Attribute.TEXTURE, 0, 2)); 
+    public static final VertexLayout LAYOUT_POSITION_3_NORMAL_3_COLOR_4_TEXTURE_2 = new VertexLayout(
+            new VertexElement(Attribute.POSITION, 3), 
+            new VertexElement(Attribute.NORMAL, 3), 
+            new VertexElement(Attribute.COLOR, 4), 
+            new VertexElement(Attribute.TEXTURE, 2)); 
     
     private final VertexElement[] elements; 
     private final int totalSize; 
@@ -31,19 +29,19 @@ public class VertexLayout {
         totalSize = sum; 
     }
     
-    public VertexElement getElement(Attribute attribute, int index) { 
+    public VertexElement getElement(Attribute attribute) { 
         for (VertexElement elem : elements) { 
-            if (elem.getAttribute() == attribute && elem.getIndex() == index) { 
+            if (elem.getAttribute() == attribute) { 
                 return elem; 
             }
         }
         return null; 
     }
     
-    public int getOffset(Attribute attribute, int index) { 
+    public int getOffset(Attribute attribute) { 
         int off = 0; 
         for (VertexElement elem : elements) { 
-            if (elem.getAttribute() == attribute && elem.getIndex() == index) { 
+            if (elem.getAttribute() == attribute) { 
                 return off; 
             }
             else { 

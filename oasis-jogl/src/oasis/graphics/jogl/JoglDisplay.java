@@ -51,8 +51,19 @@ public class JoglDisplay implements Display, GLEventListener {
         caps.setGreenBits(8);
         caps.setBlueBits(8);
         caps.setAlphaBits(8);
-        caps.setDepthBits(32);
-//        caps.setStencilBits(8);
+        // 32 bits crashes my laptop from last year
+        // I will assume this means it is fairly
+        // likely other devices might potentially
+        // crash from requesting 32 bits as well. 
+        // You should really draw to an FBO (which
+        // can have 32 bit depth) anyways so that
+        // you can use post-processing. 
+        // A logarithmic depth buffer can fix a low
+        // precision depth buffer, but that is not
+        // how the default shaders will work, so you
+        // have to make the shaders manually. 
+        caps.setDepthBits(24);
+        caps.setStencilBits(8);
         
         canvas = new GLCanvas(caps);
         canvas.setAutoSwapBufferMode(false);
@@ -172,6 +183,8 @@ public class JoglDisplay implements Display, GLEventListener {
         gl.setSwapInterval(0);
         gl.glEnable(GL.GL_DEPTH_TEST);
         
+        log.info("GL Vendor: " + gl.glGetString(GL.GL_VENDOR));
+        log.info("GL Renderer: " + gl.glGetString(GL.GL_RENDERER));
         log.info("GL Version: " + gl.glGetString(GL.GL_VERSION));
         log.info("GLSL Version: " + gl.glGetString(GL2.GL_SHADING_LANGUAGE_VERSION));
         

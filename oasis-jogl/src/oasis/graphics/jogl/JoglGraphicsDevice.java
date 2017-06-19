@@ -6,22 +6,32 @@ import com.jogamp.opengl.GL2;
 import oasis.core.EngineException;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.GraphicsDevice;
+import oasis.graphics.GraphicsResourceFactory;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
-import oasis.graphics.vertex.IndexBuffer;
 import oasis.graphics.vertex.VertexArray;
-import oasis.graphics.vertex.VertexBuffer;
 
 public class JoglGraphicsDevice implements GraphicsDevice {
 
     protected GL2 gl; 
     
-    private Shader curShader = null;
-    private VertexArray curVao = null; 
+    private JoglShader curShader = null;
+    private JoglVertexArray curVao = null; 
+    
+    private JoglGraphicsResourceFactory resources; 
+    
+    public JoglGraphicsDevice() { 
+        resources = new JoglGraphicsResourceFactory(this); 
+    }
     
     protected void setOglContext(GL gl) { 
         this.gl = gl.getGL2(); 
         gl.glEnable(GL.GL_DEPTH_TEST);
+    }
+    
+    @Override
+    public GraphicsResourceFactory getResourceFactory() { 
+        return resources; 
     }
     
     @Override
@@ -32,14 +42,12 @@ public class JoglGraphicsDevice implements GraphicsDevice {
 
     @Override
     public void setShader(Shader shader) {
-        update(shader); 
-        curShader = shader; 
+        curShader = (JoglShader) shader; 
     }
 
     @Override
     public void setVertexArray(VertexArray vertArray) {
-        update(vertArray); 
-        curVao = vertArray; 
+        curVao = (JoglVertexArray) vertArray; 
     }
 
     @Override
@@ -51,12 +59,11 @@ public class JoglGraphicsDevice implements GraphicsDevice {
         if (curVao == null) { 
             throw new EngineException("Graphics device must have a vertex array set in order to render"); 
         }
+
+        // TODO finish
         
-        update(curShader); 
-        update(curVao); 
-        
-        ((JoglShader) curShader.getInternalResource()).bind(); 
-        ((JoglVertexArray) curVao.getInternalResource()).bind((JoglShader) curShader.getInternalResource());
+        curShader.bind(); 
+        curVao.bind(curShader); 
         
         gl.glDrawArrays(JoglConvert.getPrimitiveInt(primitive), start, count * primitive.getPointCount());
     }
@@ -64,63 +71,6 @@ public class JoglGraphicsDevice implements GraphicsDevice {
     @Override
     public void drawArraysIndexed(Primitive primitive, int start, int count) {
         // TODO finish
-    }
-
-    // TODO use VAOs, right now it is just index buffer and list of vertex buffers
-    @Override
-    public void update(VertexArray vertArray) {
-        if (!vertArray.isDirty()) { 
-            return; 
-        }
-        
-        if (vertArray.getInternalResource() == null) { 
-            // need to create VBO
-            vertArray.setInternalResource(new JoglVertexArray(this, vertArray));
-        }
-        
-        ((JoglVertexArray) vertArray.getInternalResource()).update(); 
-    }
-
-    @Override
-    public void update(VertexBuffer vertBuffer) {
-        if (!vertBuffer.isDirty()) { 
-            return; 
-        }
-        
-        if (vertBuffer.getInternalResource() == null) { 
-            // need to create VBO
-            vertBuffer.setInternalResource(new JoglVertexBuffer(this, vertBuffer));
-        }
-        
-        ((JoglVertexBuffer) vertBuffer.getInternalResource()).update(); 
-    }
-
-    @Override
-    public void update(IndexBuffer indBuffer) {
-        if (!indBuffer.isDirty()) { 
-            return; 
-        }
-        
-        if (indBuffer.getInternalResource() == null) { 
-            // need to create VBO
-            indBuffer.setInternalResource(new JoglIndexBuffer(this, indBuffer));
-        }
-        
-        ((JoglIndexBuffer) indBuffer.getInternalResource()).update(); 
-    }
-    
-    @Override
-    public void update(Shader shader) {
-        if (!shader.isDirty()) { 
-            return; 
-        }
-        
-        if (shader.getInternalResource() == null) { 
-            // need to create VBO
-            shader.setInternalResource(new JoglShader(this, shader));
-        }
-        
-        ((JoglShader) shader.getInternalResource()).update(); 
     }
 
 }

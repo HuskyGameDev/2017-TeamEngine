@@ -1,51 +1,66 @@
 package oasis.graphics.jogl;
 
+import java.util.ArrayList;
+
 import com.jogamp.opengl.GL;
 
-import oasis.graphics.Attribute;
+import oasis.graphics.vertex.Attribute;
 import oasis.graphics.vertex.VertexArray;
+import oasis.graphics.vertex.VertexBuffer;
 import oasis.graphics.vertex.VertexElement;
 import oasis.graphics.vertex.VertexLayout;
 
-public class JoglVertexArray {
+public class JoglVertexArray extends JoglGraphicsResource implements VertexArray {
 
-    private JoglGraphicsDevice graphics; 
-    private VertexArray array; 
+    private ArrayList<JoglVertexBuffer> vertBuffers; 
     
-    public JoglVertexArray(JoglGraphicsDevice graphics, VertexArray array) { 
-        this.graphics = graphics; 
-        this.array = array; 
+    public JoglVertexArray(JoglGraphicsDevice graphics, VertexBuffer[] buffers) {
+        super(graphics);
+        vertBuffers = new ArrayList<>(); 
+        for (VertexBuffer vbo : buffers) { 
+            vertBuffers.add((JoglVertexBuffer) vbo); 
+        }
     }
     
-    public void update() { 
-        array.setDirty(false);
-    }
-    
-    public void bind(JoglShader shader) { 
-        JoglInputLayout input = shader.getInputLayout(); 
-        
-        for (int i = 0; i < input.attributes.size(); i++) { 
-            Attribute attr = input.attributes.get(i); 
-            int index = input.indices.get(i); 
-            int location = input.location.get(i); 
-            
-            // TODO IBO
-            
-            for (int j = 0; j < array.getVertexBufferCount(); j++) { 
-                graphics.update(array.getVertexBuffer(j));
-                VertexLayout layout = array.getVertexBuffer(j).getVertexLayout(); 
+    public void bind(JoglShader currentShader) { 
+        for (Attribute a : Attribute.values()) { 
+            for (JoglVertexBuffer vert : vertBuffers) { 
+                VertexLayout layout = vert.getVertexLayout(); 
                 VertexElement elem;
                 
-                if ((elem = layout.getElement(attr, index)) != null) { 
-                    int offset = layout.getOffset(attr, index); 
+                if ((elem = layout.getElement(a)) != null) { 
+                    int offset = layout.getOffset(a); 
                     int size = layout.getTotalSizeInBytes(); 
                     
-                    graphics.gl.glBindBuffer(GL.GL_ARRAY_BUFFER, ((JoglVertexBuffer) array.getVertexBuffer(j).getInternalResource()).getVbo());
-                    graphics.gl.glEnableVertexAttribArray(location);
-                    graphics.gl.glVertexAttribPointer(location, elem.getComponentCount(), GL.GL_FLOAT, false, size, offset);
+                    graphics.gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vert.getVbo());
+                    graphics.gl.glEnableVertexAttribArray(a.getIndex());
+                    graphics.gl.glVertexAttribPointer(a.getIndex(), elem.getComponentCount(), GL.GL_FLOAT, false, size, offset);
                 }
             }
         }
     }
-    
+
+    @Override
+    public int getVertexBufferCount() {
+        return vertBuffers.size();
+    }
+
+    @Override
+    public VertexBuffer getVertexBuffer(int index) {
+        return vertBuffers.get(index);
+    }
+
+    @Override
+    public void setVertexBuffer(VertexBuffer buffer) {
+        setVertexBuffers(buffer); 
+    }
+
+    @Override
+    public void setVertexBuffers(VertexBuffer... buffers) {
+        vertBuffers.clear(); 
+        for (VertexBuffer vbo : buffers) { 
+            vertBuffers.add((JoglVertexBuffer) vbo); 
+        }
+    }
+
 }

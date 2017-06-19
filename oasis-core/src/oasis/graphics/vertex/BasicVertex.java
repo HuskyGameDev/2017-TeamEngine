@@ -50,5 +50,16 @@ public class BasicVertex implements Vertex {
             break; 
         }
     }
+    
+    public static void calculateNormals(BasicVertex[] verts) { 
+        for (int i = 0; i < verts.length; i += 3) { 
+            Vector3 a = verts[i + 1].position.subtract(verts[i + 0].position); 
+            Vector3 b = verts[i + 2].position.subtract(verts[i + 0].position); 
+            Vector3 normal = a.cross(b).normalize(); 
+            verts[i + 0].normal = normal; 
+            verts[i + 1].normal = normal; 
+            verts[i + 2].normal = normal; 
+        }
+    }
 
 }

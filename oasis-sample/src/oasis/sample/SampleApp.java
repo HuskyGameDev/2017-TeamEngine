@@ -8,11 +8,12 @@ import oasis.core.jogl.JoglEngine;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
-import oasis.graphics.jogl.JoglShader;
-import oasis.graphics.vertex.BasicVertex;
+import oasis.graphics.vertex.BufferUsage;
 import oasis.graphics.vertex.VertexArray;
 import oasis.graphics.vertex.VertexBuffer;
 import oasis.graphics.vertex.VertexLayout;
+import oasis.math.FastMath;
+import oasis.math.Matrix4;
 import oasis.math.Vector3;
 
 public class SampleApp extends Application {
@@ -23,31 +24,33 @@ public class SampleApp extends Application {
     private VertexBuffer heightMapBuffer, waterBuffer; 
     private VertexArray heightMapVao, waterVao; 
     
+    private float angle = 0.0f; 
+    
   private String vSource = ""
   + "#version 120\n "
-  + "attribute vec3 inPosition0; "
-  + "attribute vec3 inNormal0; "
-  + "attribute vec4 inColor0; "
-  + "uniform mat4 Model; "
-  + "uniform mat4 View; "
-  + "uniform mat4 Projection; "
-  + "varying vec4 fragColor; "
-  + "varying vec3 fragNormal; " 
+  + "attribute vec3 aPosition; "
+  + "attribute vec3 aNormal; "
+  + "attribute vec4 aColor; "
+  + "uniform mat4 uModel; "
+  + "uniform mat4 uView; "
+  + "uniform mat4 uProjection; "
+  + "varying vec4 vColor; "
+  + "varying vec3 vNormal; " 
   + "void main() "
   + "{ "
-  + "  fragColor = inColor0; "
-  + "  fragNormal = normalize((Model * vec4(inNormal0, 0)).xyz); "
-  + "  gl_Position = Projection * View * vec4(inPosition0, 1.0); "
+  + "  vColor = aColor; "
+  + "  vNormal = normalize((uModel * vec4(aNormal, 0)).xyz); "
+  + "  gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0); "
   + "}";
 private String fSource = ""
   + "#version 120\n "
-  + "varying vec4 fragColor; "
-  + "varying vec3 fragNormal; "
-//  + "uniform vec3 LightDirection; "
+  + "varying vec4 vColor; "
+  + "varying vec3 vNormal; "
+  + "uniform vec3 uLightDirection; "
   + "void main() "
   + "{ "
-//  + "  float scale = 0.8 + 1.0 * clamp(dot(-normalize(LightDirection), normalize(fragNormal)), 0.0, 1.0); "
-  + "  gl_FragColor = vec4(vec3(1.0), 1.0) * fragColor;\n "
+  + "  float scale = 0.4 + 0.6 * clamp(dot(-normalize(uLightDirection), normalize(vNormal)), 0.0, 1.0); "
+  + "  gl_FragColor = vec4(vec3(scale), 1.0) * vColor;\n "
   + "}";
     
     @Override
@@ -55,26 +58,24 @@ private String fSource = ""
         display.setResizable(true);
         display.setSize(800, 400);
         
-        shader = new Shader(graphics, vSource, fSource); 
+        shader = graphics.getResourceFactory().createShaderFromSource(vSource, fSource); 
         
         HeightMap htmap = new HeightMap(256, 256);
         
-        heightMapBuffer = new VertexBuffer(graphics, VertexLayout.LAYOUT_POSITION_0_3_NORMAL_0_3_COLOR_0_4); 
-        BasicVertex[] verts = htmap.genVertices(new Vector3(-10, 0, -10), new Vector3(10, 4, 10)); 
-        System.out.println(verts);
-        heightMapBuffer.setVertices(verts);
+        heightMapBuffer = graphics.getResourceFactory().createVertexBuffer(VertexLayout.LAYOUT_POSITION_3_NORMAL_3_COLOR_4); 
+        heightMapBuffer.setUsage(BufferUsage.STATIC);
+        heightMapBuffer.setVertices(htmap.genVertices(new Vector3(-10, 0, -10), new Vector3(10, 8, 10)));
         
-        htmap = new HeightMap(256, 256);
+        htmap = new HeightMap(1, 1);
         htmap.setFlat(true, 0.5f);
         
-        waterBuffer = new VertexBuffer(graphics, VertexLayout.LAYOUT_POSITION_0_3_NORMAL_0_3_COLOR_0_4); 
-        waterBuffer.setVertices(htmap.genVertices(new Vector3(-10, 0, -10), new Vector3(10, 4, 10)));
+        waterBuffer = graphics.getResourceFactory().createVertexBuffer(VertexLayout.LAYOUT_POSITION_3_NORMAL_3_COLOR_4); 
+        waterBuffer.setUsage(BufferUsage.STATIC);
+        waterBuffer.setVertices(htmap.genVertices(new Vector3(-10, 0, -10), new Vector3(10, 8, 10)));
         
-        heightMapVao = new VertexArray(graphics); 
-        heightMapVao.setVertexBuffer(heightMapBuffer);
+        heightMapVao = graphics.getResourceFactory().createVertexArray(new VertexBuffer[] { heightMapBuffer }); 
         
-        waterVao = new VertexArray(graphics); 
-        waterVao.setVertexBuffer(waterBuffer);
+        waterVao = graphics.getResourceFactory().createVertexArray(new VertexBuffer[] { waterBuffer });  
     }
 
     @Override
@@ -83,21 +84,45 @@ private String fSource = ""
             stop();
         }
 
-        JoglShader.angle += 1f / 60.0f; 
+        angle += 1f / 60.0f; 
     }
 
     @Override
     public void onRender() {
-        JoglShader.ratio = (float) display.getAspectRatio(); 
-        
         graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
         graphics.setShader(shader);
         
-        // TODO position setup
+        Vector3 pos = new Vector3();
+        float scale = 12.0f;
+        float time = angle * 5.0f;
+        pos.setX(scale * FastMath.cos(time));
+        pos.setY(10.2f);
+        pos.setZ(scale * FastMath.sin(time));
+        
+        // view
+        Matrix4 m;
+        m = Matrix4.createLookAt(pos, new Vector3(0, 0.0f, 0), new Vector3(0, 1, 0));
+        shader.setMatrix4("uView", m);
+        
+        // light direction
+        time = angle * 80.0f;
+        pos.setX(scale * FastMath.cos(time));
+        pos.setY(0f);
+        pos.setZ(scale * FastMath.sin(time));
+        shader.setVector3("uLightDirection", pos); 
+        
+        // projection 
+        m = Matrix4.createPerspective(60.0f, (float) display.getAspectRatio(), 0.1f, 1000.0f);
+        shader.setMatrix4("uProjection", m);
+        
+        // model
+        m = Matrix4.createIdentity();
+        shader.setMatrix4("uModel", m);
         graphics.setVertexArray(heightMapVao);
         graphics.drawArrays(Primitive.TRIANGLE_LIST, 0, heightMapVao.getVertexBuffer(0).getVertices().length / 3);
         
-        // TODO position setup
+        m = Matrix4.createIdentity();
+        shader.setMatrix4("uModel", m);
         graphics.setVertexArray(waterVao);
         graphics.drawArrays(Primitive.TRIANGLE_LIST, 0, waterVao.getVertexBuffer(0).getVertices().length / 3);
     }

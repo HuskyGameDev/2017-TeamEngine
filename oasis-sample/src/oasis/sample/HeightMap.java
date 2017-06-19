@@ -41,7 +41,9 @@ public class HeightMap {
             }
         }
         
-        return verts.toArray(new BasicVertex[verts.size()]); 
+        BasicVertex[] array = verts.toArray(new BasicVertex[verts.size()]); 
+        BasicVertex.calculateNormals(array);
+        return array; 
     }
     
     private BasicVertex getVertex(int u, int v, Vector3 min, Vector3 max) {
@@ -50,13 +52,13 @@ public class HeightMap {
         
         float x = FastMath.lerp(min.getX(), max.getX(), uFrac);
         float z = FastMath.lerp(min.getZ(), max.getZ(), vFrac);
-        float y = FastMath.lerp(min.getY(), max.getY(), flat ? yVal : fractal(x, z, 5, 0.65f));
+        float y = FastMath.lerp(min.getY(), max.getY(), flat ? yVal : fractal(x, z, 15, 0.6f));
         
         BasicVertex vert = new BasicVertex(); 
         vert.position = new Vector3(x, y, z);
         
         if (flat) {
-            vert.color = new ColorRgba(0.35f, 0.15f, 0.7f, 1.0f).toVector4();
+            vert.color = new ColorRgba(0.35f, 0.35f, 0.9f, 1.0f).toVector4();
         }
         else {
             vert.color = new ColorRgba(0.5f, fractal(x, z, 5, 0.65f), 0.5f, 1.0f).toVector4();
@@ -68,7 +70,7 @@ public class HeightMap {
     }
     
     private float fractal(float x, float y, int it, float pers) {
-        float freq = 0.2f;
+        float freq = 0.1f;
         float amp = 1.0f;
         
         float sum = 0.0f;
