@@ -2,35 +2,38 @@ package oasis.graphics.jogl;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL3;
 
 import oasis.core.EngineException;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.GraphicsDevice;
-import oasis.graphics.GraphicsResourceFactory;
-import oasis.graphics.Primitive;
+import oasis.graphics.GraphicsResourceManager;
 import oasis.graphics.Shader;
-import oasis.graphics.vertex.VertexArray;
+import oasis.graphics.vertex.Mesh;
 
 public class JoglGraphicsDevice implements GraphicsDevice {
 
     protected GL2 gl; 
     
     private JoglShader curShader = null;
-    private JoglVertexArray curVao = null; 
+    private JoglTexture2D[] curTextures = new JoglTexture2D[16]; 
     
-    private JoglGraphicsResourceFactory resources; 
+    private JoglGraphicsResourceManager resources; 
     
     public JoglGraphicsDevice() { 
-        resources = new JoglGraphicsResourceFactory(this); 
+        resources = new JoglGraphicsResourceManager(this); 
     }
     
     protected void setOglContext(GL gl) { 
         this.gl = gl.getGL2(); 
         gl.glEnable(GL.GL_DEPTH_TEST);
+        gl.getGL3().glPolygonMode(GL3.GL_FRONT_AND_BACK, GL3.GL_FILL);
+        gl.glEnable(GL.GL_CULL_FACE);
+        gl.glCullFace(GL.GL_CCW);
     }
     
     @Override
-    public GraphicsResourceFactory getResourceFactory() { 
+    public GraphicsResourceManager getResourceManager() { 
         return resources; 
     }
     
@@ -39,38 +42,37 @@ public class JoglGraphicsDevice implements GraphicsDevice {
         gl.glClearColor(color.r, color.g, color.b, color.a);
         gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
     }
+    
+//    @Override
+//    public void setTexture(int unit, NativeTexture texture) { 
+//        curTextures[unit] = (JoglTexture2D) texture; 
+//    }
 
     @Override
     public void setShader(Shader shader) {
-        curShader = (JoglShader) shader; 
+        curShader = (JoglShader) shader.getNativeShader(); 
     }
 
     @Override
-    public void setVertexArray(VertexArray vertArray) {
-        curVao = (JoglVertexArray) vertArray; 
-    }
-
-    @Override
-    public void drawArrays(Primitive primitive, int start, int count) {
+    public void drawMesh(Mesh mesh) {
         if (curShader == null) { 
             throw new EngineException("Graphics device must have a shader set in order to render"); 
         }
         
-        if (curVao == null) { 
-            throw new EngineException("Graphics device must have a vertex array set in order to render"); 
+        if (mesh == null) { 
+            throw new EngineException("Mesh must not be null"); 
         }
 
         // TODO finish
         
         curShader.bind(); 
-        curVao.bind(curShader); 
+        for (int i = 0; i < curTextures.length; i++) { 
+            if (curTextures[i] != null) { 
+                curTextures[i].bind(i);
+            }
+        }
         
-        gl.glDrawArrays(JoglConvert.getPrimitiveInt(primitive), start, count * primitive.getPointCount());
-    }
-
-    @Override
-    public void drawArraysIndexed(Primitive primitive, int start, int count) {
-        // TODO finish
+        ((JoglMesh) mesh.getNativeMesh()).bindAndDraw(); 
     }
 
 }

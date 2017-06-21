@@ -4,12 +4,12 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
 import oasis.core.GameLogger;
-import oasis.graphics.Shader;
+import oasis.graphics.internal.NativeShader;
 import oasis.graphics.vertex.Attribute;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
 
-public class JoglShader extends JoglGraphicsResource implements Shader {
+public class JoglShader extends JoglGraphicsResource implements NativeShader {
 
     private static final GameLogger log = new GameLogger(JoglShader.class); 
     
@@ -55,6 +55,15 @@ public class JoglShader extends JoglGraphicsResource implements Shader {
                 value.getX(), value.getY(), value.getZ());
     }
     
+    @Override
+    public void setFloat(String name, float value) {
+        // TODO Auto-generated method stub
+        graphics.gl.glUseProgram(id);
+        graphics.gl.glUniform1f(
+                graphics.gl.glGetUniformLocation(id, name), 
+                value);
+    }
+    
     private void create() { 
         GL2 gl = graphics.gl; 
         
@@ -97,6 +106,11 @@ public class JoglShader extends JoglGraphicsResource implements Shader {
         
         gl.glDeleteShader(vert);
         gl.glDeleteShader(frag);
+        
+        
+        for (Attribute a : Attribute.values()) { 
+            System.out.println(a.getGlslName() + " " + a.getIndex() + " " + graphics.gl.glGetAttribLocation(id, a.getGlslName()));
+        }
     }
 
     private void bindAttributes() { 

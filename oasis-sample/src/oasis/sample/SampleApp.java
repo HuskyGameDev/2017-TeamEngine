@@ -6,12 +6,8 @@ import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.JoglEngine;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
-import oasis.graphics.vertex.BufferUsage;
-import oasis.graphics.vertex.VertexArray;
-import oasis.graphics.vertex.VertexBuffer;
-import oasis.graphics.vertex.VertexLayout;
+import oasis.graphics.vertex.Mesh;
 import oasis.math.FastMath;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
@@ -21,61 +17,84 @@ public class SampleApp extends Application {
     private static final GameLogger log = new GameLogger(SampleApp.class);
     
     private Shader shader;
-    private VertexBuffer heightMapBuffer, waterBuffer; 
-    private VertexArray heightMapVao, waterVao; 
+    private Mesh heightmap, water; 
     
     private float angle = 0.0f; 
+    private int time = 0; 
     
-  private String vSource = ""
-  + "#version 120\n "
-  + "attribute vec3 aPosition; "
-  + "attribute vec3 aNormal; "
-  + "attribute vec4 aColor; "
-  + "uniform mat4 uModel; "
-  + "uniform mat4 uView; "
-  + "uniform mat4 uProjection; "
-  + "varying vec4 vColor; "
-  + "varying vec3 vNormal; " 
-  + "void main() "
-  + "{ "
-  + "  vColor = aColor; "
-  + "  vNormal = normalize((uModel * vec4(aNormal, 0)).xyz); "
-  + "  gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0); "
-  + "}";
-private String fSource = ""
-  + "#version 120\n "
-  + "varying vec4 vColor; "
-  + "varying vec3 vNormal; "
-  + "uniform vec3 uLightDirection; "
-  + "void main() "
-  + "{ "
-  + "  float scale = 0.4 + 0.6 * clamp(dot(-normalize(uLightDirection), normalize(vNormal)), 0.0, 1.0); "
-  + "  gl_FragColor = vec4(vec3(scale), 1.0) * vColor;\n "
-  + "}";
+    private float freq = 1 / 13.0f; 
+    private float pers = 0.45f; 
+    private int octs = 10; 
+    private long res = 2; 
+    private long maxRes = 512; 
+    
+    private float height = 7f; 
+    
+    private SampleHeightmap htmap; 
+    
+    private String vSource = ""
+    + "#version 120\n "
+    + ""
+    + "attribute vec3 aPosition; "
+    + "attribute vec3 aNormal; "
+    + "attribute vec4 aColor; "
+    + ""
+    + "uniform mat4 uModel; "
+    + "uniform mat4 uView; "
+    + "uniform mat4 uProjection; "
+    + ""
+    + "varying vec4 vColor; "
+    + "varying vec3 vNormal; "
+    + "varying vec3 vModelPos; "
+    + "" 
+    + "void main() "
+    + "{ "
+    + "  vColor = aColor; "
+    + "  vNormal = normalize((uModel * vec4(aNormal, 0)).xyz); "
+    + "  gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0); "
+    + "  vec4 tmp = uView * uModel * vec4(aPosition, 1.0); "
+    + "  vModelPos = tmp.xyz / tmp.w; "
+    + "}";
+    private String fSource = ""
+    + "#version 120\n "
+    + ""
+    + "varying vec4 vColor; "
+    + "varying vec3 vNormal; "
+    + "varying vec3 vModelPos; "
+    + ""
+    + "uniform vec3 uLightDirection; "
+    + "uniform vec3 uViewPos; "
+    + "uniform float uShininess; "
+    + ""
+    + "void main() "
+    + "{ "
+    + "  vec3 normal = normalize(vNormal); "
+    + "  vec3 lightDir = normalize(-uLightDirection); "
+    + "  float diffuse = max(dot(lightDir, normal), 0.0); "
+    + "  "
+    + "  vec3 viewDir = normalize(uViewPos - vModelPos); "
+    + "  vec3 halfDir = normalize(lightDir + viewDir); "
+    + "  float specAngle = max(dot(halfDir, normal), 0.0); "
+    + "  float specular = pow(specAngle, uShininess); "
+    + "  "
+    + "  gl_FragColor = vec4(vec3(0.2 + diffuse + specular), 1.0) * vColor;\n "
+    + "}";
     
     @Override
     public void onInit() {
         display.setResizable(true);
         display.setSize(800, 400);
         
-        shader = graphics.getResourceFactory().createShaderFromSource(vSource, fSource); 
+        shader = new Shader(graphics, vSource, fSource);  
         
-        HeightMap htmap = new HeightMap(256, 256);
+        htmap = new SampleHeightmap();
+        htmap.setFlat(true, 0.65f);
+        water = new Mesh(graphics); 
+        htmap.genMesh(water, new Vector3(-10, 0, -10), new Vector3(10, height, 10), 1, 1, octs, freq, pers);
         
-        heightMapBuffer = graphics.getResourceFactory().createVertexBuffer(VertexLayout.LAYOUT_POSITION_3_NORMAL_3_COLOR_4); 
-        heightMapBuffer.setUsage(BufferUsage.STATIC);
-        heightMapBuffer.setVertices(htmap.genVertices(new Vector3(-10, 0, -10), new Vector3(10, 8, 10)));
-        
-        htmap = new HeightMap(1, 1);
-        htmap.setFlat(true, 0.5f);
-        
-        waterBuffer = graphics.getResourceFactory().createVertexBuffer(VertexLayout.LAYOUT_POSITION_3_NORMAL_3_COLOR_4); 
-        waterBuffer.setUsage(BufferUsage.STATIC);
-        waterBuffer.setVertices(htmap.genVertices(new Vector3(-10, 0, -10), new Vector3(10, 8, 10)));
-        
-        heightMapVao = graphics.getResourceFactory().createVertexArray(new VertexBuffer[] { heightMapBuffer }); 
-        
-        waterVao = graphics.getResourceFactory().createVertexArray(new VertexBuffer[] { waterBuffer });  
+        htmap.setFlat(false, 0);
+        heightmap = new Mesh(graphics); 
+        htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
     }
 
     @Override
@@ -84,7 +103,22 @@ private String fSource = ""
             stop();
         }
 
-        angle += 1f / 60.0f; 
+        angle += 2f / 60.0f; 
+        time++; 
+        
+        if (time % (60 / 6) == 0) { 
+            res <<= 1; 
+            
+            if (res > (maxRes << 30)) { 
+                htmap = new SampleHeightmap();
+                res = 1; 
+            }
+            else if (res > maxRes) {} 
+            else { 
+//                System.out.println("Resolution: " + res + ", Octaves: " + octs + ", Frequency: " + freq + ", Persistance: " + pers);
+                htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
+            }
+        }
     }
 
     @Override
@@ -93,22 +127,29 @@ private String fSource = ""
         graphics.setShader(shader);
         
         Vector3 pos = new Vector3();
-        float scale = 12.0f;
-        float time = angle * 5.0f;
-        pos.setX(scale * FastMath.cos(time));
-        pos.setY(10.2f);
-        pos.setZ(scale * FastMath.sin(time));
-        
+        float scale = 8f; //18.0f;
+        float time = 5.0f * angle;
+        pos.setX(scale * FastMath.cos(time) * FastMath.cos(time) * FastMath.cos(time));
+        pos.setY(5.0f);
+        pos.setZ(scale * FastMath.sin(time) * FastMath.sin(time) * FastMath.sin(time));
+//        System.out.println(pos);
         // view
         Matrix4 m;
-        m = Matrix4.createLookAt(pos, new Vector3(0, 0.0f, 0), new Vector3(0, 1, 0));
+        m = Matrix4.createLookAt(pos, new Vector3(0, 6.0f, 0), new Vector3(0, 1, 0));
         shader.setMatrix4("uView", m);
+        shader.setVector3("uViewPos", pos);
         
         // light direction
-        time = angle * 80.0f;
+        time = 10 * angle + 100.0f;
+        scale = 2.0f;
+//        pos.setX(10);
+//        pos.setY(-10);
+//        pos.setZ(-10);
+        pos = new Vector3(); 
         pos.setX(scale * FastMath.cos(time));
-        pos.setY(0f);
-        pos.setZ(scale * FastMath.sin(time));
+        pos.setZ(1.0f);
+        pos.setY(scale * FastMath.sin(time));
+        
         shader.setVector3("uLightDirection", pos); 
         
         // projection 
@@ -117,14 +158,12 @@ private String fSource = ""
         
         // model
         m = Matrix4.createIdentity();
+//        m.multiplySelf(Matrix4.createRotationY(angle * 5.0f)); 
         shader.setMatrix4("uModel", m);
-        graphics.setVertexArray(heightMapVao);
-        graphics.drawArrays(Primitive.TRIANGLE_LIST, 0, heightMapVao.getVertexBuffer(0).getVertices().length / 3);
-        
-        m = Matrix4.createIdentity();
-        shader.setMatrix4("uModel", m);
-        graphics.setVertexArray(waterVao);
-        graphics.drawArrays(Primitive.TRIANGLE_LIST, 0, waterVao.getVertexBuffer(0).getVertices().length / 3);
+        shader.setFloat("uShininess", 2000.0f);
+        graphics.drawMesh(heightmap);
+        shader.setFloat("uShininess", 30.0f);
+        graphics.drawMesh(water); 
     }
     
     @Override

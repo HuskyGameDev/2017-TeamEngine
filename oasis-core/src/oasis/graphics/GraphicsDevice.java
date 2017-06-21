@@ -1,6 +1,6 @@
 package oasis.graphics;
 
-import oasis.graphics.vertex.VertexArray;
+import oasis.graphics.vertex.Mesh;
 
 public interface GraphicsDevice {
 
@@ -8,16 +8,12 @@ public interface GraphicsDevice {
     
     // TODO blending
     
-    GraphicsResourceFactory getResourceFactory(); 
+    GraphicsResourceManager getResourceManager(); 
     
     void clearScreen(ColorRgba color); 
     
     void setShader(Shader shader); 
     
-    void setVertexArray(VertexArray vertArray); 
-    
-    void drawArrays(Primitive primitive, int start, int count); 
-    
-    void drawArraysIndexed(Primitive primitive, int start, int count); 
+    void drawMesh(Mesh mesh); 
     
 }

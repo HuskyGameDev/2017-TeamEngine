@@ -1,16 +1,39 @@
 package oasis.graphics;
 
+import oasis.graphics.internal.NativeShader;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
 
-public interface Shader {
+public class Shader {
 
-    String getVertexSource(); 
+    private NativeShader impl; 
     
-    String getFragmentSource(); 
+    public Shader(GraphicsDevice graphics, String vs, String fs) { 
+        impl = graphics.getResourceManager().createNativeShaderFromSource(vs, fs); 
+    }
     
-    void setVector3(String name, Vector3 value); 
+    public NativeShader getNativeShader() { 
+        return impl; 
+    }
     
-    void setMatrix4(String name, Matrix4 value); 
+    public String getVertexSource() {
+        return impl.getVertexSource(); 
+    }
+
+    public String getFragmentSource() {
+        return impl.getFragmentSource(); 
+    }
     
+    public void setFloat(String name, float value) { 
+        impl.setFloat(name, value); 
+    }
+
+    public void setVector3(String name, Vector3 value) {
+        impl.setVector3(name, value);
+    }
+
+    public void setMatrix4(String name, Matrix4 value) {
+        impl.setMatrix4(name, value);
+    }
+
 }
