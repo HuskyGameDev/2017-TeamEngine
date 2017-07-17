@@ -3,13 +3,14 @@ package oasis.graphics.jogl;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
-import oasis.graphics.internal.NativeTexture2D;
 import oasis.graphics.texture.Format;
 import oasis.graphics.texture.MagFilter;
 import oasis.graphics.texture.MinFilter;
+import oasis.graphics.texture.Texture2D;
+import oasis.graphics.texture.TextureType;
 import oasis.graphics.texture.WrapMode;
 
-public class JoglTexture2D extends JoglGraphicsResource implements NativeTexture2D {
+public class JoglTexture2D extends JoglGraphicsResource implements Texture2D {
 
     private int width, height; 
     private Format format; 
@@ -132,6 +133,11 @@ public class JoglTexture2D extends JoglGraphicsResource implements NativeTexture
     public void setWrapModes(WrapMode s, WrapMode t) {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public TextureType getTextureType() {
+        return TextureType.TEXTURE_2D;
     }
 
 }

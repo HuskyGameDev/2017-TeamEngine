@@ -7,21 +7,19 @@ import com.jogamp.opengl.GL3;
 import oasis.core.EngineException;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.GraphicsDevice;
-import oasis.graphics.GraphicsResourceManager;
 import oasis.graphics.Shader;
 import oasis.graphics.vertex.Mesh;
 
 public class JoglGraphicsDevice implements GraphicsDevice {
 
     protected GL2 gl; 
+    protected JoglContext context; 
     
     private JoglShader curShader = null;
     private JoglTexture2D[] curTextures = new JoglTexture2D[16]; 
     
-    private JoglGraphicsResourceManager resources; 
-    
     public JoglGraphicsDevice() { 
-        resources = new JoglGraphicsResourceManager(this); 
+        context = new JoglContext(this); 
     }
     
     protected void setOglContext(GL gl) { 
@@ -30,11 +28,6 @@ public class JoglGraphicsDevice implements GraphicsDevice {
         gl.getGL3().glPolygonMode(GL3.GL_FRONT_AND_BACK, GL3.GL_FILL);
         gl.glEnable(GL.GL_CULL_FACE);
         gl.glCullFace(GL.GL_CCW);
-    }
-    
-    @Override
-    public GraphicsResourceManager getResourceManager() { 
-        return resources; 
     }
     
     @Override
@@ -50,7 +43,7 @@ public class JoglGraphicsDevice implements GraphicsDevice {
 
     @Override
     public void setShader(Shader shader) {
-        curShader = (JoglShader) shader.getNativeShader(); 
+        curShader = (JoglShader) shader; 
     }
 
     @Override
@@ -65,14 +58,26 @@ public class JoglGraphicsDevice implements GraphicsDevice {
 
         // TODO finish
         
-        curShader.bind(); 
+        context.bindProgram(curShader.getId());
         for (int i = 0; i < curTextures.length; i++) { 
             if (curTextures[i] != null) { 
                 curTextures[i].bind(i);
             }
         }
         
-        ((JoglMesh) mesh.getNativeMesh()).bindAndDraw(); 
+        ((JoglMesh) mesh).bindAndDraw(); 
     }
+    
+
+    @Override
+    public Shader createShaderFromSource(String vertex, String fragment) {
+        return new JoglShader(this, vertex, fragment);
+    }
+
+    @Override
+    public Mesh createMesh() {
+        return new JoglMesh(this);
+    }
+
 
 }

@@ -1,8 +1,6 @@
-package oasis.graphics.internal;
+package oasis.graphics.texture;
 
-import oasis.graphics.texture.WrapMode;
-
-public interface NativeTexture2D extends NativeTexture { 
+public interface Texture2D extends Texture { 
     
     // getters
     

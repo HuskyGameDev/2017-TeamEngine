@@ -6,14 +6,14 @@ import java.nio.IntBuffer;
 import com.jogamp.opengl.GL;
 
 import oasis.graphics.Primitive;
-import oasis.graphics.internal.NativeMesh;
 import oasis.graphics.vertex.Attribute;
 import oasis.graphics.vertex.BufferUsage;
+import oasis.graphics.vertex.Mesh;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 import oasis.util.BufferUtil;
 
-public class JoglMesh extends JoglGraphicsResource implements NativeMesh {
+public class JoglMesh extends JoglGraphicsResource implements Mesh {
 
     private Primitive primitive = Primitive.TRIANGLE_LIST; 
     private BufferUsage usage = BufferUsage.DYNAMIC; 
@@ -175,7 +175,7 @@ public class JoglMesh extends JoglGraphicsResource implements NativeMesh {
     }
 
     public void bindAndDraw() {
-        graphics.gl.glBindVertexArray(vao);
+        graphics.context.bindVao(vao);
         
         if (needsRebind) { 
             rebind(); 
@@ -202,7 +202,7 @@ public class JoglMesh extends JoglGraphicsResource implements NativeMesh {
     
     private void bindVbo(JoglVertexBuffer buffer, Attribute attribute, int comps, int type) { 
         if (buffer != null ) { 
-            graphics.gl.glBindBuffer(GL.GL_ARRAY_BUFFER, buffer.getVbo());
+            graphics.context.bindVbo(buffer.getVbo()); 
             graphics.gl.glEnableVertexAttribArray(attribute.getIndex());
             graphics.gl.glVertexAttribPointer(attribute.getIndex(), comps, type, false, 0, 0); 
         }

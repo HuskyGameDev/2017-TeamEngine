@@ -2,6 +2,9 @@ package oasis.graphics.jogl;
 
 import java.nio.Buffer;
 
+import com.jogamp.opengl.GL;
+
+import oasis.core.EngineException;
 import oasis.graphics.vertex.BufferUsage;
 
 public class JoglVertexBuffer extends JoglGraphicsResource {
@@ -22,7 +25,15 @@ public class JoglVertexBuffer extends JoglGraphicsResource {
     public void setData(int target, Buffer buffer, int bytes, BufferUsage usage) {
         bufferCurSize = bytes; 
         
-        graphics.gl.glBindBuffer(target, id);
+        if (target == GL.GL_ARRAY_BUFFER) { 
+            graphics.context.bindVbo(id); 
+        }
+        else if (target == GL.GL_ELEMENT_ARRAY_BUFFER) { 
+            graphics.context.bindIbo(id);
+        }
+        else { 
+            throw new EngineException("Unknown buffer target: " + target); 
+        }
         if (bufferSize <= bytes) { 
             bufferSize = bytes; 
             graphics.gl.glBufferData(target, bytes, buffer, JoglConvert.getBufferUsageInt(usage));

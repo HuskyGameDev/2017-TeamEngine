@@ -1,10 +1,8 @@
-package oasis.graphics.internal;
+package oasis.graphics.texture;
 
-import oasis.graphics.texture.Format;
-import oasis.graphics.texture.MagFilter;
-import oasis.graphics.texture.MinFilter;
-
-public interface NativeTexture {
+public interface Texture {
+    
+    TextureType getTextureType(); 
     
     Format getFormat(); 
     

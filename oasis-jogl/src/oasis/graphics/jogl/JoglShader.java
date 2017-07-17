@@ -4,12 +4,12 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
 import oasis.core.GameLogger;
-import oasis.graphics.internal.NativeShader;
+import oasis.graphics.Shader;
 import oasis.graphics.vertex.Attribute;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
 
-public class JoglShader extends JoglGraphicsResource implements NativeShader {
+public class JoglShader extends JoglGraphicsResource implements Shader {
 
     private static final GameLogger log = new GameLogger(JoglShader.class); 
     
@@ -23,8 +23,8 @@ public class JoglShader extends JoglGraphicsResource implements NativeShader {
         create(); 
     }
     
-    public void bind() { 
-        graphics.gl.glUseProgram(id);
+    public int getId() { 
+        return id; 
     }
     
     @Override
@@ -40,7 +40,7 @@ public class JoglShader extends JoglGraphicsResource implements NativeShader {
     @Override
     public void setMatrix4(String name, Matrix4 value) {
         // TODO Auto-generated method stub
-        graphics.gl.glUseProgram(id);
+        graphics.context.bindProgram(id);
         graphics.gl.glUniformMatrix4fv(
                 graphics.gl.glGetUniformLocation(id, name), 
                 1, false, value.m, 0);
@@ -49,7 +49,7 @@ public class JoglShader extends JoglGraphicsResource implements NativeShader {
     @Override
     public void setVector3(String name, Vector3 value) {
         // TODO Auto-generated method stub
-        graphics.gl.glUseProgram(id);
+        graphics.context.bindProgram(id);
         graphics.gl.glUniform3f(
                 graphics.gl.glGetUniformLocation(id, name), 
                 value.getX(), value.getY(), value.getZ());
@@ -58,7 +58,7 @@ public class JoglShader extends JoglGraphicsResource implements NativeShader {
     @Override
     public void setFloat(String name, float value) {
         // TODO Auto-generated method stub
-        graphics.gl.glUseProgram(id);
+        graphics.context.bindProgram(id);
         graphics.gl.glUniform1f(
                 graphics.gl.glGetUniformLocation(id, name), 
                 value);

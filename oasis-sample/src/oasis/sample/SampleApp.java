@@ -85,15 +85,15 @@ public class SampleApp extends Application {
         display.setResizable(true);
         display.setSize(800, 400);
         
-        shader = new Shader(graphics, vSource, fSource);  
+        shader = graphics.createShaderFromSource(vSource, fSource);  
         
         htmap = new SampleHeightmap();
         htmap.setFlat(true, 0.65f);
-        water = new Mesh(graphics); 
+        water = graphics.createMesh(); 
         htmap.genMesh(water, new Vector3(-10, 0, -10), new Vector3(10, height, 10), 1, 1, octs, freq, pers);
         
         htmap.setFlat(false, 0);
-        heightmap = new Mesh(graphics); 
+        heightmap = graphics.createMesh(); 
         htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
     }
 
@@ -140,7 +140,7 @@ public class SampleApp extends Application {
         shader.setVector3("uViewPos", pos);
         
         // light direction
-        time = 10 * angle + 100.0f;
+        time = -100.0f;
         scale = 2.0f;
 //        pos.setX(10);
 //        pos.setY(-10);
