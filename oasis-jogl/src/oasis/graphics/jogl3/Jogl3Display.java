@@ -6,7 +6,7 @@ import java.awt.event.WindowEvent;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
@@ -45,7 +45,7 @@ public class Jogl3Display implements Display, GLEventListener {
         frame.setSize(800, 600);
         frame.setLocationRelativeTo(null);
         
-        GLProfile profile = GLProfile.get(GLProfile.GL2);
+        GLProfile profile = GLProfile.get(GLProfile.GL3);
         GLCapabilities caps = new GLCapabilities(profile);
         caps.setRedBits(8);
         caps.setGreenBits(8);
@@ -179,7 +179,7 @@ public class Jogl3Display implements Display, GLEventListener {
     public void init(GLAutoDrawable drawable) {
         context = drawable.getContext();
         
-        GL2ES2 gl = drawable.getGL().getGL2();
+        GL3 gl = drawable.getGL().getGL3();
         gl.setSwapInterval(0);
         gl.glEnable(GL.GL_DEPTH_TEST);
         
