@@ -6,26 +6,26 @@ import com.jogamp.opengl.GL2;
 import oasis.core.Engine;
 import oasis.core.EngineException;
 import oasis.core.GameLogger;
-import oasis.graphics.jogl.JoglDisplay;
-import oasis.graphics.jogl.JoglGraphicsDevice;
+import oasis.graphics.jogl3.Jogl3Display;
+import oasis.graphics.jogl3.Jogl3GraphicsDevice;
 
-public class JoglEngine extends Engine {
+public class Jogl3Engine extends Engine {
 
-    private static final GameLogger log = new GameLogger(JoglEngine.class);
+    private static final GameLogger log = new GameLogger(Jogl3Engine.class);
 
-    private JoglDisplay display;
+    private Jogl3Display display;
 
-    public JoglEngine() {
-        display = new JoglDisplay();
+    public Jogl3Engine() {
+        display = new Jogl3Display();
     }
 
     @Override
-    public JoglGraphicsDevice getGraphicsDevice() {
+    public Jogl3GraphicsDevice getGraphicsDevice() {
         return display.getGraphics();
     }
     
     @Override
-    public JoglDisplay getDisplay() {
+    public Jogl3Display getDisplay() {
         return display;
     }
     

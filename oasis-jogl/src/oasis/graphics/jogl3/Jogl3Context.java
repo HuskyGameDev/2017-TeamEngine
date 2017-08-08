@@ -1,19 +1,19 @@
-package oasis.graphics.jogl;
+package oasis.graphics.jogl3;
 
 import com.jogamp.opengl.GL;
 
-public class JoglContext {
+public class Jogl3Context {
 
     private int boundProgram = 0; 
     private int boundTextureUnit = 0; 
     private int[] boundTexture = new int[16]; 
     private int[] boundTextureTarget = new int[16]; 
-    private int boundVao = 0; 
-    private int boundVbo = 0; 
+//    private int boundVao = 0; 
+//    private int boundVbo = 0; 
     
-    private JoglGraphicsDevice graphics; 
+    private Jogl3GraphicsDevice graphics; 
     
-    public JoglContext(JoglGraphicsDevice graphics) { 
+    public Jogl3Context(Jogl3GraphicsDevice graphics) { 
         this.graphics = graphics; 
     }
     
@@ -42,26 +42,31 @@ public class JoglContext {
     public void bindProgram(int id) { 
         if (boundProgram != id) { 
             graphics.gl.glUseProgram(id);
+            graphics.getError("glUseProgram"); 
         }
     }
     
     public void bindVao(int id) { 
-        if (boundVao != id) { 
+//        if (boundVao != id) { 
             graphics.gl.glBindVertexArray(id); 
-            // TODO need to reset VBO id? Don't think so, but should check 
-        }
+            graphics.getError("glBindVertexArray"); 
+//            // TODO need to reset VBO id? Don't think so, but should check 
+//            boundVbo = -1; 
+//        }
     }
     
     public void bindVbo(int id) { 
-        if (boundVbo != id) { 
+//        if (boundVbo != id) { 
             graphics.gl.glBindBuffer(GL.GL_ARRAY_BUFFER, id);
-        }
+            graphics.getError("glBindBuffer (array buffer)"); 
+//        }
     }
     
     public void bindIbo(int id) { 
         // this changes with each VAO, so until I make something
         // to keep track of this, just bind every time
         graphics.gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, id);
+        graphics.getError("glBindBuffer (element buffer)"); 
     }
     
 }

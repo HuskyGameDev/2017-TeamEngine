@@ -1,71 +1,76 @@
-package oasis.graphics.jogl;
+package oasis.graphics.jogl3;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
+import com.jogamp.opengl.GL3;
 
 import oasis.core.GameLogger;
 import oasis.graphics.Shader;
 import oasis.graphics.vertex.Attribute;
 import oasis.math.Matrix4;
+import oasis.math.Vector2;
 import oasis.math.Vector3;
+import oasis.math.Vector4;
 
-public class JoglShader extends JoglGraphicsResource implements Shader {
+public class Jogl3Shader implements Shader {
 
-    private static final GameLogger log = new GameLogger(JoglShader.class); 
+    private static final GameLogger log = new GameLogger(Jogl3Shader.class); 
     
-    private String vertexSource, fragmentSource; 
-    private int id; 
+    protected int id;
     
-    public JoglShader(JoglGraphicsDevice graphics, String vs, String fs) {
-        super(graphics); 
-        this.vertexSource = vs; 
-        this.fragmentSource = fs; 
+    private Jogl3GraphicsDevice gd; 
+    private String vertSource; 
+    private String fragSource; 
+    
+    public Jogl3Shader(Jogl3GraphicsDevice gd, String vs, String fs) {
+        this.gd = gd; 
+        this.vertSource = vs; 
+        this.fragSource = fs; 
         create(); 
-    }
-    
-    public int getId() { 
-        return id; 
     }
     
     @Override
     public String getVertexSource() {
-        return vertexSource;
+        return vertSource; 
     }
 
     @Override
     public String getFragmentSource() {
-        return fragmentSource;
+        return fragSource; 
     }
-    
-    @Override
-    public void setMatrix4(String name, Matrix4 value) {
-        // TODO Auto-generated method stub
-        graphics.context.bindProgram(id);
-        graphics.gl.glUniformMatrix4fv(
-                graphics.gl.glGetUniformLocation(id, name), 
-                1, false, value.m, 0);
-    }
-    
-    @Override
-    public void setVector3(String name, Vector3 value) {
-        // TODO Auto-generated method stub
-        graphics.context.bindProgram(id);
-        graphics.gl.glUniform3f(
-                graphics.gl.glGetUniformLocation(id, name), 
-                value.getX(), value.getY(), value.getZ());
-    }
-    
+
     @Override
     public void setFloat(String name, float value) {
-        // TODO Auto-generated method stub
-        graphics.context.bindProgram(id);
-        graphics.gl.glUniform1f(
-                graphics.gl.glGetUniformLocation(id, name), 
-                value);
+        gd.context.bindProgram(id);
+        gd.gl.glUniform1f(gd.gl.glGetUniformLocation(id, name), value);
+    }
+
+    @Override
+    public void setVector2(String name, Vector2 value) {
+        gd.context.bindProgram(id);
+        gd.gl.glUniform2f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY());
+    }
+
+    @Override
+    public void setVector3(String name, Vector3 value) {
+        gd.context.bindProgram(id);
+        gd.gl.glUniform3f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY(), value.getZ());
+    }
+
+    @Override
+    public void setVector4(String name, Vector4 value) {
+        gd.context.bindProgram(id);
+        gd.gl.glUniform4f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY(), value.getZ(), value.getW());
+    }
+
+    @Override
+    public void setMatrix4(String name, Matrix4 value) {
+        gd.context.bindProgram(id);
+        gd.gl.glUniformMatrix4fv(gd.gl.glGetUniformLocation(id, name), 1, false, value.get(new float[16]), 0);
     }
     
     private void create() { 
-        GL2 gl = graphics.gl; 
+        GL3 gl = gd.gl; 
         
         int[] status = new int[1]; 
         int[] length = new int[1]; 
@@ -76,7 +81,7 @@ public class JoglShader extends JoglGraphicsResource implements Shader {
         vert = gl.glCreateShader(GL2.GL_VERTEX_SHADER); 
         frag = gl.glCreateShader(GL2.GL_FRAGMENT_SHADER); 
         
-        gl.glShaderSource(vert, 1, new String[] { vertexSource }, new int[] { vertexSource.length() }, 0);
+        gl.glShaderSource(vert, 1, new String[] { vertSource }, new int[] { vertSource.length() }, 0);
         gl.glCompileShader(vert);
         gl.glGetShaderiv(vert, GL2.GL_COMPILE_STATUS, status, 0);
         if (status[0] != GL.GL_TRUE) {
@@ -84,7 +89,7 @@ public class JoglShader extends JoglGraphicsResource implements Shader {
             log.warning("Vertex Shader Compile Error: " + new String(text).trim());
         }
         
-        gl.glShaderSource(frag, 1, new String[] { fragmentSource }, new int[] { fragmentSource.length() }, 0);
+        gl.glShaderSource(frag, 1, new String[] { fragSource }, new int[] { fragSource.length() }, 0);
         gl.glCompileShader(frag);
         gl.glGetShaderiv(frag, GL2.GL_COMPILE_STATUS, status, 0);
         if (status[0] != GL.GL_TRUE) {
@@ -108,14 +113,14 @@ public class JoglShader extends JoglGraphicsResource implements Shader {
         gl.glDeleteShader(frag);
         
         
-        for (Attribute a : Attribute.values()) { 
-            System.out.println(a.getGlslName() + " " + a.getIndex() + " " + graphics.gl.glGetAttribLocation(id, a.getGlslName()));
-        }
+//        for (Attribute a : Attribute.values()) { 
+//            System.out.println(a.getGlslName() + " " + a.getIndex() + " " + gd.gl.glGetAttribLocation(id, a.getGlslName()));
+//        }
     }
 
     private void bindAttributes() { 
         for (Attribute a : Attribute.values()) { 
-            graphics.gl.glBindAttribLocation(id, a.getIndex(), a.getGlslName());
+            gd.gl.glBindAttribLocation(id, a.getIndex(), a.getGlslName());
         }
     }
 

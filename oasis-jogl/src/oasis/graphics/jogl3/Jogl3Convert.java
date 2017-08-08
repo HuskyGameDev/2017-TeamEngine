@@ -1,4 +1,4 @@
-package oasis.graphics.jogl;
+package oasis.graphics.jogl3;
 
 import java.util.HashMap;
 
@@ -10,7 +10,7 @@ import oasis.graphics.texture.Format;
 import oasis.graphics.vertex.Attribute;
 import oasis.graphics.vertex.BufferUsage;
 
-public class JoglConvert {
+public class Jogl3Convert {
     private static final int[] PRIMITIVE_TYPE = new int[Primitive.values().length]; 
     private static final int[] BUFFER_USAGE = new int[BufferUsage.values().length]; 
     private static final int[] TEXTURE_FORMAT = new int[Format.values().length]; 
@@ -22,7 +22,6 @@ public class JoglConvert {
         PRIMITIVE_TYPE[Primitive.LINE_STRIP.ordinal()] = GL.GL_LINES; 
         PRIMITIVE_TYPE[Primitive.TRIANGLE_LIST.ordinal()] = GL.GL_TRIANGLES; 
         PRIMITIVE_TYPE[Primitive.TRIANGLE_STRIP.ordinal()] = GL.GL_TRIANGLE_STRIP; 
-        PRIMITIVE_TYPE[Primitive.TRIANGLE_FAN.ordinal()] = GL.GL_TRIANGLE_FAN; 
         
         BUFFER_USAGE[BufferUsage.STATIC.ordinal()] = GL.GL_STATIC_DRAW; 
         BUFFER_USAGE[BufferUsage.DYNAMIC.ordinal()] = GL.GL_DYNAMIC_DRAW; 

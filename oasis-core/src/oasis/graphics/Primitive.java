@@ -5,8 +5,7 @@ public enum Primitive {
     LINE_LIST(2), 
     LINE_STRIP(2), 
     TRIANGLE_LIST(3), 
-    TRIANGLE_STRIP(3), 
-    TRIANGLE_FAN(3); 
+    TRIANGLE_STRIP(3); 
     
     private final int points; 
     

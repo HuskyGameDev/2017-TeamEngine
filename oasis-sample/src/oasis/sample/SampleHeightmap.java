@@ -63,7 +63,7 @@ public class SampleHeightmap {
         }
         
         Vertex[] array = verts.toArray(new Vertex[verts.size()]); 
-        int[] indices = ArrayUtil.convertIntArray(inds.toArray(new Integer[inds.size()])); 
+        int[] indices = ArrayUtil.toIntArray(inds.toArray(new Integer[inds.size()])); 
         Vertex.calculateNormals(array, indices);
         Vertex.setMeshData(array, indices, mesh);
         return mesh; 

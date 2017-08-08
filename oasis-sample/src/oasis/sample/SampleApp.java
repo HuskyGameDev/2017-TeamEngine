@@ -4,7 +4,7 @@ import oasis.core.Application;
 import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
-import oasis.core.jogl.JoglEngine;
+import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.Shader;
 import oasis.graphics.vertex.Mesh;
@@ -23,7 +23,7 @@ public class SampleApp extends Application {
     private int time = 0; 
     
     private float freq = 1 / 13.0f; 
-    private float pers = 0.45f; 
+    private float pers = 0.4f; 
     private int octs = 10; 
     private long res = 2; 
     private long maxRes = 512; 
@@ -65,6 +65,7 @@ public class SampleApp extends Application {
     + "uniform vec3 uLightDirection; "
     + "uniform vec3 uViewPos; "
     + "uniform float uShininess; "
+    + "uniform float uBrightness; "
     + ""
     + "void main() "
     + "{ "
@@ -75,7 +76,7 @@ public class SampleApp extends Application {
     + "  vec3 viewDir = normalize(uViewPos - vModelPos); "
     + "  vec3 halfDir = normalize(lightDir + viewDir); "
     + "  float specAngle = max(dot(halfDir, normal), 0.0); "
-    + "  float specular = pow(specAngle, uShininess); "
+    + "  float specular = uBrightness * pow(specAngle, uShininess); "
     + "  "
     + "  gl_FragColor = vec4(vec3(0.2 + diffuse + specular), 1.0) * vColor;\n "
     + "}";
@@ -89,11 +90,11 @@ public class SampleApp extends Application {
         
         htmap = new SampleHeightmap();
         htmap.setFlat(true, 0.65f);
-        water = graphics.createMesh(); 
+        water = new Mesh(graphics); 
+        heightmap = new Mesh(graphics); 
         htmap.genMesh(water, new Vector3(-10, 0, -10), new Vector3(10, height, 10), 1, 1, octs, freq, pers);
         
         htmap.setFlat(false, 0);
-        heightmap = graphics.createMesh(); 
         htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
     }
 
@@ -130,7 +131,7 @@ public class SampleApp extends Application {
         float scale = 8f; //18.0f;
         float time = 5.0f * angle;
         pos.setX(scale * FastMath.cos(time) * FastMath.cos(time) * FastMath.cos(time));
-        pos.setY(5.0f);
+        pos.setY(10.0f);
         pos.setZ(scale * FastMath.sin(time) * FastMath.sin(time) * FastMath.sin(time));
 //        System.out.println(pos);
         // view
@@ -140,7 +141,7 @@ public class SampleApp extends Application {
         shader.setVector3("uViewPos", pos);
         
         // light direction
-        time = -100.0f;
+        time = -20.0f * angle;
         scale = 2.0f;
 //        pos.setX(10);
 //        pos.setY(-10);
@@ -148,7 +149,7 @@ public class SampleApp extends Application {
         pos = new Vector3(); 
         pos.setX(scale * FastMath.cos(time));
         pos.setZ(1.0f);
-        pos.setY(scale * FastMath.sin(time));
+        pos.setY(-Math.abs(scale * FastMath.sin(time)));
         
         shader.setVector3("uLightDirection", pos); 
         
@@ -160,10 +161,12 @@ public class SampleApp extends Application {
         m = Matrix4.createIdentity();
 //        m.multiplySelf(Matrix4.createRotationY(angle * 5.0f)); 
         shader.setMatrix4("uModel", m);
-        shader.setFloat("uShininess", 2000.0f);
-        graphics.drawMesh(heightmap);
-        shader.setFloat("uShininess", 30.0f);
-        graphics.drawMesh(water); 
+        shader.setFloat("uShininess", 200.0f);
+        shader.setFloat("uBrightness", 0.0f);
+        heightmap.draw();
+        shader.setFloat("uShininess", 300.0f);
+        shader.setFloat("uBrightness", 1.0f);
+        water.draw(); 
     }
     
     @Override
@@ -175,7 +178,7 @@ public class SampleApp extends Application {
         log.info(Oasis.getEngineInfo());
         
         Config cfg = new Config();
-        cfg.engine = JoglEngine.class;
+        cfg.engine = Jogl3Engine.class;
         cfg.fps = 60.0f;
         cfg.ups = 60.0f;
         

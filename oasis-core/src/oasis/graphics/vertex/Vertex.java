@@ -15,13 +15,13 @@ public class Vertex {
         Vector3[] positions = new Vector3[verts.length]; 
         Vector3[] normals = new Vector3[verts.length]; 
         Vector4[] colors = new Vector4[verts.length]; 
-        Vector2[] uvs = new Vector2[verts.length]; 
+//        Vector2[] uvs = new Vector2[verts.length]; 
         
         for (int i = 0; i < verts.length; i++) { 
             positions[i] = verts[i].position; 
             normals[i] = verts[i].normal; 
             colors[i] = verts[i].color; 
-            uvs[i] = verts[i].uv; 
+//            uvs[i] = verts[i].uv; 
         }
         
         mesh.setPositions(positions);
@@ -65,5 +65,4 @@ public class Vertex {
 //            System.out.println(verts[i].normal);
         }
     }
-    
 }

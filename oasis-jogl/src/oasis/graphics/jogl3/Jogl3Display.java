@@ -1,4 +1,4 @@
-package oasis.graphics.jogl;
+package oasis.graphics.jogl3;
 
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
@@ -19,19 +19,19 @@ import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.graphics.Display;
 
-public class JoglDisplay implements Display, GLEventListener {
+public class Jogl3Display implements Display, GLEventListener {
 
-    private static final GameLogger log = new GameLogger(JoglDisplay.class);
+    private static final GameLogger log = new GameLogger(Jogl3Display.class);
     
     public Object contextWait = new Object();
     
     private GLContext context;
     private Frame frame;
     private GLCanvas canvas;
-    private JoglGraphicsDevice device; 
+    private Jogl3GraphicsDevice device; 
     private boolean shouldClose = false;
     
-    public JoglDisplay() {
+    public Jogl3Display() {
         context = null;
         
         frame = new Frame(Oasis.FULL_NAME);
@@ -70,21 +70,21 @@ public class JoglDisplay implements Display, GLEventListener {
         canvas.addGLEventListener(this);
         frame.add(canvas);
         
-        device = new JoglGraphicsDevice(); 
+        device = new Jogl3GraphicsDevice(); 
     }
     
     public void invoke(final Runnable run) { 
         canvas.invoke(true, new GLRunnable() {
             @Override
             public boolean run(GLAutoDrawable drawable) {
-                device.setOglContext(drawable.getGL());
+                device.gl = drawable.getGL().getGL3();
                 run.run();
                 return true;
             }
         });
     }
     
-    public JoglGraphicsDevice getGraphics() {
+    public Jogl3GraphicsDevice getGraphics() {
         return device;
     }
     
@@ -98,7 +98,7 @@ public class JoglDisplay implements Display, GLEventListener {
     
     public void updateOgl() {
         context.makeCurrent();
-        device.setOglContext(context.getGL());
+        device.gl = context.getGL().getGL3();
     }
     
     @Override
@@ -190,7 +190,7 @@ public class JoglDisplay implements Display, GLEventListener {
         
         synchronized (contextWait) {
             context = drawable.getContext();
-            device.setOglContext(context.getGL());
+            device.gl = context.getGL().getGL3();
             
             log.debug("Changed context: " + context.getGLVersion());
             contextWait.notify();
