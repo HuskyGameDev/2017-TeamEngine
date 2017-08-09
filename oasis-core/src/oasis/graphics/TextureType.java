@@ -1,4 +1,4 @@
-package oasis.graphics.texture;
+package oasis.graphics;
 
 public enum TextureType {
     TEXTURE_2D, 

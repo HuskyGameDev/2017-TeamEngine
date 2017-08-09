@@ -8,11 +8,16 @@ import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.IndexBuffer;
+import oasis.graphics.MagFilter;
+import oasis.graphics.MinFilter;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
+import oasis.graphics.Texture2D;
+import oasis.graphics.TextureFormat;
 import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
+import oasis.graphics.WrapMode;
 
 public class Sample2App extends Application {
 
@@ -31,12 +36,14 @@ public class Sample2App extends Application {
         + "#version 120\n "
         + "varying vec3 vColor; "
         + "uniform float uLight = 1.0; "
+        + "uniform sampler2D uTexture; "
         + "void main() { "
         + "  gl_FragColor = uLight * vec4(vColor, 1.0);\n "
         + "}";
     
     private VertexArray boxVao; 
     private Shader shader; 
+    private Texture2D texture; 
     
     @Override
     public void onInit() {
@@ -60,6 +67,16 @@ public class Sample2App extends Application {
         
         boxVao.setVertexBuffer(vbo);
         boxVao.setIndexBuffer(ibo);
+        
+        int[] pixels = new int[16 * 16]; 
+        for (int i = 0; i < pixels.length; i++) { 
+            pixels[i] = (int)(Math.random() * 0x1000000) << 8 | 0xFF; // RGB | A 
+        }
+        
+        texture = graphics.createTexture2D(TextureFormat.RGBA, 16, 16); 
+        texture.setWrap(WrapMode.CLAMP_EDGE, WrapMode.CLAMP_EDGE);
+        texture.setFilter(MinFilter.NEAREST, MagFilter.NEAREST);
+        texture.setIntPixels(pixels); 
     }
 
     @Override
@@ -79,8 +96,10 @@ public class Sample2App extends Application {
         graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
         
         shader.setFloat("uLight", 0.5f);
+        shader.setInt("uTexture", 0);
         
         graphics.setShader(shader);
+        graphics.setTexture(0, texture);
         graphics.setVertexArray(boxVao);
         graphics.drawElements(Primitive.TRIANGLE_LIST, 0, boxVao.getIndexBuffer().getIndexCount());
     }

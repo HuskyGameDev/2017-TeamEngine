@@ -1,6 +1,6 @@
-package oasis.graphics.texture;
+package oasis.graphics;
 
-public enum Format {
+public enum TextureFormat {
     RGBA(false), 
     RGBA8(false), 
     RGBA16F(false), 
@@ -11,7 +11,7 @@ public enum Format {
 
     private final boolean depth;
 
-    private Format(boolean depth) {
+    private TextureFormat(boolean depth) {
         this.depth = depth;
     }
 

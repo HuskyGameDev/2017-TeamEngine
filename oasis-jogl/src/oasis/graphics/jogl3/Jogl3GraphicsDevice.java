@@ -11,10 +11,14 @@ import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
+import oasis.graphics.Texture;
+import oasis.graphics.Texture2D;
+import oasis.graphics.TextureFormat;
 import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
 
+// TODO bind textures before draw call 
 public class Jogl3GraphicsDevice implements GraphicsDevice {
 
     protected GL3 gl;
@@ -22,9 +26,11 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     
     private Jogl3VertexArray currentVao = null; 
     private Jogl3Shader currentShader = null; 
+    private Jogl3Texture[] currentTextures; 
 
     public Jogl3GraphicsDevice() {
         context = new Jogl3Context(this); 
+        currentTextures = new Jogl3Texture[this.getMaxTextureCount()]; 
     }
     
     public void getError(String cmd) {
@@ -60,6 +66,11 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     @Override
     public VertexArray createVertexArray() {
         return new Jogl3VertexArray(this); 
+    }
+    
+    @Override
+    public Texture2D createTexture2D(TextureFormat format, int width, int height) {
+        return new Jogl3Texture2D(this, format, width, height); 
     }
 
     @Override
@@ -102,6 +113,22 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         context.bindVao(currentVao.id);
         gl.glDrawElements(Jogl3Convert.getPrimitiveInt(prim), count, GL.GL_UNSIGNED_INT, start);
         getError("glDrawElements"); 
+    }
+
+    @Override
+    public Texture getTexture(int index) {
+        return currentTextures[index]; 
+    }
+
+    @Override
+    public int getMaxTextureCount() {
+        // TODO per-stage ? 
+        return 16; 
+    }
+
+    @Override
+    public void setTexture(int index, Texture texture) {
+        currentTextures[index] = (Jogl3Texture) texture; 
     } 
     
 }

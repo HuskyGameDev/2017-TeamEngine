@@ -9,17 +9,21 @@ public interface GraphicsDevice {
     VertexBuffer createVertexBuffer(VertexFormat fmt, BufferUsage usage); 
     IndexBuffer createIndexBuffer(BufferUsage usage); 
     VertexArray createVertexArray(); 
+    Texture2D createTexture2D(TextureFormat format, int width, int height); 
     
     // getters
     
     VertexArray getVertexArray(); 
     Shader getShader(); 
+    Texture getTexture(int index); 
+    int getMaxTextureCount(); 
     
     // setters 
     
     // sets current shader
     void setShader(Shader shader); 
     void setVertexArray(VertexArray vao); 
+    void setTexture(int index, Texture texture); 
     
     // rendering
     

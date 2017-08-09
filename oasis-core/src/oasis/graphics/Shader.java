@@ -11,6 +11,7 @@ public interface Shader extends Disposable {
     String getVertexSource(); 
     String getFragmentSource(); 
     
+    void setInt(String name, int value); 
     void setFloat(String name, float value); 
     void setVector2(String name, Vector2 value); 
     void setVector3(String name, Vector3 value); 
