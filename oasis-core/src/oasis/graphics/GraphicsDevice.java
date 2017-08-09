@@ -1,11 +1,5 @@
 package oasis.graphics;
 
-import oasis.graphics.vertex.BufferUsage;
-import oasis.graphics.vertex.IndexBuffer;
-import oasis.graphics.vertex.VertexArray;
-import oasis.graphics.vertex.VertexBuffer;
-import oasis.graphics.vertex.VertexFormat;
-
 public interface GraphicsDevice {
 
     // resource creation 

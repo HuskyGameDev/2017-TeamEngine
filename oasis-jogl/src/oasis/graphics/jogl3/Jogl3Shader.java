@@ -5,8 +5,8 @@ import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 
 import oasis.core.GameLogger;
+import oasis.graphics.Attribute;
 import oasis.graphics.Shader;
-import oasis.graphics.vertex.Attribute;
 import oasis.math.Matrix4;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
@@ -122,6 +122,19 @@ public class Jogl3Shader implements Shader {
         for (Attribute a : Attribute.values()) { 
             gd.gl.glBindAttribLocation(id, a.getIndex(), a.getGlslName());
         }
+    }
+
+    @Override
+    public void dispose() {
+        if (id != 0) {
+            gd.gl.glDeleteProgram(id);
+            id = 0; 
+        }
+    }
+
+    @Override
+    public boolean isDisposed() {
+        return id == 0; 
     }
 
 }

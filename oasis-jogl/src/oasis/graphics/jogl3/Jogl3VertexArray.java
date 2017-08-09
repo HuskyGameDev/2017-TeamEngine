@@ -6,12 +6,12 @@ import java.util.Set;
 import com.jogamp.opengl.GL;
 
 import oasis.core.EngineException;
-import oasis.graphics.vertex.Attribute;
-import oasis.graphics.vertex.IndexBuffer;
-import oasis.graphics.vertex.VertexArray;
-import oasis.graphics.vertex.VertexBuffer;
-import oasis.graphics.vertex.VertexElement;
-import oasis.graphics.vertex.VertexFormat;
+import oasis.graphics.Attribute;
+import oasis.graphics.IndexBuffer;
+import oasis.graphics.VertexArray;
+import oasis.graphics.VertexBuffer;
+import oasis.graphics.VertexElement;
+import oasis.graphics.VertexFormat;
 
 public class Jogl3VertexArray implements VertexArray {
 

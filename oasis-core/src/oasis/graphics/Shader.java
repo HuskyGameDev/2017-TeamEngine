@@ -1,11 +1,12 @@
 package oasis.graphics;
 
+import oasis.core.Disposable;
 import oasis.math.Matrix4;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-public interface Shader {
+public interface Shader extends Disposable {
 
     String getVertexSource(); 
     String getFragmentSource(); 

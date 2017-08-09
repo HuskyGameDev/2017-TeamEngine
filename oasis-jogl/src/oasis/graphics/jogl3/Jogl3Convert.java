@@ -5,10 +5,10 @@ import java.util.HashMap;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
+import oasis.graphics.Attribute;
+import oasis.graphics.BufferUsage;
 import oasis.graphics.Primitive;
 import oasis.graphics.texture.Format;
-import oasis.graphics.vertex.Attribute;
-import oasis.graphics.vertex.BufferUsage;
 
 public class Jogl3Convert {
     private static final int[] PRIMITIVE_TYPE = new int[Primitive.values().length]; 

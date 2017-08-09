@@ -6,8 +6,8 @@ import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.Mesh;
 import oasis.graphics.Shader;
-import oasis.graphics.vertex.Mesh;
 import oasis.math.FastMath;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
@@ -91,9 +91,9 @@ public class SampleApp extends Application {
         htmap = new SampleHeightmap();
         htmap.setFlat(true, 0.65f);
         water = new Mesh(graphics); 
-        heightmap = new Mesh(graphics); 
         htmap.genMesh(water, new Vector3(-10, 0, -10), new Vector3(10, height, 10), 1, 1, octs, freq, pers);
         
+        heightmap = new Mesh(graphics); 
         htmap.setFlat(false, 0);
         htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
     }

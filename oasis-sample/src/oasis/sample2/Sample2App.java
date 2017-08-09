@@ -5,14 +5,14 @@ import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
+import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
-import oasis.graphics.vertex.BufferUsage;
-import oasis.graphics.vertex.IndexBuffer;
-import oasis.graphics.vertex.VertexArray;
-import oasis.graphics.vertex.VertexBuffer;
-import oasis.graphics.vertex.VertexFormat;
+import oasis.graphics.VertexArray;
+import oasis.graphics.VertexBuffer;
+import oasis.graphics.VertexFormat;
 
 public class Sample2App extends Application {
 

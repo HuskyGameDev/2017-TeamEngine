@@ -1,4 +1,4 @@
-package oasis.graphics.vertex;
+package oasis.graphics;
 
 public final class VertexFormat {
 

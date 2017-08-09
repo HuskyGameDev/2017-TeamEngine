@@ -3,8 +3,8 @@ package oasis.sample;
 import java.util.ArrayList;
 
 import oasis.graphics.ColorRgba;
-import oasis.graphics.vertex.Mesh;
-import oasis.graphics.vertex.Vertex;
+import oasis.graphics.Mesh;
+import oasis.graphics.Vertex;
 import oasis.math.FastMath;
 import oasis.math.Vector3;
 import oasis.util.ArrayUtil;

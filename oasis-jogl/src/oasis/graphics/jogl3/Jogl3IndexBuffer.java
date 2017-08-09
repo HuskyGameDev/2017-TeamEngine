@@ -4,8 +4,8 @@ import java.nio.IntBuffer;
 
 import com.jogamp.opengl.GL;
 
-import oasis.graphics.vertex.BufferUsage;
-import oasis.graphics.vertex.IndexBuffer;
+import oasis.graphics.BufferUsage;
+import oasis.graphics.IndexBuffer;
 import oasis.util.BufferUtil;
 
 public class Jogl3IndexBuffer implements IndexBuffer {

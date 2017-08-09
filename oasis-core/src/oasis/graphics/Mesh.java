@@ -1,10 +1,8 @@
-package oasis.graphics.vertex;
+package oasis.graphics;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import oasis.graphics.GraphicsDevice;
-import oasis.graphics.Primitive;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 import oasis.util.ArrayUtil;

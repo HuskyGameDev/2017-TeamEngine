@@ -4,9 +4,9 @@ import java.nio.FloatBuffer;
 
 import com.jogamp.opengl.GL;
 
-import oasis.graphics.vertex.BufferUsage;
-import oasis.graphics.vertex.VertexBuffer;
-import oasis.graphics.vertex.VertexFormat;
+import oasis.graphics.BufferUsage;
+import oasis.graphics.VertexBuffer;
+import oasis.graphics.VertexFormat;
 import oasis.util.BufferUtil;
 
 public class Jogl3VertexBuffer implements VertexBuffer {
