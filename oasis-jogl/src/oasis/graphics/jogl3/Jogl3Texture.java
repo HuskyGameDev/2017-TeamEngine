@@ -1,5 +1,8 @@
 package oasis.graphics.jogl3;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
+
 import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
 import oasis.graphics.Texture;
@@ -24,7 +27,14 @@ public abstract class Jogl3Texture implements Texture {
         int[] ids = new int[1]; 
         gd.gl.glGenTextures(1, ids, 0);
         this.id = ids[0]; 
+        
+        gd.context.bindTexture(GL.GL_TEXTURE_2D, id);
+        
+        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
     }
+    
+    public abstract int getTarget(); 
     
     @Override
     public TextureType getType() {
@@ -44,6 +54,26 @@ public abstract class Jogl3Texture implements Texture {
     @Override
     public MagFilter getMagFilter() {
         return magFilter; 
+    }
+    
+    @Override
+    public void setMinFilter(MinFilter min) {
+        this.minFilter = min; 
+        gd.context.bindTexture(GL.GL_TEXTURE_2D, id);
+        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, Jogl3Convert.getMinFilter(min));
+    }
+
+    @Override
+    public void setMagFilter(MagFilter mag) {
+        this.magFilter = mag; 
+        gd.context.bindTexture(GL.GL_TEXTURE_2D, id);
+        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, Jogl3Convert.getMagFilter(mag));
+    }
+
+    @Override
+    public void setFilter(MinFilter min, MagFilter mag) {
+        setMinFilter(min); 
+        setMagFilter(mag); 
     }
 
     @Override

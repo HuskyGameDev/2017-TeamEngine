@@ -44,7 +44,7 @@ public class Jogl3IndexBuffer implements IndexBuffer {
             // if buffer is the same size, still create a new buffer 
             // since glBufferSubData is synchronized, I think 
             bufferSize = newSize; 
-            gd.gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, newSize, data, Jogl3Convert.getBufferUsageInt(usage));
+            gd.gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, newSize, data, Jogl3Convert.getBufferUsage(usage));
             gd.getError("glBufferData (element buffer)"); 
         }
         else {

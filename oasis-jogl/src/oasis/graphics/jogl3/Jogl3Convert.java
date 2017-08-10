@@ -7,13 +7,19 @@ import com.jogamp.opengl.GL2;
 
 import oasis.graphics.Attribute;
 import oasis.graphics.BufferUsage;
+import oasis.graphics.MagFilter;
+import oasis.graphics.MinFilter;
 import oasis.graphics.Primitive;
 import oasis.graphics.TextureFormat;
+import oasis.graphics.WrapMode;
 
 public class Jogl3Convert {
     private static final int[] PRIMITIVE_TYPE = new int[Primitive.values().length]; 
     private static final int[] BUFFER_USAGE = new int[BufferUsage.values().length]; 
     private static final int[] TEXTURE_FORMAT = new int[TextureFormat.values().length]; 
+    private static final int[] MIN_FILTER = new int[MinFilter.values().length]; 
+    private static final int[] MAG_FILTER = new int[MagFilter.values().length]; 
+    private static final int[] WRAP_MODE = new int[WrapMode.values().length]; 
     private static final HashMap<String, Attribute> ATTRIBUTE_MAP = new HashMap<>(); 
     
     static { 
@@ -35,16 +41,41 @@ public class Jogl3Convert {
         TEXTURE_FORMAT[TextureFormat.DEPTH24.ordinal()] = GL.GL_DEPTH_COMPONENT24; 
         TEXTURE_FORMAT[TextureFormat.DEPTH32.ordinal()] = GL.GL_DEPTH_COMPONENT32; 
         
+        MIN_FILTER[MinFilter.LINEAR.ordinal()] = GL.GL_LINEAR; 
+        MIN_FILTER[MinFilter.LINEAR_MIPMAP_LINEAR.ordinal()] = GL.GL_LINEAR_MIPMAP_LINEAR; 
+        MIN_FILTER[MinFilter.LINEAR_MIPMAP_NEAREST.ordinal()] = GL.GL_LINEAR_MIPMAP_NEAREST; 
+        MIN_FILTER[MinFilter.NEAREST.ordinal()] = GL.GL_NEAREST; 
+        MIN_FILTER[MinFilter.NEAREST_MIPMAP_LINEAR.ordinal()] = GL.GL_NEAREST_MIPMAP_LINEAR; 
+        MIN_FILTER[MinFilter.NEAREST_MIPMAP_NEAREST.ordinal()] = GL.GL_NEAREST_MIPMAP_NEAREST; 
+        
+        MAG_FILTER[MagFilter.LINEAR.ordinal()] = GL.GL_LINEAR; 
+        MAG_FILTER[MagFilter.NEAREST.ordinal()] = GL.GL_NEAREST; 
+        
+        WRAP_MODE[WrapMode.CLAMP_EDGE.ordinal()] = GL.GL_CLAMP_TO_EDGE; 
+        WRAP_MODE[WrapMode.REPEAT.ordinal()] = GL.GL_REPEAT; 
+        
         for (Attribute a : Attribute.values()) { 
             ATTRIBUTE_MAP.put(a.getGlslName(), a); 
         }
     }
     
-    public static int getPrimitiveInt(Primitive prim) { 
+    public static int getWrapMode(WrapMode wrap) {
+        return WRAP_MODE[wrap.ordinal()]; 
+    }
+    
+    public static int getMinFilter(MinFilter min) {
+        return MIN_FILTER[min.ordinal()]; 
+    }
+    
+    public static int getMagFilter(MagFilter mag) {
+        return MAG_FILTER[mag.ordinal()]; 
+    }
+    
+    public static int getPrimitive(Primitive prim) { 
         return PRIMITIVE_TYPE[prim.ordinal()]; 
     }
     
-    public static int getBufferUsageInt(BufferUsage usage) { 
+    public static int getBufferUsage(BufferUsage usage) { 
         return BUFFER_USAGE[usage.ordinal()]; 
     }
     

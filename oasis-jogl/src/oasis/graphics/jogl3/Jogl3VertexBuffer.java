@@ -64,7 +64,7 @@ public class Jogl3VertexBuffer implements VertexBuffer {
             // if buffer is the same size, still create a new buffer 
             // since glBufferSubData is synchronized, I think 
             bufferSize = newSize; 
-            gd.gl.glBufferData(GL.GL_ARRAY_BUFFER, newSize, data, Jogl3Convert.getBufferUsageInt(usage));
+            gd.gl.glBufferData(GL.GL_ARRAY_BUFFER, newSize, data, Jogl3Convert.getBufferUsage(usage));
             gd.getError("glBufferData (array buffer)"); 
         }
         else {

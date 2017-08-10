@@ -27,18 +27,22 @@ public class Sample2App extends Application {
         + "#version 120\n "
         + "attribute vec2 aPosition; "
         + "attribute vec3 aColor; "
+        + "attribute vec2 aTexCoord; "
         + "varying vec3 vColor; "
+        + "varying vec2 vTexCoord; "
         + "void main() { "
         + "  vColor = aColor; "
+        + "  vTexCoord = aTexCoord; "
         + "  gl_Position = vec4(aPosition, 0.0, 1.0); "
         + "}";
     private String fSource = ""
         + "#version 120\n "
         + "varying vec3 vColor; "
+        + "varying vec2 vTexCoord; "
         + "uniform float uLight = 1.0; "
         + "uniform sampler2D uTexture; "
         + "void main() { "
-        + "  gl_FragColor = uLight * vec4(vColor, 1.0);\n "
+        + "  gl_FragColor = uLight * vec4(vColor, 1.0) * vec4(texture2D(uTexture, vTexCoord.xy).xyz, 1.0);\n "
         + "}";
     
     private VertexArray boxVao; 
@@ -68,15 +72,9 @@ public class Sample2App extends Application {
         boxVao.setVertexBuffer(vbo);
         boxVao.setIndexBuffer(ibo);
         
-        int[] pixels = new int[16 * 16]; 
-        for (int i = 0; i < pixels.length; i++) { 
-            pixels[i] = (int)(Math.random() * 0x1000000) << 8 | 0xFF; // RGB | A 
-        }
-        
-        texture = graphics.createTexture2D(TextureFormat.RGBA, 16, 16); 
-        texture.setWrap(WrapMode.CLAMP_EDGE, WrapMode.CLAMP_EDGE);
-        texture.setFilter(MinFilter.NEAREST, MagFilter.NEAREST);
-        texture.setIntPixels(pixels); 
+        texture = graphics.createTexture2D(TextureFormat.RGBA8, 16, 16); 
+        texture.setWrap(WrapMode.REPEAT, WrapMode.REPEAT);
+        texture.setFilter(MinFilter.LINEAR, MagFilter.LINEAR);
     }
 
     @Override
@@ -89,6 +87,13 @@ public class Sample2App extends Application {
                 (float)Math.random(), (float)Math.random(), 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
                 -(float)Math.random(),  (float)Math.random(), 0.0f,   1.0f, 1.0f, 1.0f, 1.0f,   0.0f, 1.0f, 
         });
+        
+        int[] pixels = new int[16 * 16]; 
+        for (int i = 0; i < pixels.length; i++) { 
+            pixels[i] = (int)(Math.random() * 0x1000000) << 8 | 0xFF; // RGB | A 
+        }
+        
+        texture.setIntPixels(pixels);
     }
 
     @Override
@@ -96,10 +101,10 @@ public class Sample2App extends Application {
         graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
         
         shader.setFloat("uLight", 0.5f);
-        shader.setInt("uTexture", 0);
+        shader.setInt("uTexture", 1);
         
         graphics.setShader(shader);
-        graphics.setTexture(0, texture);
+        graphics.setTexture(1, texture);
         graphics.setVertexArray(boxVao);
         graphics.drawElements(Primitive.TRIANGLE_LIST, 0, boxVao.getIndexBuffer().getIndexCount());
     }

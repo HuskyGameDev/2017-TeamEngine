@@ -19,24 +19,42 @@ public class Jogl3Context {
     
     public void bindTextureUnit(int unit) { 
         if (boundTextureUnit != unit) { 
-            graphics.gl.glActiveTexture(unit);
+            graphics.gl.glActiveTexture(GL.GL_TEXTURE0 + unit);
+            graphics.getError("glActiveTexture"); 
+            
+            boundTextureUnit = unit; 
         }
     }
     
     public void bindTexture(int target, int id) { 
         int lastTarget = boundTextureTarget[boundTextureUnit]; 
-        if (lastTarget != 0) { 
+        if (lastTarget != target && lastTarget != 0) { 
             // unbind last texture target. 
             // this isn't necessary at this time, 
             // but only one target can be bound
             // to each unit during a shader program. 
             graphics.gl.glBindTexture(lastTarget, 0);
+            graphics.getError("glBindTexture (0)"); 
         }
         // bind texture target 
         graphics.gl.glBindTexture(target, id);
+        graphics.getError("glBindTexture"); 
         
         boundTextureTarget[boundTextureUnit] = target; 
         boundTexture[boundTextureUnit] = id; 
+    }
+    
+    public void bindTexture(int unit, int target, int id) {
+        // only change texture unit if [unit] needs to be changed 
+        if (boundTextureUnit != unit) {
+            if (target != boundTextureTarget[unit] || id != boundTexture[unit]) {
+                bindTextureUnit(unit); 
+            }
+        }
+        
+        if (target != boundTextureTarget[unit] || id != boundTexture[unit]) {
+            bindTexture(target, id);  
+        }
     }
     
     public void bindProgram(int id) { 

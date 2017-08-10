@@ -101,17 +101,15 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
 
     @Override
     public void drawArrays(Primitive prim, int start, int count) {
-        context.bindProgram(currentShader.id); 
-        context.bindVao(currentVao.id);
-        gl.glDrawArrays(Jogl3Convert.getPrimitiveInt(prim), start, count);
+        preDraw(); 
+        gl.glDrawArrays(Jogl3Convert.getPrimitive(prim), start, count);
         getError("glDrawArrays"); 
     }
 
     @Override
     public void drawElements(Primitive prim, int start, int count) {
-        context.bindProgram(currentShader.id); 
-        context.bindVao(currentVao.id);
-        gl.glDrawElements(Jogl3Convert.getPrimitiveInt(prim), count, GL.GL_UNSIGNED_INT, start);
+        preDraw(); 
+        gl.glDrawElements(Jogl3Convert.getPrimitive(prim), count, GL.GL_UNSIGNED_INT, start);
         getError("glDrawElements"); 
     }
 
@@ -130,5 +128,20 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     public void setTexture(int index, Texture texture) {
         currentTextures[index] = (Jogl3Texture) texture; 
     } 
+    
+    private void preDraw() {
+        context.bindProgram(currentShader.id); 
+        context.bindVao(currentVao.id);
+        
+        for (int i = 0; i < currentTextures.length; i++) {
+            Jogl3Texture t = currentTextures[i]; 
+            if (t == null) {
+                context.bindTexture(i, GL.GL_TEXTURE_2D, 0);
+            }
+            else {
+                context.bindTexture(i, t.getTarget(), t.id);
+            }
+        }
+    }
     
 }

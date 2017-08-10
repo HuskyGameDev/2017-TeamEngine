@@ -40,6 +40,12 @@ public class Jogl3Shader implements Shader {
     }
 
     @Override
+    public void setInt(String name, int value) {
+        gd.context.bindProgram(id);
+        gd.gl.glUniform1i(gd.gl.glGetUniformLocation(id, name), value);
+    }
+    
+    @Override
     public void setFloat(String name, float value) {
         gd.context.bindProgram(id);
         gd.gl.glUniform1f(gd.gl.glGetUniformLocation(id, name), value);
