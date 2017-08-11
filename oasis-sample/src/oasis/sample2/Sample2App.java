@@ -52,7 +52,7 @@ public class Sample2App extends Application {
     @Override
     public void onInit() {
         boxVao = graphics.createVertexArray(); 
-        shader = graphics.createShaderFromSource(vSource, fSource); 
+        shader = graphics.createShader(vSource, fSource); 
         
         VertexBuffer vbo = graphics.createVertexBuffer(VertexFormat.POSITION_3_COLOR_4_TEXTURE_2, BufferUsage.STATIC); 
         IndexBuffer ibo = graphics.createIndexBuffer(BufferUsage.STATIC); 
@@ -72,7 +72,7 @@ public class Sample2App extends Application {
         boxVao.setVertexBuffer(vbo);
         boxVao.setIndexBuffer(ibo);
         
-        texture = graphics.createTexture2D(TextureFormat.RGBA8, 16, 16); 
+        texture = graphics.createTexture2D(TextureFormat.DEPTH24, 16, 16); 
         texture.setWrap(WrapMode.REPEAT, WrapMode.REPEAT);
         texture.setFilter(MinFilter.LINEAR, MagFilter.LINEAR);
     }

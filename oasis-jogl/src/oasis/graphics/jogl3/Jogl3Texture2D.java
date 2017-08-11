@@ -40,7 +40,7 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
         gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
         
-        gd.gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, width, height, 0, GL.GL_RGBA, GL2.GL_UNSIGNED_INT_8_8_8_8, null);
+        gd.gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, Jogl3Convert.getTextureFormat(format), width, height, 0, Jogl3Convert.getDefaultTextureInputFormat(format), Jogl3Convert.getDefaultTextureInputType(format), null);
     }
     
     @Override
@@ -131,7 +131,7 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         buffer.put(rgba); 
         buffer.flip(); 
         
-        gd.gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, width, height, 0, GL.GL_RGBA, GL2.GL_UNSIGNED_INT_8_8_8_8, buffer);
+        gd.gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, Jogl3Convert.getTextureFormat(format), width, height, 0, GL.GL_RGBA, GL2.GL_UNSIGNED_INT_8_8_8_8, buffer);
     }
     
 }

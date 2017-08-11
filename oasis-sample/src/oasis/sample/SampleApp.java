@@ -86,7 +86,7 @@ public class SampleApp extends Application {
         display.setResizable(true);
         display.setSize(800, 400);
         
-        shader = graphics.createShaderFromSource(vSource, fSource);  
+        shader = graphics.createShader(vSource, fSource);  
         
         htmap = new SampleHeightmap();
         htmap.setFlat(true, 0.65f);

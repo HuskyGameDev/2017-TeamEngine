@@ -43,14 +43,8 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
     
     @Override
-    public Shader createShaderFromSource(String vertex, String fragment) {
+    public Shader createShader(String vertex, String fragment) {
         return new Jogl3Shader(this, vertex, fragment); 
-    }
-
-    @Override
-    public Shader createShaderFromFile(String vertex, String fragment) {
-        // TODO finish
-        throw new EngineException("Creating shader from file is not currently supported"); 
     }
 
     @Override

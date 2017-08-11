@@ -4,8 +4,7 @@ public interface GraphicsDevice {
 
     // resource creation 
     
-    Shader createShaderFromSource(String vertex, String fragment); 
-    Shader createShaderFromFile(String vertex, String fragment); 
+    Shader createShader(String vertex, String fragment); 
     VertexBuffer createVertexBuffer(VertexFormat fmt, BufferUsage usage); 
     IndexBuffer createIndexBuffer(BufferUsage usage); 
     VertexArray createVertexArray(); 
