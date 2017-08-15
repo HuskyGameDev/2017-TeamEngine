@@ -4,7 +4,6 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.glu.GLU;
 
-import oasis.core.EngineException;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.GraphicsDevice;
@@ -24,11 +23,14 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     protected GL3 gl;
     protected Jogl3Context context; 
     
+    protected Jogl3Display display; 
+    
     private Jogl3VertexArray currentVao = null; 
     private Jogl3Shader currentShader = null; 
     private Jogl3Texture[] currentTextures; 
 
-    public Jogl3GraphicsDevice() {
+    public Jogl3GraphicsDevice(Jogl3Display display) {
+        this.display = display; 
         context = new Jogl3Context(this); 
         currentTextures = new Jogl3Texture[this.getMaxTextureCount()]; 
     }
@@ -40,6 +42,16 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         GLU glu = new GLU(); 
         
         System.out.println("[GLERROR] " + cmd + ": " + i + ": " + glu.gluErrorString(i));
+    }
+    
+    @Override
+    public int getWidth() {
+        return display.getWidth(); 
+    }
+    
+    @Override
+    public int getHeight() {
+        return display.getHeight(); 
     }
     
     @Override

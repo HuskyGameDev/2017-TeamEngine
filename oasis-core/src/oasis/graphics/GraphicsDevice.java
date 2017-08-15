@@ -12,6 +12,9 @@ public interface GraphicsDevice {
     
     // getters
     
+    int getWidth(); 
+    int getHeight(); 
+    
     VertexArray getVertexArray(); 
     Shader getShader(); 
     Texture getTexture(int index); 

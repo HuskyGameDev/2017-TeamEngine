@@ -74,6 +74,10 @@ public final class VertexFormat {
         return size; 
     }
     
+    public int getFloatCount() {
+        return size / 4; 
+    }
+    
     public boolean equals(VertexFormat d) {
         if (d == this) return true; 
         if (d.elements.length != elements.length) return false; 

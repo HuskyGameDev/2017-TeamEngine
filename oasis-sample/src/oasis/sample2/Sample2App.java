@@ -72,7 +72,7 @@ public class Sample2App extends Application {
         boxVao.setVertexBuffer(vbo);
         boxVao.setIndexBuffer(ibo);
         
-        texture = graphics.createTexture2D(TextureFormat.DEPTH24, 16, 16); 
+        texture = graphics.createTexture2D(TextureFormat.RGBA8, 16, 16); 
         texture.setWrap(WrapMode.REPEAT, WrapMode.REPEAT);
         texture.setFilter(MinFilter.LINEAR, MagFilter.LINEAR);
     }

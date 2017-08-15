@@ -1,8 +1,15 @@
-package oasis.graphics;
+package oasis.graphics.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import oasis.graphics.BufferUsage;
+import oasis.graphics.GraphicsDevice;
+import oasis.graphics.IndexBuffer;
+import oasis.graphics.Primitive;
+import oasis.graphics.VertexArray;
+import oasis.graphics.VertexBuffer;
+import oasis.graphics.VertexFormat;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 import oasis.util.ArrayUtil;

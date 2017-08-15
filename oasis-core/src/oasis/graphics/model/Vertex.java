@@ -1,4 +1,4 @@
-package oasis.graphics;
+package oasis.graphics.model;
 
 import oasis.math.Vector2;
 import oasis.math.Vector3;

@@ -70,7 +70,7 @@ public class Jogl3Display implements Display, GLEventListener {
         canvas.addGLEventListener(this);
         frame.add(canvas);
         
-        device = new Jogl3GraphicsDevice(); 
+        device = new Jogl3GraphicsDevice(this); 
     }
     
     public void invoke(final Runnable run) { 
