@@ -34,10 +34,22 @@ public class Jogl3FrameBuffer implements FrameBuffer {
 	
 	@Override
 	public void dispose() {
-		if (id != 0) {
-			gd.gl.glDeleteFramebuffers(1, new int[] { id }, 0);
-			id = 0; 
-		}
+		dispose(false); 
+	}
+	
+	@Override
+	public void dispose(boolean textures) {
+	    if (id != 0) {
+            gd.gl.glDeleteFramebuffers(1, new int[] { id }, 0);
+            id = 0; 
+        }
+	    
+	    if (textures) {
+	        if (depthTexture != null) depthTexture.dispose(); 
+	        for (Jogl3Texture tex : colorTextures) {
+	            if (tex != null) tex.dispose(); 
+	        }
+	    }
 	}
 
 	@Override

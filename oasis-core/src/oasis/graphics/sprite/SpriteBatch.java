@@ -86,8 +86,12 @@ public class SpriteBatch {
         ibo.setData(inds);
     }
     
+    public SpriteBatch(GraphicsDevice gd, int maxSprites) {
+        this(gd, null, maxSprites); 
+    }
+    
     public SpriteBatch(GraphicsDevice gd) {
-        this(gd, null, 10); 
+        this(gd, null, 1000); 
     }
     
     private static Shader getDefaultShader(GraphicsDevice gd) {
@@ -98,6 +102,19 @@ public class SpriteBatch {
         defaultShader = gd.createShader(defaultVs, defaultFs); 
         
         return defaultShader; 
+    }
+    
+    public void setShader(Shader shader) {
+        if (drawing) {
+            flush(); 
+        }
+        
+        if (shader != null) {
+            this.shader = shader; 
+        }
+        else {
+            shader = getDefaultShader(gd); 
+        }
     }
     
     public void begin() {
@@ -134,6 +151,8 @@ public class SpriteBatch {
         gd.setTexture(0, lastTex);
         
         shader.setInt("uTexture", 0);
+        shader.setFloat("uInvTextureWidth", 1.0f / lastTex.getWidth());
+        shader.setFloat("uInvTextureHeight", 1.0f / lastTex.getHeight());
         shader.setVector4("uColor", new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
         shader.setMatrix4("uProjection", projection); 
         gd.drawElements(Primitive.TRIANGLE_LIST, 0, curSprites * 6);

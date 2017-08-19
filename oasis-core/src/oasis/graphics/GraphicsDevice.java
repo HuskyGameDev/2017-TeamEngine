@@ -6,6 +6,7 @@ public interface GraphicsDevice {
     
     Shader createShader(String vertex, String fragment); 
     FrameBuffer createFrameBuffer(int width, int height); 
+    FrameBuffer createFrameBuffer(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers); 
     VertexBuffer createVertexBuffer(VertexFormat fmt, BufferUsage usage); 
     IndexBuffer createIndexBuffer(BufferUsage usage); 
     VertexArray createVertexArray(); 
@@ -13,6 +14,8 @@ public interface GraphicsDevice {
     
     // getters
     
+    int getScreenWidth(); 
+    int getScreenHeight(); 
     int getWidth(); 
     int getHeight(); 
     

@@ -30,7 +30,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     private Jogl3Shader currentShader = null; 
     private Jogl3Texture[] currentTextures; 
     private Jogl3FrameBuffer currentFbo = null; 
-
+    
     public Jogl3GraphicsDevice(Jogl3Display display) {
         this.display = display; 
         context = new Jogl3Context(this); 
@@ -47,13 +47,23 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
     
     @Override
-    public int getWidth() {
+    public int getScreenWidth() {
         return display.getWidth(); 
     }
     
     @Override
-    public int getHeight() {
+    public int getScreenHeight() {
         return display.getHeight(); 
+    }
+    
+    @Override
+    public int getWidth() {
+        return currentFbo != null ? currentFbo.getWidth() : display.getWidth(); 
+    }
+    
+    @Override
+    public int getHeight() {
+        return currentFbo != null ? currentFbo.getHeight() : display.getHeight(); 
     }
     
     @Override
@@ -64,6 +74,22 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     @Override
     public FrameBuffer createFrameBuffer(int width, int height) {
     	return new Jogl3FrameBuffer(this, width, height); 
+    }
+    
+    @Override
+    public FrameBuffer createFrameBuffer(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers) {
+        Jogl3FrameBuffer fbo = new Jogl3FrameBuffer(this, width, height); 
+        if (depthBuffer != null) {
+            fbo.setDepthTexture(createTexture2D(depthBuffer, width, height));
+        }
+        if (colorBuffers != null) {
+            for (int i = 0; i < colorBuffers.length; i++) {
+                if (colorBuffers[i] != null) {
+                    fbo.setColorTexture(i, createTexture2D(colorBuffers[i], width, height));
+                }
+            }
+        }
+        return fbo; 
     }
 
     @Override

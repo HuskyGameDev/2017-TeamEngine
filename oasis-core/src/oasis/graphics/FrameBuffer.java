@@ -4,6 +4,8 @@ import oasis.core.Disposable;
 
 public interface FrameBuffer extends Disposable {
 
+    void dispose(boolean textures); 
+    
 	int getWidth(); 
 	int getHeight(); 
 	

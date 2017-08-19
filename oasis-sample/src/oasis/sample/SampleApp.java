@@ -6,14 +6,8 @@ import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.FrameBuffer;
-import oasis.graphics.MagFilter;
-import oasis.graphics.MinFilter;
 import oasis.graphics.Shader;
-import oasis.graphics.Texture2D;
-import oasis.graphics.TextureFormat;
 import oasis.graphics.model.Mesh;
-import oasis.graphics.sprite.SpriteBatch;
 import oasis.math.FastMath;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
@@ -24,9 +18,6 @@ public class SampleApp extends Application {
     
     private Shader shader;
     private Mesh heightmap, water; 
-    private FrameBuffer fbo; 
-    private Texture2D screenTex, depthTex; 
-    private SpriteBatch sb; 
     
     private float angle = 0.0f; 
     private int time = 0; 
@@ -95,8 +86,6 @@ public class SampleApp extends Application {
         display.setResizable(true);
         display.setSize(800, 400);
         
-        sb = new SpriteBatch(graphics); 
-        
         shader = graphics.createShader(vSource, fSource);  
         
         htmap = new SampleHeightmap();
@@ -107,15 +96,6 @@ public class SampleApp extends Application {
         heightmap = new Mesh(graphics); 
         htmap.setFlat(false, 0);
         htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
-    
-        fbo = graphics.createFrameBuffer(2048, 1024); 
-        screenTex = graphics.createTexture2D(TextureFormat.RGBA8, fbo.getWidth(), fbo.getHeight()); 
-        screenTex.setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
-        screenTex.setMipmaps(1);
-        depthTex = graphics.createTexture2D(TextureFormat.DEPTH24, fbo.getWidth(), fbo.getHeight()); 
-        
-        fbo.setColorTexture(0, screenTex);
-        fbo.setDepthTexture(depthTex);
     }
 
     @Override
@@ -144,8 +124,6 @@ public class SampleApp extends Application {
 
     @Override
     public void onRender() {
-    	graphics.setFrameBuffer(fbo);
-    	
         graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
         graphics.setShader(shader);
         
@@ -189,13 +167,6 @@ public class SampleApp extends Application {
         shader.setFloat("uShininess", 300.0f);
         shader.setFloat("uBrightness", 1.0f);
         water.draw(); 
-        
-        graphics.setFrameBuffer(null);
-        graphics.clearScreen(new ColorRgba(0.0f, 0.8f, 1.0f, 1.0f));
-        
-        sb.begin(); 
-        sb.draw(screenTex, 20, 20, graphics.getWidth() - 40, graphics.getHeight() - 40);
-        sb.end(); 
     }
     
     @Override
