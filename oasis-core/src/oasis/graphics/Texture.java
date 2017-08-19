@@ -10,8 +10,12 @@ public interface Texture extends Disposable {
     MinFilter getMinFilter(); 
     MagFilter getMagFilter(); 
     
+    int getMipmaps(); 
+    
     void setMinFilter(MinFilter min); 
     void setMagFilter(MagFilter mag); 
-    void setFilter(MinFilter min, MagFilter mag); 
+    void setFilters(MinFilter min, MagFilter mag); 
+    
+    void setMipmaps(int levels); 
     
 }

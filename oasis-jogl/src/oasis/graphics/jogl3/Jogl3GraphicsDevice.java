@@ -119,6 +119,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         preDraw(); 
         gl.glDrawArrays(Jogl3Convert.getPrimitive(prim), start, count);
         getError("glDrawArrays"); 
+        postDraw(); 
     }
 
     @Override
@@ -126,6 +127,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         preDraw(); 
         gl.glDrawElements(Jogl3Convert.getPrimitive(prim), count, GL.GL_UNSIGNED_INT, start);
         getError("glDrawElements"); 
+        postDraw(); 
     }
 
     @Override
@@ -155,6 +157,20 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
             }
             else {
                 context.bindTexture(i, t.getTarget(), t.id);
+            }
+        }
+    }
+    
+    private void postDraw() {
+        if (currentFbo != null) {
+            if (currentFbo.getDepthTexture() != null && currentFbo.getDepthTexture().getMipmaps() > 1) {
+                currentFbo.getDepthTexture().generateMipmaps(); 
+            }
+            
+            for (int i = 0; i < currentFbo.getMaxColorTextureCount(); i++) {
+                if (currentFbo.getColorTexture(i) != null && currentFbo.getColorTexture(i).getMipmaps() > 1) {
+                    currentFbo.getColorTexture(i).generateMipmaps(); 
+                }
             }
         }
     }

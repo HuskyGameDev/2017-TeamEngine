@@ -61,12 +61,12 @@ public class Jogl3FrameBuffer implements FrameBuffer {
 	}
 
 	@Override
-	public Texture getColorTexture(int index) {
+	public Jogl3Texture getColorTexture(int index) {
 		return colorTextures[index]; 
 	}
 
 	@Override
-	public Texture getDepthTexture() {
+	public Jogl3Texture getDepthTexture() {
 		return depthTexture; 
 	}
 

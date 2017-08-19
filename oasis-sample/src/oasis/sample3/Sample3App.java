@@ -42,15 +42,15 @@ public class Sample3App extends Application {
             }
             
             textures[i] = graphics.createTexture2D(TextureFormat.RGBA8, 16, 16); 
-            textures[i].setWrap(WrapMode.REPEAT, WrapMode.REPEAT);
-            textures[i].setFilter(MinFilter.NEAREST, MagFilter.NEAREST);
-            textures[i].setIntPixels(pixels);
+            textures[i].setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
+            textures[i].setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
+            textures[i].setPixelsRgba(pixels);
         }
         
         textures[0].dispose(); 
         textures[0] = textureLoader.get("assets/textures/test.png"); 
-        textures[0].setFilter(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
-        textures[0].setWrap(WrapMode.REPEAT, WrapMode.REPEAT);
+        textures[0].setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
+        textures[0].setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
     }
 
     @Override

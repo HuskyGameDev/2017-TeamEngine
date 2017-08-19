@@ -41,18 +41,20 @@ public class TextureLoader {
 			
 			// get ARGB pixels of image
 			int[] data = new int[width * height]; 
-			int[] rgba = new int[data.length]; 
 			image.getRGB(0, 0, image.getWidth(), image.getHeight(), data, 0, image.getWidth()); 
 			
 			// convert ARGB to RGBA
-			for (int i = 0; i < data.length; i++) {
+			for (int i = 0; i < data.length / 2; i++) {
 				// reverse y
-				int j = i % image.getWidth() + (image.getHeight() - 1 - i / image.getWidth()) * image.getWidth(); 
-				rgba[i] = (data[j] & 0xFFFFFF) << 8 | data[j] >>> 24; 
+				int j = i % width + (height - 1 - i / width) * width; 
+				// swap values
+				data[i] ^= data[j]; 
+				data[j] ^= data[i]; 
+				data[i] ^= data[j]; 
 			}
 			
 			// set pixels of texture
-			tex.setIntPixels(rgba);
+			tex.setPixelsArgb(data);
 			
 			return tex; 
 		} catch (Exception e) {
@@ -63,7 +65,7 @@ public class TextureLoader {
 	
 	private Texture2D createDefaultTexture() {
 		Texture2D tex = gd.createTexture2D(TextureFormat.RGBA8, 1, 1); 
-		tex.setIntPixels(new int[] { 0xFF00FFFF });
+		tex.setPixelsRgba(new int[] { 0xFF00FFFF });
 		return tex; 
 	}
 	

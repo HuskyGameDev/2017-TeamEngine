@@ -34,9 +34,6 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         
         gd.context.bindTexture(GL.GL_TEXTURE_2D, id);
         
-        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_BASE_LEVEL, 0);
-        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAX_LEVEL, 0);
-        
         gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
         gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
         
@@ -83,7 +80,7 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
     }
 
     @Override
-    public void setWrap(WrapMode s, WrapMode t) {
+    public void setWrapModes(WrapMode s, WrapMode t) {
         setWrapS(s); 
         setWrapT(t); 
     }
@@ -110,21 +107,22 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         buffer.flip(); 
         
         gd.gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, width, height, 0, GL.GL_RGBA, GL2.GL_UNSIGNED_INT_8_8_8_8, buffer);
+        generateMipmaps(); 
     }
     
     @Override
-    public int[] getIntPixels() {
-        return getIntPixels(new int[width * height]); 
+    public int[] getPixelsRgba() {
+        return getPixelsRgba(new int[width * height]); 
     }
 
     @Override
-    public int[] getIntPixels(int[] out) {
+    public int[] getPixelsRgba(int[] out) {
         // TODO Auto-generated method stub
         throw new EngineException("Unsupported operation"); 
     }
 
     @Override
-    public void setIntPixels(int[] rgba) {
+    public void setPixelsRgba(int[] rgba) {
         gd.context.bindTexture(GL.GL_TEXTURE_2D, id);
         
         buffer.clear(); 
@@ -132,6 +130,30 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         buffer.flip(); 
         
         gd.gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, Jogl3Convert.getTextureFormat(format), width, height, 0, GL.GL_RGBA, GL2.GL_UNSIGNED_INT_8_8_8_8, buffer);
+        generateMipmaps(); 
+    }
+
+    @Override
+    public int[] getPixelsArgb() {
+        return getPixelsArgb(new int[width * height]); 
+    }
+
+    @Override
+    public int[] getPixelsArgb(int[] out) {
+        // TODO Auto-generated method stub
+        throw new EngineException("Unsupported operation"); 
+    }
+
+    @Override
+    public void setPixelsArgb(int[] argb) {
+        gd.context.bindTexture(GL.GL_TEXTURE_2D, id);
+        
+        buffer.clear(); 
+        buffer.put(argb); 
+        buffer.flip(); 
+        
+        gd.gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, Jogl3Convert.getTextureFormat(format), width, height, 0, GL.GL_BGRA, GL2.GL_UNSIGNED_INT_8_8_8_8_REV, buffer);
+        generateMipmaps(); 
     }
     
 }

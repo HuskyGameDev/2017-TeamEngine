@@ -73,8 +73,8 @@ public class Sample2App extends Application {
         boxVao.setIndexBuffer(ibo);
         
         texture = graphics.createTexture2D(TextureFormat.RGBA8, 16, 16); 
-        texture.setWrap(WrapMode.REPEAT, WrapMode.REPEAT);
-        texture.setFilter(MinFilter.LINEAR, MagFilter.LINEAR);
+        texture.setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
+        texture.setFilters(MinFilter.LINEAR, MagFilter.LINEAR);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Sample2App extends Application {
             pixels[i] = (int)(Math.random() * 0x1000000) << 8 | 0xFF; // RGB | A 
         }
         
-        texture.setIntPixels(pixels);
+        texture.setPixelsRgba(pixels);
     }
 
     @Override

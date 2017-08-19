@@ -7,6 +7,8 @@ import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.FrameBuffer;
+import oasis.graphics.MagFilter;
+import oasis.graphics.MinFilter;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
 import oasis.graphics.TextureFormat;
@@ -106,8 +108,10 @@ public class SampleApp extends Application {
         htmap.setFlat(false, 0);
         htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
     
-        fbo = graphics.createFrameBuffer(512, 256); 
+        fbo = graphics.createFrameBuffer(2048, 1024); 
         screenTex = graphics.createTexture2D(TextureFormat.RGBA8, fbo.getWidth(), fbo.getHeight()); 
+        screenTex.setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
+        screenTex.setMipmaps(1);
         depthTex = graphics.createTexture2D(TextureFormat.DEPTH24, fbo.getWidth(), fbo.getHeight()); 
         
         fbo.setColorTexture(0, screenTex);

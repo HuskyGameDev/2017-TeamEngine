@@ -17,12 +17,14 @@ public abstract class Jogl3Texture implements Texture {
     protected TextureFormat format; 
     protected MinFilter minFilter; 
     protected MagFilter magFilter; 
+    protected int mipmaps; 
     
     public Jogl3Texture(Jogl3GraphicsDevice gd, TextureFormat format) {
         this.gd = gd; 
         this.format = format; 
         this.minFilter = MinFilter.NEAREST; 
         this.magFilter = MagFilter.NEAREST; 
+        this.mipmaps = 1; 
         
         int[] ids = new int[1]; 
         gd.gl.glGenTextures(1, ids, 0);
@@ -32,9 +34,31 @@ public abstract class Jogl3Texture implements Texture {
         
         gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
         gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+        
+        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_BASE_LEVEL, 0);
+        gd.gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAX_LEVEL, 0);
     }
     
     public abstract int getTarget(); 
+    
+    public void generateMipmaps() {
+        gd.context.bindTexture(getTarget(), id);
+        gd.gl.glGenerateMipmap(getTarget());
+    }
+    
+    @Override
+    public int getMipmaps() {
+        return mipmaps; 
+    }
+    
+    @Override
+    public void setMipmaps(int levels) {
+        mipmaps = levels; 
+        gd.context.bindTexture(getTarget(), id);
+        gd.gl.glTexParameteri(getTarget(), GL2.GL_TEXTURE_MAX_LEVEL, mipmaps - 1);
+        gd.getError("glTexParameteri (GL_TEXTURE_MAX_LEVEL)");
+        generateMipmaps(); 
+    }
     
     @Override
     public TextureType getType() {
@@ -71,7 +95,7 @@ public abstract class Jogl3Texture implements Texture {
     }
 
     @Override
-    public void setFilter(MinFilter min, MagFilter mag) {
+    public void setFilters(MinFilter min, MagFilter mag) {
         setMinFilter(min); 
         setMagFilter(mag); 
     }

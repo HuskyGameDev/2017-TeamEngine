@@ -6,9 +6,9 @@ import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.FrameBuffer;
+import oasis.graphics.MagFilter;
+import oasis.graphics.MinFilter;
 import oasis.graphics.Texture2D;
-import oasis.graphics.TextureFormat;
 import oasis.graphics.TextureLoader;
 import oasis.graphics.sprite.SpriteBatch;
 
@@ -20,9 +20,9 @@ public class Sample4App extends Application {
     private TextureLoader textureLoader; 
     
     private Texture2D testTexture; 
-    private Texture2D screenTexture; 
     
-    private FrameBuffer screenBuffer; 
+    private float size = 1; 
+    private float change = 1.01f; 
     
     @Override
     public void onInit() {
@@ -31,36 +31,33 @@ public class Sample4App extends Application {
         
         // load texture
         testTexture = textureLoader.get("assets/textures/test.png"); 
+        testTexture.setMipmaps(4);
+        testTexture.setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
         
-        // create frame buffer
-        screenBuffer = graphics.createFrameBuffer(graphics.getWidth(), graphics.getHeight()); 
-        
-        // set color texture 
-        screenTexture = graphics.createTexture2D(TextureFormat.RGBA8, graphics.getWidth(), graphics.getHeight());
-        screenBuffer.setColorTexture(0, screenTexture);
+        display.setSize(900, 900);
     }
 
     @Override
     public void onUpdate(float dt) {
         if (display.shouldClose()) engine.stop(); 
+        
+        size *= change; 
+        
+        if (size > display.getWidth()) {
+            change = 1.0f / change; 
+        }
     }
 
     @Override
     public void onRender() {
-    	graphics.setFrameBuffer(screenBuffer);
         graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
         
-        sb.begin();
-        sb.draw(testTexture, 100, 200, 350, 350);
-        sb.end(); 
+        float w = size; 
+        float h = size / display.getAspectRatio(); 
         
-        graphics.setFrameBuffer(null);
-        graphics.clearScreen(new ColorRgba(0.0f, 0.9f, 1.0f, 1.0f));
-
         sb.begin();
-        sb.draw(screenTexture, 100, 200, 300, 370);
+        sb.draw(testTexture, display.getWidth() / 2 - w / 2, display.getHeight() / 2 - h / 2, w, h);
         sb.end(); 
-        
     }
 
     @Override
