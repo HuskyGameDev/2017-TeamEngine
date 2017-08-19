@@ -33,11 +33,9 @@ public class Jogl3Convert {
         BUFFER_USAGE[BufferUsage.DYNAMIC.ordinal()] = GL.GL_DYNAMIC_DRAW; 
         BUFFER_USAGE[BufferUsage.STREAM.ordinal()] = GL2.GL_STREAM_DRAW; 
         
-        TEXTURE_FORMAT[TextureFormat.RGBA.ordinal()] = GL.GL_RGBA8; 
         TEXTURE_FORMAT[TextureFormat.RGBA8.ordinal()] = GL.GL_RGBA8; 
         TEXTURE_FORMAT[TextureFormat.RGBA16F.ordinal()] = GL.GL_RGBA16F; 
         TEXTURE_FORMAT[TextureFormat.RGBA32F.ordinal()] = GL.GL_RGBA32F; 
-        TEXTURE_FORMAT[TextureFormat.DEPTH.ordinal()] = GL.GL_DEPTH_COMPONENT24; 
         TEXTURE_FORMAT[TextureFormat.DEPTH24.ordinal()] = GL.GL_DEPTH_COMPONENT24; 
         TEXTURE_FORMAT[TextureFormat.DEPTH32.ordinal()] = GL.GL_DEPTH_COMPONENT32; 
         

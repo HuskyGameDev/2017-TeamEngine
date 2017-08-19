@@ -5,6 +5,7 @@ public interface GraphicsDevice {
     // resource creation 
     
     Shader createShader(String vertex, String fragment); 
+    FrameBuffer createFrameBuffer(int width, int height); 
     VertexBuffer createVertexBuffer(VertexFormat fmt, BufferUsage usage); 
     IndexBuffer createIndexBuffer(BufferUsage usage); 
     VertexArray createVertexArray(); 
@@ -15,6 +16,7 @@ public interface GraphicsDevice {
     int getWidth(); 
     int getHeight(); 
     
+    FrameBuffer getFrameBuffer(); 
     VertexArray getVertexArray(); 
     Shader getShader(); 
     Texture getTexture(int index); 
@@ -22,7 +24,7 @@ public interface GraphicsDevice {
     
     // setters 
     
-    // sets current shader
+    void setFrameBuffer(FrameBuffer fbo); 
     void setShader(Shader shader); 
     void setVertexArray(VertexArray vao); 
     void setTexture(int index, Texture texture); 

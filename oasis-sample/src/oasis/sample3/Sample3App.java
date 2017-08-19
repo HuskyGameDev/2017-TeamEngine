@@ -9,16 +9,19 @@ import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
 import oasis.graphics.Texture2D;
 import oasis.graphics.TextureFormat;
+import oasis.graphics.TextureLoader;
 import oasis.graphics.WrapMode;
 import oasis.graphics.sprite.SpriteBatch;
 
-public class SpriteApp extends Application {
+public class Sample3App extends Application {
 
-    private static final GameLogger log = new GameLogger(SpriteApp.class); 
+    private static final GameLogger log = new GameLogger(Sample3App.class); 
     
     private static final int MAX_SPRITES = 10; 
     
     private SpriteBatch sb; 
+    private TextureLoader textureLoader; 
+    
     private Texture2D[] textures; 
     private float[][] args; 
     private int[] inds; 
@@ -26,6 +29,7 @@ public class SpriteApp extends Application {
     @Override
     public void onInit() {
         sb = new SpriteBatch(graphics); 
+        textureLoader = new TextureLoader(graphics); 
         
         textures = new Texture2D[2]; 
         int[] pixels = new int[16 * 16]; 
@@ -43,6 +47,10 @@ public class SpriteApp extends Application {
             textures[i].setIntPixels(pixels);
         }
         
+        textures[0].dispose(); 
+        textures[0] = textureLoader.get("assets/textures/test.png"); 
+        textures[0].setFilter(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
+        textures[0].setWrap(WrapMode.REPEAT, WrapMode.REPEAT);
     }
 
     @Override
@@ -78,7 +86,7 @@ public class SpriteApp extends Application {
         cfg.fps = 60.0f;
         cfg.ups = 1.0f;
 
-        Application app = new SpriteApp();
+        Application app = new Sample3App();
         app.start(cfg);
     }
 

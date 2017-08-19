@@ -6,6 +6,7 @@ import com.jogamp.opengl.glu.GLU;
 
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.FrameBuffer;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
@@ -28,6 +29,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     private Jogl3VertexArray currentVao = null; 
     private Jogl3Shader currentShader = null; 
     private Jogl3Texture[] currentTextures; 
+    private Jogl3FrameBuffer currentFbo = null; 
 
     public Jogl3GraphicsDevice(Jogl3Display display) {
         this.display = display; 
@@ -57,6 +59,11 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     @Override
     public Shader createShader(String vertex, String fragment) {
         return new Jogl3Shader(this, vertex, fragment); 
+    }
+    
+    @Override
+    public FrameBuffer createFrameBuffer(int width, int height) {
+    	return new Jogl3FrameBuffer(this, width, height); 
     }
 
     @Override
@@ -101,8 +108,10 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
 
     @Override
     public void clearScreen(ColorRgba color) {
-        gl.glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+    	gl.glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         getError("glClearColor"); 
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
+        getError("glClear"); 
     }
 
     @Override
@@ -149,5 +158,30 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
             }
         }
     }
+
+	@Override
+	public FrameBuffer getFrameBuffer() {
+		return currentFbo; 
+	}
+
+	@Override
+	public void setFrameBuffer(FrameBuffer fbo) {
+		// TODO Auto-generated method stub
+		
+		if (fbo == currentFbo) {
+			return; 
+		}
+		
+		currentFbo = (Jogl3FrameBuffer) fbo; 
+		
+		context.bindFbo(currentFbo == null ? 0 : currentFbo.id);
+		
+		if (currentFbo != null) {
+			gl.glViewport(0, 0, fbo.getWidth(), fbo.getHeight());
+		}
+		else {
+			gl.glViewport(0, 0, getWidth(), getHeight());
+		}
+	}
     
 }

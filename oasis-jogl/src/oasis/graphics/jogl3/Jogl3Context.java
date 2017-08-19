@@ -17,6 +17,11 @@ public class Jogl3Context {
         this.graphics = graphics; 
     }
     
+    public void bindFbo(int id) {
+    	graphics.gl.glBindFramebuffer(GL.GL_FRAMEBUFFER, id);
+    	graphics.getError("glBindFramebuffer");
+    }
+    
     public void bindTextureUnit(int unit) { 
         if (boundTextureUnit != unit) { 
             graphics.gl.glActiveTexture(GL.GL_TEXTURE0 + unit);
