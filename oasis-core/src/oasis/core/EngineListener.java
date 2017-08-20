@@ -10,4 +10,6 @@ public interface EngineListener {
     
     void onExit();
     
+    boolean onCloseAttempt(); 
+    
 }

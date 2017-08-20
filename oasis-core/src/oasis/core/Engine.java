@@ -95,6 +95,14 @@ public abstract class Engine {
                 skipFrames = 1.0 / targetFps;
             }
             
+            if (getDisplay().shouldClose()) {
+                if (listener.onCloseAttempt()) {
+                    getDisplay().hide(); 
+                    exit(); 
+                    System.exit(0); 
+                }
+            }
+            
             int loops = 0;
             while (running && tickTimer < time.getTime() && loops++ < 10) {
                 update(0.0f);

@@ -19,11 +19,15 @@ public interface GraphicsDevice {
     int getWidth(); 
     int getHeight(); 
     
+    
     FrameBuffer getFrameBuffer(); 
     VertexArray getVertexArray(); 
     Shader getShader(); 
     Texture getTexture(int index); 
     int getMaxTextureCount(); 
+    boolean isDepthTestEnabled(); 
+    BlendMode getSourceBlendMode(); 
+    BlendMode getDestBlendMode(); 
     
     // setters 
     
@@ -31,6 +35,8 @@ public interface GraphicsDevice {
     void setShader(Shader shader); 
     void setVertexArray(VertexArray vao); 
     void setTexture(int index, Texture texture); 
+    void setDepthTestEnabled(boolean enabled); 
+    void setBlendMode(BlendMode src, BlendMode dst); 
     
     // rendering
     

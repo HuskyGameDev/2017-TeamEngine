@@ -87,10 +87,10 @@ public class SampleHeightmap {
         vert.position = new Vector3(x, y, z);
         
         if (flat) {
-            vert.color = new ColorRgba(0.35f, 0.35f, 0.9f, 1.0f).toVector4();
+            vert.color = new ColorRgba(0.25f, 0.25f, 0.8f, 0.90f).toVector4();
         }
         else {
-            vert.color = new ColorRgba(0.5f, f * 0.25f + 0.5f, 0.5f, 1.0f).toVector4();
+            vert.color = new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
         }
         
         vert.normal = new Vector3(0, 1, 0); 

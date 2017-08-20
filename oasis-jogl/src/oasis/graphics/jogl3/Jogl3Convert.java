@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
 import oasis.graphics.Attribute;
+import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
@@ -20,6 +21,7 @@ public class Jogl3Convert {
     private static final int[] MIN_FILTER = new int[MinFilter.values().length]; 
     private static final int[] MAG_FILTER = new int[MagFilter.values().length]; 
     private static final int[] WRAP_MODE = new int[WrapMode.values().length]; 
+    private static final int[] BLEND_MODE = new int[BlendMode.values().length]; 
     private static final HashMap<String, Attribute> ATTRIBUTE_MAP = new HashMap<>(); 
     
     static { 
@@ -52,9 +54,18 @@ public class Jogl3Convert {
         WRAP_MODE[WrapMode.CLAMP_EDGE.ordinal()] = GL.GL_CLAMP_TO_EDGE; 
         WRAP_MODE[WrapMode.REPEAT.ordinal()] = GL.GL_REPEAT; 
         
+        BLEND_MODE[BlendMode.ONE.ordinal()] = GL.GL_ONE; 
+        BLEND_MODE[BlendMode.ZERO.ordinal()] = GL.GL_ZERO; 
+        BLEND_MODE[BlendMode.SRC_ALPHA.ordinal()] = GL.GL_SRC_ALPHA; 
+        BLEND_MODE[BlendMode.ONE_MINUS_SRC_ALPHA.ordinal()] = GL.GL_ONE_MINUS_SRC_ALPHA; 
+        
         for (Attribute a : Attribute.values()) { 
             ATTRIBUTE_MAP.put(a.getGlslName(), a); 
         }
+    }
+    
+    public static int getBlendMode(BlendMode blend) {
+        return BLEND_MODE[blend.ordinal()]; 
     }
     
     public static int getWrapMode(WrapMode wrap) {

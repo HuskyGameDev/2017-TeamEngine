@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.glu.GLU;
 
+import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.FrameBuffer;
@@ -30,6 +31,8 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     private Jogl3Shader currentShader = null; 
     private Jogl3Texture[] currentTextures; 
     private Jogl3FrameBuffer currentFbo = null; 
+    private boolean depthTest = true; 
+    private BlendMode srcBlend = BlendMode.ONE, dstBlend = BlendMode.ZERO; 
     
     public Jogl3GraphicsDevice(Jogl3Display display) {
         this.display = display; 
@@ -44,6 +47,39 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         GLU glu = new GLU(); 
         
         System.out.println("[GLERROR] " + cmd + ": " + i + ": " + glu.gluErrorString(i));
+    }
+    
+    public void init() {
+        gl.glEnable(GL.GL_DEPTH_TEST);
+        getError("glEnable (depth test)"); 
+        gl.glEnable(GL.GL_BLEND);
+        getError("glEnable (blend)"); 
+        gl.glBlendEquation(GL.GL_FUNC_ADD);
+        getError("glBlendEquation (func add)"); 
+        gl.glBlendFunc(Jogl3Convert.getBlendMode(srcBlend), Jogl3Convert.getBlendMode(dstBlend));
+        getError("glBlendFunc"); 
+        
+        gl.glEnable(GL.GL_CULL_FACE);
+        gl.glCullFace(GL.GL_FRONT_FACE);
+        gl.glFrontFace(GL.GL_CCW);
+    }
+    
+    @Override
+    public boolean isDepthTestEnabled() {
+        return depthTest; 
+    }
+    
+    @Override
+    public void setDepthTestEnabled(boolean enabled) {
+        if (depthTest != enabled) {
+            depthTest = enabled; 
+            if (enabled) {
+                gl.glEnable(GL.GL_DEPTH_TEST);
+            }
+            else {
+                gl.glDisable(GL.GL_DEPTH_TEST);
+            }
+        }
     }
     
     @Override
@@ -208,8 +244,6 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
 
 	@Override
 	public void setFrameBuffer(FrameBuffer fbo) {
-		// TODO Auto-generated method stub
-		
 		if (fbo == currentFbo) {
 			return; 
 		}
@@ -225,5 +259,22 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
 			gl.glViewport(0, 0, getWidth(), getHeight());
 		}
 	}
+
+    @Override
+    public BlendMode getSourceBlendMode() {
+        return srcBlend; 
+    }
+
+    @Override
+    public BlendMode getDestBlendMode() {
+        return dstBlend; 
+    }
+
+    @Override
+    public void setBlendMode(BlendMode src, BlendMode dst) {
+        srcBlend = src; 
+        dstBlend = dst; 
+        gl.glBlendFunc(Jogl3Convert.getBlendMode(srcBlend), Jogl3Convert.getBlendMode(dstBlend));
+    }
     
 }

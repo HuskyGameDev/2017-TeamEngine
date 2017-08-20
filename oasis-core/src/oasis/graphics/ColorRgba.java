@@ -7,6 +7,10 @@ public class ColorRgba {
 
     public float r, g, b, a;
     
+    public ColorRgba(ColorRgba other) {
+        this(other.r, other.g, other.b, other.a); 
+    }
+    
     public ColorRgba(float r, float g, float b, float a) {
         this.r = r;
         this.g = g;
@@ -51,5 +55,16 @@ public class ColorRgba {
     public void setGreen(float g) { this.g = g; }
     public void setBlue(float b) { this.b = b; }
     public void setAlpha(float a) { this.a = a; }
+    
+    public boolean equals(ColorRgba other) {
+        return r == other.r && g == other.g && b == other.b && a == other.a; 
+    }
+    
+    public boolean equals(Object obj) {
+        if (obj == this) return true; 
+        if (obj == null) return false; 
+        if (!(obj instanceof ColorRgba)) return false; 
+        return equals((ColorRgba) obj); 
+    }
     
 }

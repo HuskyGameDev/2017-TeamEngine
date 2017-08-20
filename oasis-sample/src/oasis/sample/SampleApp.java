@@ -5,6 +5,7 @@ import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
+import oasis.graphics.BlendMode;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.Shader;
 import oasis.graphics.model.Mesh;
@@ -28,7 +29,7 @@ public class SampleApp extends Application {
     private long res = 2; 
     private long maxRes = 512; 
     
-    private float height = 7f; 
+    private float height = 4f; 
     
     private SampleHeightmap htmap; 
     
@@ -125,18 +126,19 @@ public class SampleApp extends Application {
     @Override
     public void onRender() {
         graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
+        graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
         graphics.setShader(shader);
         
         Vector3 pos = new Vector3();
         float scale = 8f; //18.0f;
         float time = 5.0f * angle;
         pos.setX(scale * FastMath.cos(time) * FastMath.cos(time) * FastMath.cos(time));
-        pos.setY(10.0f);
+        pos.setY(4.0f);
         pos.setZ(scale * FastMath.sin(time) * FastMath.sin(time) * FastMath.sin(time));
 //        System.out.println(pos);
         // view
         Matrix4 m;
-        m = Matrix4.createLookAt(pos, new Vector3(0, 6.0f, 0), new Vector3(0, 1, 0));
+        m = Matrix4.createLookAt(pos, new Vector3(0, 2.0f, 0), new Vector3(0, 1, 0));
         shader.setMatrix4("uView", m);
         shader.setVector3("uViewPos", pos);
         

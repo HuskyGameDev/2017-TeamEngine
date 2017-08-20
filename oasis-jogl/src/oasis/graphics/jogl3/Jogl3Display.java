@@ -191,6 +191,7 @@ public class Jogl3Display implements Display, GLEventListener {
         synchronized (contextWait) {
             context = drawable.getContext();
             device.gl = context.getGL().getGL3();
+            device.init(); 
             
             log.debug("Changed context: " + context.getGLVersion());
             contextWait.notify();

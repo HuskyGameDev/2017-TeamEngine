@@ -20,6 +20,12 @@ public abstract class Application implements EngineListener {
     
     public abstract void onExit();
     
+    // called when window is trying to close
+    // returns whether window should close
+    public boolean onCloseAttempt() {
+        return true; 
+    }
+    
     public final synchronized void start(Config config) {
         initEngine(config);
         engine.start();
