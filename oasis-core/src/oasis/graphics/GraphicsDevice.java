@@ -5,8 +5,8 @@ public interface GraphicsDevice {
     // resource creation 
     
     Shader createShader(String vertex, String fragment); 
-    FrameBuffer createFrameBuffer(int width, int height); 
-    FrameBuffer createFrameBuffer(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers); 
+    RenderTarget createRenderTarget(int width, int height); 
+    RenderTarget createRenderTarget(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers); 
     VertexBuffer createVertexBuffer(VertexFormat fmt, BufferUsage usage); 
     IndexBuffer createIndexBuffer(BufferUsage usage); 
     VertexArray createVertexArray(); 
@@ -19,28 +19,27 @@ public interface GraphicsDevice {
     int getWidth(); 
     int getHeight(); 
     
-    
-    FrameBuffer getFrameBuffer(); 
+    RenderTarget getRenderTarget(); 
     VertexArray getVertexArray(); 
     Shader getShader(); 
     Texture getTexture(int index); 
     int getMaxTextureCount(); 
+    
     boolean isDepthTestEnabled(); 
     BlendMode getSourceBlendMode(); 
     BlendMode getDestBlendMode(); 
     
     // setters 
     
-    void setFrameBuffer(FrameBuffer fbo); 
+    void setRenderTarget(RenderTarget fbo); 
     void setShader(Shader shader); 
     void setVertexArray(VertexArray vao); 
     void setTexture(int index, Texture texture); 
+    
     void setDepthTestEnabled(boolean enabled); 
     void setBlendMode(BlendMode src, BlendMode dst); 
     
     // rendering
-    
-    // TODO blending
     
     void clearScreen(ColorRgba color); 
     

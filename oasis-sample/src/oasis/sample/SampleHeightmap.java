@@ -87,7 +87,7 @@ public class SampleHeightmap {
         vert.position = new Vector3(x, y, z);
         
         if (flat) {
-            vert.color = new ColorRgba(0.25f, 0.25f, 0.8f, 0.90f).toVector4();
+            vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.95f).toVector4();
         }
         else {
             vert.color = new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
@@ -109,7 +109,7 @@ public class SampleHeightmap {
             total += amp;
             
             amp *= pers;
-            freq *= 2.15f;
+            freq *= 2.0f;
         }
         
         return 1.0f - sum / total;

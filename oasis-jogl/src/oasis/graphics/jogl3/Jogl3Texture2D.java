@@ -41,6 +41,11 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
     }
     
     @Override
+    public boolean isLost() {
+        return false; 
+    }
+    
+    @Override
     public int getTarget() {
         return GL.GL_TEXTURE_2D; 
     }
@@ -90,7 +95,6 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         return getPixels(new ColorRgba[width * height]); 
     }
 
-    @Override
     public ColorRgba[] getPixels(ColorRgba[] out) {
         // TODO Auto-generated method stub
         throw new EngineException("Unsupported operation"); 
@@ -115,7 +119,6 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         return getPixelsRgba(new int[width * height]); 
     }
 
-    @Override
     public int[] getPixelsRgba(int[] out) {
         // TODO Auto-generated method stub
         throw new EngineException("Unsupported operation"); 
@@ -138,7 +141,6 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
         return getPixelsArgb(new int[width * height]); 
     }
 
-    @Override
     public int[] getPixelsArgb(int[] out) {
         // TODO Auto-generated method stub
         throw new EngineException("Unsupported operation"); 

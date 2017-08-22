@@ -3,10 +3,10 @@ package oasis.graphics.jogl3;
 import com.jogamp.opengl.GL;
 
 import oasis.core.EngineException;
-import oasis.graphics.FrameBuffer;
+import oasis.graphics.RenderTarget;
 import oasis.graphics.Texture;
 
-public class Jogl3FrameBuffer implements FrameBuffer {
+public class Jogl3FrameBuffer implements RenderTarget {
 
 	public static final int MAX_COLOR_TEXTURES = 8; 
 	

@@ -23,13 +23,13 @@ public class SampleApp extends Application {
     private float angle = 0.0f; 
     private int time = 0; 
     
-    private float freq = 1 / 13.0f; 
+    private float freq = 1 / 6.0f; 
     private float pers = 0.4f; 
     private int octs = 10; 
     private long res = 2; 
-    private long maxRes = 512; 
+    private long maxRes = 1024; 
     
-    private float height = 4f; 
+    private float height = 3f; 
     
     private SampleHeightmap htmap; 
     
@@ -111,7 +111,7 @@ public class SampleApp extends Application {
         if (time % (60 / 6) == 0) { 
             res <<= 1; 
             
-            if (res > (maxRes << 30)) { 
+            if (res > (maxRes << 46)) { 
                 htmap = new SampleHeightmap();
                 res = 1; 
             }
@@ -164,7 +164,7 @@ public class SampleApp extends Application {
 //        m.multiplySelf(Matrix4.createRotationY(angle * 5.0f)); 
         shader.setMatrix4("uModel", m);
         shader.setFloat("uShininess", 200.0f);
-        shader.setFloat("uBrightness", 0.0f);
+        shader.setFloat("uBrightness", 0.05f);
         heightmap.draw();
         shader.setFloat("uShininess", 300.0f);
         shader.setFloat("uBrightness", 1.0f);

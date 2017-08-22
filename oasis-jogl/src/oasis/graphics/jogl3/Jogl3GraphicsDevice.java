@@ -7,7 +7,7 @@ import com.jogamp.opengl.glu.GLU;
 import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.FrameBuffer;
+import oasis.graphics.RenderTarget;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
@@ -108,12 +108,12 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
     
     @Override
-    public FrameBuffer createFrameBuffer(int width, int height) {
+    public RenderTarget createRenderTarget(int width, int height) {
     	return new Jogl3FrameBuffer(this, width, height); 
     }
     
     @Override
-    public FrameBuffer createFrameBuffer(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers) {
+    public RenderTarget createRenderTarget(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers) {
         Jogl3FrameBuffer fbo = new Jogl3FrameBuffer(this, width, height); 
         if (depthBuffer != null) {
             fbo.setDepthTexture(createTexture2D(depthBuffer, width, height));
@@ -238,12 +238,12 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
 
 	@Override
-	public FrameBuffer getFrameBuffer() {
+	public RenderTarget getRenderTarget() {
 		return currentFbo; 
 	}
 
 	@Override
-	public void setFrameBuffer(FrameBuffer fbo) {
+	public void setRenderTarget(RenderTarget fbo) {
 		if (fbo == currentFbo) {
 			return; 
 		}

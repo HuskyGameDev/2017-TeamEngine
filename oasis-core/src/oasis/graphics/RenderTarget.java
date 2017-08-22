@@ -2,7 +2,7 @@ package oasis.graphics;
 
 import oasis.core.Disposable;
 
-public interface FrameBuffer extends Disposable {
+public interface RenderTarget extends Disposable {
 
     void dispose(boolean textures); 
     
