@@ -13,7 +13,7 @@ public interface RenderTarget extends Disposable {
 	Texture getColorTexture(int index); 
 	Texture getDepthTexture(); 
 	
-	void setColorTexture(int index, Texture texture); 
-	void setDepthTexture(Texture texture); 
+	void setColorTexture(int index, Texture2D texture); 
+	void setDepthTexture(Texture2D texture); 
 	
 }

@@ -16,7 +16,6 @@ import oasis.graphics.VertexFormat;
 import oasis.math.FastMath;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
-import oasis.math.Vector4;
 
 public class SpriteBatch {
 

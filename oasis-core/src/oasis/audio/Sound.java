@@ -1,6 +1,6 @@
 package oasis.audio;
 
-public interface Source {
+public interface Sound {
 
     
     

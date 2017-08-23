@@ -4,7 +4,7 @@ import com.jogamp.opengl.GL;
 
 import oasis.core.EngineException;
 import oasis.graphics.RenderTarget;
-import oasis.graphics.Texture;
+import oasis.graphics.Texture2D;
 
 public class Jogl3FrameBuffer implements RenderTarget {
 
@@ -83,7 +83,7 @@ public class Jogl3FrameBuffer implements RenderTarget {
 	}
 
 	@Override
-	public void setColorTexture(int index, Texture texture) {
+	public void setColorTexture(int index, Texture2D texture) {
 		gd.context.bindFbo(id); 
 		
 		if (texture == null) {
@@ -108,7 +108,7 @@ public class Jogl3FrameBuffer implements RenderTarget {
 	}
 
 	@Override
-	public void setDepthTexture(Texture texture) {
+	public void setDepthTexture(Texture2D texture) {
 		if (texture == null) {
 			gd.gl.glFramebufferTexture2D(GL.GL_FRAMEBUFFER, GL.GL_DEPTH_ATTACHMENT, GL.GL_TEXTURE_2D, 0, 0);
 			gd.getError("glFramebufferTexture2D");

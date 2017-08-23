@@ -9,7 +9,9 @@ import oasis.graphics.BlendMode;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
+import oasis.graphics.RenderTarget;
 import oasis.graphics.Texture2D;
+import oasis.graphics.TextureFormat;
 import oasis.graphics.TextureLoader;
 import oasis.graphics.sprite.SpriteBatch;
 
@@ -21,6 +23,7 @@ public class Sample5App extends Application {
     private TextureLoader textureLoader; 
     
     private Texture2D testTexture; 
+    private RenderTarget rt; 
     
     private float camX = 0, camY = 0; 
     private float angle = 0; 
@@ -36,6 +39,9 @@ public class Sample5App extends Application {
         testTexture = textureLoader.get("assets/textures/test.png"); 
         testTexture.setMipmaps(4);
         testTexture.setFilters(MinFilter.NEAREST_MIPMAP_NEAREST, MagFilter.NEAREST);
+        
+        rt = graphics.createRenderTarget(600, 480, TextureFormat.DEPTH24, TextureFormat.RGBA32F); 
+        rt.getColorTexture(0).setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
     }
 
     @Override
@@ -47,6 +53,8 @@ public class Sample5App extends Application {
 
     @Override
     public void onRender() {
+        graphics.setRenderTarget(rt);
+        
         graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
         graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
         
@@ -58,6 +66,18 @@ public class Sample5App extends Application {
                 sb.draw(testTexture, (x - camX) * 32, (y - camY) * 32, 32, 32, 16, 16, 2, 1, angle, false, false);
             }
         }
+        
+        sb.end(); 
+        
+        graphics.setRenderTarget(null);
+        
+        graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
+        graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
+        
+        sb.begin(); 
+        
+        sb.setTint(new ColorRgba(1, 1, 1, 1));
+        sb.draw((Texture2D) rt.getColorTexture(0), 0, 0, graphics.getScreenWidth(), graphics.getScreenHeight()); 
         
         sb.end(); 
     }

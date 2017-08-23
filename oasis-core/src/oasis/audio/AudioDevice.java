@@ -5,18 +5,18 @@ public interface AudioDevice {
     // resource creation
     
     Listener createListener(); 
-    Source createSource(); 
+    Sound createSound(); 
     
     // getters
     
     Listener getListener(); 
-    Source getSource(int index); 
-    int getMaxSourceCount(); 
+    Sound getSound(int index); 
+    int getMaxSoundCount(); 
     
     // setters
     
     void setListener(Listener listener); 
-    void setSource(int index, Source source); 
-    void clearSources(); 
+    void setSound(int index, Sound source); 
+    void clearSounds(); 
     
 }
