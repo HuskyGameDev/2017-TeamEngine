@@ -7,8 +7,8 @@ import com.jogamp.opengl.GL2;
 
 import oasis.core.EngineException;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.TextureFormat;
 import oasis.graphics.WrapMode;
 import oasis.util.BufferUtil;
 
@@ -21,7 +21,7 @@ public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {
     
     private IntBuffer buffer; 
     
-    public Jogl3Texture2D(Jogl3GraphicsDevice gd, TextureFormat format, int width, int height) {
+    public Jogl3Texture2D(Jogl3GraphicsDevice gd, Texture.Format format, int width, int height) {
         super(gd, format); 
         
         this.gd = gd; 

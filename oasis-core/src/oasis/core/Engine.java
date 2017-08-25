@@ -2,6 +2,8 @@ package oasis.core;
 
 import oasis.graphics.Display;
 import oasis.graphics.GraphicsDevice;
+import oasis.input.Keyboard;
+import oasis.input.Mouse;
 import oasis.util.Timer;
 
 public abstract class Engine {
@@ -46,6 +48,9 @@ public abstract class Engine {
     }
     
     public abstract Display getDisplay();
+    
+    public abstract Keyboard getKeyboard(); 
+    public abstract Mouse getMouse(); 
     
     public abstract GraphicsDevice getGraphicsDevice();
     

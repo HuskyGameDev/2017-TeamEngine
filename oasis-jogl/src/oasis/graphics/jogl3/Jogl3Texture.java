@@ -6,20 +6,18 @@ import com.jogamp.opengl.GL2;
 import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
 import oasis.graphics.Texture;
-import oasis.graphics.TextureFormat;
-import oasis.graphics.TextureType;
 
 public abstract class Jogl3Texture implements Texture {
 
     protected int id; 
     
     protected Jogl3GraphicsDevice gd; 
-    protected TextureFormat format; 
+    protected Texture.Format format; 
     protected MinFilter minFilter; 
     protected MagFilter magFilter; 
     protected int mipmaps; 
     
-    public Jogl3Texture(Jogl3GraphicsDevice gd, TextureFormat format) {
+    public Jogl3Texture(Jogl3GraphicsDevice gd, Texture.Format format) {
         this.gd = gd; 
         this.format = format; 
         this.minFilter = MinFilter.NEAREST; 
@@ -61,12 +59,12 @@ public abstract class Jogl3Texture implements Texture {
     }
     
     @Override
-    public TextureType getType() {
-        return TextureType.TEXTURE_2D; 
+    public Texture.Type getType() {
+        return Texture.Type.TEXTURE_2D; 
     }
 
     @Override
-    public TextureFormat getFormat() {
+    public Texture.Format getFormat() {
         return format; 
     }
 

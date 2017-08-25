@@ -17,7 +17,9 @@ import oasis.graphics.RenderTarget;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.TextureFormat;
+import oasis.graphics.Texture2DArray;
+import oasis.graphics.Texture3D;
+import oasis.graphics.TextureCube;
 import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
@@ -119,7 +121,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     	return new Jogl3FrameBuffer(this, width, height); 
     }
     
-    public RenderTarget createRenderTarget(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers) {
+    public RenderTarget createRenderTarget(int width, int height, Texture.Format depthBuffer, Texture.Format... colorBuffers) {
         Jogl3FrameBuffer fbo = new Jogl3FrameBuffer(this, width, height); 
         if (depthBuffer != null) {
             fbo.setDepthTexture(createTexture2D(depthBuffer, width, height));
@@ -150,7 +152,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
     
     @Override
-    public Texture2D createTexture2D(TextureFormat format, int width, int height) {
+    public Texture2D createTexture2D(Texture.Format format, int width, int height) {
         return new Jogl3Texture2D(this, format, width, height); 
     }
 
@@ -313,6 +315,24 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
             gl.glFrontFace(GL.GL_CW);
             break; 
         }
+    }
+
+    @Override
+    public TextureCube createTextureCube(Texture.Format format, int size) {
+        // TODO finish
+        throw new EngineException("Not yet supported"); 
+    }
+
+    @Override
+    public Texture3D createTexture3D(Texture.Format format, int width, int height, int depth) {
+        // TODO finish
+        throw new EngineException("Not yet supported"); 
+    }
+
+    @Override
+    public Texture2DArray createTexture2DArray(Texture.Format format, int width, int height, int layers) {
+        // TODO finish
+        throw new EngineException("Not yet supported"); 
     }
     
 }

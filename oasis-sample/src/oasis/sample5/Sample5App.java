@@ -10,8 +10,8 @@ import oasis.graphics.ColorRgba;
 import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
 import oasis.graphics.RenderTarget;
+import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.TextureFormat;
 import oasis.graphics.TextureLoader;
 import oasis.graphics.sprite.SpriteBatch;
 
@@ -41,8 +41,8 @@ public class Sample5App extends Application {
         testTexture.setFilters(MinFilter.NEAREST_MIPMAP_NEAREST, MagFilter.NEAREST);
         
         Texture2D color, depth; 
-        color = graphics.createTexture2D(TextureFormat.RGBA32F, 600, 480); 
-        depth = graphics.createTexture2D(TextureFormat.DEPTH32, 600, 480); 
+        color = graphics.createTexture2D(Texture.Format.RGBA32F, 600, 480); 
+        depth = graphics.createTexture2D(Texture.Format.DEPTH32, 600, 480); 
         color.setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
         depth.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
         

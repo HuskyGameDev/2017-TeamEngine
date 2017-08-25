@@ -11,13 +11,13 @@ import oasis.graphics.BufferUsage;
 import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
 import oasis.graphics.Primitive;
-import oasis.graphics.TextureFormat;
+import oasis.graphics.Texture;
 import oasis.graphics.WrapMode;
 
 public class Jogl3Convert {
     private static final int[] PRIMITIVE_TYPE = new int[Primitive.values().length]; 
     private static final int[] BUFFER_USAGE = new int[BufferUsage.values().length]; 
-    private static final int[] TEXTURE_FORMAT = new int[TextureFormat.values().length]; 
+    private static final int[] TEXTURE_FORMAT = new int[Texture.Format.values().length]; 
     private static final int[] MIN_FILTER = new int[MinFilter.values().length]; 
     private static final int[] MAG_FILTER = new int[MagFilter.values().length]; 
     private static final int[] WRAP_MODE = new int[WrapMode.values().length]; 
@@ -35,11 +35,11 @@ public class Jogl3Convert {
         BUFFER_USAGE[BufferUsage.DYNAMIC.ordinal()] = GL.GL_DYNAMIC_DRAW; 
         BUFFER_USAGE[BufferUsage.STREAM.ordinal()] = GL2.GL_STREAM_DRAW; 
         
-        TEXTURE_FORMAT[TextureFormat.RGBA8.ordinal()] = GL.GL_RGBA8; 
-        TEXTURE_FORMAT[TextureFormat.RGBA16F.ordinal()] = GL.GL_RGBA16F; 
-        TEXTURE_FORMAT[TextureFormat.RGBA32F.ordinal()] = GL.GL_RGBA32F; 
-        TEXTURE_FORMAT[TextureFormat.DEPTH24.ordinal()] = GL.GL_DEPTH_COMPONENT24; 
-        TEXTURE_FORMAT[TextureFormat.DEPTH32.ordinal()] = GL.GL_DEPTH_COMPONENT32; 
+        TEXTURE_FORMAT[Texture.Format.RGBA8.ordinal()] = GL.GL_RGBA8; 
+        TEXTURE_FORMAT[Texture.Format.RGBA16F.ordinal()] = GL.GL_RGBA16F; 
+        TEXTURE_FORMAT[Texture.Format.RGBA32F.ordinal()] = GL.GL_RGBA32F; 
+        TEXTURE_FORMAT[Texture.Format.DEPTH24.ordinal()] = GL.GL_DEPTH_COMPONENT24; 
+        TEXTURE_FORMAT[Texture.Format.DEPTH32.ordinal()] = GL.GL_DEPTH_COMPONENT32; 
         
         MIN_FILTER[MinFilter.LINEAR.ordinal()] = GL.GL_LINEAR; 
         MIN_FILTER[MinFilter.LINEAR_MIPMAP_LINEAR.ordinal()] = GL.GL_LINEAR_MIPMAP_LINEAR; 
@@ -92,15 +92,15 @@ public class Jogl3Convert {
         return ATTRIBUTE_MAP.get(name); 
     }
     
-    public static int getTextureFormat(TextureFormat format) { 
+    public static int getTextureFormat(Texture.Format format) { 
         return TEXTURE_FORMAT[format.ordinal()]; 
     }
     
-    public static int getDefaultTextureInputFormat(TextureFormat format) { 
+    public static int getDefaultTextureInputFormat(Texture.Format format) { 
         return format.isDepthFormat() ? GL2.GL_DEPTH_COMPONENT : GL.GL_RGBA; 
     }
     
-    public static int getDefaultTextureInputType(TextureFormat format) { 
+    public static int getDefaultTextureInputType(Texture.Format format) { 
         return format.isDepthFormat() ? GL2.GL_UNSIGNED_INT : GL.GL_UNSIGNED_INT; 
     }
     

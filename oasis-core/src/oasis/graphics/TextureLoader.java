@@ -34,7 +34,7 @@ public class TextureLoader {
 	private Texture2D load(String filename) {
 		try {
 			BufferedImage image = ImageIO.read(new File(filename));
-			Texture2D tex = gd.createTexture2D(TextureFormat.RGBA8, image.getWidth(), image.getHeight()); 
+			Texture2D tex = gd.createTexture2D(Texture.Format.RGBA8, image.getWidth(), image.getHeight()); 
 			
 			int width = image.getWidth(); 
 			int height = image.getHeight(); 
@@ -64,7 +64,7 @@ public class TextureLoader {
 	}
 	
 	private Texture2D createDefaultTexture() {
-		Texture2D tex = gd.createTexture2D(TextureFormat.RGBA8, 1, 1); 
+		Texture2D tex = gd.createTexture2D(Texture.Format.RGBA8, 1, 1); 
 		tex.setPixelsRgba(new int[] { 0xFF00FFFF });
 		return tex; 
 	}

@@ -9,7 +9,10 @@ public interface GraphicsDevice {
     VertexBuffer createVertexBuffer(VertexFormat fmt, BufferUsage usage); 
     IndexBuffer createIndexBuffer(BufferUsage usage); 
     VertexArray createVertexArray(); 
-    Texture2D createTexture2D(TextureFormat format, int width, int height); 
+    Texture2D createTexture2D(Texture.Format format, int width, int height); 
+    TextureCube createTextureCube(Texture.Format format, int size); 
+    Texture3D createTexture3D(Texture.Format format, int width, int height, int depth); 
+    Texture2DArray createTexture2DArray(Texture.Format format, int width, int height, int layers); 
     
     // getters
     

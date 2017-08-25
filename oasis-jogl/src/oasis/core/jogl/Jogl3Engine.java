@@ -8,6 +8,8 @@ import oasis.core.EngineException;
 import oasis.core.GameLogger;
 import oasis.graphics.jogl3.Jogl3Display;
 import oasis.graphics.jogl3.Jogl3GraphicsDevice;
+import oasis.input.Keyboard;
+import oasis.input.Mouse;
 
 public class Jogl3Engine extends Engine {
 
@@ -100,6 +102,18 @@ public class Jogl3Engine extends Engine {
             log.fatal("Exception exiting JOGL Engine: " + EngineException.getStackTrace(e));
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Keyboard getKeyboard() {
+        // TODO finish
+        throw new EngineException("Not yet supported"); 
+    }
+
+    @Override
+    public Mouse getMouse() {
+        // TODO finish
+        throw new EngineException("Not yet supported"); 
     }
 
 }

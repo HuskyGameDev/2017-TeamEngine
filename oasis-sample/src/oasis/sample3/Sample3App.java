@@ -7,8 +7,8 @@ import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
+import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.TextureFormat;
 import oasis.graphics.TextureLoader;
 import oasis.graphics.WrapMode;
 import oasis.graphics.sprite.SpriteBatch;
@@ -41,7 +41,7 @@ public class Sample3App extends Application {
                 pixels[j] = (int)(Math.random() * 0x1000000) << 8 | 0xFF; // RGB | A 
             }
             
-            textures[i] = graphics.createTexture2D(TextureFormat.RGBA8, 16, 16); 
+            textures[i] = graphics.createTexture2D(Texture.Format.RGBA8, 16, 16); 
             textures[i].setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
             textures[i].setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
             textures[i].setPixelsRgba(pixels);

@@ -12,8 +12,8 @@ import oasis.graphics.MagFilter;
 import oasis.graphics.MinFilter;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
+import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.TextureFormat;
 import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
@@ -72,7 +72,7 @@ public class Sample2App extends Application {
         boxVao.setVertexBuffer(vbo);
         boxVao.setIndexBuffer(ibo);
         
-        texture = graphics.createTexture2D(TextureFormat.RGBA8, 16, 16); 
+        texture = graphics.createTexture2D(Texture.Format.RGBA8, 16, 16); 
         texture.setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
         texture.setFilters(MinFilter.LINEAR, MagFilter.LINEAR);
     }
