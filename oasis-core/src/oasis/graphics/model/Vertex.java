@@ -11,7 +11,7 @@ public class Vertex {
     public Vector4 color; 
     public Vector2 uv; 
     
-    public static void setMeshData(Vertex[] verts, Mesh mesh) { 
+    public static void setMesh(Vertex[] verts, Mesh mesh) { 
         Vector3[] positions = new Vector3[verts.length]; 
         Vector3[] normals = new Vector3[verts.length]; 
         Vector4[] colors = new Vector4[verts.length]; 
@@ -30,8 +30,31 @@ public class Vertex {
         // TODO UV coords
     }
     
-    public static void setMeshData(Vertex[] verts, int[] inds, Mesh mesh) { 
-        setMeshData(verts, mesh); 
+    public static MeshData createMeshData(Vertex[] verts, int[] inds) {
+        Vector3[] positions = new Vector3[verts.length]; 
+        Vector3[] normals = new Vector3[verts.length]; 
+        Vector4[] colors = new Vector4[verts.length]; 
+//        Vector2[] uvs = new Vector2[verts.length]; 
+        
+        for (int i = 0; i < verts.length; i++) { 
+            positions[i] = verts[i].position; 
+            normals[i] = verts[i].normal; 
+            colors[i] = verts[i].color; 
+//            uvs[i] = verts[i].uv; 
+        }
+        
+        MeshData data = new MeshData(); 
+        data.positions = positions; 
+        data.normals = normals; 
+        data.colors = colors; 
+        data.inds = inds; 
+        // TODO UV coords
+        
+        return data; 
+    }
+    
+    public static void setMesh(Vertex[] verts, int[] inds, Mesh mesh) { 
+        setMesh(verts, mesh); 
         mesh.setIndices(inds);
     }
     

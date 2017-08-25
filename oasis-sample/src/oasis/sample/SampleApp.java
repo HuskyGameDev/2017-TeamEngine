@@ -1,5 +1,11 @@
 package oasis.sample;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import oasis.core.Application;
 import oasis.core.Config;
 import oasis.core.GameLogger;
@@ -7,8 +13,10 @@ import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.BlendMode;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.CullMode;
 import oasis.graphics.Shader;
 import oasis.graphics.model.Mesh;
+import oasis.graphics.model.MeshData;
 import oasis.math.FastMath;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
@@ -24,14 +32,16 @@ public class SampleApp extends Application {
     private int time = 0; 
     
     private float freq = 1 / 6.0f; 
-    private float pers = 0.4f; 
+    private float pers = 0.45f; 
     private int octs = 10; 
-    private long res = 2; 
     private long maxRes = 1024; 
+    private long res = 1024; 
     
     private float height = 3f; 
     
-    private SampleHeightmap htmap; 
+    private Heightmap htmap; 
+    private Future<MeshData> meshData; 
+    private ExecutorService executor = Executors.newCachedThreadPool(); 
     
     private String vSource = ""
     + "#version 120\n "
@@ -40,9 +50,9 @@ public class SampleApp extends Application {
     + "attribute vec3 aNormal; "
     + "attribute vec4 aColor; "
     + ""
-    + "uniform mat4 uModel; "
-    + "uniform mat4 uView; "
-    + "uniform mat4 uProjection; "
+    + "uniform mat4 Model; "
+    + "uniform mat4 View; "
+    + "uniform mat4 Projection; "
     + ""
     + "varying vec4 vColor; "
     + "varying vec3 vNormal; "
@@ -51,9 +61,9 @@ public class SampleApp extends Application {
     + "void main() "
     + "{ "
     + "  vColor = aColor; "
-    + "  vNormal = normalize((uModel * vec4(aNormal, 0)).xyz); "
-    + "  gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0); "
-    + "  vec4 tmp = uView * uModel * vec4(aPosition, 1.0); "
+    + "  vNormal = normalize((Model * vec4(aNormal, 0)).xyz); "
+    + "  gl_Position = Projection * View * Model * vec4(aPosition, 1.0); "
+    + "  vec4 tmp = View * Model * vec4(aPosition, 1.0); "
     + "  vModelPos = tmp.xyz / tmp.w; "
     + "}";
     private String fSource = ""
@@ -63,21 +73,21 @@ public class SampleApp extends Application {
     + "varying vec3 vNormal; "
     + "varying vec3 vModelPos; "
     + ""
-    + "uniform vec3 uLightDirection; "
-    + "uniform vec3 uViewPos; "
-    + "uniform float uShininess; "
-    + "uniform float uBrightness; "
+    + "uniform vec3 LightDirection; "
+    + "uniform vec3 ViewPos; "
+    + "uniform float Shininess; "
+    + "uniform float Brightness; "
     + ""
     + "void main() "
     + "{ "
     + "  vec3 normal = normalize(vNormal); "
-    + "  vec3 lightDir = normalize(-uLightDirection); "
+    + "  vec3 lightDir = normalize(-LightDirection); "
     + "  float diffuse = max(dot(lightDir, normal), 0.0); "
     + "  "
-    + "  vec3 viewDir = normalize(uViewPos - vModelPos); "
+    + "  vec3 viewDir = normalize(ViewPos - vModelPos); "
     + "  vec3 halfDir = normalize(lightDir + viewDir); "
     + "  float specAngle = max(dot(halfDir, normal), 0.0); "
-    + "  float specular = uBrightness * pow(specAngle, uShininess); "
+    + "  float specular = Brightness * pow(specAngle, Shininess); "
     + "  "
     + "  gl_FragColor = vec4(vec3(0.2 + diffuse + specular), 1.0) * vColor;\n "
     + "}";
@@ -89,14 +99,16 @@ public class SampleApp extends Application {
         
         shader = graphics.createShader(vSource, fSource);  
         
-        htmap = new SampleHeightmap();
+        htmap = new Heightmap();
         htmap.setFlat(true, 0.65f);
         water = new Mesh(graphics); 
-        htmap.genMesh(water, new Vector3(-10, 0, -10), new Vector3(10, height, 10), 1, 1, octs, freq, pers);
+        htmap.genMeshData(new Vector3(-10, 0, -10), new Vector3(10, height, 10), 1, 1, octs, freq, pers).apply(water);
         
         heightmap = new Mesh(graphics); 
         htmap.setFlat(false, 0);
-        htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
+        htmap.genMeshData(new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers).apply(heightmap);
+        
+        res = maxRes; 
     }
 
     @Override
@@ -108,17 +120,25 @@ public class SampleApp extends Application {
         angle += 2f / 60.0f; 
         time++; 
         
-        if (time % (60 / 6) == 0) { 
-            res <<= 1; 
-            
-            if (res > (maxRes << 46)) { 
-                htmap = new SampleHeightmap();
-                res = 1; 
-            }
-            else if (res > maxRes) {} 
-            else { 
-//                System.out.println("Resolution: " + res + ", Octaves: " + octs + ", Frequency: " + freq + ", Persistance: " + pers);
-                htmap.genMesh(heightmap, new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers);
+        if (meshData == null && time % (60 * 10) == 0) {
+            System.out.println("New task");
+            meshData = executor.submit(new Callable<MeshData>() {
+                @Override
+                public MeshData call() throws Exception {
+                    return new Heightmap().genMeshData(new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers); 
+                }
+            }); 
+        }
+        
+        if (meshData != null && meshData.isDone()) {
+            System.out.println("Done!"); 
+            try {
+                meshData.get().apply(heightmap);
+                meshData = null; 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -128,19 +148,20 @@ public class SampleApp extends Application {
         graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
         graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
         graphics.setShader(shader);
+        graphics.setCullMode(CullMode.NONE);
         
         Vector3 pos = new Vector3();
         float scale = 8f; //18.0f;
         float time = 5.0f * angle;
         pos.setX(scale * FastMath.cos(time) * FastMath.cos(time) * FastMath.cos(time));
-        pos.setY(4.0f);
+        pos.setY(2.6f);
         pos.setZ(scale * FastMath.sin(time) * FastMath.sin(time) * FastMath.sin(time));
 //        System.out.println(pos);
         // view
         Matrix4 m;
-        m = Matrix4.createLookAt(pos, new Vector3(0, 2.0f, 0), new Vector3(0, 1, 0));
-        shader.setMatrix4("uView", m);
-        shader.setVector3("uViewPos", pos);
+        m = Matrix4.createLookAt(pos, new Vector3(0, 2.5f, 0), new Vector3(0, 1, 0));
+        shader.setMatrix4("View", m);
+        shader.setVector3("ViewPos", pos);
         
         // light direction
         time = -20.0f * angle;
@@ -153,21 +174,21 @@ public class SampleApp extends Application {
         pos.setZ(1.0f);
         pos.setY(-Math.abs(scale * FastMath.sin(time)));
         
-        shader.setVector3("uLightDirection", pos); 
+        shader.setVector3("LightDirection", pos); 
         
         // projection 
         m = Matrix4.createPerspective(60.0f, (float) display.getAspectRatio(), 0.1f, 1000.0f);
-        shader.setMatrix4("uProjection", m);
+        shader.setMatrix4("Projection", m);
         
         // model
         m = Matrix4.createIdentity();
 //        m.multiplySelf(Matrix4.createRotationY(angle * 5.0f)); 
-        shader.setMatrix4("uModel", m);
-        shader.setFloat("uShininess", 200.0f);
-        shader.setFloat("uBrightness", 0.05f);
+        shader.setMatrix4("Model", m);
+        shader.setFloat("Shininess", 200.0f);
+        shader.setFloat("Brightness", 0.05f);
         heightmap.draw();
-        shader.setFloat("uShininess", 300.0f);
-        shader.setFloat("uBrightness", 1.0f);
+        shader.setFloat("Shininess", 300.0f);
+        shader.setFloat("Brightness", 1.0f);
         water.draw(); 
     }
     

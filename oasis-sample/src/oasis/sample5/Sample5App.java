@@ -40,8 +40,15 @@ public class Sample5App extends Application {
         testTexture.setMipmaps(4);
         testTexture.setFilters(MinFilter.NEAREST_MIPMAP_NEAREST, MagFilter.NEAREST);
         
-        rt = graphics.createRenderTarget(600, 480, TextureFormat.DEPTH24, TextureFormat.RGBA32F); 
-        rt.getColorTexture(0).setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
+        Texture2D color, depth; 
+        color = graphics.createTexture2D(TextureFormat.RGBA32F, 600, 480); 
+        depth = graphics.createTexture2D(TextureFormat.DEPTH32, 600, 480); 
+        color.setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
+        depth.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
+        
+        rt = graphics.createRenderTarget(600, 480); 
+        rt.setColorTexture(0, color);
+        rt.setDepthTexture(depth);
     }
 
     @Override

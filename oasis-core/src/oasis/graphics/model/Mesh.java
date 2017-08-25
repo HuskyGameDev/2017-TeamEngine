@@ -48,7 +48,9 @@ public class Mesh {
     
     public void setIndices(int[] inds) {
         if (inds == null) {
-            ibo.dispose(); 
+            if (ibo != null) {
+                ibo.dispose(); 
+            }
             ibo = null; 
         }
         else {

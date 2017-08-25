@@ -2,8 +2,10 @@ package oasis.graphics.sprite;
 
 import oasis.core.EngineException;
 import oasis.graphics.Attribute;
+import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.CullMode;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
@@ -31,18 +33,18 @@ public class SpriteBatch {
             + "attribute vec2 aPosition; "
             + "attribute vec2 aTexCoord; "
             + "varying vec2 vTexCoord; "
-            + "uniform mat4 uProjection; "
+            + "uniform mat4 Projection; "
             + "void main() { "
             + "  vTexCoord = aTexCoord; "
-            + "  gl_Position = uProjection * vec4(aPosition, 0.0, 1.0); "
+            + "  gl_Position = Projection * vec4(aPosition, 0.0, 1.0); "
             + "} "; 
     private static final String defaultFs = ""
             + "#version 120 \n"
             + "varying vec2 vTexCoord; "
-            + "uniform sampler2D uTexture; "
-            + "uniform vec4 uColor; "
+            + "uniform sampler2D Texture; "
+            + "uniform vec4 Color; "
             + "void main() { "
-            + "  gl_FragColor = uColor * texture2D(uTexture, vTexCoord); "
+            + "  gl_FragColor = Color * texture2D(Texture, vTexCoord); "
             + "} "; 
     
     private GraphicsDevice gd; 
@@ -151,12 +153,14 @@ public class SpriteBatch {
         gd.setVertexArray(vao);
         gd.setShader(shader);
         gd.setTexture(0, lastTex);
+        gd.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
+        gd.setCullMode(CullMode.NONE);
         
-        shader.setInt("uTexture", 0);
-        shader.setFloat("uInvTextureWidth", 1.0f / lastTex.getWidth());
-        shader.setFloat("uInvTextureHeight", 1.0f / lastTex.getHeight());
-        shader.setVector4("uColor", tint.toVector4());
-        shader.setMatrix4("uProjection", projection); 
+        shader.setInt("Texture", 0);
+        shader.setFloat("InvTextureWidth", 1.0f / lastTex.getWidth());
+        shader.setFloat("InvTextureHeight", 1.0f / lastTex.getHeight());
+        shader.setVector4("Color", tint.toVector4());
+        shader.setMatrix4("Projection", projection); 
         gd.setDepthTestEnabled(false);
         gd.drawElements(Primitive.TRIANGLE_LIST, 0, curSprites * 6);
         
@@ -264,7 +268,6 @@ public class SpriteBatch {
     }
     
     private void addSprite(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float u1, float v1, float u2, float v2) {
-        // TODO add verts
         verts[curSprites*vertOffset + 0] = x1; 
         verts[curSprites*vertOffset + 1] = y1; 
         verts[curSprites*vertOffset + 2] = u1; 

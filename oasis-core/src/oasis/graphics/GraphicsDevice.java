@@ -6,7 +6,6 @@ public interface GraphicsDevice {
     
     Shader createShader(String vertex, String fragment); 
     RenderTarget createRenderTarget(int width, int height); 
-    RenderTarget createRenderTarget(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers); 
     VertexBuffer createVertexBuffer(VertexFormat fmt, BufferUsage usage); 
     IndexBuffer createIndexBuffer(BufferUsage usage); 
     VertexArray createVertexArray(); 
@@ -28,6 +27,7 @@ public interface GraphicsDevice {
     boolean isDepthTestEnabled(); 
     BlendMode getSourceBlendMode(); 
     BlendMode getDestBlendMode(); 
+    CullMode getCullMode(); 
     
     // setters 
     
@@ -38,6 +38,7 @@ public interface GraphicsDevice {
     
     void setDepthTestEnabled(boolean enabled); 
     void setBlendMode(BlendMode src, BlendMode dst); 
+    void setCullMode(CullMode cull); 
     
     // rendering
     

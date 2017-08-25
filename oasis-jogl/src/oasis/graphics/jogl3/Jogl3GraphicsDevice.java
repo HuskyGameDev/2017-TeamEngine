@@ -1,16 +1,19 @@
 package oasis.graphics.jogl3;
 
 import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.glu.GLU;
 
+import oasis.core.EngineException;
 import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.RenderTarget;
+import oasis.graphics.CullMode;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
+import oasis.graphics.RenderTarget;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
@@ -33,6 +36,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     private Jogl3FrameBuffer currentFbo = null; 
     private boolean depthTest = true; 
     private BlendMode srcBlend = BlendMode.ONE, dstBlend = BlendMode.ZERO; 
+    private CullMode cullMode = CullMode.NONE; 
     
     public Jogl3GraphicsDevice(Jogl3Display display) {
         this.display = display; 
@@ -46,7 +50,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         
         GLU glu = new GLU(); 
         
-        System.out.println("[GLERROR] " + cmd + ": " + i + ": " + glu.gluErrorString(i));
+        throw new EngineException("GLERROR: " + cmd + ": " + i + ": " + glu.gluErrorString(i));
     }
     
     public void init() {
@@ -59,9 +63,12 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         gl.glBlendFunc(Jogl3Convert.getBlendMode(srcBlend), Jogl3Convert.getBlendMode(dstBlend));
         getError("glBlendFunc"); 
         
-        gl.glEnable(GL.GL_CULL_FACE);
-        gl.glCullFace(GL.GL_FRONT_FACE);
-        gl.glFrontFace(GL.GL_CCW);
+        gl.glDisable(GL.GL_CULL_FACE);
+        getError("glEnable (cull face)"); 
+        gl.glCullFace(GL.GL_BACK);
+        getError("glCullFace"); 
+        
+        gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL2.GL_FILL); 
     }
     
     @Override
@@ -112,7 +119,6 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     	return new Jogl3FrameBuffer(this, width, height); 
     }
     
-    @Override
     public RenderTarget createRenderTarget(int width, int height, TextureFormat depthBuffer, TextureFormat... colorBuffers) {
         Jogl3FrameBuffer fbo = new Jogl3FrameBuffer(this, width, height); 
         if (depthBuffer != null) {
@@ -275,6 +281,38 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         srcBlend = src; 
         dstBlend = dst; 
         gl.glBlendFunc(Jogl3Convert.getBlendMode(srcBlend), Jogl3Convert.getBlendMode(dstBlend));
+    }
+
+    @Override
+    public CullMode getCullMode() {
+        return cullMode; 
+    }
+
+    @Override
+    public void setCullMode(CullMode cull) {
+        if (cullMode == cull) {
+            return; 
+        }
+        
+        this.cullMode = cull; 
+        
+        if (cullMode == null) {
+            cullMode = CullMode.NONE; 
+        }
+        
+        switch (cullMode) {
+        case NONE: 
+            gl.glDisable(GL.GL_CULL_FACE); 
+            break; 
+        case CCW: 
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glFrontFace(GL.GL_CCW);
+            break;
+        case CW: 
+            gl.glEnable(GL.GL_CULL_FACE);
+            gl.glFrontFace(GL.GL_CW);
+            break; 
+        }
     }
     
 }

@@ -6,6 +6,8 @@ public interface RenderTarget extends Disposable {
 
     void dispose(boolean textures); 
     
+    boolean isComplete(); 
+    
 	int getWidth(); 
 	int getHeight(); 
 	
