@@ -1,5 +1,11 @@
 package oasis.core;
 
+/**
+ * Levels to be used for logging 
+ * 
+ * @author Nicholas Hamilton
+ *
+ */
 public enum LogLevel {
 
     FATAL("FATAL"), 
@@ -8,6 +14,9 @@ public enum LogLevel {
     INFO("INFO"), 
     DEBUG("DEBUG");
     
+    /**
+     * The default prefix for the level 
+     */
     public final String prefix;
     
     private LogLevel(String pre) {

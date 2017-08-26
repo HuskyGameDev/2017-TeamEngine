@@ -306,11 +306,11 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         case NONE: 
             gl.glDisable(GL.GL_CULL_FACE); 
             break; 
-        case CCW: 
+        case CW: 
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glFrontFace(GL.GL_CCW);
             break;
-        case CW: 
+        case CCW: 
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glFrontFace(GL.GL_CW);
             break; 

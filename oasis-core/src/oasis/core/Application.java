@@ -3,34 +3,75 @@ package oasis.core;
 import oasis.graphics.Display;
 import oasis.graphics.GraphicsDevice;
 
+/**
+ * Basic class to make a game from 
+ * 
+ * @author Nicholas Hamilton
+ *
+ */
 public abstract class Application implements EngineListener {
 
     private static final GameLogger log = new GameLogger(Application.class);
     
+    /**
+     * Shortcut to the graphics device 
+     */
     protected GraphicsDevice graphics;
+    
+    /**
+     * Shortcut to the display
+     */
     protected Display display;
     
+    /** 
+     * Reference to the engine 
+     */
     protected Engine engine;
     
+    /**
+     * Called when application is initializing 
+     */
     public abstract void onInit();
     
+    /**
+     * Called when application is updating 
+     * 
+     * @param dt Time since last update 
+     */
     public abstract void onUpdate(float dt);
     
+    /**
+     * Called when application is rendering 
+     */
     public abstract void onRender();
     
+    /**
+     * Called when application is exiting 
+     */
     public abstract void onExit();
     
-    // called when window is trying to close
-    // returns whether window should close
+    /**
+     * Called when window is trying to close 
+     * 
+     * @return Whether window should close 
+     */
     public boolean onCloseAttempt() {
         return true; 
     }
     
+    /**
+     * Start the application 
+     * 
+     * @param config Engine configuration 
+     */
     public final synchronized void start(Config config) {
         initEngine(config);
         engine.start();
     }
     
+    /** 
+     * Stop the application 
+     */
     public final synchronized void stop() {
         engine.stop();
     }
