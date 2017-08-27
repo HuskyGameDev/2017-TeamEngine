@@ -55,7 +55,7 @@ public class Vector3 {
     public float getZ() { return z; }
     
     public float lengthSquared() { return x * x + y * y + z * z; }
-    public float length() { return FastMath.sqrt(x * x + y * y + z * z); }
+    public float length() { return MathUtil.sqrt(x * x + y * y + z * z); }
     
     public float dot(Vector3 r) { return x * r.x + y * r.y + z * r.z; }
     
@@ -93,7 +93,7 @@ public class Vector3 {
     public Vector3 normalize(Vector3 out) {
         out = newIfNull(out);
         float len = length();
-        if (FastMath.equals(len, 0.0f)) {
+        if (MathUtil.approxEquals(len, 0.0f)) {
             out.set(0.0f);
             return out;
         }
@@ -112,7 +112,7 @@ public class Vector3 {
         if (!(obj instanceof Vector3)) return false;
         
         Vector3 r = (Vector3) obj;
-        return FastMath.equals(x, r.x) && FastMath.equals(y, r.y) && FastMath.equals(z, r.z);
+        return MathUtil.approxEquals(x, r.x) && MathUtil.approxEquals(y, r.y) && MathUtil.approxEquals(z, r.z);
     }
     
     public boolean strictEquals(Vector3 r) {

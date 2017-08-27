@@ -6,7 +6,7 @@ import java.util.Arrays;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.model.MeshData;
 import oasis.graphics.model.Vertex;
-import oasis.math.FastMath;
+import oasis.math.MathUtil;
 import oasis.math.Vector3;
 import oasis.util.ArrayUtil;
 import oasis.util.QuickHash;
@@ -135,11 +135,11 @@ public class Heightmap {
         float uFrac = (float) u / width;
         float vFrac = (float) v / height;
         
-        float x = FastMath.lerp(min.getX(), max.getX(), uFrac);
-        float z = FastMath.lerp(min.getZ(), max.getZ(), vFrac);
+        float x = MathUtil.lerp(min.getX(), max.getX(), uFrac);
+        float z = MathUtil.lerp(min.getZ(), max.getZ(), vFrac);
         
         float f = fractal(x, z, octaves, initialFreq, pers); 
-        float y = FastMath.lerp(min.getY(), max.getY(), flat ? yVal : f);
+        float y = MathUtil.lerp(min.getY(), max.getY(), flat ? yVal : f);
         
         Vertex vert = new Vertex(); 
         vert.position = new Vector3(x, y, z);
@@ -160,20 +160,20 @@ public class Heightmap {
         float uFrac = (float) u / width;
         float vFrac = (float) v / height;
         
-        float x0 = FastMath.lerp(min.getX(), max.getX(), uFrac);
-        float z0 = FastMath.lerp(min.getZ(), max.getZ(), vFrac);
-        float x1 = FastMath.lerp(min.getX(), max.getX(), uFrac + 1f / width);
-        float z1 = FastMath.lerp(min.getZ(), max.getZ(), vFrac + 1f / width);
+        float x0 = MathUtil.lerp(min.getX(), max.getX(), uFrac);
+        float z0 = MathUtil.lerp(min.getZ(), max.getZ(), vFrac);
+        float x1 = MathUtil.lerp(min.getX(), max.getX(), uFrac + 1f / width);
+        float z1 = MathUtil.lerp(min.getZ(), max.getZ(), vFrac + 1f / width);
         
         float f00 = fractal(x0, z0, octaves, initialFreq, pers); 
         float f10 = fractal(x1, z0, octaves, initialFreq, pers); 
         float f01 = fractal(x0, z1, octaves, initialFreq, pers); 
         float f11 = fractal(x1, z1, octaves, initialFreq, pers); 
-        float f = FastMath.lerp(
-                FastMath.lerp(f00, f10, 0.5f), 
-                FastMath.lerp(f01, f11, 0.5f), 
+        float f = MathUtil.lerp(
+                MathUtil.lerp(f00, f10, 0.5f), 
+                MathUtil.lerp(f01, f11, 0.5f), 
                 0.5f); 
-        float y = FastMath.lerp(min.getY(), max.getY(), flat ? yVal : f);
+        float y = MathUtil.lerp(min.getY(), max.getY(), flat ? yVal : f);
         
         Vertex vert = new Vertex(); 
         vert.position = new Vector3(0.5f * (x0 + x1), y, 0.5f * (z0 + z1));
@@ -211,22 +211,22 @@ public class Heightmap {
         int u0 = (int) Math.floor(u);
         int u1 = u0 + 1;
         float ua = u - u0;
-        ua = 0.5f * (1 - FastMath.cos(FastMath.toDegrees(ua * FastMath.PI)));
+        ua = 0.5f * (1 - MathUtil.cos(MathUtil.toDegrees(ua * MathUtil.PI)));
         
         int v0 = (int) Math.floor(v);
         int v1 = v0 + 1;
         float va = v - v0;
-        va = 0.5f * (1 - FastMath.cos(FastMath.toDegrees(va * FastMath.PI)));
+        va = 0.5f * (1 - MathUtil.cos(MathUtil.toDegrees(va * MathUtil.PI)));
         
         float v00 = noisei(u0, v0, seed);
         float v01 = noisei(u0, v1, seed);
         float v10 = noisei(u1, v0, seed);
         float v11 = noisei(u1, v1, seed);
         
-        float i0 = FastMath.lerp(v00, v10, ua);
-        float i1 = FastMath.lerp(v01, v11, ua);
+        float i0 = MathUtil.lerp(v00, v10, ua);
+        float i1 = MathUtil.lerp(v01, v11, ua);
         
-        return FastMath.lerp(i0, i1, va);
+        return MathUtil.lerp(i0, i1, va);
     }
     
     private float noisei(int x, int y, int seed) {

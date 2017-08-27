@@ -23,10 +23,18 @@ public class Matrix4 {
     
     public final float[] m;
     
+    /**
+     * Creates an identity 4x4 matrix 
+     */
     public Matrix4() {
         this (true);
     }
     
+    /**
+     * Creates a 4x4 matrix 
+     * 
+     * @param identity Should matrix be identity or all zeros 
+     */
     public Matrix4(boolean identity) {
         m = new float[16];
         if (identity) {
@@ -37,6 +45,11 @@ public class Matrix4 {
         }
     }
     
+    /**
+     * Creates a matrix from a column-major array 
+     * 
+     * @param m Matrix values 
+     */
     public Matrix4(float[] m) {
         this();
         for (int i = 0; i < 16; i++) {
@@ -44,6 +57,10 @@ public class Matrix4 {
         }
     }
     
+    /**
+     * Creates a copy of a matrix 
+     * @param r
+     */
     public Matrix4(Matrix4 r) {
         m = r.m.clone();
     }
@@ -98,8 +115,8 @@ public class Matrix4 {
     
     public static Matrix4 createRotationX(float angle) {
         Matrix4 m = createIdentity();
-        float c = FastMath.cos(angle);
-        float s = FastMath.sin(angle);
+        float c = MathUtil.cos(angle);
+        float s = MathUtil.sin(angle);
         m.m[M11] = c;
         m.m[M12] = -s;
         m.m[M21] = s;
@@ -109,8 +126,8 @@ public class Matrix4 {
     
     public static Matrix4 createRotationY(float angle) {
         Matrix4 m = createIdentity();
-        float c = FastMath.cos(angle);
-        float s = FastMath.sin(angle);
+        float c = MathUtil.cos(angle);
+        float s = MathUtil.sin(angle);
         m.m[M00] = c;
         m.m[M02] = s;
         m.m[M20] = -s;
@@ -120,8 +137,8 @@ public class Matrix4 {
     
     public static Matrix4 createRotationZ(float angle) {
         Matrix4 m = createIdentity();
-        float c = FastMath.cos(angle);
-        float s = FastMath.sin(angle);
+        float c = MathUtil.cos(angle);
+        float s = MathUtil.sin(angle);
         m.m[M00] = c;
         m.m[M01] = -s;
         m.m[M10] = s;
@@ -131,7 +148,7 @@ public class Matrix4 {
     
     public static Matrix4 createPerspective(float fov, float ratio, float near, float far) {
         Matrix4 m = createZero();
-        fov = 1.0f / FastMath.tan(fov * 0.5f);
+        fov = 1.0f / MathUtil.tan(fov * 0.5f);
         m.m[M00] = fov / ratio;
         m.m[M11] = fov;
         m.m[M22] = (far + near) / (near - far);
@@ -192,7 +209,7 @@ public class Matrix4 {
         float[] rm = ((Matrix4) r).m;
         
         for (int i = 0; i < 16; i++) {
-            if (!FastMath.equals(m[i], rm[i])) return false;
+            if (!MathUtil.approxEquals(m[i], rm[i])) return false;
         }
         
         return true;

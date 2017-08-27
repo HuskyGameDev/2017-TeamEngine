@@ -6,10 +6,6 @@ import oasis.core.EngineException;
 import oasis.graphics.RenderTarget;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.Texture2DArray;
-import oasis.graphics.Texture3D;
-import oasis.graphics.TextureCube;
-import oasis.graphics.TextureCube.Face;
 
 public class Jogl3FrameBuffer implements RenderTarget {
 
@@ -159,41 +155,5 @@ public class Jogl3FrameBuffer implements RenderTarget {
 			throw new EngineException("Unknown texture type: " + texture.getClass()); 
 		}
 	}
-
-    @Override
-    public void setColorTexture(int index, TextureCube texture, Face face) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-
-    @Override
-    public void setColorTexture(int index, Texture3D texture, int layer) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-
-    @Override
-    public void setColorTexture(int index, Texture2DArray texture, int layer) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-
-    @Override
-    public void setDepthTexture(TextureCube texture, Face face) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-
-    @Override
-    public void setDepthTexture(Texture2D texture, int layer) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-
-    @Override
-    public void setDepthTexture(Texture2DArray texture, int layer) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
 
 }

@@ -17,7 +17,7 @@ import oasis.graphics.CullMode;
 import oasis.graphics.Shader;
 import oasis.graphics.model.Mesh;
 import oasis.graphics.model.MeshData;
-import oasis.math.FastMath;
+import oasis.math.MathUtil;
 import oasis.math.Matrix4;
 import oasis.math.Vector3;
 
@@ -34,8 +34,8 @@ public class SampleApp extends Application {
     private float freq = 1 / 6.0f; 
     private float pers = 0.45f; 
     private int octs = 10; 
-    private long maxRes = 1024; 
-    private long res = 1024; 
+    private long maxRes = 128; 
+    private long res = 128; 
     
     private float height = 3f; 
     
@@ -61,7 +61,7 @@ public class SampleApp extends Application {
     + "void main() "
     + "{ "
     + "  vColor = aColor; "
-    + "  vNormal = normalize((Model * vec4(aNormal, 0)).xyz); "
+    + "  vNormal = normalize(Model * vec4(aNormal, 0)).xyz; "
     + "  gl_Position = Projection * View * Model * vec4(aPosition, 1.0); "
     + "  vec4 tmp = View * Model * vec4(aPosition, 1.0); "
     + "  vModelPos = tmp.xyz / tmp.w; "
@@ -153,9 +153,9 @@ public class SampleApp extends Application {
         Vector3 pos = new Vector3();
         float scale = 8f; //18.0f;
         float time = 5.0f * angle;
-        pos.setX(scale * FastMath.cos(time) * FastMath.cos(time) * FastMath.cos(time));
+        pos.setX(scale * MathUtil.cos(time) * MathUtil.cos(time) * MathUtil.cos(time));
         pos.setY(2.6f);
-        pos.setZ(scale * FastMath.sin(time) * FastMath.sin(time) * FastMath.sin(time));
+        pos.setZ(scale * MathUtil.sin(time) * MathUtil.sin(time) * MathUtil.sin(time));
 //        System.out.println(pos);
         // view
         Matrix4 m;
@@ -170,9 +170,9 @@ public class SampleApp extends Application {
 //        pos.setY(-10);
 //        pos.setZ(-10);
         pos = new Vector3(); 
-        pos.setX(scale * FastMath.cos(time));
+        pos.setX(scale * MathUtil.cos(time));
         pos.setZ(1.0f);
-        pos.setY(-Math.abs(scale * FastMath.sin(time)));
+        pos.setY(-Math.abs(scale * MathUtil.sin(time)));
         
         shader.setVector3("LightDirection", pos); 
         

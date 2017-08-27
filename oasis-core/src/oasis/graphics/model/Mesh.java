@@ -14,6 +14,14 @@ import oasis.math.Vector3;
 import oasis.math.Vector4;
 import oasis.util.ArrayUtil;
 
+/**
+ * Basic class for managing 3D geometry. 
+ * Meshes should only be modified on the main 
+ * game thread 
+ * 
+ * @author Nicholas Hamilton
+ *
+ */
 public class Mesh {
     
     private VertexArray vao; 
@@ -27,11 +35,20 @@ public class Mesh {
     
     private GraphicsDevice gd; 
     
+    /**
+     * Constructor. Needs a graphics device to manage 
+     * buffers 
+     * 
+     * @param gd Graphics device 
+     */
     public Mesh(GraphicsDevice gd) {
         this.gd = gd; 
         this.vao = gd.createVertexArray(); 
     }
     
+    /**
+     * Draws the mesh. 
+     */
     public void draw() {
         if (update) {
             updateVao(); 
@@ -46,6 +63,11 @@ public class Mesh {
         }
     }
     
+    /**
+     * Assign indices for the mesh
+     * 
+     * @param inds Indices 
+     */
     public void setIndices(int[] inds) {
         if (inds == null) {
             if (ibo != null) {
@@ -64,18 +86,34 @@ public class Mesh {
         update = true; 
     }
     
+    /**
+     * Assign position data for vertices 
+     * 
+     * @param positions Positions 
+     */
     public void setPositions(Vector3[] positions) {
         positionVbo = setVertexData(positionVbo, VertexFormat.POSITION_3, positions == null ? null : ArrayUtil.toFloatArray(positions)); 
     }
     
+    /**
+     * Assign normal data for vertices 
+     * 
+     * @param normals Normals 
+     */
     public void setNormals(Vector3[] normals) {
         normalVbo = setVertexData(normalVbo, VertexFormat.NORMAL_3, normals == null ? null : ArrayUtil.toFloatArray(normals)); 
     }
     
+    /**
+     * Assign color data for vertices 
+     * 
+     * @param colors Colors 
+     */
     public void setColors(Vector4[] colors) {
         colorVbo = setVertexData(colorVbo, VertexFormat.COLOR_4, colors == null ? null : ArrayUtil.toFloatArray(colors)); 
     }
     
+    // set vertex data for a vertex buffer 
     private VertexBuffer setVertexData(VertexBuffer vbo, VertexFormat fmt, float[] data) {
         if (data == null) {
             if (vbo != null) {
@@ -88,7 +126,7 @@ public class Mesh {
                 vbo = gd.createVertexBuffer(fmt, BufferUsage.DYNAMIC); 
             }
             
-            vbo.setData(data);
+            vbo.setVertices(data);
         }
         
         update = true; 

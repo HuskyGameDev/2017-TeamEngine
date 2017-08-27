@@ -57,7 +57,7 @@ public class Sample2App extends Application {
         VertexBuffer vbo = graphics.createVertexBuffer(VertexFormat.POSITION_3_COLOR_4_TEXTURE_2, BufferUsage.STATIC); 
         IndexBuffer ibo = graphics.createIndexBuffer(BufferUsage.STATIC); 
         
-        vbo.setData(new float[] {
+        vbo.setVertices(new float[] {
                 -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 
                  0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f, 
                  0.5f,  0.5f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   1.0f, 1.0f, 
@@ -81,7 +81,7 @@ public class Sample2App extends Application {
     public void onUpdate(float dt) {
         if (display.shouldClose()) engine.stop(); 
         
-        boxVao.getVertexBuffer(0).setData(new float[] {
+        boxVao.getVertexBuffer(0).setVertices(new float[] {
                 -(float)Math.random(), -(float)Math.random(), 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 
                 (float)Math.random(), -(float)Math.random(), 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,   1.0f, 0.0f, 
                 (float)Math.random(), (float)Math.random(), 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,   1.0f, 1.0f, 

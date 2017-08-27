@@ -14,7 +14,7 @@ import oasis.math.Vector4;
  * GraphicsDevice 
  * 
  * @author Nicholas Hamilton
- *
+ * 
  */
 public interface Shader extends Disposable {
 
@@ -44,7 +44,7 @@ public interface Shader extends Disposable {
      * Set a float uniform 
      * 
      * @param name Uniform name 
-     * @param value Flaot value 
+     * @param value Float value 
      */
     void setFloat(String name, float value); 
     

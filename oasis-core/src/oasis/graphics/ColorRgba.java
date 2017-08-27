@@ -1,6 +1,6 @@
 package oasis.graphics;
 
-import oasis.math.FastMath;
+import oasis.math.MathUtil;
 import oasis.math.Vector4;
 
 /**
@@ -74,10 +74,10 @@ public class ColorRgba {
      * @return Packed RGBA int 
      */
     public int getRgba() {
-        int r_ = (int) FastMath.clamp(0, 255, r * 255);
-        int g_ = (int) FastMath.clamp(0, 255, g * 255);
-        int b_ = (int) FastMath.clamp(0, 255, b * 255);
-        int a_ = (int) FastMath.clamp(0, 255, a * 255);
+        int r_ = (int) MathUtil.clamp(0, 255, r * 255);
+        int g_ = (int) MathUtil.clamp(0, 255, g * 255);
+        int b_ = (int) MathUtil.clamp(0, 255, b * 255);
+        int a_ = (int) MathUtil.clamp(0, 255, a * 255);
         return r_ << 24 | g_ << 16 | b_ << 8 | a_; 
     }
     
@@ -87,10 +87,10 @@ public class ColorRgba {
      * @return Packed ARGB int 
      */
     public int getArgb() {
-        int r_ = (int) FastMath.clamp(0, 255, r * 255);
-        int g_ = (int) FastMath.clamp(0, 255, g * 255);
-        int b_ = (int) FastMath.clamp(0, 255, b * 255);
-        int a_ = (int) FastMath.clamp(0, 255, a * 255);
+        int r_ = (int) MathUtil.clamp(0, 255, r * 255);
+        int g_ = (int) MathUtil.clamp(0, 255, g * 255);
+        int b_ = (int) MathUtil.clamp(0, 255, b * 255);
+        int a_ = (int) MathUtil.clamp(0, 255, a * 255);
         return a_ << 24 | r_ << 16 | g_ << 8 | b_; 
     }
     

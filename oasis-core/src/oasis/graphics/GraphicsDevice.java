@@ -1,7 +1,8 @@
 package oasis.graphics;
 
 /**
- * Main interface for rendering graphics to the screen 
+ * Main interface for rendering graphics to the screen. 
+ * Graphics should only be used on the main game thread 
  * 
  * @author Nicholas Hamilton
  *
@@ -64,37 +65,6 @@ public interface GraphicsDevice {
      * @return 2D texture resource 
      */
     Texture2D createTexture2D(Texture.Format format, int width, int height); 
-    
-    /**
-     * Creates a cubemap texture
-     * 
-     * @param format Pixel format of the texture 
-     * @param size Width and height of the texture 
-     * @return Cubemap texture resource 
-     */
-    TextureCube createTextureCube(Texture.Format format, int size);
-    
-    /**
-     * Creates a 3D texture 
-     * 
-     * @param format Pixel format of the texture 
-     * @param width Width of the texture 
-     * @param height Height of the texture 
-     * @param depth Depth of the texture 
-     * @return 3D texture resource 
-     */
-    Texture3D createTexture3D(Texture.Format format, int width, int height, int depth);
-    
-    /**
-     * Creates an array of 2D textures 
-     * 
-     * @param format Pixel format of the texture 
-     * @param width Width of the texture 
-     * @param height Height of the texture 
-     * @param layers Number of 2D textures in the array 
-     * @return 2D texture array resource 
-     */
-    Texture2DArray createTexture2DArray(Texture.Format format, int width, int height, int layers); 
     
     // getters
     

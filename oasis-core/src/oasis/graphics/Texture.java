@@ -212,7 +212,7 @@ public interface Texture extends Disposable {
     /**
      * Set number of mipmaps. The texture will automatically 
      * manage mipmaps for you. [levels] must be greater than 
-     * or equal to 0
+     * or equal to 1
      * 
      * @param levels Number of mipmaps 
      */

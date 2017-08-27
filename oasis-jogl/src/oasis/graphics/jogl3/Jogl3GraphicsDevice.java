@@ -17,9 +17,6 @@ import oasis.graphics.RenderTarget;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.Texture2DArray;
-import oasis.graphics.Texture3D;
-import oasis.graphics.TextureCube;
 import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
@@ -317,22 +314,4 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         }
     }
 
-    @Override
-    public TextureCube createTextureCube(Texture.Format format, int size) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-
-    @Override
-    public Texture3D createTexture3D(Texture.Format format, int width, int height, int depth) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-
-    @Override
-    public Texture2DArray createTexture2DArray(Texture.Format format, int width, int height, int layers) {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
-    }
-    
 }

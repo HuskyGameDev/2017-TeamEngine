@@ -27,8 +27,8 @@ public class Vector2 {
     }
     
     public static Vector2 fromPolar(float r, float theta) {
-        float c = FastMath.cos(theta);
-        float s = FastMath.sin(theta);
+        float c = MathUtil.cos(theta);
+        float s = MathUtil.sin(theta);
         return new Vector2(c * r, s * r);
     }
     
@@ -54,7 +54,7 @@ public class Vector2 {
     public float getY() { return y; }
     
     public float lengthSquared() { return x * x + y * y; }
-    public float length() { return FastMath.sqrt(x * x + y * y); }
+    public float length() { return MathUtil.sqrt(x * x + y * y); }
     
     public float dot(Vector2 r) { return x * r.x + y * r.y; }
     
@@ -84,8 +84,8 @@ public class Vector2 {
     public Vector2 divide(Vector2 r, Vector2 out) { out = newIfNull(out); out.x = x / r.x; out.y = y / r.y; return out; }
     public Vector2 rotate(float theta, Vector2 out) {
         out = newIfNull(out);
-        float c = FastMath.cos(theta);
-        float s = FastMath.sin(theta);
+        float c = MathUtil.cos(theta);
+        float s = MathUtil.sin(theta);
         float x_ = c * x - s * y;
         float y_ = s * x + c * y;
         out.set(x_, y_);
@@ -94,7 +94,7 @@ public class Vector2 {
     public Vector2 normalize(Vector2 out) {
         out = newIfNull(out);
         float len = length();
-        if (FastMath.equals(len, 0.0f)) {
+        if (MathUtil.approxEquals(len, 0.0f)) {
             out.set(0.0f, 0.0f);
             return out;
         }
@@ -113,7 +113,7 @@ public class Vector2 {
         if (!(obj instanceof Vector2)) return false;
         
         Vector2 r = (Vector2) obj;
-        return FastMath.equals(x, r.x) && FastMath.equals(y, r.y);
+        return MathUtil.approxEquals(x, r.x) && MathUtil.approxEquals(y, r.y);
     }
     
     public boolean strictEquals(Vector2 r) {

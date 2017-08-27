@@ -88,18 +88,18 @@ public class Jogl3VertexBuffer implements VertexBuffer {
     }
 
     @Override
-    public float[] getData(float[] out) {
+    public float[] getVertices(float[] out) {
         data.get(out); 
         return out; 
     }
 
     @Override
-    public float[] getData() {
-        return getData(new float[getFloatCount()]); 
+    public float[] getVertices() {
+        return getVertices(new float[getFloatCount()]); 
     }
 
     @Override
-    public void setData(float[] verts) {
+    public void setVertices(float[] verts) {
         if (data.capacity() < verts.length) {
             data = BufferUtil.createNativeFloatBuffer(verts.length); 
         }

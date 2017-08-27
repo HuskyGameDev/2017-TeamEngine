@@ -77,39 +77,6 @@ public interface RenderTarget extends Disposable {
 	void setColorTexture(int index, Texture2D texture); 
 	
 	/**
-	 * Set a color texture of the render target. Dimensions must 
-     * be the same as the render target. Format must not be a 
-     * depth format  
-     * 
-     * @param index Index of the texture 
-     * @param texture Texture to attach 
-     * @param face Face of the cubemap 
-	 */
-	void setColorTexture(int index, TextureCube texture, TextureCube.Face face); 
-	
-	/**
-     * Set a color texture of the render target. Dimensions must 
-     * be the same as the render target. Format must not be a 
-     * depth format  
-     * 
-     * @param index Index of the texture 
-     * @param texture Texture to attach 
-     * @param layer Z value of the 3D texture 
-     */
-	void setColorTexture(int index, Texture3D texture, int layer); 
-	
-	/**
-     * Set a color texture of the render target. Dimensions must 
-     * be the same as the render target. Format must not be a 
-     * depth format  
-     * 
-     * @param index Index of the texture 
-     * @param texture Texture to attach 
-     * @param layer Index of the 2D texture array 
-     */
-	void setColorTexture(int index, Texture2DArray texture, int layer); 
-	
-	/**
      * Set the depth texture of the render target. Dimensions must 
      * be the same as the render target. Format must be a 
      * depth format  
@@ -117,35 +84,5 @@ public interface RenderTarget extends Disposable {
      * @param texture Texture to attach 
      */
 	void setDepthTexture(Texture2D texture); 
-	
-	/**
-     * Set the depth texture of the render target. Dimensions must 
-     * be the same as the render target. Format must be a 
-     * depth format   
-     * 
-     * @param texture Texture to attach 
-     * @param face Face of the cubemap 
-     */
-	void setDepthTexture(TextureCube texture, TextureCube.Face face); 
-	
-	/**
-     * Set the depth texture of the render target. Dimensions must 
-     * be the same as the render target. Format must be a 
-     * depth format   
-     * 
-     * @param texture Texture to attach 
-     * @param layer Z value of the 3D texture 
-     */
-	void setDepthTexture(Texture2D texture, int layer); 
-	
-	/**
-     * Set the depth texture of the render target. Dimensions must 
-     * be the same as the render target. Format must be a 
-     * depth format   
-     * 
-     * @param texture Texture to attach 
-     * @param layer Index of the 2D texture array 
-     */
-	void setDepthTexture(Texture2DArray texture, int layer); 
 	
 }

@@ -15,12 +15,28 @@ import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexElement;
 import oasis.graphics.VertexFormat;
-import oasis.math.FastMath;
+import oasis.math.MathUtil;
 import oasis.math.Matrix4;
+import oasis.math.Vector2;
 import oasis.math.Vector3;
 
+/**
+ * Basic 2D sprite rendering class.  
+ * 
+ * Shaders have the following uniforms available to them: <br> 
+ * 1. Projection: mat4 - Orthographic projection matrix <br> 
+ * 2. Texture: sampler2D - Current texture being drawn <br> 
+ * 3. Color: vec4 - Current tint of sprites <br> 
+ * 4. InvTextureSize: vec2 - Inverse size of texture <br> 
+ * 
+ * @author Nicholas Hamilton
+ *
+ */
 public class SpriteBatch {
 
+    /**
+     * Format used in sprite batch 
+     */
     public static final VertexFormat format = new VertexFormat(new VertexElement[] {
             new VertexElement(Attribute.POSITION, 2), 
             new VertexElement(Attribute.TEXTURE, 2) 
@@ -62,6 +78,13 @@ public class SpriteBatch {
     private Matrix4 projection; 
     private ColorRgba tint = new ColorRgba(1, 1, 1, 1); 
     
+    /**
+     * Constructor. Default shader will be used if [shader] is null 
+     * 
+     * @param gd Graphics device 
+     * @param shader Shader to use
+     * @param maxSprites Maximum number of sprites before batch will be flushed 
+     */
     public SpriteBatch(GraphicsDevice gd, Shader shader, int maxSprites) {
         this.gd = gd; 
         this.shader = shader == null ? getDefaultShader(gd) : shader; 
@@ -90,10 +113,21 @@ public class SpriteBatch {
         ibo.setData(inds);
     }
     
+    /**
+     * Creates sprite batch with default shader 
+     * 
+     * @param gd Graphics device 
+     * @param maxSprites Max sprites before a flush 
+     */
     public SpriteBatch(GraphicsDevice gd, int maxSprites) {
         this(gd, null, maxSprites); 
     }
     
+    /**
+     * Creates sprite batch with default shader 
+     * 
+     * @param gd Graphics device 
+     */
     public SpriteBatch(GraphicsDevice gd) {
         this(gd, null, 1024); 
     }
@@ -108,6 +142,11 @@ public class SpriteBatch {
         return defaultShader; 
     }
     
+    /**
+     * Sets shader of sprite batch. Default will be used if null
+     * 
+     * @param shader Shader 
+     */
     public void setShader(Shader shader) {
         if (drawing) {
             flush(); 
@@ -121,6 +160,10 @@ public class SpriteBatch {
         }
     }
     
+    /**
+     * Begin sprite batch rendering. Must be called before attempting
+     * to draw 
+     */
     public void begin() {
         if (drawing) {
             throw new EngineException("SpriteBatch is already begun drawing"); 
@@ -130,6 +173,9 @@ public class SpriteBatch {
         buildMatrices(); 
     }
     
+    /**
+     * End sprite batch rendering. Call this when you are done rendering 
+     */
     public void end() {
         if (!drawing) {
             throw new EngineException("SpriteBatch is already ended drawing"); 
@@ -139,6 +185,10 @@ public class SpriteBatch {
         drawing = false; 
     }
     
+    /**
+     * Manually flush sprite batch data. This will draw all sprites in the buffer 
+     * and empty it 
+     */
     public void flush() {
         if (!drawing) {
             throw new EngineException("SpriteBatch is not drawing"); 
@@ -148,7 +198,7 @@ public class SpriteBatch {
             return;
         }
         
-        vbo.setData(verts);
+        vbo.setVertices(verts);
         
         gd.setVertexArray(vao);
         gd.setShader(shader);
@@ -157,8 +207,7 @@ public class SpriteBatch {
         gd.setCullMode(CullMode.NONE);
         
         shader.setInt("Texture", 0);
-        shader.setFloat("InvTextureWidth", 1.0f / lastTex.getWidth());
-        shader.setFloat("InvTextureHeight", 1.0f / lastTex.getHeight());
+        shader.setVector2("InvTextureSize", new Vector2(1.0f / lastTex.getWidth(), 1.0f / lastTex.getHeight()));
         shader.setVector4("Color", tint.toVector4());
         shader.setMatrix4("Projection", projection); 
         gd.setDepthTestEnabled(false);
@@ -167,14 +216,29 @@ public class SpriteBatch {
         curSprites = 0; 
     }
     
+    /**
+     * Get the current texture 
+     * 
+     * @return Current texture 
+     */
     public Texture2D getTexture2D() {
         return lastTex; 
     }
     
+    /**
+     * Get the current tint
+     * 
+     * @return Current tint 
+     */
     public ColorRgba getTint() {
         return new ColorRgba(tint); 
     }
     
+    /**
+     * Set the tint to draw textures with 
+     * 
+     * @param color Color 
+     */
     public void setTint(ColorRgba color) {
         if (!tint.equals(color)) {
             if (drawing) {
@@ -184,22 +248,84 @@ public class SpriteBatch {
         }
     }
     
+    /**
+     * Draw a texture
+     * 
+     * @param texture Texture to draw 
+     * @param x X coordinate 
+     * @param y Y coordinate 
+     * @param w Width 
+     * @param h Height 
+     */
     public void draw(Texture2D texture, float x, float y, float w, float h) {
         draw(texture, x, y, w, h, 0, 0, 1, 1, 0, false, false); 
     }
     
+    /**
+     * Draw a texture 
+     * 
+     * @param texture Texture to draw 
+     * @param x X coordinate 
+     * @param y Y coordinate 
+     * @param w Width 
+     * @param h Height 
+     * @param flipX Should the texture be flipped horizontally 
+     * @param flipY Should the texture be flipped vertically 
+     */
     public void draw(Texture2D texture, float x, float y, float w, float h, boolean flipX, boolean flipY) {
         draw(texture, x, y, w, h, 0, 0, 1, 1, 0, flipX, flipY); 
     }
     
+    /**
+     * Draw a texture 
+     * 
+     * @param texture Texture to draw 
+     * @param x X coordinate 
+     * @param y Y coordinate 
+     * @param w Width 
+     * @param h Height 
+     * @param angle Rotation in degrees CCW 
+     * @param flipX Should the texture be flipped horizontally 
+     * @param flipY Should the texture be flipped vertically 
+     */
     public void draw(Texture2D texture, float x, float y, float w, float h, float angle, boolean flipX, boolean flipY) {
         draw(texture, x, y, w, h, w * 0.5f, h * 0.5f, 1, 1, angle, flipX, flipY); 
     }
     
+    /**
+     * Draw a texture 
+     * 
+     * @param texture Texture to draw 
+     * @param x X coordinate 
+     * @param y Y coordinate 
+     * @param w Width 
+     * @param h Height 
+     * @param originX X position of origin 
+     * @param originY Y position of origin 
+     * @param angle Rotation in degrees CCW around origin 
+     * @param flipX Should the texture be flipped horizontally 
+     * @param flipY Should the texture be flipped vertically 
+     */
     public void draw(Texture2D texture, float x, float y, float w, float h, float originX, float originY, float angle, boolean flipX, boolean flipY) {
         draw(texture, x, y, w, h, originX, originY, 1, 1, angle, flipX, flipY); 
     }
     
+    /**
+     * Draw a texture 
+     * 
+     * @param texture Texture to draw 
+     * @param x X coordinate 
+     * @param y Y coordinate 
+     * @param w Width 
+     * @param h Height 
+     * @param originX X position of origin 
+     * @param originY Y position of origin 
+     * @param scaleX Horizontal scaling from origin 
+     * @param scaleY Vertical scaling from origin 
+     * @param angle Rotation in degrees CCW around origin 
+     * @param flipX Should the texture be flipped horizontally 
+     * @param flipY Should the texture be flipped vertically 
+     */
     public void draw(Texture2D texture, float x, float y, float w, float h, float originX, float originY, float scaleX, float scaleY, float angle, boolean flipX, boolean flipY) {
         check(texture); 
         
@@ -214,7 +340,6 @@ public class SpriteBatch {
         float xOff = x + originX; 
         float yOff = y + originY; 
         
-        // TODO finish
         x1 = (0 - originX) * scaleX; 
         y1 = (0 - originY) * scaleY; 
         x2 = (w - originX) * scaleX; 
@@ -225,8 +350,8 @@ public class SpriteBatch {
         y4 = (h - originY) * scaleY; 
         
         if (angle != 0) {
-            float cos = FastMath.cos(angle); 
-            float sin = FastMath.sin(angle); 
+            float cos = MathUtil.cos(angle); 
+            float sin = MathUtil.sin(angle); 
             
             float x1_, y1_, x2_, y2_, x3_, y3_, x4_, y4_; 
             
