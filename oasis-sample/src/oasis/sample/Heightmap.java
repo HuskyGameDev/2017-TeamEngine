@@ -6,8 +6,8 @@ import java.util.Arrays;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.model.MeshData;
 import oasis.graphics.model.Vertex;
-import oasis.math.MathUtil;
-import oasis.math.Vector3;
+import oasis.math.Mathf;
+import oasis.math.Vector3f;
 import oasis.util.ArrayUtil;
 import oasis.util.QuickHash;
 
@@ -29,7 +29,7 @@ public class Heightmap {
         this.yVal = yVal;
     }
     
-    public MeshData genMeshData(Vector3 min, Vector3 max, int width, int height, int octaves, float initialFreq, float pers) {
+    public MeshData genMeshData(Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
         verts.clear(); 
         inds.clear();
         
@@ -131,52 +131,52 @@ public class Heightmap {
         return x + y * (width + 1); 
     }
     
-    private Vertex getVertex(float u, float v, Vector3 min, Vector3 max, int width, int height, int octaves, float initialFreq, float pers) {
+    private Vertex getVertex(float u, float v, Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
         float uFrac = (float) u / width;
         float vFrac = (float) v / height;
         
-        float x = MathUtil.lerp(min.getX(), max.getX(), uFrac);
-        float z = MathUtil.lerp(min.getZ(), max.getZ(), vFrac);
+        float x = Mathf.lerp(min.getX(), max.getX(), uFrac);
+        float z = Mathf.lerp(min.getZ(), max.getZ(), vFrac);
         
         float f = fractal(x, z, octaves, initialFreq, pers); 
-        float y = MathUtil.lerp(min.getY(), max.getY(), flat ? yVal : f);
+        float y = Mathf.lerp(min.getY(), max.getY(), f);
         
         Vertex vert = new Vertex(); 
-        vert.position = new Vector3(x, y, z);
+        vert.position = new Vector3f(x, y, z);
         
         if (flat) {
-            vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.95f).toVector4();
+            vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.9f).toVector4();
         }
         else {
             vert.color = new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
         }
         
-        vert.normal = new Vector3(0, 1, 0); 
+        vert.normal = new Vector3f(0, 1, 0); 
         
         return vert; 
     }
     
-    private Vertex getVertexMid(float u, float v, Vector3 min, Vector3 max, int width, int height, int octaves, float initialFreq, float pers) {
+    private Vertex getVertexMid(float u, float v, Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
         float uFrac = (float) u / width;
         float vFrac = (float) v / height;
         
-        float x0 = MathUtil.lerp(min.getX(), max.getX(), uFrac);
-        float z0 = MathUtil.lerp(min.getZ(), max.getZ(), vFrac);
-        float x1 = MathUtil.lerp(min.getX(), max.getX(), uFrac + 1f / width);
-        float z1 = MathUtil.lerp(min.getZ(), max.getZ(), vFrac + 1f / width);
+        float x0 = Mathf.lerp(min.getX(), max.getX(), uFrac);
+        float z0 = Mathf.lerp(min.getZ(), max.getZ(), vFrac);
+        float x1 = Mathf.lerp(min.getX(), max.getX(), uFrac + 1f / width);
+        float z1 = Mathf.lerp(min.getZ(), max.getZ(), vFrac + 1f / width);
         
         float f00 = fractal(x0, z0, octaves, initialFreq, pers); 
         float f10 = fractal(x1, z0, octaves, initialFreq, pers); 
         float f01 = fractal(x0, z1, octaves, initialFreq, pers); 
         float f11 = fractal(x1, z1, octaves, initialFreq, pers); 
-        float f = MathUtil.lerp(
-                MathUtil.lerp(f00, f10, 0.5f), 
-                MathUtil.lerp(f01, f11, 0.5f), 
+        float f = Mathf.lerp(
+                Mathf.lerp(f00, f10, 0.5f), 
+                Mathf.lerp(f01, f11, 0.5f), 
                 0.5f); 
-        float y = MathUtil.lerp(min.getY(), max.getY(), flat ? yVal : f);
+        float y = Mathf.lerp(min.getY(), max.getY(), f);
         
         Vertex vert = new Vertex(); 
-        vert.position = new Vector3(0.5f * (x0 + x1), y, 0.5f * (z0 + z1));
+        vert.position = new Vector3f(0.5f * (x0 + x1), y, 0.5f * (z0 + z1));
         
         if (flat) {
             vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.95f).toVector4();
@@ -185,7 +185,7 @@ public class Heightmap {
             vert.color = new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
         }
         
-        vert.normal = new Vector3(0, 1, 0); 
+        vert.normal = new Vector3f(0, 1, 0); 
         
         return vert; 
     }
@@ -197,7 +197,8 @@ public class Heightmap {
         float total = 0.0f;
         
         for (int i = 0; i < it; i++) {
-            sum += Math.abs(amp * noise(x * freq + freq, y * freq + freq, seed + i));
+            float noise = amp * noise(x * freq + freq, y * freq + freq, seed + i); 
+            sum += flat ? noise * 0.5f + 0.5f : Math.abs(noise);
             total += amp;
             
             amp *= pers;
@@ -211,22 +212,22 @@ public class Heightmap {
         int u0 = (int) Math.floor(u);
         int u1 = u0 + 1;
         float ua = u - u0;
-        ua = 0.5f * (1 - MathUtil.cos(MathUtil.toDegrees(ua * MathUtil.PI)));
+        ua = 0.5f * (1 - Mathf.cos(ua * Mathf.PI));
         
         int v0 = (int) Math.floor(v);
         int v1 = v0 + 1;
         float va = v - v0;
-        va = 0.5f * (1 - MathUtil.cos(MathUtil.toDegrees(va * MathUtil.PI)));
+        va = 0.5f * (1 - Mathf.cos(va * Mathf.PI));
         
         float v00 = noisei(u0, v0, seed);
         float v01 = noisei(u0, v1, seed);
         float v10 = noisei(u1, v0, seed);
         float v11 = noisei(u1, v1, seed);
         
-        float i0 = MathUtil.lerp(v00, v10, ua);
-        float i1 = MathUtil.lerp(v01, v11, ua);
+        float i0 = Mathf.lerp(v00, v10, ua);
+        float i1 = Mathf.lerp(v01, v11, ua);
         
-        return MathUtil.lerp(i0, i1, va);
+        return Mathf.lerp(i0, i1, va);
     }
     
     private float noisei(int x, int y, int seed) {

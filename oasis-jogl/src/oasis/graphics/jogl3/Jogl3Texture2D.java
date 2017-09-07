@@ -9,7 +9,6 @@ import oasis.core.EngineException;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.WrapMode;
 import oasis.util.BufferUtil;
 
 public class Jogl3Texture2D extends Jogl3Texture implements Texture2D {

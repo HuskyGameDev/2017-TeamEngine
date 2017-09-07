@@ -7,10 +7,10 @@ import com.jogamp.opengl.GL3;
 import oasis.core.GameLogger;
 import oasis.graphics.Attribute;
 import oasis.graphics.Shader;
-import oasis.math.Matrix4;
-import oasis.math.Vector2;
-import oasis.math.Vector3;
-import oasis.math.Vector4;
+import oasis.math.Matrix4f;
+import oasis.math.Vector2f;
+import oasis.math.Vector3f;
+import oasis.math.Vector4f;
 
 public class Jogl3Shader implements Shader {
 
@@ -52,25 +52,25 @@ public class Jogl3Shader implements Shader {
     }
 
     @Override
-    public void setVector2(String name, Vector2 value) {
+    public void setVector2f(String name, Vector2f value) {
         gd.context.bindProgram(id);
         gd.gl.glUniform2f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY());
     }
 
     @Override
-    public void setVector3(String name, Vector3 value) {
+    public void setVector3f(String name, Vector3f value) {
         gd.context.bindProgram(id);
         gd.gl.glUniform3f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY(), value.getZ());
     }
 
     @Override
-    public void setVector4(String name, Vector4 value) {
+    public void setVector4f(String name, Vector4f value) {
         gd.context.bindProgram(id);
         gd.gl.glUniform4f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY(), value.getZ(), value.getW());
     }
 
     @Override
-    public void setMatrix4(String name, Matrix4 value) {
+    public void setMatrix4f(String name, Matrix4f value) {
         gd.context.bindProgram(id);
         gd.gl.glUniformMatrix4fv(gd.gl.glGetUniformLocation(id, name), 1, false, value.get(new float[16]), 0);
     }

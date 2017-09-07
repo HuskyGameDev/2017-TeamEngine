@@ -1,10 +1,10 @@
 package oasis.graphics;
 
 import oasis.core.Disposable;
-import oasis.math.Matrix4;
-import oasis.math.Vector2;
-import oasis.math.Vector3;
-import oasis.math.Vector4;
+import oasis.math.Matrix4f;
+import oasis.math.Vector2f;
+import oasis.math.Vector3f;
+import oasis.math.Vector4f;
 
 /**
  * Shader program for the graphics device 
@@ -54,7 +54,7 @@ public interface Shader extends Disposable {
      * @param name Uniform name 
      * @param value 2-vector value 
      */
-    void setVector2(String name, Vector2 value); 
+    void setVector2f(String name, Vector2f value); 
     
     /**
      * Set a 3-vector uniform 
@@ -62,7 +62,7 @@ public interface Shader extends Disposable {
      * @param name Uniform name 
      * @param value 3-vector value 
      */
-    void setVector3(String name, Vector3 value);
+    void setVector3f(String name, Vector3f value);
     
     /**
      * Set a 4-vector uniform 
@@ -70,7 +70,7 @@ public interface Shader extends Disposable {
      * @param name Uniform name 
      * @param value 4-vector value 
      */
-    void setVector4(String name, Vector4 value);
+    void setVector4f(String name, Vector4f value);
     
     /**
      * Set a 4x4 matrix uniform 
@@ -78,6 +78,6 @@ public interface Shader extends Disposable {
      * @param name Uniform name 
      * @param value 4x4 matrix value 
      */
-    void setMatrix4(String name, Matrix4 value);
+    void setMatrix4f(String name, Matrix4f value);
 
 }

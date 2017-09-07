@@ -8,16 +8,16 @@ import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.IndexBuffer;
-import oasis.graphics.MagFilter;
-import oasis.graphics.MinFilter;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
+import oasis.graphics.Texture.MagFilter;
+import oasis.graphics.Texture.MinFilter;
+import oasis.graphics.Texture.WrapMode;
 import oasis.graphics.Texture2D;
 import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
-import oasis.graphics.WrapMode;
 
 public class Sample2App extends Application {
 

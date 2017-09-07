@@ -7,13 +7,14 @@ import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.BlendMode;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.MagFilter;
-import oasis.graphics.MinFilter;
 import oasis.graphics.RenderTarget;
 import oasis.graphics.Texture;
+import oasis.graphics.Texture.MagFilter;
+import oasis.graphics.Texture.MinFilter;
 import oasis.graphics.Texture2D;
 import oasis.graphics.TextureLoader;
 import oasis.graphics.sprite.SpriteBatch;
+import oasis.math.Mathf;
 
 public class Sample5App extends Application {
 
@@ -70,7 +71,7 @@ public class Sample5App extends Application {
         sb.setTint(new ColorRgba(1.0f, 1.0f, 1.0f, 0.3f));
         for (int x = 0; x < 20; x++) {
             for (int y = 0; y < 10; y++) {
-                sb.draw(testTexture, (x - camX) * 32, (y - camY) * 32, 32, 32, 16, 16, 2, 1, angle, false, false);
+                sb.draw(testTexture, (x - camX) * 32, (y - camY) * 32, 32, 32, 16, 16, 2, 1, Mathf.toRadians(angle), false, false);
             }
         }
         

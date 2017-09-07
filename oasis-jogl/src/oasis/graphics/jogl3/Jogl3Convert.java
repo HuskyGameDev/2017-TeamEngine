@@ -8,19 +8,16 @@ import com.jogamp.opengl.GL2;
 import oasis.graphics.Attribute;
 import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
-import oasis.graphics.MagFilter;
-import oasis.graphics.MinFilter;
 import oasis.graphics.Primitive;
 import oasis.graphics.Texture;
-import oasis.graphics.WrapMode;
 
 public class Jogl3Convert {
     private static final int[] PRIMITIVE_TYPE = new int[Primitive.values().length]; 
     private static final int[] BUFFER_USAGE = new int[BufferUsage.values().length]; 
     private static final int[] TEXTURE_FORMAT = new int[Texture.Format.values().length]; 
-    private static final int[] MIN_FILTER = new int[MinFilter.values().length]; 
-    private static final int[] MAG_FILTER = new int[MagFilter.values().length]; 
-    private static final int[] WRAP_MODE = new int[WrapMode.values().length]; 
+    private static final int[] MIN_FILTER = new int[Texture.MinFilter.values().length]; 
+    private static final int[] MAG_FILTER = new int[Texture.MagFilter.values().length]; 
+    private static final int[] WRAP_MODE = new int[Texture.WrapMode.values().length]; 
     private static final int[] BLEND_MODE = new int[BlendMode.values().length]; 
     private static final HashMap<String, Attribute> ATTRIBUTE_MAP = new HashMap<>(); 
     
@@ -41,18 +38,18 @@ public class Jogl3Convert {
         TEXTURE_FORMAT[Texture.Format.DEPTH24.ordinal()] = GL.GL_DEPTH_COMPONENT24; 
         TEXTURE_FORMAT[Texture.Format.DEPTH32.ordinal()] = GL.GL_DEPTH_COMPONENT32; 
         
-        MIN_FILTER[MinFilter.LINEAR.ordinal()] = GL.GL_LINEAR; 
-        MIN_FILTER[MinFilter.LINEAR_MIPMAP_LINEAR.ordinal()] = GL.GL_LINEAR_MIPMAP_LINEAR; 
-        MIN_FILTER[MinFilter.LINEAR_MIPMAP_NEAREST.ordinal()] = GL.GL_LINEAR_MIPMAP_NEAREST; 
-        MIN_FILTER[MinFilter.NEAREST.ordinal()] = GL.GL_NEAREST; 
-        MIN_FILTER[MinFilter.NEAREST_MIPMAP_LINEAR.ordinal()] = GL.GL_NEAREST_MIPMAP_LINEAR; 
-        MIN_FILTER[MinFilter.NEAREST_MIPMAP_NEAREST.ordinal()] = GL.GL_NEAREST_MIPMAP_NEAREST; 
+        MIN_FILTER[Texture.MinFilter.LINEAR.ordinal()] = GL.GL_LINEAR; 
+        MIN_FILTER[Texture.MinFilter.LINEAR_MIPMAP_LINEAR.ordinal()] = GL.GL_LINEAR_MIPMAP_LINEAR; 
+        MIN_FILTER[Texture.MinFilter.LINEAR_MIPMAP_NEAREST.ordinal()] = GL.GL_LINEAR_MIPMAP_NEAREST; 
+        MIN_FILTER[Texture.MinFilter.NEAREST.ordinal()] = GL.GL_NEAREST; 
+        MIN_FILTER[Texture.MinFilter.NEAREST_MIPMAP_LINEAR.ordinal()] = GL.GL_NEAREST_MIPMAP_LINEAR; 
+        MIN_FILTER[Texture.MinFilter.NEAREST_MIPMAP_NEAREST.ordinal()] = GL.GL_NEAREST_MIPMAP_NEAREST; 
         
-        MAG_FILTER[MagFilter.LINEAR.ordinal()] = GL.GL_LINEAR; 
-        MAG_FILTER[MagFilter.NEAREST.ordinal()] = GL.GL_NEAREST; 
+        MAG_FILTER[Texture.MagFilter.LINEAR.ordinal()] = GL.GL_LINEAR; 
+        MAG_FILTER[Texture.MagFilter.NEAREST.ordinal()] = GL.GL_NEAREST; 
         
-        WRAP_MODE[WrapMode.CLAMP_EDGE.ordinal()] = GL.GL_CLAMP_TO_EDGE; 
-        WRAP_MODE[WrapMode.REPEAT.ordinal()] = GL.GL_REPEAT; 
+        WRAP_MODE[Texture.WrapMode.CLAMP_EDGE.ordinal()] = GL.GL_CLAMP_TO_EDGE; 
+        WRAP_MODE[Texture.WrapMode.REPEAT.ordinal()] = GL.GL_REPEAT; 
         
         BLEND_MODE[BlendMode.ONE.ordinal()] = GL.GL_ONE; 
         BLEND_MODE[BlendMode.ZERO.ordinal()] = GL.GL_ZERO; 
@@ -68,15 +65,15 @@ public class Jogl3Convert {
         return BLEND_MODE[blend.ordinal()]; 
     }
     
-    public static int getWrapMode(WrapMode wrap) {
+    public static int getWrapMode(Texture.WrapMode wrap) {
         return WRAP_MODE[wrap.ordinal()]; 
     }
     
-    public static int getMinFilter(MinFilter min) {
+    public static int getMinFilter(Texture.MinFilter min) {
         return MIN_FILTER[min.ordinal()]; 
     }
     
-    public static int getMagFilter(MagFilter mag) {
+    public static int getMagFilter(Texture.MagFilter mag) {
         return MAG_FILTER[mag.ordinal()]; 
     }
     

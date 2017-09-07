@@ -1,7 +1,7 @@
 package oasis.graphics.model;
 
-import oasis.math.Vector3;
-import oasis.math.Vector4;
+import oasis.math.Vector3f;
+import oasis.math.Vector4f;
 
 /**
  * Holds mesh data. Useful for generating mesh data 
@@ -20,17 +20,17 @@ public class MeshData {
     /**
      * Positions 
      */
-    public Vector3[] positions; 
+    public Vector3f[] positions; 
     
     /**
      * Normals 
      */
-    public Vector3[] normals; 
+    public Vector3f[] normals; 
     
     /**
      * Colors 
      */
-    public Vector4[] colors; 
+    public Vector4f[] colors; 
     
     /**
      * Sets the data of [mesh] to the data of this 

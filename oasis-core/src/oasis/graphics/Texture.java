@@ -107,6 +107,95 @@ public interface Texture extends Disposable {
         TEXTURE_3D, 
     }
     
+    /**
+     * Magnification filter for textures. Used 
+     * when an image is drawn larger than it 
+     * actually is
+     * 
+     * @author Nicholas Hamilton
+     *
+     */
+    public enum MagFilter {
+        
+        /**
+         * Sharp, pixelated sampling of textures. 
+         * Looks good for pixel art
+         */
+        NEAREST, 
+        
+        /**
+         * Blurs the sampling of textures. Looks good 
+         * on higher-res images
+         */
+        LINEAR;
+        
+    }
+
+    /**
+     * Minification filter for textures. Used
+     * when an image is drawn smaller than it 
+     * actually is 
+     * 
+     * @author Nicholas Hamilton
+     *
+     */
+    public enum MinFilter {
+        
+        /**
+         * Pixelated 
+         */
+        NEAREST, 
+        
+        /**
+         * Linearly interpolated, blurry 
+         */
+        LINEAR, 
+        
+        /**
+         * Pixelated, with mipmaps 
+         */
+        NEAREST_MIPMAP_NEAREST, 
+        
+        /**
+         * Pixelated, with linearly interpolated mipmaps 
+         */
+        NEAREST_MIPMAP_LINEAR, 
+        
+        /**
+         * Linearly interpolated, with mipmaps 
+         */
+        LINEAR_MIPMAP_NEAREST, 
+        
+        /**
+         * Linearly interpolated, with linearly interpolated
+         * mipmaps. Also known as Tri-linear filtering 
+         */
+        LINEAR_MIPMAP_LINEAR;
+        
+    }
+    
+    /**
+     * Wrap mode for sampling textures 
+     * 
+     * @author Nicholas Hamilton
+     *
+     */
+    public enum WrapMode {
+        
+        /**
+         * When sampling past the edge of a texture, return 
+         * the color of the edge of the texture 
+         */
+        CLAMP_EDGE, 
+        
+        /**
+         * When sampling past the edge of a texture, return 
+         * value of the coordinate % 1 
+         */
+        REPEAT;
+        
+    }
+    
     // getters 
     
     /**

@@ -17,9 +17,9 @@ import oasis.graphics.CullMode;
 import oasis.graphics.Shader;
 import oasis.graphics.model.Mesh;
 import oasis.graphics.model.MeshData;
-import oasis.math.MathUtil;
-import oasis.math.Matrix4;
-import oasis.math.Vector3;
+import oasis.math.Mathf;
+import oasis.math.Matrix4f;
+import oasis.math.Vector3f;
 
 public class SampleApp extends Application {
 
@@ -34,8 +34,8 @@ public class SampleApp extends Application {
     private float freq = 1 / 6.0f; 
     private float pers = 0.45f; 
     private int octs = 10; 
-    private long maxRes = 128; 
-    private long res = 128; 
+    private long maxRes = 512; 
+    private long res = 512; 
     
     private float height = 3f; 
     
@@ -99,14 +99,16 @@ public class SampleApp extends Application {
         
         shader = graphics.createShader(vSource, fSource);  
         
+        float offset = 0.015f; 
+        
         htmap = new Heightmap();
         htmap.setFlat(true, 0.65f);
         water = new Mesh(graphics); 
-        htmap.genMeshData(new Vector3(-10, 0, -10), new Vector3(10, height, 10), 1, 1, octs, freq, pers).apply(water);
+        htmap.genMeshData(new Vector3f(-10, height * 0.65f - offset, -10), new Vector3f(10, height * 0.65f + offset, 10), (int) res, (int) res, 5, freq * 10, 0.9f).apply(water);
         
         heightmap = new Mesh(graphics); 
         htmap.setFlat(false, 0);
-        htmap.genMeshData(new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers).apply(heightmap);
+        htmap.genMeshData(new Vector3f(-10, 0, -10), new Vector3f(10, height, 10), (int) res, (int) res, octs, freq, pers).apply(heightmap);
         
         res = maxRes; 
     }
@@ -120,12 +122,12 @@ public class SampleApp extends Application {
         angle += 2f / 60.0f; 
         time++; 
         
-        if (meshData == null && time % (60 * 10) == 0) {
+        if (meshData == null && time % (60 * 5) == 0) {
             System.out.println("New task");
             meshData = executor.submit(new Callable<MeshData>() {
                 @Override
                 public MeshData call() throws Exception {
-                    return new Heightmap().genMeshData(new Vector3(-10, 0, -10), new Vector3(10, height, 10), (int) res, (int) res, octs, freq, pers); 
+                    return new Heightmap().genMeshData(new Vector3f(-10, 0, -10), new Vector3f(10, height, 10), (int) res, (int) res, octs, freq, pers); 
                 }
             }); 
         }
@@ -150,44 +152,43 @@ public class SampleApp extends Application {
         graphics.setShader(shader);
         graphics.setCullMode(CullMode.NONE);
         
-        Vector3 pos = new Vector3();
-        float scale = 8f; //18.0f;
+        Vector3f pos = new Vector3f(0.1f, 20, 0.1f);
+        float scale = 15f; //18.0f;
         float time = 5.0f * angle;
-        pos.setX(scale * MathUtil.cos(time) * MathUtil.cos(time) * MathUtil.cos(time));
-        pos.setY(2.6f);
-        pos.setZ(scale * MathUtil.sin(time) * MathUtil.sin(time) * MathUtil.sin(time));
-//        System.out.println(pos);
+        pos.setX(scale * Mathf.cos(Mathf.toRadians(time)) * Mathf.cos(Mathf.toRadians(time)) * Mathf.cos(Mathf.toRadians(time)));
+        pos.setY(4.6f);
+        pos.setZ(scale * Mathf.sin(Mathf.toRadians(time)) * Mathf.sin(Mathf.toRadians(time)) * Mathf.sin(Mathf.toRadians(time)));
+        
         // view
-        Matrix4 m;
-        m = Matrix4.createLookAt(pos, new Vector3(0, 2.5f, 0), new Vector3(0, 1, 0));
-        shader.setMatrix4("View", m);
-        shader.setVector3("ViewPos", pos);
+        Matrix4f m;
+        m = Matrix4f.lookAt(pos, new Vector3f(0, 2.5f, 0), new Vector3f(0, 1, 0));
+        shader.setMatrix4f("View", m);
+        shader.setVector3f("ViewPos", pos);
         
         // light direction
-        time = -20.0f * angle;
-        scale = 2.0f;
+        time = -10.0f * angle;
+        scale = 1.0f;
 //        pos.setX(10);
 //        pos.setY(-10);
 //        pos.setZ(-10);
-        pos = new Vector3(); 
-        pos.setX(scale * MathUtil.cos(time));
-        pos.setZ(1.0f);
-        pos.setY(-Math.abs(scale * MathUtil.sin(time)));
+        pos = new Vector3f(); 
+        pos.setX(-scale * Mathf.cos(Mathf.toRadians(time)));
+        pos.setZ(0.6f);
+        pos.setY(-Mathf.abs(scale * Mathf.sin(Mathf.toRadians(Mathf.toRadians(time)))));
         
-        shader.setVector3("LightDirection", pos); 
+        shader.setVector3f("LightDirection", pos); 
         
         // projection 
-        m = Matrix4.createPerspective(60.0f, (float) display.getAspectRatio(), 0.1f, 1000.0f);
-        shader.setMatrix4("Projection", m);
+        m = Matrix4f.perspective(Mathf.toRadians(60.0f), (float) display.getAspectRatio(), 0.1f, 1000.0f);
+        shader.setMatrix4f("Projection", m);
         
         // model
-        m = Matrix4.createIdentity();
-//        m.multiplySelf(Matrix4.createRotationY(angle * 5.0f)); 
-        shader.setMatrix4("Model", m);
+        m = Matrix4f.identity();
+        shader.setMatrix4f("Model", m);
         shader.setFloat("Shininess", 200.0f);
-        shader.setFloat("Brightness", 0.05f);
+        shader.setFloat("Brightness", 0.0f);
         heightmap.draw();
-        shader.setFloat("Shininess", 300.0f);
+        shader.setFloat("Shininess", 100.0f);
         shader.setFloat("Brightness", 1.0f);
         water.draw(); 
     }

@@ -10,8 +10,8 @@ import oasis.graphics.Primitive;
 import oasis.graphics.VertexArray;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
-import oasis.math.Vector3;
-import oasis.math.Vector4;
+import oasis.math.Vector3f;
+import oasis.math.Vector4f;
 import oasis.util.ArrayUtil;
 
 /**
@@ -91,7 +91,7 @@ public class Mesh {
      * 
      * @param positions Positions 
      */
-    public void setPositions(Vector3[] positions) {
+    public void setPositions(Vector3f[] positions) {
         positionVbo = setVertexData(positionVbo, VertexFormat.POSITION_3, positions == null ? null : ArrayUtil.toFloatArray(positions)); 
     }
     
@@ -100,7 +100,7 @@ public class Mesh {
      * 
      * @param normals Normals 
      */
-    public void setNormals(Vector3[] normals) {
+    public void setNormals(Vector3f[] normals) {
         normalVbo = setVertexData(normalVbo, VertexFormat.NORMAL_3, normals == null ? null : ArrayUtil.toFloatArray(normals)); 
     }
     
@@ -109,7 +109,7 @@ public class Mesh {
      * 
      * @param colors Colors 
      */
-    public void setColors(Vector4[] colors) {
+    public void setColors(Vector4f[] colors) {
         colorVbo = setVertexData(colorVbo, VertexFormat.COLOR_4, colors == null ? null : ArrayUtil.toFloatArray(colors)); 
     }
     

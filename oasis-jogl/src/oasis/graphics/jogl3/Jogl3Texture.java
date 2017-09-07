@@ -3,8 +3,6 @@ package oasis.graphics.jogl3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
-import oasis.graphics.MagFilter;
-import oasis.graphics.MinFilter;
 import oasis.graphics.Texture;
 
 public abstract class Jogl3Texture implements Texture {

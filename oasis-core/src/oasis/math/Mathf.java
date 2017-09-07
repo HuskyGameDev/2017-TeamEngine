@@ -7,7 +7,7 @@ package oasis.math;
  *
  */
 // TODO generate trig tables instead of casting to float 
-public final class MathUtil {
+public final class Mathf {
     
     /**
      * Pi
@@ -35,7 +35,7 @@ public final class MathUtil {
     public static final float EPSILON = 0.00001f;
     
     // No instances 
-    private MathUtil() {}
+    private Mathf() {}
     
     /**
      * Convert radians to degrees 
@@ -58,33 +58,33 @@ public final class MathUtil {
     }
     
     /**
-     * Get cosine of an angle in degrees 
+     * Get cosine of an angle in radians 
      * 
-     * @param deg Degrees 
+     * @param rad Degrees 
      * @return Cosine 
      */
-    public static float cos(float deg) {
-        return (float) Math.cos(toRadians(deg));
+    public static float cos(float rad) {
+        return (float) Math.cos(rad);
     }
     
     /**
-     * Get size of an angle in degrees 
+     * Get size of an angle in radians 
      * 
-     * @param deg Degrees 
+     * @param rad Degrees 
      * @return Sine 
      */
-    public static float sin(float deg) {
-        return (float) Math.sin(toRadians(deg));
+    public static float sin(float rad) {
+        return (float) Math.sin(rad);
     }
     
     /**
-     * Get tangent of an angle in degrees 
+     * Get tangent of an angle in radians 
      * 
-     * @param deg Degrees 
+     * @param rad Degrees 
      * @return Tangent 
      */
-    public static float tan(float deg) {
-        return (float) Math.tan(toRadians(deg));
+    public static float tan(float rad) {
+        return (float) Math.tan(rad);
     }
     
     /**

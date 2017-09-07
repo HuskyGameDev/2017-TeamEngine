@@ -1,8 +1,8 @@
 package oasis.util;
 
-import oasis.math.Vector2;
-import oasis.math.Vector3;
-import oasis.math.Vector4;
+import oasis.math.Vector2f;
+import oasis.math.Vector3f;
+import oasis.math.Vector4f;
 
 public final class ArrayUtil {
 
@@ -18,7 +18,7 @@ public final class ArrayUtil {
         return a; 
     }
     
-    public static float[] toFloatArray(Vector2[] list) {
+    public static float[] toFloatArray(Vector2f[] list) {
         float[] out = new float[list.length * 2]; 
         
         for (int i = 0; i < list.length; i++) {
@@ -29,7 +29,7 @@ public final class ArrayUtil {
         return out; 
     }
     
-    public static float[] toFloatArray(Vector3[] list) {
+    public static float[] toFloatArray(Vector3f[] list) {
         float[] out = new float[list.length * 3]; 
         
         for (int i = 0; i < list.length; i++) {
@@ -41,7 +41,7 @@ public final class ArrayUtil {
         return out; 
     }
     
-    public static float[] toFloatArray(Vector4[] list) {
+    public static float[] toFloatArray(Vector4f[] list) {
         float[] out = new float[list.length * 4]; 
         
         for (int i = 0; i < list.length; i++) {
