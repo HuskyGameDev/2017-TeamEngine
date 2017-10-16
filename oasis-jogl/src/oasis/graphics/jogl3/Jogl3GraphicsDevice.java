@@ -9,7 +9,7 @@ import oasis.core.EngineException;
 import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.CullMode;
+import oasis.graphics.FrontFace;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
@@ -35,7 +35,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     private Jogl3FrameBuffer currentFbo = null; 
     private boolean depthTest = true; 
     private BlendMode srcBlend = BlendMode.ONE, dstBlend = BlendMode.ZERO; 
-    private CullMode cullMode = CullMode.NONE; 
+    private FrontFace frontFace = FrontFace.BOTH; 
     
     public Jogl3GraphicsDevice(Jogl3Display display) {
         this.display = display; 
@@ -283,33 +283,36 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
 
     @Override
-    public CullMode getCullMode() {
-        return cullMode; 
+    public FrontFace getFrontFace() {
+        return frontFace; 
     }
 
     @Override
-    public void setCullMode(CullMode cull) {
-        if (cullMode == cull) {
-            return; 
+    public void setFrontFace(FrontFace face) {
+//        if (cullMode == cull) {
+//            return; 
+//        }
+        
+        this.frontFace = face; 
+        
+        if (frontFace == null) {
+            frontFace = FrontFace.BOTH; 
         }
         
-        this.cullMode = cull; 
-        
-        if (cullMode == null) {
-            cullMode = CullMode.NONE; 
-        }
-        
-        switch (cullMode) {
-        case NONE: 
+        switch (frontFace) {
+        case BOTH: 
             gl.glDisable(GL.GL_CULL_FACE); 
+            gl.glFrontFace(GL.GL_CCW);
             break; 
         case CW: 
             gl.glEnable(GL.GL_CULL_FACE);
-            gl.glFrontFace(GL.GL_CCW);
+            gl.glCullFace(GL.GL_BACK);
+            gl.glFrontFace(GL.GL_CW);
             break;
         case CCW: 
             gl.glEnable(GL.GL_CULL_FACE);
-            gl.glFrontFace(GL.GL_CW);
+            gl.glCullFace(GL.GL_BACK);
+            gl.glFrontFace(GL.GL_CCW);
             break; 
         }
     }

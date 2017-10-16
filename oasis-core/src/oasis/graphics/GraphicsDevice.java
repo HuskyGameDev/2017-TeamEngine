@@ -155,11 +155,11 @@ public interface GraphicsDevice {
     BlendMode getDestBlendMode(); 
     
     /**
-     * Get which face to cull 
+     * Get which face to show 
      * 
-     * @return Which face will be culled 
+     * @return Which face will be showed 
      */
-    CullMode getCullMode(); 
+    FrontFace getFrontFace(); 
     
     // setters 
     
@@ -214,11 +214,11 @@ public interface GraphicsDevice {
     void setBlendMode(BlendMode src, BlendMode dst);
     
     /**
-     * Set which face to cull 
+     * Set which face to show 
      * 
-     * @param cull Which face to cull 
+     * @param face Which face to show 
      */
-    void setCullMode(CullMode cull); 
+    void setFrontFace(FrontFace face); 
     
     // rendering
     

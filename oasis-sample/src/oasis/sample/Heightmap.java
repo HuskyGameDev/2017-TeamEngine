@@ -14,7 +14,6 @@ import oasis.util.QuickHash;
 public class Heightmap {
 
     private boolean flat = false;
-    private float yVal = 0.5f;
     private ArrayList<Vertex> verts = new ArrayList<>();
     private ArrayList<Integer> inds = new ArrayList<>(); 
     
@@ -24,9 +23,8 @@ public class Heightmap {
         seed = (int) System.nanoTime(); 
     }
     
-    public void setFlat(boolean flat, float yVal) {
+    public void setFlat(boolean flat) {
         this.flat = flat;
-        this.yVal = yVal;
     }
     
     public MeshData genMeshData(Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
@@ -38,46 +36,19 @@ public class Heightmap {
                 verts.add(getVertex(x, y, min, max, width, height, octaves, initialFreq, pers));
             }
         }
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                verts.add(getVertexMid(x, y, min, max, width, height, octaves, initialFreq, pers));
-            }
-        }
         
-        int mainSize = (width + 1) * (height + 1); 
-        
-        int bl, br, tl, tr, mid; 
+        int bl, br, tl, tr; 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 bl = getIndex(x, y, width); 
                 br = getIndex(x + 1, y, width); 
                 tl = getIndex(x, y + 1, width); 
                 tr = getIndex(x + 1, y + 1, width); 
-                mid = getIndex(mainSize + x, y, width - 1); 
                 
                 inds.addAll(Arrays.asList(new Integer[] {
-                        bl, mid, tl, 
-                        tl, mid, tr, 
-                        tr, mid, br, 
-                        br, mid, bl
+                        bl, br, tr, 
+                        bl, tr, tl 
                 })); 
-                
-//                if (i % 2 == 0) { 
-//                    inds.add(getIndex(x, y, width)); 
-//                    inds.add(getIndex(x + 1, y + 1, width)); 
-//                    inds.add(getIndex(x, y + 1, width)); 
-//                    inds.add(getIndex(x, y, width)); 
-//                    inds.add(getIndex(x + 1, y, width)); 
-//                    inds.add(getIndex(x + 1, y + 1, width)); 
-//                }
-//                else { 
-//                    inds.add(getIndex(x + 1, y, width)); 
-//                    inds.add(getIndex(x + 1, y + 1, width)); 
-//                    inds.add(getIndex(x, y + 1, width)); 
-//                    inds.add(getIndex(x + 1, y, width)); 
-//                    inds.add(getIndex(x, y + 1, width)); 
-//                    inds.add(getIndex(x, y, width)); 
-//                }
             }
         }
         
@@ -87,47 +58,7 @@ public class Heightmap {
         return Vertex.createMeshData(array, indices); 
     }
     
-//    public MeshData genMeshData(Vector3 min, Vector3 max, int width, int height, int octaves, float initialFreq, float pers) {
-//        verts.clear(); 
-//        inds.clear();
-//        
-//        for (int y = 0; y < height + 1; y++) {
-//            for (int x = 0; x < width + 1; x++) {
-//                verts.add(getVertex(x, y, min, max, width, height, octaves, initialFreq, pers));
-//            }
-//        }
-//        
-//        int i = 0; 
-//        for (int x = 0; x < width; x++) {
-//            for (int y = 0; y < height; y++) {
-//                i++; 
-//                
-//                if (i % 2 == 0) { 
-//                    inds.add(getIndex(x, y, width)); 
-//                    inds.add(getIndex(x + 1, y + 1, width)); 
-//                    inds.add(getIndex(x, y + 1, width)); 
-//                    inds.add(getIndex(x, y, width)); 
-//                    inds.add(getIndex(x + 1, y, width)); 
-//                    inds.add(getIndex(x + 1, y + 1, width)); 
-//                }
-//                else { 
-//                    inds.add(getIndex(x + 1, y, width)); 
-//                    inds.add(getIndex(x + 1, y + 1, width)); 
-//                    inds.add(getIndex(x, y + 1, width)); 
-//                    inds.add(getIndex(x + 1, y, width)); 
-//                    inds.add(getIndex(x, y + 1, width)); 
-//                    inds.add(getIndex(x, y, width)); 
-//                }
-//            }
-//        }
-//        
-//        Vertex[] array = verts.toArray(new Vertex[verts.size()]); 
-//        int[] indices = ArrayUtil.toIntArray(inds.toArray(new Integer[inds.size()])); 
-//        Vertex.calculateNormals(array, indices);
-//        return Vertex.createMeshData(array, indices); 
-//    }
-    
-    private int getIndex(int x, int y, int width) { 
+    private static int getIndex(int x, int y, int width) { 
         return x + y * (width + 1); 
     }
     
@@ -138,7 +69,7 @@ public class Heightmap {
         float x = Mathf.lerp(min.getX(), max.getX(), uFrac);
         float z = Mathf.lerp(min.getZ(), max.getZ(), vFrac);
         
-        float f = fractal(x, z, octaves, initialFreq, pers); 
+        float f = fractal(x, z, octaves, initialFreq, pers, seed); 
         float y = Mathf.lerp(min.getY(), max.getY(), f);
         
         Vertex vert = new Vertex(); 
@@ -156,41 +87,7 @@ public class Heightmap {
         return vert; 
     }
     
-    private Vertex getVertexMid(float u, float v, Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
-        float uFrac = (float) u / width;
-        float vFrac = (float) v / height;
-        
-        float x0 = Mathf.lerp(min.getX(), max.getX(), uFrac);
-        float z0 = Mathf.lerp(min.getZ(), max.getZ(), vFrac);
-        float x1 = Mathf.lerp(min.getX(), max.getX(), uFrac + 1f / width);
-        float z1 = Mathf.lerp(min.getZ(), max.getZ(), vFrac + 1f / width);
-        
-        float f00 = fractal(x0, z0, octaves, initialFreq, pers); 
-        float f10 = fractal(x1, z0, octaves, initialFreq, pers); 
-        float f01 = fractal(x0, z1, octaves, initialFreq, pers); 
-        float f11 = fractal(x1, z1, octaves, initialFreq, pers); 
-        float f = Mathf.lerp(
-                Mathf.lerp(f00, f10, 0.5f), 
-                Mathf.lerp(f01, f11, 0.5f), 
-                0.5f); 
-        float y = Mathf.lerp(min.getY(), max.getY(), f);
-        
-        Vertex vert = new Vertex(); 
-        vert.position = new Vector3f(0.5f * (x0 + x1), y, 0.5f * (z0 + z1));
-        
-        if (flat) {
-            vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.95f).toVector4();
-        }
-        else {
-            vert.color = new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
-        }
-        
-        vert.normal = new Vector3f(0, 1, 0); 
-        
-        return vert; 
-    }
-    
-    private float fractal(float x, float y, int it, float freq, float pers) {
+    private float fractal(float x, float y, int it, float freq, float pers, int seed) {
         float amp = 1.0f;
         
         float sum = 0.0f;
@@ -198,7 +95,7 @@ public class Heightmap {
         
         for (int i = 0; i < it; i++) {
             float noise = amp * noise(x * freq + freq, y * freq + freq, seed + i); 
-            sum += flat ? noise * 0.5f + 0.5f : Math.abs(noise);
+            sum += flat ? (noise * 0.5f + 0.5f) : Math.abs(noise);
             total += amp;
             
             amp *= pers;
@@ -208,7 +105,7 @@ public class Heightmap {
         return 1.0f - sum / total;
     }
     
-    private float noise(float u, float v, int seed) {
+    private static float noise(float u, float v, int seed) {
         int u0 = (int) Math.floor(u);
         int u1 = u0 + 1;
         float ua = u - u0;
@@ -230,7 +127,7 @@ public class Heightmap {
         return Mathf.lerp(i0, i1, va);
     }
     
-    private float noisei(int x, int y, int seed) {
+    private static float noisei(int x, int y, int seed) {
         return (float) Math.abs(QuickHash.compute(x, y, seed)) / Integer.MAX_VALUE * 2.0f - 1.0f;
     }
     

@@ -5,7 +5,7 @@ import oasis.graphics.Attribute;
 import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
-import oasis.graphics.CullMode;
+import oasis.graphics.FrontFace;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
@@ -204,7 +204,7 @@ public class SpriteBatch {
         gd.setShader(shader);
         gd.setTexture(0, lastTex);
         gd.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
-        gd.setCullMode(CullMode.NONE);
+        gd.setFrontFace(FrontFace.BOTH);
         
         shader.setInt("Texture", 0);
         shader.setVector2f("InvTextureSize", new Vector2f(1.0f / lastTex.getWidth(), 1.0f / lastTex.getHeight()));

@@ -147,16 +147,16 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f lookAt(Vector3f position, Vector3f target, Vector3f up) {
+    public static Matrix4f lookAt(Vector3f eye, Vector3f target, Vector3f up) {
         Matrix4f m = Matrix4f.zero(); 
-        Vector3f z = position.subtract(target).normalizeSelf(); 
-        Vector3f x = up.cross(z).normalizeSelf(); 
-        Vector3f y = z.cross(x).normalizeSelf(); 
-        m.m00 = x.x; m.m01 = x.y; m.m02 = x.z; 
+        Vector3f f = target.subtract(eye).normalizeSelf(); 
+        Vector3f s = f.cross(up).normalizeSelf(); 
+        Vector3f y = s.cross(f).normalizeSelf(); 
+        m.m00 = s.x; m.m01 = s.y; m.m02 = s.z; 
         m.m10 = y.x; m.m11 = y.y; m.m12 = y.z; 
-        m.m20 = z.x; m.m21 = z.y; m.m22 = z.z; 
+        m.m20 = -f.x; m.m21 = -f.y; m.m22 = -f.z; 
         m.m33 = 1f; 
-        m.multiplySelf(Matrix4f.translation(position.multiply(-1)));
+        m.multiplySelf(Matrix4f.translation(eye.multiply(-1)));
         return m; 
     }
     
