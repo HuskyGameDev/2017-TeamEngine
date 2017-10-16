@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.graphics.BufferUsage;
+import oasis.graphics.FrontFace;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
@@ -30,6 +31,7 @@ public class Mesh {
     private VertexBuffer normalVbo; 
     private VertexBuffer colorVbo; 
     private VertexBuffer textureVbo; 
+    private FrontFace frontFace = FrontFace.BOTH; 
     
     private boolean update; 
     
@@ -55,12 +57,31 @@ public class Mesh {
         }
         
         gd.setVertexArray(vao);
+        gd.setFrontFace(frontFace); 
         if (vao.getIndexBuffer() == null) {
             gd.drawArrays(Primitive.TRIANGLE_LIST, 0, vao.getVertexBuffer(0).getVertexCount());
         }
         else {
             gd.drawElements(Primitive.TRIANGLE_LIST, 0, vao.getIndexBuffer().getIndexCount());
         }
+    }
+    
+    /**
+     * Get the defined front face for the mesh 
+     * 
+     * @return front face 
+     */
+    public FrontFace getFrontFace() {
+    	return frontFace; 
+    }
+    
+    /**
+     * Set the defined front face for the mesh 
+     * 
+     * @param face
+     */
+    public void setFrontFace(FrontFace face) {
+    	frontFace = face == null ? FrontFace.BOTH : face; 
     }
     
     /**

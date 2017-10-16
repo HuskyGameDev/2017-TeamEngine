@@ -26,7 +26,7 @@ public class SampleApp extends Application {
     private float freq = 1 / 6.0f; 
     private float pers = 0.45f; 
     private int octs = 10; 
-    private long res = 512; 
+    private long res = 128; 
     
     private float height = 3f; 
     
@@ -50,7 +50,7 @@ public class SampleApp extends Application {
     + "void main() "
     + "{ "
     + "  vColor = aColor; "
-    + "  vNormal = normalize((Model * vec4(aNormal, 0)).xyz); "
+    + "  vNormal = normalize(mat3(Model) * aNormal); "
     + "  gl_Position = Projection * View * Model * vec4(aPosition, 1.0); "
     + "  "
     + "  vec4 tmp = Model * vec4(aPosition, 1.0); "
@@ -137,8 +137,8 @@ public class SampleApp extends Application {
         graphics.setFrontFace(FrontFace.CCW);
         
         Vector3f pos = new Vector3f(0.1f, 20, 0.1f);
-        float scale = 15f; //18.0f;
-        float time = 15.0f * angle;
+        float scale = 10f; //18.0f;
+        float time = 1.0f * angle;
         pos.setX(scale * Mathf.cos(Mathf.toRadians(time)) * Mathf.cos(Mathf.toRadians(time)) * Mathf.cos(Mathf.toRadians(time)));
         pos.setY(4.6f);
         pos.setZ(scale * Mathf.sin(Mathf.toRadians(time)) * Mathf.sin(Mathf.toRadians(time)) * Mathf.sin(Mathf.toRadians(time)));
@@ -162,7 +162,7 @@ public class SampleApp extends Application {
         
         // draw terrain 
         shader.setFloat("Shininess", 200.0f);
-        shader.setFloat("Brightness", 0.1f);
+        shader.setFloat("Brightness", 0.0f);
         heightmap.draw();
         // draw water 
         shader.setFloat("Shininess", 100.0f);

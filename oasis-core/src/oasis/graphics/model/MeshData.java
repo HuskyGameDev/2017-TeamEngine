@@ -1,5 +1,6 @@
 package oasis.graphics.model;
 
+import oasis.graphics.FrontFace;
 import oasis.math.Vector3f;
 import oasis.math.Vector4f;
 
@@ -33,6 +34,11 @@ public class MeshData {
     public Vector4f[] colors; 
     
     /**
+     * Front face
+     */
+    public FrontFace face = FrontFace.BOTH; 
+    
+    /**
      * Sets the data of [mesh] to the data of this 
      * object. This method should be called from the 
      * main game thread 
@@ -44,6 +50,7 @@ public class MeshData {
         mesh.setPositions(positions);
         mesh.setNormals(normals);
         mesh.setColors(colors);
+        mesh.setFrontFace(face); 
     }
     
 }
