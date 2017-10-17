@@ -141,6 +141,13 @@ public interface GraphicsDevice {
     boolean isDepthTestEnabled(); 
     
     /**
+     * Checks if depth write is enabled 
+     * 
+     * @return If depth writing is enabled 
+     */
+    boolean isDepthWriteEnabled(); 
+    
+    /**
      * Get the current blend mode for the source graphic
      * 
      * @return Source blend mode 
@@ -204,6 +211,13 @@ public interface GraphicsDevice {
      * @param enabled If depth testing should be enabled 
      */
     void setDepthTestEnabled(boolean enabled); 
+    
+    /**
+     * Set depth writing 
+     * 
+     * @param enabled If depth writing should be enabled 
+     */
+    void setDepthWriteEnabled(boolean enabled); 
     
     /**
      * Set blend mode 

@@ -36,6 +36,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     private boolean depthTest = true; 
     private BlendMode srcBlend = BlendMode.ONE, dstBlend = BlendMode.ZERO; 
     private FrontFace frontFace = FrontFace.BOTH; 
+    private boolean depthWrite = true; 
     
     public Jogl3GraphicsDevice(Jogl3Display display) {
         this.display = display; 
@@ -76,6 +77,11 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
     
     @Override
+    public boolean isDepthWriteEnabled() {
+        return depthWrite; 
+    }
+    
+    @Override
     public void setDepthTestEnabled(boolean enabled) {
         if (depthTest != enabled) {
             depthTest = enabled; 
@@ -85,6 +91,14 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
             else {
                 gl.glDisable(GL.GL_DEPTH_TEST);
             }
+        }
+    }
+    
+    @Override
+    public void setDepthWriteEnabled(boolean enabled) {
+        if (depthWrite != enabled) {
+            depthWrite = enabled; 
+            gl.glDepthMask(depthWrite);
         }
     }
     

@@ -7,6 +7,7 @@ import com.jogamp.opengl.GL3;
 import oasis.core.GameLogger;
 import oasis.graphics.Attribute;
 import oasis.graphics.Shader;
+import oasis.math.Matrix3f;
 import oasis.math.Matrix4f;
 import oasis.math.Vector2f;
 import oasis.math.Vector3f;
@@ -73,6 +74,12 @@ public class Jogl3Shader implements Shader {
     public void setMatrix4f(String name, Matrix4f value) {
         gd.context.bindProgram(id);
         gd.gl.glUniformMatrix4fv(gd.gl.glGetUniformLocation(id, name), 1, false, value.get(new float[16]), 0);
+    }
+    
+    @Override
+    public void setMatrix3f(String name, Matrix3f value) {
+        gd.context.bindProgram(id);
+        gd.gl.glUniformMatrix3fv(gd.gl.glGetUniformLocation(id, name), 1, false, value.get(new float[9]), 0);
     }
     
     private void create() { 

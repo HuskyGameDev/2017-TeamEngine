@@ -5,37 +5,28 @@ import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
+import oasis.graphics.BlendMode;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.FrontFace;
 import oasis.graphics.Shader;
-import oasis.graphics.model.Material;
 import oasis.graphics.model.Mesh;
-import oasis.graphics.model.Model;
-import oasis.graphics.model.ModelRenderer;
-import oasis.graphics.model.PerspectiveCamera;
-import oasis.graphics.model.RenderQueue;
 import oasis.math.Mathf;
-import oasis.math.Quaternionf;
+import oasis.math.Matrix4f;
 import oasis.math.Vector3f;
-import oasis.math.Vector4f;
 
-public class SampleApp extends Application {
+public class SampleAppOld extends Application {
 
-    private static final GameLogger log = new GameLogger(SampleApp.class);
-    
-    private PerspectiveCamera camera; 
-    private ModelRenderer renderer; 
+    private static final GameLogger log = new GameLogger(SampleAppOld.class);
     
     private Shader shader;
     private Mesh heightmap, water; 
-    
-    private Model terrainModel; 
     
     private float angle = 0.0f; 
     
     private float freq = 1 / 6.0f; 
     private float pers = 0.45f; 
     private int octs = 10; 
-    private long res = 512; 
+    private long res = 128; 
     
     private float height = 3f; 
     
@@ -47,10 +38,8 @@ public class SampleApp extends Application {
     + "attribute vec3 aPosition; "
     + "attribute vec3 aNormal; "
     + "attribute vec4 aColor; "
-    + "attribute vec2 aTexCoord0; "
     + ""
-    + "uniform mat4 Model; "
-    + "uniform mat3 NormalMat; "
+    + "uniform mat4 Model; // no scaling in this example, so no need for a normal matrix \n"
     + "uniform mat4 View; "
     + "uniform mat4 Projection; "
     + ""
@@ -61,7 +50,7 @@ public class SampleApp extends Application {
     + "void main() "
     + "{ "
     + "  vColor = aColor; "
-    + "  vNormal = normalize(NormalMat * aNormal); "
+    + "  vNormal = normalize(mat3(Model) * aNormal); "
     + "  gl_Position = Projection * View * Model * vec4(aPosition, 1.0); "
     + "  "
     + "  vec4 tmp = Model * vec4(aPosition, 1.0); "
@@ -75,10 +64,10 @@ public class SampleApp extends Application {
     + "varying vec3 vNormal; "
     + "varying vec3 vModelPos; "
     + ""
-    + "uniform vec3 LightDirection = vec3(-1, -1, 0); "
+    + "uniform vec3 LightDirection; "
     + "uniform vec3 ViewPos; "
-    + "uniform float SpecularPower; "
-    + "uniform vec4 SpecularColor; "
+    + "uniform float Shininess; "
+    + "uniform float Brightness; "
     + ""
     + "float Diffuse(vec3 normal, vec3 lightDir) "
     + "{"
@@ -107,18 +96,15 @@ public class SampleApp extends Application {
     + "  vec3 lightDir = normalize(LightDirection); "
     + "  "
     + "  float diffuse = Diffuse(normal, lightDir); "
-    + "  vec4 specular = SpecularColor * Specular(normal, lightDir, camDir, SpecularPower); "
+    + "  float specular = Brightness * Specular(normal, lightDir, camDir, Shininess); "
     + "  "
-    + "  gl_FragColor = vec4(vec3(0.2 + 0.8 * diffuse) + specular.rgb, 1.0) * vColor;\n "
+    + "  gl_FragColor = vec4(vec3(0.2 + 0.8 * diffuse + specular), 1.0) * vColor;\n "
     + "}";
     
     @Override
     public void onInit() {
         display.setResizable(true);
         display.setSize(800, 400);
-        
-        renderer = new ModelRenderer(graphics); 
-        camera = new PerspectiveCamera(800, 600, 70.0f, 0.1f, 1000.0f); 
         
         shader = graphics.createShader(vSource, fSource);  
         
@@ -132,22 +118,6 @@ public class SampleApp extends Application {
         heightmap = new Mesh(graphics); 
         htmap.setFlat(false);
         htmap.genMeshData(new Vector3f(-10, 0, 10), new Vector3f(10, height, -10), (int) res, (int) res, octs, freq, pers).apply(heightmap);
-        
-        Material waterMaterial = new Material(); 
-        waterMaterial.renderQueue = RenderQueue.TRANSLUCENT; 
-        waterMaterial.specularPower = 100.0f; 
-        waterMaterial.specularColor = new Vector4f(1); 
-        waterMaterial.shader = shader; 
-        
-        Material heightmapMaterial = new Material(); 
-        heightmapMaterial.renderQueue = RenderQueue.OPAQUE;
-        heightmapMaterial.specularPower = 200.0f; 
-        heightmapMaterial.specularColor = new Vector4f(0); 
-        heightmapMaterial.shader = shader; 
-        
-        terrainModel = new Model(); 
-        terrainModel.add(water, waterMaterial);
-        terrainModel.add(heightmap, heightmapMaterial);
     }
 
     @Override
@@ -162,13 +132,51 @@ public class SampleApp extends Application {
     @Override
     public void onRender() {
         graphics.clearScreen(new ColorRgba(0.9f, 0.9f, 0.9f, 1.0f));
+        graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
+        graphics.setShader(shader);
+        graphics.setFrontFace(FrontFace.CCW);
         
-        camera.setPosition(new Vector3f(-10, 6, 0));
-        camera.setRotation(-Mathf.PI * 0.5f, -Mathf.toRadians(40));
+        Vector3f pos = new Vector3f(0.1f, 20, 0.1f);
+        float scale = 10f; //18.0f;
+        float time = 1.0f * angle;
+        pos.setX(scale * Mathf.cos(Mathf.toRadians(time)) * Mathf.cos(Mathf.toRadians(time)) * Mathf.cos(Mathf.toRadians(time)));
+        pos.setY(4.6f);
+        pos.setZ(scale * Mathf.sin(Mathf.toRadians(time)) * Mathf.sin(Mathf.toRadians(time)) * Mathf.sin(Mathf.toRadians(time)));
         
-        renderer.begin(camera);
-        renderer.draw(terrainModel, new Vector3f(), Quaternionf.axisAngle(new Vector3f(0, 1, 0), angle * 0.1f));
-        renderer.end(); 
+        // view
+        Matrix4f m;
+        m = Matrix4f.lookAt(pos, new Vector3f(0, 2.5f, 0), new Vector3f(0, 1, 0));
+        shader.setMatrix4f("View", m);
+        shader.setVector3f("ViewPos", pos);
+        
+        // light direction
+        setSunlight(); 
+        
+        // projection 
+        m = Matrix4f.perspective(Mathf.toRadians(60.0f), (float) display.getAspectRatio(), 0.1f, 1000.0f);
+        shader.setMatrix4f("Projection", m);
+        
+        // model
+        m = Matrix4f.identity();
+        shader.setMatrix4f("Model", m);
+        
+        // draw terrain 
+        shader.setFloat("Shininess", 200.0f);
+        shader.setFloat("Brightness", 0.0f);
+        heightmap.draw();
+        // draw water 
+        shader.setFloat("Shininess", 100.0f);
+        shader.setFloat("Brightness", 1.0f);
+        water.draw(); 
+    }
+    
+    private void setSunlight() {
+    	Vector3f position = new Vector3f(); 
+    	position.x = 10 * Mathf.cos(0.1f * angle); 
+    	position.y = 10 * Mathf.sin(0.1f * angle); 
+    	position.z = 10; 
+    	
+    	shader.setVector3f("LightDirection", position.multiplySelf(-1).normalizeSelf());
     }
     
     @Override
@@ -184,7 +192,7 @@ public class SampleApp extends Application {
         cfg.fps = 60.0f;
         cfg.ups = 60.0f;
         
-        Application app = new SampleApp();
+        Application app = new SampleAppOld();
         app.start(cfg);
     }
 

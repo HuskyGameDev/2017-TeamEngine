@@ -26,7 +26,7 @@ public class MatrixTest {
         System.out.println("=========================");
         
         Vector3f v2 = new Vector3f(4, 5, 8); 
-        Quaternionf q1 = new Quaternionf(new Vector3f(1, 3, 4), Mathf.toRadians(45f)); 
+        Quaternionf q1 = Quaternionf.axisAngle(new Vector3f(1, 3, 4), Mathf.toRadians(45f)); 
         System.out.println(q1);
         System.out.println(q1.toMatrix4f());
         System.out.println(v2.rotate(q1));

@@ -38,6 +38,18 @@ public class Matrix3f {
         this.m22 = r.m22; 
     }
     
+    public Matrix3f(Matrix4f r) {
+        this.m00 = r.m00; 
+        this.m10 = r.m10; 
+        this.m20 = r.m20; 
+        this.m01 = r.m01; 
+        this.m11 = r.m11; 
+        this.m21 = r.m21; 
+        this.m02 = r.m02; 
+        this.m12 = r.m12; 
+        this.m22 = r.m22; 
+    }
+    
     public Matrix3f() {}
     
     public static Matrix3f zero() {

@@ -7,8 +7,8 @@ import oasis.math.Vector3f;
 public class QuaternionTest {
 
     public static void main(String[] args) {
-        Quaternionf q1 = new Quaternionf(new Vector3f(0, 1, 0), Mathf.toRadians(45f)); 
-        Quaternionf q2 = new Quaternionf(new Vector3f(0, 0, 1), Mathf.toRadians(45f)); 
+        Quaternionf q1 = Quaternionf.axisAngle(new Vector3f(0, 1, 0), Mathf.toRadians(45f)); 
+        Quaternionf q2 = Quaternionf.axisAngle(new Vector3f(0, 0, 1), Mathf.toRadians(45f)); 
         Quaternionf q3 = q2.multiply(q1).normalizeSelf(); 
         Vector3f v1 = new Vector3f(1, 0, 0); 
         Vector3f v2 = new Vector3f(0, 1, 0); 

@@ -1,6 +1,7 @@
 package oasis.graphics;
 
 import oasis.core.Disposable;
+import oasis.math.Matrix3f;
 import oasis.math.Matrix4f;
 import oasis.math.Vector2f;
 import oasis.math.Vector3f;
@@ -79,5 +80,13 @@ public interface Shader extends Disposable {
      * @param value 4x4 matrix value 
      */
     void setMatrix4f(String name, Matrix4f value);
+    
+    /**
+     * Set a 3x3 matrix uniform 
+     * 
+     * @param name Uniform name 
+     * @param normalMatrix 3x3 matrix value 
+     */
+    void setMatrix3f(String name, Matrix3f normalMatrix);
 
 }

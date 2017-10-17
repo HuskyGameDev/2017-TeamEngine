@@ -4,6 +4,13 @@ public class Quaternionf {
 
     public float x, y, z, w; 
     
+    public Quaternionf() {
+        this.x = 0; 
+        this.y = 0; 
+        this.z = 0; 
+        this.w = 1; 
+    }
+    
     public Quaternionf(float x, float y, float z, float w) {
         this.x = x; 
         this.y = y; 
@@ -32,11 +39,11 @@ public class Quaternionf {
         this.w = r.w; 
     }
     
-    public Quaternionf(Vector3f r, float theta) { 
+    public static Quaternionf axisAngle(Vector3f r, float theta) { 
         float s = Mathf.sin(theta / 2f); 
         float c = Mathf.cos(theta / 2f); 
         r = r.normalize(); 
-        set(r.x * s, r.y * s, r.z * s, c); 
+        return new Quaternionf(r.x * s, r.y * s, r.z * s, c); 
     }
     
     public float getX() { return x; } 
