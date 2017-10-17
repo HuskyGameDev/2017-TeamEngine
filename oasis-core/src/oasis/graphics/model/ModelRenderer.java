@@ -10,6 +10,7 @@ import oasis.math.Matrix3f;
 import oasis.math.Matrix4f;
 import oasis.math.Quaternionf;
 import oasis.math.Vector3f;
+import oasis.util.FileSystem;
 
 public class ModelRenderer {
 
@@ -33,11 +34,17 @@ public class ModelRenderer {
     private List<MeshRenderCommand> translucentQueue;
     private List<MeshRenderCommand> transparentQueue;
     
+    private Shader blinnPhongShader; 
+    
     public ModelRenderer(GraphicsDevice gd) {
         this.gd = gd; 
         opaqueQueue = new ArrayList<>(); 
         translucentQueue = new ArrayList<>(); 
-        transparentQueue = new ArrayList<>(); 
+        transparentQueue = new ArrayList<>();
+        
+        String blinnPhongVertexSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.vs").getFile()); 
+        String blinnPhongFragmentSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.fs").getFile());
+        blinnPhongShader = gd.createShader(blinnPhongVertexSource, blinnPhongFragmentSource); 
     }
     
     public void begin(Camera camera) {
@@ -60,15 +67,15 @@ public class ModelRenderer {
         
         // draw opaque 
         gd.setDepthWriteEnabled(true); 
-        drawMeshes(opaqueQueue, null, projection, view); 
+        drawMeshes(opaqueQueue, blinnPhongShader, projection, view); 
         
         // draw transparent 
-        drawMeshes(transparentQueue, null, projection, view); 
+        drawMeshes(transparentQueue, blinnPhongShader, projection, view); 
         
         // draw translucent 
         gd.setDepthWriteEnabled(false); 
         gd.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
-        drawMeshes(translucentQueue, null, projection, view); 
+        drawMeshes(translucentQueue, blinnPhongShader, projection, view); 
         
         gd.setDepthWriteEnabled(true); 
         gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);

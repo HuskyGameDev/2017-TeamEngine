@@ -67,7 +67,7 @@ public class Heightmap {
         float vFrac = (float) v / height;
         
         float x = Mathf.lerp(min.getX(), max.getX(), uFrac);
-        float z = Mathf.lerp(min.getZ(), max.getZ(), vFrac);
+        float z = Mathf.lerp(max.getZ(), min.getZ(), vFrac);
         
         float f = fractal(x, z, octaves, initialFreq, pers, seed); 
         float y = Mathf.lerp(min.getY(), max.getY(), f);
