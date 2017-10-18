@@ -8,6 +8,7 @@ import oasis.graphics.model.MeshData;
 import oasis.graphics.model.Vertex;
 import oasis.math.Mathf;
 import oasis.math.Vector3f;
+import oasis.math.Vector4f;
 import oasis.util.ArrayUtil;
 import oasis.util.QuickHash;
 
@@ -76,15 +77,33 @@ public class Heightmap {
         vert.position = new Vector3f(x, y, z);
         
         if (flat) {
-            vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.9f).toVector4();
+            vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.8f).toVector4();
         }
         else {
-            vert.color = new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
+            vert.color = getTerrainColor(f); //new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
         }
         
         vert.normal = new Vector3f(0, 1, 0); 
         
         return vert; 
+    }
+    
+    private static Vector4f getTerrainColor(float height) {
+        if (height > 0.89f) {
+            return new Vector4f(0.9f, 0.9f, 0.9f, 1.0f);
+        }
+        else if (height > 0.8f) {
+            return new Vector4f(0.6f, 0.6f, 0.6f, 1.0f);
+        }
+        else if (height > 0.68f) {
+            return new Vector4f(0.50f, height * 0.15f + 0.45f, 0.45f, 1.0f);
+        }
+        else if (height > 0.63f) {
+            return new Vector4f(0.85f, 0.79f, 0.75f, 1.0f); 
+        }
+        else {
+            return new Vector4f(0.55f, 0.60f, 0.55f, 1f); 
+        }
     }
     
     private float fractal(float x, float y, int it, float freq, float pers, int seed) {

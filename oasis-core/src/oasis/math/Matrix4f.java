@@ -155,8 +155,8 @@ public class Matrix4f {
         m.m00 = s.x; m.m01 = s.y; m.m02 = s.z; 
         m.m10 = y.x; m.m11 = y.y; m.m12 = y.z; 
         m.m20 = -f.x; m.m21 = -f.y; m.m22 = -f.z; 
-        m.m33 = 1f; 
-        m.multiplySelf(Matrix4f.translation(eye.multiply(-1)));
+        m.m33 = 1f;  
+        m.multiplySelf(Matrix4f.translation(eye.multiply(-1))); 
         return m; 
     }
     

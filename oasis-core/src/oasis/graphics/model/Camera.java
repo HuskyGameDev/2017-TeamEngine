@@ -61,15 +61,18 @@ public abstract class Camera {
     
     public void setPosition(Vector3f position) {
         this.position.set(position); 
+        dirty = true; 
     }
     
     public void setRotation(Quaternionf rotation) {
         this.rotation.set(rotation); 
+        dirty = true; 
     }
     
     public void setRotation(float yaw, float pitch) {
-        rotation.set(Quaternionf.axisAngle(new Vector3f(0, 1, 0), yaw)); 
-        rotation.multiplySelf(Quaternionf.axisAngle(new Vector3f(1, 0, 0), pitch)); 
+        rotation.set(Quaternionf.axisAngle(new Vector3f(0, 1, 0), yaw));
+        rotation.multiplySelf(Quaternionf.axisAngle(new Vector3f(1, 0, 0), pitch));
+        dirty = true; 
     }
     
 }

@@ -42,8 +42,8 @@ public class ModelRenderer {
         translucentQueue = new ArrayList<>(); 
         transparentQueue = new ArrayList<>();
         
-        String blinnPhongVertexSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.vs").getFile()); 
-        String blinnPhongFragmentSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.fs").getFile());
+        String blinnPhongVertexSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.vert").getFile()); 
+        String blinnPhongFragmentSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.frag").getFile());
         blinnPhongShader = gd.createShader(blinnPhongVertexSource, blinnPhongFragmentSource); 
     }
     
@@ -107,6 +107,11 @@ public class ModelRenderer {
         Matrix4f modelMat = Matrix4f.translation(position)
                 .multiply(Matrix4f.rotation(rotation)); 
         
+        addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3f(modelMat)), material.renderQueue); 
+    }
+    
+    // TODO normal matrix 
+    public void draw(Mesh mesh, Material material, Matrix4f modelMat) {
         addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3f(modelMat)), material.renderQueue); 
     }
     
