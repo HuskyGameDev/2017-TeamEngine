@@ -35,7 +35,7 @@ public class SampleApp extends Application {
     private float freq = 1 / 8.0f; 
     private float pers = 0.45f; 
     private int octs = 10; 
-    private long res = 1024; 
+    private long res = 512; 
     
     private float height = 4.5f; 
     

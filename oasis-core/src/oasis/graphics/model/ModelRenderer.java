@@ -96,7 +96,7 @@ public class ModelRenderer {
             shader.setMatrix4f("View", view);
             shader.setMatrix4f("Model", c.matrix);
             shader.setMatrix3f("NormalMat", c.normalMatrix);
-            shader.setVector3f("ViewPos", camera.getPosition());
+            shader.setVector3f("CameraPosition", camera.getPosition());
             
             c.material.apply(gd, shader);
             c.mesh.draw(); 

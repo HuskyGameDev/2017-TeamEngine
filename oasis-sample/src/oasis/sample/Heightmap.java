@@ -21,7 +21,7 @@ public class Heightmap {
     private int seed; 
     
     public Heightmap() {
-        seed = (int) System.nanoTime(); 
+        seed = 1;//(int) System.nanoTime(); 
     }
     
     public void setFlat(boolean flat) {

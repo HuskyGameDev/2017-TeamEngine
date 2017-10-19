@@ -12,15 +12,15 @@ uniform mat3 NormalMat;
 
 varying vec4 vColor; 
 varying vec3 vNormal; 
-varying vec3 vModelPos; 
+varying vec3 vModelPos;
 
 void main() 
 {
 	vColor = aColor; 
 	vNormal = normalize(NormalMat * aNormal); 
 	
-	gl_Position = Model * vec4(aPosition, 1.0); 
-	vModelPos = gl_Position.xyz / gl_Position.w; 
+	gl_Position = Model * vec4(aPosition, 1.0);
+	vModelPos = gl_Position.xyz / gl_Position.w;
 	
-	gl_Position = Projection * View * gl_Position; 
+	gl_Position = Projection * View * gl_Position;
 }

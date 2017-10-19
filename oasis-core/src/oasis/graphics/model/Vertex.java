@@ -108,9 +108,9 @@ public class Vertex {
      */
     public static void calculateNormals(Vertex[] verts) { 
         for (int i = 0; i < verts.length; i += 3) { 
-            Vector3f a = verts[i + 1].position.subtract(verts[i + 0].position); 
-            Vector3f b = verts[i + 2].position.subtract(verts[i + 0].position); 
-            Vector3f normal = b.cross(a).normalize(); 
+            Vector3f a = verts[i + 1].position.subtract(verts[i + 0].position).normalize(); 
+            Vector3f b = verts[i + 2].position.subtract(verts[i + 0].position).normalize(); 
+            Vector3f normal = a.cross(b).normalize(); 
             verts[i + 0].normal = normal; 
             verts[i + 1].normal = normal; 
             verts[i + 2].normal = normal; 
@@ -131,9 +131,9 @@ public class Vertex {
         }
         
         for (int i = 0; i < inds.length; i += 3) { 
-            Vector3f a = verts[inds[i + 1]].position.subtract(verts[inds[i + 0]].position); 
-            Vector3f b = verts[inds[i + 2]].position.subtract(verts[inds[i + 0]].position); 
-            Vector3f normal = b.cross(a).normalize(); 
+            Vector3f a = verts[inds[i + 1]].position.subtract(verts[inds[i + 0]].position).normalize(); 
+            Vector3f b = verts[inds[i + 2]].position.subtract(verts[inds[i + 0]].position).normalize(); 
+            Vector3f normal = a.cross(b).normalize(); 
             verts[inds[i + 0]].normal.addSelf(normal); 
             verts[inds[i + 1]].normal.addSelf(normal); 
             verts[inds[i + 2]].normal.addSelf(normal); 
