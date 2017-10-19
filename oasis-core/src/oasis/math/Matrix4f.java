@@ -1,5 +1,12 @@
 package oasis.math;
 
+/**
+ * 4x4 float matrix 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
+// TODO inverse and transpose 
 public class Matrix4f {
 
     public float m00; 

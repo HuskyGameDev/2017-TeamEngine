@@ -2,6 +2,13 @@ package oasis.graphics.light;
 
 import oasis.math.Vector3f;
 
+/**
+ * Light where all rays are parallel. 
+ * Instead of a position, this light is given a direction 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class DirectionalLight extends Light {
 
     private Vector3f direction; 

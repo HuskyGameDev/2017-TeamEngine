@@ -6,6 +6,12 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
+/**
+ * Creates native buffers
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public final class BufferUtil {
 
     private BufferUtil() {} 

@@ -1,17 +1,24 @@
 package oasis.graphics.model;
 
+/**
+ * Determines what type of material a mesh is. 
+ * This allows the model renderer to be more efficient. 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public enum RenderQueue {
 
     /** no transparency */ 
     OPAQUE, 
     
     /** fully opaque or fully transparent */
-    TRANSLUCENT, 
+    TRANSPARENT, 
     
     /** 
-     * partial transparency. 
-     * Avoid this whenever you can, as it can be slower and less accurate 
+     * partial transparency. This includes things like tinted glass, water, etc. 
+     * Avoid this when you can, as it can be slower and less accurate 
      */
-    TRANSPARENT, 
+    TRANSLUCENT, 
     
 }

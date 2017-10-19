@@ -4,6 +4,12 @@ import oasis.math.Vector2f;
 import oasis.math.Vector3f;
 import oasis.math.Vector4f;
 
+/**
+ * Useful array util, such as converting math objects to primitives arrays
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public final class ArrayUtil {
 
     private ArrayUtil() {}

@@ -1,5 +1,12 @@
 package oasis.math;
 
+/**
+ * 
+ * 3D transform, has a position, rotation, and scale 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Transform {
 
     private Vector3f position; 

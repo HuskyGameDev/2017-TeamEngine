@@ -1,5 +1,11 @@
 package oasis.math;
 
+/**
+ * 3x3 float matrix 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Matrix3f {
 
     public float m00; 

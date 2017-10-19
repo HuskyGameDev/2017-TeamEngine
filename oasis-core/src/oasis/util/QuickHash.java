@@ -1,7 +1,9 @@
 package oasis.util;
 
-/*
+/**
  * Modified version of FNV hash
+ * 
+ * @author Nicholas Hamilton 
  */
 public final class QuickHash {
 

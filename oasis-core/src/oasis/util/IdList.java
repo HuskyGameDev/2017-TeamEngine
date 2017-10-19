@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * List of objects with reusable IDs
+ * 
+ * @author Nicholas Hamilton 
+ *
+ * @param <T>
+ */
 public class IdList<T> {
 
     private ArrayList<T> items; 

@@ -3,6 +3,12 @@ package oasis.graphics.light;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Holds all of the lights in a scene 
+ * 
+ * @author Nicholas Hamiton 
+ *
+ */
 public class LightList {
 
     private List<Light> lights = new ArrayList<>(); 

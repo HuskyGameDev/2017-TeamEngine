@@ -2,6 +2,12 @@ package oasis.math;
 
 import oasis.util.QuickHash;
 
+/**
+ * 4D float vector 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Vector4f {
 
     public float x, y, z, w; 

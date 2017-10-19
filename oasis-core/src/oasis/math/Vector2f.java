@@ -2,6 +2,12 @@ package oasis.math;
 
 import oasis.util.QuickHash;
 
+/**
+ * 2D float vector 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Vector2f {
 
     public float x, y; 

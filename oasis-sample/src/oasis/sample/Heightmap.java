@@ -12,6 +12,12 @@ import oasis.math.Vector4f;
 import oasis.util.ArrayUtil;
 import oasis.util.QuickHash;
 
+/**
+ * Creates heightmap mesh data 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Heightmap {
 
     private boolean flat = false;
@@ -24,10 +30,23 @@ public class Heightmap {
         seed = 1;//(int) System.nanoTime(); 
     }
     
+    // for water 
     public void setFlat(boolean flat) {
         this.flat = flat;
     }
     
+    /**
+     * 
+     * 
+     * @param min smaller coords of box 
+     * @param max larger coords of box 
+     * @param width resolution width of heightmap 
+     * @param height resolution height of heightmap
+     * @param octaves fractal octaves
+     * @param initialFreq starting frequency 
+     * @param pers persistance 
+     * @return mesh data of terrain 
+     */
     public MeshData genMeshData(Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
         verts.clear(); 
         inds.clear();
@@ -53,6 +72,8 @@ public class Heightmap {
             }
         }
         
+        System.out.println(verts.get(0).position);
+        
         Vertex[] array = verts.toArray(new Vertex[verts.size()]); 
         int[] indices = ArrayUtil.toIntArray(inds.toArray(new Integer[inds.size()])); 
         Vertex.calculateNormals(array, indices);
@@ -63,6 +84,7 @@ public class Heightmap {
         return x + y * (width + 1); 
     }
     
+    // compute vertex for a position 
     private Vertex getVertex(float u, float v, Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
         float uFrac = (float) u / width;
         float vFrac = (float) v / height;
@@ -88,6 +110,7 @@ public class Heightmap {
         return vert; 
     }
     
+    // get color of terrain based on height 
     private static Vector4f getTerrainColor(float height) {
         if (height > 0.89f) {
             return new Vector4f(0.9f, 0.9f, 0.9f, 1.0f);
@@ -106,6 +129,7 @@ public class Heightmap {
         }
     }
     
+    // compute fractal value 
     private float fractal(float x, float y, int it, float freq, float pers, int seed) {
         float amp = 1.0f;
         
@@ -124,6 +148,7 @@ public class Heightmap {
         return 1.0f - sum / total;
     }
     
+    // get noise at a position 
     private static float noise(float u, float v, int seed) {
         int u0 = (int) Math.floor(u);
         int u1 = u0 + 1;

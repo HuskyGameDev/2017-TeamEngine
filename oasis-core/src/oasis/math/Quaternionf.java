@@ -1,5 +1,11 @@
 package oasis.math;
 
+/**
+ * float quaternion, useful for rotation 
+ * 
+ * @author Nicholas Hamilton
+ *
+ */
 public class Quaternionf {
 
     public float x, y, z, w; 

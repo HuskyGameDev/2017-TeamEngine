@@ -10,10 +10,21 @@ import oasis.math.Matrix3f;
 import oasis.math.Matrix4f;
 import oasis.math.Quaternionf;
 import oasis.math.Vector3f;
-import oasis.util.FileSystem;
+import oasis.util.FileUtil;
 
+/**
+ * Renders models and meshes. 
+ * 
+ * Similar to the sprite batch, but for 3D
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
+// TODO allow render targets 
+// this class is really inefficient right now!
 public class ModelRenderer {
 
+    // all the specific data needed to render a mesh 
     private class MeshRenderCommand {
         public Mesh mesh; 
         public Material material; 
@@ -34,6 +45,7 @@ public class ModelRenderer {
     private List<MeshRenderCommand> translucentQueue;
     private List<MeshRenderCommand> transparentQueue;
     
+    // default shader 
     private Shader blinnPhongShader; 
     
     public ModelRenderer(GraphicsDevice gd) {
@@ -42,21 +54,31 @@ public class ModelRenderer {
         translucentQueue = new ArrayList<>(); 
         transparentQueue = new ArrayList<>();
         
-        String blinnPhongVertexSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.vert").getFile()); 
-        String blinnPhongFragmentSource = FileSystem.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.frag").getFile());
+        // initialize the default shader 
+        String blinnPhongVertexSource = FileUtil.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.vert").getFile()); 
+        String blinnPhongFragmentSource = FileUtil.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.frag").getFile());
         blinnPhongShader = gd.createShader(blinnPhongVertexSource, blinnPhongFragmentSource); 
     }
     
+    /**
+     * Call this before rendering 
+     * 
+     * @param camera Camera to draw from 
+     */
     public void begin(Camera camera) {
         this.camera = camera; 
         camera.setSize(gd.getWidth(), gd.getHeight());
     }
     
+    /**
+     * Call this when you are done rendering 
+     */
     public void end() {
         render(); 
         this.camera = null; 
     }
     
+    // render all queued meshes 
     // TODO make more efficient 
     private void render() {
         gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
@@ -71,6 +93,8 @@ public class ModelRenderer {
         drawMeshes(opaqueQueue, blinnPhongShader, projection, view); 
         
         // draw transparent 
+        // no need to disable depth writing, since all fragments are either 
+        // opaque or completely transparent 
         drawMeshes(transparentQueue, blinnPhongShader, projection, view); 
         
         // draw translucent 
@@ -86,6 +110,7 @@ public class ModelRenderer {
         translucentQueue.clear(); 
     }
     
+    // draw meshes in a queue
     private void drawMeshes(List<MeshRenderCommand> meshes, Shader defaultShader, Matrix4f projection, Matrix4f view) {
         Shader shader = null; 
         for (MeshRenderCommand c : meshes) {
@@ -111,17 +136,19 @@ public class ModelRenderer {
         addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3f(modelMat)), material.renderQueue); 
     }
     
-    // TODO normal matrix 
+    // TODO compute a normal matrix 
     public void draw(Mesh mesh, Material material, Matrix4f modelMat) {
         addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3f(modelMat)), material.renderQueue); 
     }
     
+    // add each part of a model to the render queue
     public void draw(Model model, Vector3f position, Quaternionf rotation) {
         for (int i = 0; i < model.getPartCount(); i++) {
             draw(model.getMesh(i), model.getMaterial(i), position, rotation); 
         }
     }
     
+    // add the mesh to the right queue 
     private void addMesh(MeshRenderCommand command, RenderQueue queue) {
         switch (queue) {
         case OPAQUE: 

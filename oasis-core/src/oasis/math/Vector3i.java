@@ -2,6 +2,12 @@ package oasis.math;
 
 import oasis.util.QuickHash;
 
+/**
+ * 3D int vector 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Vector3i {
 
     public int x, y, z; 

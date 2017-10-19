@@ -30,7 +30,7 @@ public class Vertex {
     /**
      * Texture coordinates 
      */
-    public Vector2f uv; 
+    public Vector2f texCoord0; 
     
     /**
      * Set mesh data to an array of vertices 

@@ -1,5 +1,11 @@
 package oasis.util;
 
+/**
+ * Get the time in seconds 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Timer {
 
     private static final double SECOND = 1000000000.0;

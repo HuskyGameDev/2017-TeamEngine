@@ -10,10 +10,22 @@ import java.io.InputStreamReader;
 
 import oasis.core.GameLogger;
 
-public class FileSystem {
+/**
+ * File loading and saving utilities 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
+public class FileUtil {
 
-    private static final GameLogger log = new GameLogger(FileSystem.class); 
+    private static final GameLogger log = new GameLogger(FileUtil.class); 
     
+    /**
+     * Get the data of a text file 
+     * 
+     * @param path
+     * @return
+     */
     public static String readTextFile(String path) {
         File file = new File(path); 
         

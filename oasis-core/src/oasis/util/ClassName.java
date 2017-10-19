@@ -1,5 +1,12 @@
 package oasis.util;
 
+/**
+ * 
+ * Shorthand to get the name of a class
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public final class ClassName {
 
     private ClassName() {}

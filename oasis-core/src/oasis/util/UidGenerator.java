@@ -1,5 +1,11 @@
 package oasis.util;
 
+/**
+ * Thread-safe unique ID generator
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public final class UidGenerator {
     
     private static volatile long next = 1L;

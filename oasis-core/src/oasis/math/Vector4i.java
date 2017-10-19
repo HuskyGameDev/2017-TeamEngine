@@ -2,6 +2,12 @@ package oasis.math;
 
 import oasis.util.QuickHash;
 
+/**
+ * 4D int vector 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Vector4i {
 
     public int x, y, z, w; 
