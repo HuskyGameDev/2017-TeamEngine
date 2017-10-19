@@ -74,6 +74,7 @@ public class SampleApp extends Application {
         
         heightmapMaterial = new Material(); 
         heightmapMaterial.renderQueue = RenderQueue.OPAQUE;
+        heightmapMaterial.diffuseColor = new Vector4f(1, 1, 1, 1f); 
         heightmapMaterial.specularPower = 200.0f; 
         heightmapMaterial.specularColor = new Vector4f(0); 
         heightmapMaterial.shader = null; 
@@ -215,11 +216,11 @@ public class SampleApp extends Application {
         
         renderer.begin(camera);
         renderer.draw(terrainModel, new Vector3f(0, 0, 0), new Quaternionf());
-        for (int i = 0; i < cubePositions.length; i++) {
-            renderer.draw(cubeModel, cubePositions[i], 
-                    Quaternionf.axisAngle(new Vector3f(0, 1, 0), angle * 0.4f * i / 10).multiply(
-                            Quaternionf.axisAngle(new Vector3f(1, 0, 0), angle * 0.7f * i / 10).multiply(
-                                    Quaternionf.axisAngle(new Vector3f(0, 0, 1), angle * 0.9f * i / 10)))); 
+        for (int i = 1; i < cubePositions.length + 1; i++) {
+            renderer.draw(cubeModel, cubePositions[i - 1], 
+                    Quaternionf.axisAngle(new Vector3f(0, 1, 0), angle * 0.4f * i / 10f).multiply(
+                            Quaternionf.axisAngle(new Vector3f(1, 0, 0), angle * 0.7f * i / 10f).multiply(
+                                    Quaternionf.axisAngle(new Vector3f(0, 0, 1), angle * 0.9f * i / 10f)))); 
         }
         renderer.end(); 
     }
