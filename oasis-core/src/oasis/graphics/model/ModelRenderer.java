@@ -49,6 +49,7 @@ public class ModelRenderer {
     
     public void begin(Camera camera) {
         this.camera = camera; 
+        camera.setSize(gd.getWidth(), gd.getHeight());
     }
     
     public void end() {

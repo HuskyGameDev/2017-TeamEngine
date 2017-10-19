@@ -1,5 +1,7 @@
 package oasis.sample;
 
+import java.util.Random;
+
 import oasis.core.Application;
 import oasis.core.Config;
 import oasis.core.GameLogger;
@@ -25,10 +27,10 @@ public class SampleApp extends Application {
     private PerspectiveCamera camera; 
     private ModelRenderer renderer; 
     
-    private Mesh heightmap, water; 
-    private Material heightmapMaterial, waterMaterial; 
+    private Mesh heightmap, water, cube; 
+    private Material heightmapMaterial, waterMaterial, cubeMaterial; 
     
-    private Model terrainModel; 
+    private Model terrainModel, cubeModel; 
     
     private float angle = 0.0f; 
     
@@ -40,6 +42,8 @@ public class SampleApp extends Application {
     private float height = 4.5f; 
     
     private Heightmap htmap; 
+    
+    private Vector3f[] cubePositions; 
 
     @Override
     public void onInit() {
@@ -77,6 +81,120 @@ public class SampleApp extends Application {
         terrainModel = new Model(); 
         terrainModel.add(water, waterMaterial);
         terrainModel.add(heightmap, heightmapMaterial);
+        
+        generateCube(); 
+    }
+    
+    private void generateCube() {
+        cubePositions = new Vector3f[32]; 
+        Random rand = new Random(); 
+        for (int i = 0; i < cubePositions.length; i++) {
+            cubePositions[i] = new Vector3f(
+                    rand.nextFloat() * 20 - 10,
+                    rand.nextFloat() * 4 + 2,
+                    rand.nextFloat() * 20 - 10); 
+        }
+        
+        float s = 0.25f; 
+        Vector3f[] positions = new Vector3f[] {
+                // front
+                new Vector3f(-s, -s, -s), 
+                new Vector3f( s, -s, -s),
+                new Vector3f( s,  s, -s),
+                new Vector3f(-s,  s, -s),
+                // back
+                new Vector3f( s, -s,  s),
+                new Vector3f(-s, -s,  s),
+                new Vector3f(-s,  s,  s),
+                new Vector3f( s,  s,  s),
+                // left
+                new Vector3f(-s, -s, -s),
+                new Vector3f(-s, -s,  s),
+                new Vector3f(-s,  s,  s),
+                new Vector3f(-s,  s, -s),
+                // right 
+                new Vector3f( s, -s,  s),
+                new Vector3f( s, -s, -s),
+                new Vector3f( s,  s, -s),
+                new Vector3f( s,  s,  s),
+                // top 
+                new Vector3f(-s,  s,  s),
+                new Vector3f( s,  s,  s),
+                new Vector3f( s,  s, -s),
+                new Vector3f(-s,  s, -s),
+                // bottom
+                new Vector3f(-s, -s, -s),
+                new Vector3f( s, -s, -s),
+                new Vector3f( s, -s,  s),
+                new Vector3f(-s, -s,  s),
+        }; 
+        
+        Vector3f[] normals = new Vector3f[] {
+                // front
+                new Vector3f(0, 0, -1), 
+                new Vector3f(0, 0, -1), 
+                new Vector3f(0, 0, -1), 
+                new Vector3f(0, 0, -1),
+                // back
+                new Vector3f(0, 0, 1), 
+                new Vector3f(0, 0, 1), 
+                new Vector3f(0, 0, 1), 
+                new Vector3f(0, 0, 1), 
+                // left
+                new Vector3f(-1, 0, 0), 
+                new Vector3f(-1, 0, 0), 
+                new Vector3f(-1, 0, 0), 
+                new Vector3f(-1, 0, 0), 
+                // right
+                new Vector3f(1, 0, 0), 
+                new Vector3f(1, 0, 0), 
+                new Vector3f(1, 0, 0), 
+                new Vector3f(1, 0, 0), 
+                // top
+                new Vector3f(0, 1, 0), 
+                new Vector3f(0, 1, 0), 
+                new Vector3f(0, 1, 0), 
+                new Vector3f(0, 1, 0), 
+                // bottom
+                new Vector3f(0,-1, 0), 
+                new Vector3f(0,-1, 0), 
+                new Vector3f(0,-1, 0), 
+                new Vector3f(0,-1, 0), 
+        };
+        
+        Vector4f color = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f); 
+        Vector4f[] colors = new Vector4f[] {
+                color, color, color, color,
+                color, color, color, color, 
+                color, color, color, color, 
+                color, color, color, color, 
+                color, color, color, color, 
+                color, color, color, color, 
+        };
+        
+        int[] indices = new int[] {
+                0, 1, 2, 0, 2, 3, 
+                4, 5, 6, 4, 6, 7, 
+                8, 9, 10, 8, 10, 11, 
+                12, 13, 14, 12, 14, 15, 
+                16, 17, 18, 16, 18, 19, 
+                20, 21, 22, 20, 22, 23, 
+        }; 
+        
+        cube = new Mesh(graphics);
+        cube.setFrontFace(FrontFace.BOTH);
+        cube.setColors(colors);
+        cube.setPositions(positions);
+        cube.setNormals(normals);
+        cube.setIndices(indices);
+        
+        cubeMaterial = new Material(); 
+        cubeMaterial.diffuseColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f); 
+        cubeMaterial.specularColor = new Vector4f(1, 1, 1, 1); 
+        cubeMaterial.specularPower = 20.0f; 
+        
+        cubeModel = new Model(); 
+        cubeModel.add(cube, cubeMaterial);
     }
 
     @Override
@@ -92,11 +210,17 @@ public class SampleApp extends Application {
     public void onRender() {
         graphics.clearScreen(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
         
-        camera.setPosition(new Vector3f(-10, 6, 0));
-        camera.setRotation(-Mathf.PI * 0.5f, -Mathf.toRadians(20));
+        camera.setPosition(new Vector3f(-10, 6, 0).rotate(Quaternionf.axisAngle(new Vector3f(0, 1, 0), angle * 0.1f)));
+        camera.setRotation(-Mathf.PI * 0.5f + angle * 0.1f, -Mathf.toRadians(20));
         
         renderer.begin(camera);
-        renderer.draw(terrainModel, new Vector3f(0, 0, 0), Quaternionf.axisAngle(new Vector3f(0, 1, 0), angle * 0.1f));
+        renderer.draw(terrainModel, new Vector3f(0, 0, 0), new Quaternionf());
+        for (int i = 0; i < cubePositions.length; i++) {
+            renderer.draw(cubeModel, cubePositions[i], 
+                    Quaternionf.axisAngle(new Vector3f(0, 1, 0), angle * 0.4f * i / 10).multiply(
+                            Quaternionf.axisAngle(new Vector3f(1, 0, 0), angle * 0.7f * i / 10).multiply(
+                                    Quaternionf.axisAngle(new Vector3f(0, 0, 1), angle * 0.9f * i / 10)))); 
+        }
         renderer.end(); 
     }
     
