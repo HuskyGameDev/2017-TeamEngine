@@ -20,7 +20,7 @@ void main()
 	vNormal = normalize(NormalMat * aNormal); 
 	
 	gl_Position = Model * vec4(aPosition, 1.0);
-	vModelPos = gl_Position.xyz / gl_Position.w;
+	vModelPos = gl_Position.xyz;
 	
 	gl_Position = Projection * View * gl_Position;
 }

@@ -3,7 +3,6 @@ package oasis.sample;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import oasis.graphics.ColorRgba;
 import oasis.graphics.model.MeshData;
 import oasis.graphics.model.Vertex;
 import oasis.math.Mathf;
@@ -27,7 +26,7 @@ public class Heightmap {
     private int seed; 
     
     public Heightmap() {
-        seed = 1;//(int) System.nanoTime(); 
+        seed = 1; //(int) System.nanoTime(); 
     }
     
     // for water 
@@ -99,7 +98,7 @@ public class Heightmap {
         vert.position = new Vector3f(x, y, z);
         
         if (flat) {
-            vert.color = new ColorRgba(0.45f, 0.55f, 0.85f, 0.8f).toVector4();
+            vert.color = new Vector4f(1); 
         }
         else {
             vert.color = getTerrainColor(f); //new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
@@ -121,12 +120,12 @@ public class Heightmap {
         else if (height > 0.68f) {
             return new Vector4f(0.50f, height * 0.15f + 0.45f, 0.45f, 1.0f);
         }
-        else if (height > 0.63f) {
+        else { //if (height > 0.63f) {
             return new Vector4f(0.85f, 0.79f, 0.75f, 1.0f); 
         }
-        else {
-            return new Vector4f(0.55f, 0.60f, 0.55f, 1f); 
-        }
+//        else {
+//            return new Vector4f(0.55f, 0.60f, 0.55f, 1f); 
+//        }
     }
     
     // compute fractal value 

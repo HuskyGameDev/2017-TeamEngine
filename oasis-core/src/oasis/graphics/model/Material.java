@@ -44,6 +44,15 @@ public class Material {
     public float specularPower = 20.0f;
 
     /**
+     * Texture shown even without any light
+     */
+    public Texture2D emissiveTexture = null; 
+    /**
+     * Color shown even without any light
+     */
+    public Vector4f emissiveColor = null; 
+    
+    /**
      * Uses the model renderer's default shader otherwise 
      */
     public Shader shader = null;
@@ -57,14 +66,18 @@ public class Material {
     public void apply(GraphicsDevice gd, Shader shader) {
         shader.setInt("HasDiffuseTexture", diffuseTexture == null ? 0 : 1);
         shader.setInt("HasSpecularTexture", specularTexture == null ? 0 : 1);
+        shader.setInt("HasEmissiveTexture", emissiveTexture == null ? 0 : 1);
         shader.setVector4f("DiffuseColor", diffuseColor == null ? new Vector4f(1, 0, 1, 1) : diffuseColor);
         shader.setVector4f("SpecularColor", specularColor == null ? new Vector4f(0, 0, 0, 1) : specularColor);
+        shader.setVector4f("EmissiveColor", emissiveColor == null ? new Vector4f(0, 0, 0, 1) : emissiveColor);
         shader.setFloat("SpecularPower", specularPower);
         
         gd.setTexture(0, diffuseTexture);
         gd.setTexture(1, specularTexture);
+        gd.setTexture(2, emissiveTexture); 
         shader.setInt("DiffuseTexture", 0);
         shader.setInt("SpecularTexture", 1);
+        shader.setInt("EmissiveTexture", 2);
     }
     
 }

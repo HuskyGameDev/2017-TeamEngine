@@ -9,6 +9,7 @@ import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.FrontFace;
+import oasis.graphics.light.PointLight;
 import oasis.graphics.model.Material;
 import oasis.graphics.model.Mesh;
 import oasis.graphics.model.Model;
@@ -36,8 +37,8 @@ public class SampleApp extends Application {
     
     // meshes and materials 
     private Mesh heightmap, water, cube; 
-    private Material heightmapMaterial, waterMaterial, cubeMaterial; 
-    private Model terrainModel, cubeModel; 
+    private Material heightmapMaterial, waterMaterial, cubeMaterial, sunMaterial; 
+    private Model terrainModel, cubeModel, sunModel; 
     
     // current angle 
     private float angle = 0.0f; 
@@ -46,7 +47,7 @@ public class SampleApp extends Application {
     private float freq = 1 / 8.0f; 
     private float pers = 0.45f; 
     private int octs = 10; 
-    private long res = 512; 
+    private long res = 128; 
     
     // height of water 
     private float height = 4.5f; 
@@ -79,7 +80,7 @@ public class SampleApp extends Application {
         // water material, translucent and shiny
         waterMaterial = new Material(); 
         waterMaterial.renderQueue = RenderQueue.TRANSLUCENT; 
-        waterMaterial.diffuseColor = new Vector4f(1); 
+        waterMaterial.diffuseColor = new Vector4f(0.45f, 0.55f, 0.85f, 0.7f); 
         waterMaterial.specularPower = 100.0f; 
         waterMaterial.specularColor = new Vector4f(1); 
         waterMaterial.shader = null; 
@@ -183,7 +184,7 @@ public class SampleApp extends Application {
         };
         
         // cube is gray 
-        Vector4f color = new Vector4f(0.5f, 0.5f, 0.5f, 1.0f); 
+        Vector4f color = new Vector4f(1.0f, 1.0f); 
         Vector4f[] colors = new Vector4f[] {
                 color, color, color, color,
                 color, color, color, color, 
@@ -213,13 +214,22 @@ public class SampleApp extends Application {
         
         // shiny metallic cube material 
         cubeMaterial = new Material(); 
-        cubeMaterial.diffuseColor = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f); 
+        cubeMaterial.diffuseColor = new Vector4f(0.5f, 1.0f); 
         cubeMaterial.specularColor = new Vector4f(1, 1, 1, 1); 
+//        cubeMaterial.emissiveColor = new Vector4f(0.5f, 0.5f, 1, 1); 
         cubeMaterial.specularPower = 20.0f; 
+        
+        // sun material 
+        sunMaterial = new Material(); 
+        sunMaterial.diffuseColor = new Vector4f(0.0f, 1.0f); 
+        sunMaterial.emissiveColor = new Vector4f(1, 1, 1, 1); 
         
         // put mesh into a model 
         cubeModel = new Model(); 
         cubeModel.add(cube, cubeMaterial);
+        
+        sunModel = new Model(); 
+        sunModel.add(cube, sunMaterial);
     }
 
     @Override
@@ -236,11 +246,20 @@ public class SampleApp extends Application {
         graphics.clearScreen(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
         
         // set camera position
-        camera.setPosition(new Vector3f(-10, 6, 0).rotate(Quaternionf.axisAngle(new Vector3f(0, 1, 0), -Mathf.PI * 0.25f + angle * 0.1f)));
+        camera.setPosition(new Vector3f(-7, 6, 0).rotate(Quaternionf.axisAngle(new Vector3f(0, 1, 0), -Mathf.PI * 0.25f + angle * 0.1f)));
         camera.setRotation(-Mathf.PI * 0.75f + angle * 0.1f, -Mathf.toRadians(20));
         
         // render scene 
         renderer.begin(camera);
+        
+        Vector3f sunPos = new Vector3f();
+        sunPos.x = Mathf.cos(angle * 0.2f);
+        sunPos.y = Mathf.abs(Mathf.sin(angle * 0.2f)); 
+        sunPos.multiplySelf(20); 
+        
+        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.8f), sunPos, 80));
+        renderer.draw(sunModel, sunPos, new Quaternionf());
+        
         renderer.draw(terrainModel, new Vector3f(0, 0, 0), new Quaternionf());
         for (int i = 1; i < cubePositions.length + 1; i++) {
             // rotate each cube slightly differently
@@ -262,7 +281,7 @@ public class SampleApp extends Application {
         
         Config cfg = new Config();
         cfg.engine = Jogl3Engine.class;
-        cfg.fps = 60.0f;
+        cfg.fps = -60.0f;
         cfg.ups = 60.0f;
         
         Application app = new SampleApp();

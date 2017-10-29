@@ -54,6 +54,8 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     }
     
     public void init() {
+//        gl.setSwapInterval(1);
+        
         gl.glEnable(GL.GL_DEPTH_TEST);
         getError("glEnable (depth test)"); 
         gl.glEnable(GL.GL_BLEND);
@@ -67,6 +69,9 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
         getError("glEnable (cull face)"); 
         gl.glCullFace(GL.GL_BACK);
         getError("glCullFace"); 
+        
+        gl.glDepthFunc(GL.GL_LEQUAL);
+        getError("glDepthFunc"); 
         
         gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL2.GL_FILL); 
     }

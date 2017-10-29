@@ -3,9 +3,14 @@ package oasis.graphics.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import oasis.core.EngineException;
 import oasis.graphics.BlendMode;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Shader;
+import oasis.graphics.light.DirectionalLight;
+import oasis.graphics.light.Light;
+import oasis.graphics.light.LightList;
+import oasis.graphics.light.PointLight;
 import oasis.math.Matrix3f;
 import oasis.math.Matrix4f;
 import oasis.math.Quaternionf;
@@ -23,7 +28,7 @@ import oasis.util.FileUtil;
 // TODO allow render targets 
 // this class is really inefficient right now!
 public class ModelRenderer {
-
+    
     // all the specific data needed to render a mesh 
     private class MeshRenderCommand {
         public Mesh mesh; 
@@ -44,6 +49,7 @@ public class ModelRenderer {
     private List<MeshRenderCommand> opaqueQueue; 
     private List<MeshRenderCommand> translucentQueue;
     private List<MeshRenderCommand> transparentQueue;
+    private LightList lightList = new LightList(); 
     
     // default shader 
     private Shader blinnPhongShader; 
@@ -68,6 +74,17 @@ public class ModelRenderer {
     public void begin(Camera camera) {
         this.camera = camera; 
         camera.setSize(gd.getWidth(), gd.getHeight());
+        lightList.clear(); 
+    }
+    
+    /**
+     * Add a light to the scene 
+     * 
+     * @param light to add
+     */
+    public void addLight(Light light) 
+    {
+        lightList.add(light);
     }
     
     /**
@@ -81,7 +98,6 @@ public class ModelRenderer {
     // render all queued meshes 
     // TODO make more efficient 
     private void render() {
-        gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
         gd.setRenderTarget(null);
         gd.setDepthTestEnabled(true);
         
@@ -90,11 +106,14 @@ public class ModelRenderer {
         
         // draw opaque 
         gd.setDepthWriteEnabled(true); 
+        gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
         drawMeshes(opaqueQueue, blinnPhongShader, projection, view); 
         
         // draw transparent 
         // no need to disable depth writing, since all fragments are either 
         // opaque or completely transparent 
+        gd.setDepthWriteEnabled(true); 
+        gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
         drawMeshes(transparentQueue, blinnPhongShader, projection, view); 
         
         // draw translucent 
@@ -113,19 +132,58 @@ public class ModelRenderer {
     // draw meshes in a queue
     private void drawMeshes(List<MeshRenderCommand> meshes, Shader defaultShader, Matrix4f projection, Matrix4f view) {
         Shader shader = null; 
-        for (MeshRenderCommand c : meshes) {
-            shader = c.material.shader; 
-            if (shader == null) shader = defaultShader; 
-            gd.setShader(shader);
+        
+        Vector3f ambient = new Vector3f(0.2f); 
+        Vector3f zero = new Vector3f(0); 
+        
+        for (int i = 0; i < Math.max(lightList.getLightCount(), 1); i++) {
+            if (i != 0) {
+                gd.setBlendMode(BlendMode.ONE, BlendMode.ONE);
+            }
             
-            shader.setMatrix4f("Projection", projection);
-            shader.setMatrix4f("View", view);
-            shader.setMatrix4f("Model", c.matrix);
-            shader.setMatrix3f("NormalMat", c.normalMatrix);
-            shader.setVector3f("CameraPosition", camera.getPosition());
-            
-            c.material.apply(gd, shader);
-            c.mesh.draw(); 
+            for (MeshRenderCommand c : meshes) {
+                shader = c.material.shader; 
+                if (shader == null) shader = defaultShader; 
+                gd.setShader(shader);
+                
+                shader.setMatrix4f("Projection", projection);
+                shader.setMatrix4f("View", view);
+                shader.setMatrix4f("Model", c.matrix);
+                shader.setMatrix3f("NormalMat", c.normalMatrix);
+                shader.setVector3f("CameraPosition", camera.getPosition());
+                
+                shader.setVector3f("AmbientColor", i == 0 ? ambient : zero); 
+                applyLight(shader, lightList.getLightCount() == 0 ? null : lightList.get(i)); 
+                
+                c.material.apply(gd, shader);
+                c.mesh.draw(); 
+            }
+        }
+    }
+    
+    private void applyLight(Shader shader, Light light) {
+        if (light instanceof DirectionalLight) {
+            DirectionalLight dl = (DirectionalLight) light; 
+            shader.setInt("Light.Type", 0);
+            shader.setFloat("Light.Radius", 0);
+            shader.setVector3f("Light.Color", light.getColor());
+            shader.setVector3f("Light.Position", dl.getDirection());
+        }
+        else if (light instanceof PointLight) {
+            PointLight pl = (PointLight) light; 
+            shader.setInt("Light.Type", 1);
+            shader.setFloat("Light.Radius", pl.getRadius());
+            shader.setVector3f("Light.Color", light.getColor());
+            shader.setVector3f("Light.Position", pl.getPosition());
+        }
+        else if (light == null) {
+            shader.setInt("Light.Type", -1);
+            shader.setFloat("Light.Radius", 0);
+            shader.setVector3f("Light.Color", new Vector3f(0));
+            shader.setVector3f("Light.Position", new Vector3f(0));
+        }
+        else {
+            throw new EngineException("Unknown light type: " + light); 
         }
     }
     

@@ -1,5 +1,8 @@
 package oasis.graphics.jogl3;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL3;
@@ -23,11 +26,33 @@ public class Jogl3Shader implements Shader {
     private String vertSource; 
     private String fragSource; 
     
+    private Map<String, Integer> locations = new HashMap<>(); 
+    private Map<String, Object> values = new HashMap<>(); 
+    
     public Jogl3Shader(Jogl3GraphicsDevice gd, String vs, String fs) {
         this.gd = gd; 
         this.vertSource = vs; 
         this.fragSource = fs; 
         create(); 
+    }
+    
+    private int getLocation(String name) {
+        Integer loc = locations.get(name); 
+        if (loc == null) {
+            int newLoc = gd.gl.glGetUniformLocation(id, name); 
+            locations.put(name, newLoc); 
+            return newLoc; 
+        }
+        return loc.intValue(); 
+    }
+    
+    private boolean setValue(String name, Object obj) {
+        Object value = values.get(name); 
+        if (value != null && value.equals(obj)) {
+            return true; 
+        }
+        values.put(name, obj); 
+        return false; 
     }
     
     @Override
@@ -42,44 +67,51 @@ public class Jogl3Shader implements Shader {
 
     @Override
     public void setInt(String name, int value) {
+        if (setValue(name, value)) return; 
         gd.context.bindProgram(id);
-        gd.gl.glUniform1i(gd.gl.glGetUniformLocation(id, name), value);
+        gd.gl.glUniform1i(getLocation(name), value);
     }
     
     @Override
     public void setFloat(String name, float value) {
+        if (setValue(name, value)) return; 
         gd.context.bindProgram(id);
-        gd.gl.glUniform1f(gd.gl.glGetUniformLocation(id, name), value);
+        gd.gl.glUniform1f(getLocation(name), value);
     }
 
     @Override
     public void setVector2f(String name, Vector2f value) {
+        if (setValue(name, new Vector2f(value))) return; 
         gd.context.bindProgram(id);
-        gd.gl.glUniform2f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY());
+        gd.gl.glUniform2f(getLocation(name), value.getX(), value.getY());
     }
 
     @Override
     public void setVector3f(String name, Vector3f value) {
+        if (setValue(name, new Vector3f(value))) return; 
         gd.context.bindProgram(id);
-        gd.gl.glUniform3f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY(), value.getZ());
+        gd.gl.glUniform3f(getLocation(name), value.getX(), value.getY(), value.getZ());
     }
 
     @Override
     public void setVector4f(String name, Vector4f value) {
+        if (setValue(name, new Vector4f(value))) return; 
         gd.context.bindProgram(id);
-        gd.gl.glUniform4f(gd.gl.glGetUniformLocation(id, name), value.getX(), value.getY(), value.getZ(), value.getW());
+        gd.gl.glUniform4f(getLocation(name), value.getX(), value.getY(), value.getZ(), value.getW());
     }
 
     @Override
     public void setMatrix4f(String name, Matrix4f value) {
+        if (setValue(name, new Matrix4f(value))) return; 
         gd.context.bindProgram(id);
-        gd.gl.glUniformMatrix4fv(gd.gl.glGetUniformLocation(id, name), 1, false, value.get(new float[16]), 0);
+        gd.gl.glUniformMatrix4fv(getLocation(name), 1, false, value.get(new float[16]), 0);
     }
     
     @Override
     public void setMatrix3f(String name, Matrix3f value) {
+        if (setValue(name, new Matrix3f(value))) return; 
         gd.context.bindProgram(id);
-        gd.gl.glUniformMatrix3fv(gd.gl.glGetUniformLocation(id, name), 1, false, value.get(new float[9]), 0);
+        gd.gl.glUniformMatrix3fv(getLocation(name), 1, false, value.get(new float[9]), 0);
     }
     
     private void create() { 
