@@ -1,4 +1,4 @@
-package oasis.graphics;
+package oasis.file;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -8,6 +8,9 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import oasis.core.GameLogger;
+import oasis.graphics.GraphicsDevice;
+import oasis.graphics.Texture;
+import oasis.graphics.Texture2D;
 
 /**
  * Loads and manages textures from the file system 
@@ -42,7 +45,7 @@ public class TextureLoader {
 	 * @return
 	 */
 	public Texture2D get(String filename) {
-		Texture2D tex = loaded.get(filename); 
+		Texture2D tex = loaded.get(PathList.DEFAULT.find(filename)); 
 		if (tex == null || tex.isDisposed()) {
 			tex = load(filename); 
 			loaded.put(filename, tex); 
@@ -54,7 +57,7 @@ public class TextureLoader {
 	// load and convert from BufferedImage to Texture2D
 	private Texture2D load(String filename) {
 		try {
-			BufferedImage image = ImageIO.read(new File(filename));
+			BufferedImage image = ImageIO.read(new File(PathList.DEFAULT.find(filename)));
 			Texture2D tex = gd.createTexture2D(Texture.Format.RGBA8, image.getWidth(), image.getHeight()); 
 			
 			int width = image.getWidth(); 

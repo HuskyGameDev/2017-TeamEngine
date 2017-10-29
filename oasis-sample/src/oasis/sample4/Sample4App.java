@@ -5,11 +5,11 @@ import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl.Jogl3Engine;
+import oasis.file.TextureLoader;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.Texture.MagFilter;
 import oasis.graphics.Texture.MinFilter;
 import oasis.graphics.Texture2D;
-import oasis.graphics.TextureLoader;
 import oasis.graphics.sprite.SpriteBatch;
 
 public class Sample4App extends Application {

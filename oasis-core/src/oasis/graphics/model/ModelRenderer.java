@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.core.EngineException;
+import oasis.file.FileUtil;
+import oasis.file.GlslParser;
+import oasis.file.PathList;
 import oasis.graphics.BlendMode;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Shader;
@@ -15,7 +18,6 @@ import oasis.math.Matrix3f;
 import oasis.math.Matrix4f;
 import oasis.math.Quaternionf;
 import oasis.math.Vector3f;
-import oasis.util.FileUtil;
 
 /**
  * Renders models and meshes. 
@@ -61,8 +63,8 @@ public class ModelRenderer {
         transparentQueue = new ArrayList<>();
         
         // initialize the default shader 
-        String blinnPhongVertexSource = FileUtil.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.vert").getFile()); 
-        String blinnPhongFragmentSource = FileUtil.readTextFile(ModelRenderer.class.getResource("/shaders/blinn-phong.frag").getFile());
+        String blinnPhongVertexSource = GlslParser.getVertexSource("blinn-phong.glsl", PathList.DEFAULT); 
+        String blinnPhongFragmentSource = GlslParser.getFragmentSource("blinn-phong.glsl", PathList.DEFAULT); 
         blinnPhongShader = gd.createShader(blinnPhongVertexSource, blinnPhongFragmentSource); 
     }
     
