@@ -2,6 +2,8 @@ package oasis.core;
 
 import oasis.graphics.Display;
 import oasis.graphics.GraphicsDevice;
+import oasis.input.Keyboard;
+import oasis.input.Mouse;
 
 /**
  * Oasis engine constants 
@@ -82,6 +84,16 @@ public final class Oasis {
     public static GraphicsDevice graphics = null; 
     
     /**
+     * Keyboard reference
+     */
+    public static Keyboard keyboard = null; 
+    
+    /**
+     * Mouse reference
+     */
+    public static Mouse mouse = null; 
+    
+    /**
      * Called by the engine
      */
     public static void setEngine(Engine engine) {
@@ -89,6 +101,8 @@ public final class Oasis {
         Oasis.app = engine.getApplication(); 
         Oasis.display = engine.getDisplay(); 
         Oasis.graphics = engine.getGraphicsDevice(); 
+        Oasis.keyboard = engine.getKeyboard(); 
+        Oasis.mouse = engine.getMouse(); 
     }
     
     /** 

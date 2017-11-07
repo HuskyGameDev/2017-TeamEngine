@@ -2,7 +2,7 @@ package oasis.sample6;
 
 import oasis.core.Application;
 import oasis.core.Config;
-import oasis.core.jogl.Jogl3Engine;
+import oasis.core.jogl3.Jogl3Engine;
 
 public class Sample6App extends Application {
 

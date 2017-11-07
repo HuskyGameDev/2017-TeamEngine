@@ -18,6 +18,8 @@ import com.jogamp.opengl.awt.GLCanvas;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.graphics.Display;
+import oasis.input.jogl3.Jogl3Keyboard;
+import oasis.input.jogl3.Jogl3Mouse;
 
 public class Jogl3Display implements Display, GLEventListener {
 
@@ -29,6 +31,8 @@ public class Jogl3Display implements Display, GLEventListener {
     private Frame frame;
     private GLCanvas canvas;
     private Jogl3GraphicsDevice device; 
+    private Jogl3Keyboard keyboard; 
+    private Jogl3Mouse mouse; 
     private boolean shouldClose = false;
     
     public Jogl3Display() {
@@ -71,6 +75,13 @@ public class Jogl3Display implements Display, GLEventListener {
         frame.add(canvas);
         
         device = new Jogl3GraphicsDevice(this); 
+        keyboard = new Jogl3Keyboard(); 
+        mouse = new Jogl3Mouse(this); 
+        
+        canvas.addKeyListener(keyboard); 
+        canvas.addMouseListener(mouse);
+        canvas.addMouseMotionListener(mouse); 
+        canvas.addMouseWheelListener(mouse); 
     }
     
     public void invoke(final Runnable run) { 
@@ -82,6 +93,22 @@ public class Jogl3Display implements Display, GLEventListener {
                 return true;
             }
         });
+    }
+    
+    public int getX() {
+        return frame.getX() + canvas.getX(); 
+    }
+    
+    public int getY() {
+        return frame.getY() + canvas.getY(); 
+    }
+    
+    public Jogl3Mouse getMouse() {
+        return mouse; 
+    }
+    
+    public Jogl3Keyboard getKeyboard() {
+        return keyboard; 
     }
     
     public Jogl3GraphicsDevice getGraphics() {

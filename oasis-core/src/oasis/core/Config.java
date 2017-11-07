@@ -1,6 +1,6 @@
 package oasis.core;
 
-import oasis.core.jogl.Jogl3Engine;
+import oasis.core.jogl3.Jogl3Engine;
 
 /** 
  * Engine configuration 

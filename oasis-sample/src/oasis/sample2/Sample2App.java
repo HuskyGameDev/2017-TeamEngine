@@ -4,7 +4,7 @@ import oasis.core.Application;
 import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
-import oasis.core.jogl.Jogl3Engine;
+import oasis.core.jogl3.Jogl3Engine;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.IndexBuffer;

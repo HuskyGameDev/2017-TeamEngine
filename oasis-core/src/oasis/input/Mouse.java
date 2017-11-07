@@ -8,21 +8,28 @@ package oasis.input;
  */
 public interface Mouse {
 
-    /**
-     * Button press or release event 
-     * 
-     * @author Nicholas Hamilton
-     *
-     */
-    public class Event {
-        public final int button; 
-        public final boolean down; 
-        
-        public Event(int button, boolean down) {
-            this.button = button; 
-            this.down = down; 
-        }
+    public enum ScrollDirection {
+        NONE, 
+        UP, 
+        DOWN; 
     }
+    
+    /**
+     * Sets mouse position (origin bottom left) 
+     * 
+     * This resets dx, dy
+     * 
+     * @param x
+     * @param y
+     */
+    void setPosition(float x, float y); 
+    
+    /**
+     * Puts mouse in the center of the window
+     * 
+     * This resets dx, dy
+     */
+    void center(); 
     
     /**
      * Get mouse X position, with origin in the bottom left 
@@ -37,6 +44,16 @@ public interface Mouse {
      * @return Mouse y position 
      */
     float getY(); 
+    
+    /**
+     * Get change in mouse X position, with origin in bottom left 
+     */
+    float getDx(); 
+    
+    /**
+     * Get change in mouse Y position, with origin in bottom left
+     */
+    float getDy(); 
     
     /**
      * Check if a mouse button is down
@@ -55,17 +72,8 @@ public interface Mouse {
     boolean isButtonJustDown(int button); 
     
     /**
-     * Check if any events have happened since last update 
-     * 
-     * @return If mouse has events queued 
+     * Get the scroll wheel direction this frame 
      */
-    boolean hasNextEvent(); 
-    
-    /**
-     * Gets the next queued event 
-     * 
-     * @return Next event or null 
-     */
-    Event nextEvent(); 
+    ScrollDirection getScroll(); 
     
 }

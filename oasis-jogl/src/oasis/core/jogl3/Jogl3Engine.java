@@ -1,4 +1,4 @@
-package oasis.core.jogl;
+package oasis.core.jogl3;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
@@ -63,6 +63,8 @@ public class Jogl3Engine extends Engine {
         try {
             display.invoke(new Runnable() {
                 public void run() {
+                    display.getKeyboard().update(); 
+                    display.getMouse().update(); 
                     listener.onUpdate(dt);
                 }
             });
@@ -106,14 +108,12 @@ public class Jogl3Engine extends Engine {
 
     @Override
     public Keyboard getKeyboard() {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
+        return display.getKeyboard(); 
     }
 
     @Override
     public Mouse getMouse() {
-        // TODO finish
-        throw new EngineException("Not yet supported"); 
+        return display.getMouse(); 
     }
 
 }

@@ -6,7 +6,7 @@ import oasis.core.Application;
 import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
-import oasis.core.jogl.Jogl3Engine;
+import oasis.core.jogl3.Jogl3Engine;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.FrontFace;
 import oasis.graphics.light.PointLight;
@@ -16,6 +16,8 @@ import oasis.graphics.model.Model;
 import oasis.graphics.model.ModelRenderer;
 import oasis.graphics.model.PerspectiveCamera;
 import oasis.graphics.model.RenderQueue;
+import oasis.input.Keyboard;
+import oasis.input.Mouse;
 import oasis.math.Mathf;
 import oasis.math.Quaternionf;
 import oasis.math.Vector3f;
@@ -239,6 +241,10 @@ public class SampleApp extends Application {
         }
 
         angle += 2f / 60.0f; 
+        
+        if (Oasis.mouse.getScroll() != Mouse.ScrollDirection.NONE) { 
+            System.out.println(Oasis.mouse.getScroll());
+        }
     }
 
     @Override
