@@ -48,6 +48,9 @@ public interface Keyboard {
     public static final int KEY_8 = 0x38; 
     public static final int KEY_9 = 0x39; 
     
+    public static final int KEY_SPACE = 0x20; 
+    public static final int KEY_SHIFT = 0x10; 
+    
     /**
      * Checks if a key is down
      * 

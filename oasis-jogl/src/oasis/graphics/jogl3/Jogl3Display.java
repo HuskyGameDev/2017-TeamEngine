@@ -1,5 +1,6 @@
 package oasis.graphics.jogl3;
 
+import java.awt.Canvas;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -119,6 +120,10 @@ public class Jogl3Display implements Display, GLEventListener {
         return context;
     }
     
+    public Canvas getCanvas() {
+        return canvas; 
+    }
+    
     public void swapBuffers() {
         canvas.swapBuffers();
     }
@@ -158,6 +163,7 @@ public class Jogl3Display implements Display, GLEventListener {
     @Override
     public void show() {
         frame.setVisible(true);
+        canvas.requestFocus(); 
     }
 
     @Override

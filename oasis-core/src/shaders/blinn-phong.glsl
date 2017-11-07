@@ -67,7 +67,7 @@ void main()
 
     vec4 diffuse = vec4((diffuseAmt * Light.Color.rgb + AmbientColor) * Material.DiffuseColor.rgb * vColor.rgb, Material.DiffuseColor.a * vColor.a);
     vec3 specular = specularAmt * Light.Color * Material.SpecularColor.rgb;
-    vec3 emissive = Material.EmissiveColor.rgb;
+    vec3 emissive = Material.EmissiveColor.rgb * Material.EmissiveColor.a;
 
     gl_FragColor = vec4(specular + emissive, 0.0) + diffuse;
 }

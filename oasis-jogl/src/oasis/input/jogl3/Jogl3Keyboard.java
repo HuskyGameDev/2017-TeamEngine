@@ -43,13 +43,13 @@ public class Jogl3Keyboard implements Keyboard, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        log.debug("Key pressed: " + e.getKeyCode()); 
+//        log.debug("Key pressed: " + e.getKeyCode()); 
         down[e.getKeyCode()] = true; 
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        log.debug("Key released: " + e.getKeyCode()); 
+//        log.debug("Key released: " + e.getKeyCode()); 
         down[e.getKeyCode()] = false; 
     }
 

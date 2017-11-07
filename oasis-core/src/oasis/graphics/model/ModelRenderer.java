@@ -154,7 +154,7 @@ public class ModelRenderer {
                 shader.setVector3f("AmbientColor", i == 0 ? ambient : zero); 
                 applyLight(shader, lightList.getLightCount() == 0 ? null : lightList.get(i)); 
                 
-                c.material.apply(Oasis.graphics, shader);
+                c.material.apply(Oasis.graphics, shader, i == 0);
                 c.mesh.draw(); 
             }
         }

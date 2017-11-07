@@ -15,6 +15,11 @@ public interface Mouse {
     }
     
     /**
+     * Sets cursor visibility
+     */
+    void setCursorVisible(boolean visible); 
+    
+    /**
      * Sets mouse position (origin bottom left) 
      * 
      * This resets dx, dy

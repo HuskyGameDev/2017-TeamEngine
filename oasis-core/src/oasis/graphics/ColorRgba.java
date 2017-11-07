@@ -26,6 +26,15 @@ public class ColorRgba {
     }
     
     /**
+     * Constructor taking in a Vector4
+     * 
+     * @param other The color to copy 
+     */
+    public ColorRgba(Vector4f other) {
+        this(other.x, other.y, other.z, other.w); 
+    }
+    
+    /**
      * Constructor taking in RGBA values 
      * 
      * @param r Amount of red

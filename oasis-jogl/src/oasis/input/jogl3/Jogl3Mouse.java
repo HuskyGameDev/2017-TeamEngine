@@ -1,12 +1,15 @@
 package oasis.input.jogl3;
 
 import java.awt.AWTException;
+import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.Robot;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.image.BufferedImage;
 
 import oasis.core.EngineException;
 import oasis.graphics.jogl3.Jogl3Display;
@@ -29,6 +32,8 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
     private int curX, curY; 
     private ScrollDirection curDir = ScrollDirection.NONE; 
     
+    private Cursor basicCursor, blankCursor; 
+    
     public Jogl3Mouse(Jogl3Display display) {
         try {
             robot = new Robot();
@@ -36,10 +41,19 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
             throw new EngineException("AWT robot creation failed"); 
         } 
         
+        basicCursor = display.getCanvas().getCursor(); 
+        blankCursor = display.getCanvas().getToolkit().createCustomCursor(
+                new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "blank"); 
+        display.getCanvas().setCursor(null); 
+        
         this.display = display; 
         down = new boolean[MAX_BUTTONS]; 
         buttons = new int[MAX_BUTTONS]; 
         x = y = lastX = lastY = 0; 
+    }
+    
+    public void setCursorVisible(boolean visible) {
+        display.getCanvas().setCursor(visible ? basicCursor : blankCursor); 
     }
     
     public void update() {
@@ -69,7 +83,7 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
     public void setPosition(float x, float y) {
         this.x = (int)x; 
         this.y = (int)(display.getHeight() - (int)y - 1); 
-        robot.mouseMove(display.getX() + this.x, display.getY() + this.y); 
+        if (display.getCanvas().hasFocus()) robot.mouseMove(display.getX() + this.x, display.getY() + this.y); 
         resetPosition(); 
     }
 

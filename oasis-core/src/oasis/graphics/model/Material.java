@@ -63,14 +63,18 @@ public class Material {
      * @param gd graphics device 
      * @param shader shader to apply uniforms to 
      */
-    public void apply(GraphicsDevice gd, Shader shader) {
+    public void apply(GraphicsDevice gd, Shader shader, boolean firstPass) {
         shader.setInt("Material.HasDiffuseTexture", diffuseTexture == null ? 0 : 1);
         shader.setInt("Material.HasSpecularTexture", specularTexture == null ? 0 : 1);
         shader.setInt("Material.HasEmissiveTexture", emissiveTexture == null ? 0 : 1);
         shader.setVector4f("Material.DiffuseColor", diffuseColor == null ? new Vector4f(1, 0, 1, 1) : diffuseColor);
         shader.setVector4f("Material.SpecularColor", specularColor == null ? new Vector4f(0, 0, 0, 1) : specularColor);
-        shader.setVector4f("Material.EmissiveColor", emissiveColor == null ? new Vector4f(0, 0, 0, 1) : emissiveColor);
+        shader.setVector4f("Material.EmissiveColor", (!firstPass || emissiveColor == null) ? new Vector4f(0, 0, 0, 1) : emissiveColor);
         shader.setFloat("Material.SpecularPower", specularPower);
+        
+        if (emissiveColor != null) {
+            System.out.println(emissiveColor);
+        }
         
         gd.setTexture(0, diffuseTexture);
         gd.setTexture(1, specularTexture);

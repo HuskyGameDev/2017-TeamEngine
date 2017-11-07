@@ -26,7 +26,7 @@ public class Heightmap {
     private int seed; 
     
     public Heightmap() {
-        seed = 1; //(int) System.nanoTime(); 
+        seed = (int) System.nanoTime(); 
     }
     
     // for water 
@@ -111,13 +111,14 @@ public class Heightmap {
     
     // get color of terrain based on height 
     private static Vector4f getTerrainColor(float height) {
-        if (height > 0.89f) {
-            return new Vector4f(0.9f, 0.9f, 0.9f, 1.0f);
-        }
-        else if (height > 0.8f) {
-            return new Vector4f(0.6f, 0.6f, 0.6f, 1.0f);
-        }
-        else if (height > 0.68f) {
+//        if (height > 0.89f) {
+//            return new Vector4f(0.9f, 0.9f, 0.9f, 1.0f);
+//        }
+//        else if (height > 0.8f) {
+//            return new Vector4f(0.6f, 0.6f, 0.6f, 1.0f);
+//        }
+//        else 
+        if (height > 0.72f) {
             return new Vector4f(0.50f, height * 0.15f + 0.45f, 0.45f, 1.0f);
         }
         else { //if (height > 0.63f) {
@@ -136,8 +137,8 @@ public class Heightmap {
         float total = 0.0f;
         
         for (int i = 0; i < it; i++) {
-            float noise = amp * noise(x * freq + freq, y * freq + freq, seed + i); 
-            sum += flat ? (noise * 0.5f + 0.5f) : Math.abs(noise);
+            float noise = noise(x * freq + freq, y * freq + freq, seed + i); 
+            sum += amp * (noise * 0.5f + 0.35f);// flat ? (noise * 0.5f + 0.5f) : Mathf.abs(noise);
             total += amp;
             
             amp *= pers;

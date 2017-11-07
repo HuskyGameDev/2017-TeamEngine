@@ -197,7 +197,7 @@ public abstract class Engine {
             // keep updates up to date 
             int loops = 0;
             while (running && tickTimer < time.getTime() && loops++ < 10) {
-                update(0.0f);
+                update(1.0f / targetUps);
                 ticks++;
                 tickTimer += skipTicks;
             }

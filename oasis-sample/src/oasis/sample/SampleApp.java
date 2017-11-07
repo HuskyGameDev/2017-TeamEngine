@@ -1,5 +1,7 @@
 package oasis.sample;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import oasis.core.Application;
@@ -35,21 +37,22 @@ public class SampleApp extends Application {
     
     // camera and model renderer 
     private PerspectiveCamera camera; 
+    private float camPitch, camYaw; 
     private ModelRenderer renderer; 
     
     // meshes and materials 
     private Mesh heightmap, water, cube; 
-    private Material heightmapMaterial, waterMaterial, cubeMaterial, sunMaterial; 
-    private Model terrainModel, cubeModel, sunModel; 
+    private Material heightmapMaterial, waterMaterial, cubeMaterial, sunMaterial, lightMaterial1, lightMaterial2; 
+    private Model terrainModel, cubeModel, sunModel, lightModel1, lightModel2; 
     
     // current angle 
     private float angle = 0.0f; 
     
     // heightmap settings 
-    private float freq = 1 / 8.0f; 
+    private float freq = 1 / 16.0f; 
     private float pers = 0.45f; 
     private int octs = 10; 
-    private long res = 128; 
+    private long res = 64; 
     
     // height of water 
     private float height = 4.5f; 
@@ -61,9 +64,11 @@ public class SampleApp extends Application {
     public void onInit() {
         Oasis.display.setResizable(true);
         Oasis.display.setSize(800, 400);
+        Oasis.mouse.setCursorVisible(false); 
         
         renderer = new ModelRenderer(); 
         camera = new PerspectiveCamera(800, 600, 70.0f, 0.1f, 1000.0f); 
+        camera.setPosition(new Vector3f(0, 5, 0));
         
         // generate water and terrain
         float offset = 0.015f; 
@@ -107,14 +112,23 @@ public class SampleApp extends Application {
     // generate cube data 
     private void generateCube() {
         // make 32 different cube positions 
-        cubePositions = new Vector3f[32]; 
+        List<Vector3f> posList = new ArrayList<>(); 
         Random rand = new Random(); 
-        for (int i = 0; i < cubePositions.length; i++) {
-            cubePositions[i] = new Vector3f(
-                    rand.nextFloat() * 20 - 10,
-                    rand.nextFloat() * 4 + 2,
-                    rand.nextFloat() * 20 - 10); 
+        for (int i = 0; i < 10; i++) {
+            Vector3f v = new Vector3f(
+                    rand.nextInt(20) - 10,
+                    0,
+                    rand.nextInt(20) - 10); 
+            
+            int height = rand.nextInt(20); 
+            
+            for (int j = 0; j < height; j++) {
+                posList.add(new Vector3f(v).setY(j * 0.5f)); 
+            }
         }
+        
+        cubePositions = new Vector3f[posList.size()]; 
+        posList.toArray(cubePositions); 
         
         // cube model positions 
         float s = 0.25f; 
@@ -223,8 +237,16 @@ public class SampleApp extends Application {
         
         // sun material 
         sunMaterial = new Material(); 
-        sunMaterial.diffuseColor = new Vector4f(0.0f, 1.0f); 
+        sunMaterial.diffuseColor = new Vector4f(0, 1); 
         sunMaterial.emissiveColor = new Vector4f(1, 1, 1, 1); 
+        
+        lightMaterial1 = new Material(); 
+        lightMaterial1.diffuseColor = new Vector4f(0, 1); 
+        lightMaterial1.emissiveColor = new Vector4f(1, 0.5f, 0.5f, 1); 
+        
+        lightMaterial2 = new Material(); 
+        lightMaterial2.diffuseColor = new Vector4f(0, 1); 
+        lightMaterial2.emissiveColor = new Vector4f(0.5f, 0.5f, 1, 1); 
         
         // put mesh into a model 
         cubeModel = new Model(); 
@@ -232,6 +254,12 @@ public class SampleApp extends Application {
         
         sunModel = new Model(); 
         sunModel.add(cube, sunMaterial);
+        
+        lightModel1 = new Model(); 
+        lightModel1.add(cube, lightMaterial1);
+        
+        lightModel2 = new Model(); 
+        lightModel2.add(cube, lightMaterial2);
     }
 
     @Override
@@ -245,23 +273,79 @@ public class SampleApp extends Application {
         if (Oasis.mouse.getScroll() != Mouse.ScrollDirection.NONE) { 
             System.out.println(Oasis.mouse.getScroll());
         }
+        
+        Vector3f move = new Vector3f(); 
+        Vector3f vertMove = new Vector3f(); 
+        float speed = 4; 
+        
+        if (Oasis.keyboard.isKeyDown(Keyboard.KEY_I)) {
+            move.addSelf(new Vector3f(0, 0, -1).rotateSelf(camera.getRotation())); 
+        }
+        if (Oasis.keyboard.isKeyDown(Keyboard.KEY_K)) {
+            move.addSelf(new Vector3f(0, 0, 1).rotateSelf(camera.getRotation()));
+        }
+        if (Oasis.keyboard.isKeyDown(Keyboard.KEY_J)) {
+            move.addSelf(new Vector3f(-1, 0, 0).rotateSelf(camera.getRotation()));
+        }
+        if (Oasis.keyboard.isKeyDown(Keyboard.KEY_L)) {
+            move.addSelf(new Vector3f(1, 0, 0).rotateSelf(camera.getRotation()));
+        }
+        
+        if (Oasis.keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            vertMove.addSelf(new Vector3f(0, 1, 0).rotateSelf(camera.getRotation()));
+        }
+        if (Oasis.keyboard.isKeyDown(Keyboard.KEY_SHIFT)) {
+            vertMove.addSelf(new Vector3f(0, -1, 0).rotateSelf(camera.getRotation()));
+        }
+        
+        vertMove.x = vertMove.z = 0; 
+        
+        move.y = vertMove.normalizeSelf().y; 
+        move.normalizeSelf().multiplySelf(speed * dt);  
+        
+        camYaw += Oasis.mouse.getDx() * -0.05f * dt; 
+        camPitch += Oasis.mouse.getDy() * -0.05f * dt; 
+        Oasis.mouse.center(); 
+        
+        camYaw %= Mathf.toRadians(360); 
+        if (camPitch < Mathf.toRadians(-89.999f)) {
+            camPitch = Mathf.toRadians(-89.999f); 
+        }
+        if (camPitch > Mathf.toRadians(89.999f)) {
+            camPitch = Mathf.toRadians(89.999f); 
+        }
+        camera.setRotation(camYaw, camPitch);
+        
+        camera.setPosition(camera.getPosition().add(move));
     }
 
     @Override
     public void onRender() {
-        Oasis.graphics.clearScreen(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
+        Vector3f sunPos = new Vector3f();
+        sunPos.x = Mathf.cos(angle * 0.02f);
+        sunPos.y = Mathf.sin(angle * 0.02f); 
+        sunPos.z = 0; 
+        sunPos.multiplySelf(20); 
         
-        // set camera position
-        camera.setPosition(new Vector3f(-7, 6, 0).rotate(Quaternionf.axisAngle(new Vector3f(0, 1, 0), -Mathf.PI * 0.25f + angle * 0.1f)));
-        camera.setRotation(-Mathf.PI * 0.75f + angle * 0.1f, -Mathf.toRadians(20));
+        Oasis.graphics.clearScreen(new ColorRgba(new Vector4f(0.8f, 0.9f, 1.0f, 1.0f).multiply(new Vector3f(0, 1, 0).dot(sunPos.normalize())))); 
         
         // render scene 
         renderer.begin(camera);
         
-        Vector3f sunPos = new Vector3f();
-        sunPos.x = Mathf.cos(angle * 0.2f);
-        sunPos.y = Mathf.abs(Mathf.sin(angle * 0.2f)); 
-        sunPos.multiplySelf(20); 
+        Vector3f lightPos = new Vector3f(); 
+        lightPos.x = Mathf.cos(angle * 0.2f);
+        lightPos.z = Mathf.sin(angle * 0.2f); 
+        lightPos.multiplySelf(8); 
+        lightPos.y = 5; 
+        
+        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.4f, 0.4f), lightPos, 10));
+        renderer.draw(lightModel1, lightPos, new Quaternionf());
+        
+        lightPos.x *= -1; 
+        lightPos.z *= -1; 
+        
+        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.4f, 0.8f), lightPos, 10));
+        renderer.draw(lightModel2, lightPos, new Quaternionf());
         
         renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.8f), sunPos, 80));
         renderer.draw(sunModel, sunPos, new Quaternionf());
@@ -269,10 +353,7 @@ public class SampleApp extends Application {
         renderer.draw(terrainModel, new Vector3f(0, 0, 0), new Quaternionf());
         for (int i = 1; i < cubePositions.length + 1; i++) {
             // rotate each cube slightly differently
-            renderer.draw(cubeModel, cubePositions[i - 1], 
-                    Quaternionf.axisAngle(new Vector3f(0, 1, 0), angle * 0.4f * i / 10f).multiply(
-                            Quaternionf.axisAngle(new Vector3f(1, 0, 0), angle * 0.7f * i / 10f).multiply(
-                                    Quaternionf.axisAngle(new Vector3f(0, 0, 1), angle * 0.9f * i / 10f)))); 
+            renderer.draw(cubeModel, cubePositions[i - 1], new Quaternionf()); 
         }
         renderer.end(); 
     }
