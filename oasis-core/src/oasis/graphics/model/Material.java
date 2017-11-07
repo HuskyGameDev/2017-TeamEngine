@@ -72,10 +72,6 @@ public class Material {
         shader.setVector4f("Material.EmissiveColor", (!firstPass || emissiveColor == null) ? new Vector4f(0, 0, 0, 1) : emissiveColor);
         shader.setFloat("Material.SpecularPower", specularPower);
         
-        if (emissiveColor != null) {
-            System.out.println(emissiveColor);
-        }
-        
         gd.setTexture(0, diffuseTexture);
         gd.setTexture(1, specularTexture);
         gd.setTexture(2, emissiveTexture); 

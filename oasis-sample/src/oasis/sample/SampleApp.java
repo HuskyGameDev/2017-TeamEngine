@@ -120,7 +120,7 @@ public class SampleApp extends Application {
                     0,
                     rand.nextInt(20) - 10); 
             
-            int height = rand.nextInt(20); 
+            int height = rand.nextInt(10) + 10; 
             
             for (int j = 0; j < height; j++) {
                 posList.add(new Vector3f(v).setY(j * 0.5f)); 
@@ -368,7 +368,7 @@ public class SampleApp extends Application {
         
         Config cfg = new Config();
         cfg.engine = Jogl3Engine.class;
-        cfg.fps = -60.0f;
+        cfg.fps = 60.0f;
         cfg.ups = 60.0f;
         
         Application app = new SampleApp();
