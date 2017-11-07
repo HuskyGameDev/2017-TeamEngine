@@ -37,7 +37,7 @@ public class Sample5App extends Application {
         textureLoader = new TextureLoader(graphics); 
         
         // load texture
-        testTexture = textureLoader.get("assets/textures/test.png"); 
+        testTexture = textureLoader.get("test.png"); 
         testTexture.setMipmaps(4);
         testTexture.setFilters(MinFilter.NEAREST_MIPMAP_NEAREST, MagFilter.NEAREST);
         

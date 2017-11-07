@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.core.EngineException;
-import oasis.file.FileUtil;
 import oasis.file.GlslParser;
 import oasis.file.PathList;
 import oasis.graphics.BlendMode;
