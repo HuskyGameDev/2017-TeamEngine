@@ -1,32 +1,14 @@
 package oasis.core;
 
-import oasis.graphics.Display;
-import oasis.graphics.GraphicsDevice;
-
 /**
  * Basic class to make a game from 
  * 
  * @author Nicholas Hamilton
  *
  */
-public abstract class Application implements EngineListener {
+public abstract class Application {
 
     private static final GameLogger log = new GameLogger(Application.class);
-    
-    /**
-     * Shortcut to the graphics device 
-     */
-    protected GraphicsDevice graphics;
-    
-    /**
-     * Shortcut to the display
-     */
-    protected Display display;
-    
-    /** 
-     * Reference to the engine 
-     */
-    protected Engine engine;
     
     /**
      * Called when application is initializing 
@@ -66,17 +48,17 @@ public abstract class Application implements EngineListener {
      */
     public final synchronized void start(Config config) {
         initEngine(config);
-        engine.start();
     }
     
     /** 
      * Stop the application 
      */
     public final synchronized void stop() {
-        engine.stop();
+        Oasis.engine.stop();
     }
     
     private void initEngine(Config config) {
+        Engine engine = null; 
         try {
             engine = config.engine.newInstance();
         } catch (InstantiationException e) {
@@ -88,13 +70,8 @@ public abstract class Application implements EngineListener {
         }
         engine.setFrameRate(config.fps);
         engine.setUpdateRate(config.ups);
-        engine.setEngineListener(this);
-        
-        graphics = engine.getGraphicsDevice();
-        display = engine.getDisplay();
-        
-        display.setResizable(false);
-        display.setSize(800, 600);
+        engine.setApplication(this);
+        engine.start(); 
     }
     
 }

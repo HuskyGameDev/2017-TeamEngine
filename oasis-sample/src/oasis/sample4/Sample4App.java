@@ -26,37 +26,37 @@ public class Sample4App extends Application {
     
     @Override
     public void onInit() {
-        sb = new SpriteBatch(graphics); 
-        textureLoader = new TextureLoader(graphics); 
+        sb = new SpriteBatch(); 
+        textureLoader = new TextureLoader(); 
         
         // load texture
         testTexture = textureLoader.get("assets/textures/test.png"); 
         testTexture.setMipmaps(4);
         testTexture.setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
         
-        display.setSize(900, 900);
+        Oasis.display.setSize(900, 900);
     }
 
     @Override
     public void onUpdate(float dt) {
-        if (display.shouldClose()) engine.stop(); 
+        if (Oasis.display.shouldClose()) Oasis.engine.stop(); 
         
         size *= change; 
         
-        if (size > display.getWidth()) {
+        if (size > Oasis.display.getWidth()) {
             change = 1.0f / change; 
         }
     }
 
     @Override
     public void onRender() {
-        graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
+        Oasis.graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
         
         float w = size; 
-        float h = size / display.getAspectRatio(); 
+        float h = size / Oasis.display.getAspectRatio(); 
         
         sb.begin();
-        sb.draw(testTexture, display.getWidth() / 2 - w / 2, display.getHeight() / 2 - h / 2, w, h);
+        sb.draw(testTexture, Oasis.display.getWidth() / 2 - w / 2, Oasis.display.getHeight() / 2 - h / 2, w, h);
         sb.end(); 
     }
 

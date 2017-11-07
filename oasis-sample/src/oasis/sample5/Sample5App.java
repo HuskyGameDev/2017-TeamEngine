@@ -31,10 +31,10 @@ public class Sample5App extends Application {
     
     @Override
     public void onInit() {
-        display.setResizable(true);
+        Oasis.display.setResizable(true);
         
-        sb = new SpriteBatch(graphics); 
-        textureLoader = new TextureLoader(graphics); 
+        sb = new SpriteBatch(); 
+        textureLoader = new TextureLoader(); 
         
         // load texture
         testTexture = textureLoader.get("test.png"); 
@@ -42,29 +42,29 @@ public class Sample5App extends Application {
         testTexture.setFilters(MinFilter.NEAREST_MIPMAP_NEAREST, MagFilter.NEAREST);
         
         Texture2D color, depth; 
-        color = graphics.createTexture2D(Texture.Format.RGBA32F, 600, 480); 
-        depth = graphics.createTexture2D(Texture.Format.DEPTH32, 600, 480); 
+        color = Oasis.graphics.createTexture2D(Texture.Format.RGBA32F, 600, 480); 
+        depth = Oasis.graphics.createTexture2D(Texture.Format.DEPTH32, 600, 480); 
         color.setFilters(MinFilter.LINEAR_MIPMAP_LINEAR, MagFilter.LINEAR);
         depth.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
         
-        rt = graphics.createRenderTarget(600, 480); 
+        rt = Oasis.graphics.createRenderTarget(600, 480); 
         rt.setColorTexture(0, color);
         rt.setDepthTexture(depth);
     }
 
     @Override
     public void onUpdate(float dt) {
-        if (display.shouldClose()) engine.stop(); 
+        if (Oasis.display.shouldClose()) Oasis.engine.stop(); 
         
         angle += 0.1f; 
     }
 
     @Override
     public void onRender() {
-        graphics.setRenderTarget(rt);
+        Oasis.graphics.setRenderTarget(rt);
         
-        graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
-        graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
+        Oasis.graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
+        Oasis.graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
         
         sb.begin(); 
         
@@ -77,15 +77,15 @@ public class Sample5App extends Application {
         
         sb.end(); 
         
-        graphics.setRenderTarget(null);
+        Oasis.graphics.setRenderTarget(null);
         
-        graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
-        graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
+        Oasis.graphics.clearScreen(new ColorRgba(0.7f, 0.9f, 1.0f, 1.0f));
+        Oasis.graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
         
         sb.begin(); 
         
         sb.setTint(new ColorRgba(1, 1, 1, 1));
-        sb.draw((Texture2D) rt.getColorTexture(0), 0, 0, graphics.getScreenWidth(), graphics.getScreenHeight()); 
+        sb.draw((Texture2D) rt.getColorTexture(0), 0, 0, Oasis.graphics.getScreenWidth(), Oasis.graphics.getScreenHeight()); 
         
         sb.end(); 
     }

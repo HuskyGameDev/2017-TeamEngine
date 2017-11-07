@@ -28,8 +28,8 @@ public class Sample3App extends Application {
     
     @Override
     public void onInit() {
-        sb = new SpriteBatch(graphics); 
-        textureLoader = new TextureLoader(graphics); 
+        sb = new SpriteBatch(); 
+        textureLoader = new TextureLoader(); 
         
         textures = new Texture2D[2]; 
         int[] pixels = new int[16 * 16]; 
@@ -41,7 +41,7 @@ public class Sample3App extends Application {
                 pixels[j] = (int)(Math.random() * 0x1000000) << 8 | 0xFF; // RGB | A 
             }
             
-            textures[i] = graphics.createTexture2D(Texture.Format.RGBA8, 16, 16); 
+            textures[i] = Oasis.graphics.createTexture2D(Texture.Format.RGBA8, 16, 16); 
             textures[i].setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
             textures[i].setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
             textures[i].setPixelsRgba(pixels);
@@ -55,13 +55,13 @@ public class Sample3App extends Application {
 
     @Override
     public void onUpdate(float dt) {
-        if (display.shouldClose()) engine.stop(); 
+        if (Oasis.display.shouldClose()) Oasis.engine.stop(); 
         
         for (int i = 0; i < args.length; i++) {
-            args[i][0] = (float)(Math.random() * graphics.getWidth()); 
-            args[i][1] = (float)(Math.random() * graphics.getHeight()); 
-            args[i][2] = (float)(Math.random() * (graphics.getWidth() - args[i][0])); 
-            args[i][3] = (float)(Math.random() * (graphics.getHeight() - args[i][1])); 
+            args[i][0] = (float)(Math.random() * Oasis.graphics.getWidth()); 
+            args[i][1] = (float)(Math.random() * Oasis.graphics.getHeight()); 
+            args[i][2] = (float)(Math.random() * (Oasis.graphics.getWidth() - args[i][0])); 
+            args[i][3] = (float)(Math.random() * (Oasis.graphics.getHeight() - args[i][1])); 
             inds[i] = (int)(Math.random() * textures.length); 
         }
     }

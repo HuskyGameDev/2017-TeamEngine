@@ -57,10 +57,10 @@ public class SampleApp extends Application {
 
     @Override
     public void onInit() {
-        display.setResizable(true);
-        display.setSize(800, 400);
+        Oasis.display.setResizable(true);
+        Oasis.display.setSize(800, 400);
         
-        renderer = new ModelRenderer(graphics); 
+        renderer = new ModelRenderer(); 
         camera = new PerspectiveCamera(800, 600, 70.0f, 0.1f, 1000.0f); 
         
         // generate water and terrain
@@ -68,11 +68,11 @@ public class SampleApp extends Application {
         Heightmap htmap = new Heightmap();
         // water
         htmap.setFlat(true);
-        water = new Mesh(graphics); 
+        water = new Mesh(); 
         water.setFrontFace(FrontFace.CCW); 
         htmap.genMeshData(new Vector3f(-10, height * 0.65f - offset, -10), new Vector3f(10, height * 0.65f + offset, 10), (int) res, (int) res, 5, freq * 10, 0.9f).apply(water);
         // terrain 
-        heightmap = new Mesh(graphics); 
+        heightmap = new Mesh(); 
         heightmap.setFrontFace(FrontFace.CCW);
         htmap.setFlat(false);
         htmap.genMeshData(new Vector3f(-10, 0, -10), new Vector3f(10, height, 10), (int) res, (int) res, octs, freq, pers).apply(heightmap);
@@ -205,7 +205,7 @@ public class SampleApp extends Application {
         }; 
         
         // create actual mesh 
-        cube = new Mesh(graphics);
+        cube = new Mesh();
         cube.setFrontFace(FrontFace.BOTH); // some faces are not CCW and I don't have time to fix it right now 
         cube.setColors(colors);
         cube.setPositions(positions);
@@ -234,7 +234,7 @@ public class SampleApp extends Application {
 
     @Override
     public void onUpdate(float dt) {
-        if (display.shouldClose()) {
+        if (Oasis.display.shouldClose()) {
             stop();
         }
 
@@ -243,7 +243,7 @@ public class SampleApp extends Application {
 
     @Override
     public void onRender() {
-        graphics.clearScreen(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
+        Oasis.graphics.clearScreen(new ColorRgba(0.8f, 0.9f, 1.0f, 1.0f));
         
         // set camera position
         camera.setPosition(new Vector3f(-7, 6, 0).rotate(Quaternionf.axisAngle(new Vector3f(0, 1, 0), -Mathf.PI * 0.25f + angle * 0.1f)));

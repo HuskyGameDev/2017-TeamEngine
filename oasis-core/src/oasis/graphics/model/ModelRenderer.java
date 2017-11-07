@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.core.EngineException;
+import oasis.core.Oasis;
 import oasis.file.GlslParser;
 import oasis.file.PathList;
 import oasis.graphics.BlendMode;
-import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Shader;
 import oasis.graphics.light.DirectionalLight;
 import oasis.graphics.light.Light;
@@ -45,7 +45,6 @@ public class ModelRenderer {
         }
     }
     
-    private GraphicsDevice gd; 
     private Camera camera; 
     private List<MeshRenderCommand> opaqueQueue; 
     private List<MeshRenderCommand> translucentQueue;
@@ -55,8 +54,7 @@ public class ModelRenderer {
     // default shader 
     private Shader blinnPhongShader; 
     
-    public ModelRenderer(GraphicsDevice gd) {
-        this.gd = gd; 
+    public ModelRenderer() {
         opaqueQueue = new ArrayList<>(); 
         translucentQueue = new ArrayList<>(); 
         transparentQueue = new ArrayList<>();
@@ -64,7 +62,7 @@ public class ModelRenderer {
         // initialize the default shader 
         String blinnPhongVertexSource = GlslParser.getVertexSource("blinn-phong.glsl", PathList.DEFAULT); 
         String blinnPhongFragmentSource = GlslParser.getFragmentSource("blinn-phong.glsl", PathList.DEFAULT); 
-        blinnPhongShader = gd.createShader(blinnPhongVertexSource, blinnPhongFragmentSource); 
+        blinnPhongShader = Oasis.graphics.createShader(blinnPhongVertexSource, blinnPhongFragmentSource); 
     }
     
     /**
@@ -74,7 +72,7 @@ public class ModelRenderer {
      */
     public void begin(Camera camera) {
         this.camera = camera; 
-        camera.setSize(gd.getWidth(), gd.getHeight());
+        camera.setSize(Oasis.graphics.getWidth(), Oasis.graphics.getHeight());
         lightList.clear(); 
     }
     
@@ -99,31 +97,31 @@ public class ModelRenderer {
     // render all queued meshes 
     // TODO make more efficient 
     private void render() {
-        gd.setRenderTarget(null);
-        gd.setDepthTestEnabled(true);
+        Oasis.graphics.setRenderTarget(null);
+        Oasis.graphics.setDepthTestEnabled(true);
         
         Matrix4f projection = camera.getProjectionMatrix(); 
         Matrix4f view = camera.getViewMatrix(); 
         
         // draw opaque 
-        gd.setDepthWriteEnabled(true); 
-        gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
+        Oasis.graphics.setDepthWriteEnabled(true); 
+        Oasis.graphics.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
         drawMeshes(opaqueQueue, blinnPhongShader, projection, view); 
         
         // draw transparent 
         // no need to disable depth writing, since all fragments are either 
         // opaque or completely transparent 
-        gd.setDepthWriteEnabled(true); 
-        gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
+        Oasis.graphics.setDepthWriteEnabled(true); 
+        Oasis.graphics.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
         drawMeshes(transparentQueue, blinnPhongShader, projection, view); 
         
         // draw translucent 
-        gd.setDepthWriteEnabled(false); 
-        gd.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
+        Oasis.graphics.setDepthWriteEnabled(false); 
+        Oasis.graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
         drawMeshes(translucentQueue, blinnPhongShader, projection, view); 
         
-        gd.setDepthWriteEnabled(true); 
-        gd.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
+        Oasis.graphics.setDepthWriteEnabled(true); 
+        Oasis.graphics.setBlendMode(BlendMode.ONE, BlendMode.ZERO);
         
         opaqueQueue.clear(); 
         transparentQueue.clear(); 
@@ -139,13 +137,13 @@ public class ModelRenderer {
         
         for (int i = 0; i < Math.max(lightList.getLightCount(), 1); i++) {
             if (i != 0) {
-                gd.setBlendMode(BlendMode.ONE, BlendMode.ONE);
+                Oasis.graphics.setBlendMode(BlendMode.ONE, BlendMode.ONE);
             }
             
             for (MeshRenderCommand c : meshes) {
                 shader = c.material.shader; 
                 if (shader == null) shader = defaultShader; 
-                gd.setShader(shader);
+                Oasis.graphics.setShader(shader);
                 
                 shader.setMatrix4f("Projection", projection);
                 shader.setMatrix4f("View", view);
@@ -156,7 +154,7 @@ public class ModelRenderer {
                 shader.setVector3f("AmbientColor", i == 0 ? ambient : zero); 
                 applyLight(shader, lightList.getLightCount() == 0 ? null : lightList.get(i)); 
                 
-                c.material.apply(gd, shader);
+                c.material.apply(Oasis.graphics, shader);
                 c.mesh.draw(); 
             }
         }

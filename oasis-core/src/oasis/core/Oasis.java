@@ -1,5 +1,8 @@
 package oasis.core;
 
+import oasis.graphics.Display;
+import oasis.graphics.GraphicsDevice;
+
 /**
  * Oasis engine constants 
  * 
@@ -57,6 +60,36 @@ public final class Oasis {
      * Default location of sounds 
      */
     public static final String DEFAULT_SOUND_FOLDER = DEFAULT_ASSET_FOLDER + "sounds/";
+    
+    /**
+     * Engine reference
+     */
+    public static Engine engine = null; 
+    
+    /**
+     * Application reference
+     */
+    public static Application app = null; 
+    
+    /**
+     * Display reference
+     */
+    public static Display display = null; 
+    
+    /**
+     * Graphics device reference
+     */
+    public static GraphicsDevice graphics = null; 
+    
+    /**
+     * Called by the engine
+     */
+    public static void setEngine(Engine engine) {
+        Oasis.engine = engine; 
+        Oasis.app = engine.getApplication(); 
+        Oasis.display = engine.getDisplay(); 
+        Oasis.graphics = engine.getGraphicsDevice(); 
+    }
     
     /** 
      * Get information about the engine 

@@ -1,12 +1,12 @@
 package oasis.graphics.sprite;
 
 import oasis.core.EngineException;
+import oasis.core.Oasis;
 import oasis.graphics.Attribute;
 import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.FrontFace;
-import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
 import oasis.graphics.Shader;
@@ -63,7 +63,6 @@ public class SpriteBatch {
             + "  gl_FragColor = Color * texture2D(Texture, vTexCoord); "
             + "} "; 
     
-    private GraphicsDevice gd; 
     private VertexBuffer vbo; 
     private IndexBuffer ibo; 
     private VertexArray vao; 
@@ -85,17 +84,16 @@ public class SpriteBatch {
      * @param shader Shader to use
      * @param maxSprites Maximum number of sprites before batch will be flushed 
      */
-    public SpriteBatch(GraphicsDevice gd, Shader shader, int maxSprites) {
-        this.gd = gd; 
-        this.shader = shader == null ? getDefaultShader(gd) : shader; 
+    public SpriteBatch(Shader shader, int maxSprites) {
+        this.shader = shader == null ? getDefaultShader() : shader; 
         this.curSprites = 0; 
         this.maxSprites = maxSprites; 
         this.vertOffset = 4 * format.getFloatCount(); 
         this.verts = new float[maxSprites * vertOffset]; 
         
-        this.vbo = gd.createVertexBuffer(format, BufferUsage.DYNAMIC); 
-        this.ibo = gd.createIndexBuffer(BufferUsage.STATIC); 
-        this.vao = gd.createVertexArray(); 
+        this.vbo = Oasis.graphics.createVertexBuffer(format, BufferUsage.DYNAMIC); 
+        this.ibo = Oasis.graphics.createIndexBuffer(BufferUsage.STATIC); 
+        this.vao = Oasis.graphics.createVertexArray(); 
         
         vao.setVertexBuffer(vbo);
         vao.setIndexBuffer(ibo);
@@ -119,8 +117,8 @@ public class SpriteBatch {
      * @param gd Graphics device 
      * @param maxSprites Max sprites before a flush 
      */
-    public SpriteBatch(GraphicsDevice gd, int maxSprites) {
-        this(gd, null, maxSprites); 
+    public SpriteBatch(int maxSprites) {
+        this(null, maxSprites); 
     }
     
     /**
@@ -128,16 +126,16 @@ public class SpriteBatch {
      * 
      * @param gd Graphics device 
      */
-    public SpriteBatch(GraphicsDevice gd) {
-        this(gd, null, 1024); 
+    public SpriteBatch() {
+        this(null, 1024); 
     }
     
-    private static Shader getDefaultShader(GraphicsDevice gd) {
+    private static Shader getDefaultShader() {
         if (defaultShader != null) {
             return defaultShader; 
         }
         
-        defaultShader = gd.createShader(defaultVs, defaultFs); 
+        defaultShader = Oasis.graphics.createShader(defaultVs, defaultFs); 
         
         return defaultShader; 
     }
@@ -156,7 +154,7 @@ public class SpriteBatch {
             this.shader = shader; 
         }
         else {
-            shader = getDefaultShader(gd); 
+            shader = getDefaultShader(); 
         }
     }
     
@@ -200,18 +198,18 @@ public class SpriteBatch {
         
         vbo.setVertices(verts);
         
-        gd.setVertexArray(vao);
-        gd.setShader(shader);
-        gd.setTexture(0, lastTex);
-        gd.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
-        gd.setFrontFace(FrontFace.BOTH);
+        Oasis.graphics.setVertexArray(vao);
+        Oasis.graphics.setShader(shader);
+        Oasis.graphics.setTexture(0, lastTex);
+        Oasis.graphics.setBlendMode(BlendMode.SRC_ALPHA, BlendMode.ONE_MINUS_SRC_ALPHA);
+        Oasis.graphics.setFrontFace(FrontFace.BOTH);
         
         shader.setInt("Texture", 0);
         shader.setVector2f("InvTextureSize", new Vector2f(1.0f / lastTex.getWidth(), 1.0f / lastTex.getHeight()));
         shader.setVector4f("Color", tint.toVector4());
         shader.setMatrix4f("Projection", projection); 
-        gd.setDepthTestEnabled(false);
-        gd.drawElements(Primitive.TRIANGLE_LIST, 0, curSprites * 6);
+        Oasis.graphics.setDepthTestEnabled(false);
+        Oasis.graphics.drawElements(Primitive.TRIANGLE_LIST, 0, curSprites * 6);
         
         curSprites = 0; 
     }
@@ -378,7 +376,7 @@ public class SpriteBatch {
     }
     
     private void buildMatrices() {
-        projection = Matrix4f.orthographic(new Vector3f(0, -1, 0), new Vector3f(gd.getWidth(), gd.getHeight(), 1)); 
+        projection = Matrix4f.orthographic(new Vector3f(0, -1, 0), new Vector3f(Oasis.graphics.getWidth(), Oasis.graphics.getHeight(), 1)); 
     }
     
     private void check(Texture2D texture) {

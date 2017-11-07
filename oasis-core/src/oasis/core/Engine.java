@@ -25,7 +25,7 @@ public abstract class Engine {
      */
     public static final float DEFAULT_FRAME_RATE = 60.0f;
     
-    protected EngineListener listener;
+    protected Application listener;
     
     protected volatile boolean running = false;
     protected Thread thread = null;
@@ -59,6 +59,13 @@ public abstract class Engine {
             return;
         }
         running = false;
+    }
+    
+    /**
+     * Get the application
+     */
+    public Application getApplication() {
+        return listener; 
     }
     
     /**
@@ -121,7 +128,7 @@ public abstract class Engine {
      * 
      * @param listener The engine listener (the game) 
      */
-    public void setEngineListener(EngineListener listener) {
+    public void setApplication(Application listener) {
         this.listener = listener;
     }
     
@@ -150,6 +157,7 @@ public abstract class Engine {
      */
     protected void gameLoop() {
         initEngine();
+        Oasis.setEngine(this);
         init();
 
         Timer secondTimer = new Timer();

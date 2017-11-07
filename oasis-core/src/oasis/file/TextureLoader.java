@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import oasis.core.GameLogger;
-import oasis.graphics.GraphicsDevice;
+import oasis.core.Oasis;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
 
@@ -22,7 +22,6 @@ public class TextureLoader {
 
 	private static final GameLogger log = new GameLogger(TextureLoader.class); 
 	
-	private GraphicsDevice gd;
 	private Map<String, Texture2D> loaded; 
 	
 	/**
@@ -30,8 +29,7 @@ public class TextureLoader {
 	 * 
 	 * @param gd The engine's graphics device 
 	 */
-	public TextureLoader(GraphicsDevice gd) {
-		this.gd = gd; 
+	public TextureLoader() {
 		this.loaded = new HashMap<>(); 
 	}
 	
@@ -58,7 +56,7 @@ public class TextureLoader {
 	private Texture2D load(String filename) {
 		try {
 			BufferedImage image = ImageIO.read(new File(PathList.DEFAULT.find(filename)));
-			Texture2D tex = gd.createTexture2D(Texture.Format.RGBA8, image.getWidth(), image.getHeight()); 
+			Texture2D tex = Oasis.graphics.createTexture2D(Texture.Format.RGBA8, image.getWidth(), image.getHeight()); 
 			
 			int width = image.getWidth(); 
 			int height = image.getHeight(); 
@@ -79,7 +77,7 @@ public class TextureLoader {
 	
 	// create a new Texture2D each time since the contents are mutable
 	private Texture2D createDefaultTexture() {
-		Texture2D tex = gd.createTexture2D(Texture.Format.RGBA8, 1, 1); 
+		Texture2D tex = Oasis.graphics.createTexture2D(Texture.Format.RGBA8, 1, 1); 
 		tex.setPixelsRgba(new int[] { 0xFF00FFFF });
 		return tex; 
 	}

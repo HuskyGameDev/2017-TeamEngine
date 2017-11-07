@@ -51,11 +51,11 @@ public class Sample2App extends Application {
     
     @Override
     public void onInit() {
-        boxVao = graphics.createVertexArray(); 
-        shader = graphics.createShader(vSource, fSource); 
+        boxVao = Oasis.graphics.createVertexArray(); 
+        shader = Oasis.graphics.createShader(vSource, fSource); 
         
-        VertexBuffer vbo = graphics.createVertexBuffer(VertexFormat.POSITION_3_COLOR_4_TEXTURE_2, BufferUsage.STATIC); 
-        IndexBuffer ibo = graphics.createIndexBuffer(BufferUsage.STATIC); 
+        VertexBuffer vbo = Oasis.graphics.createVertexBuffer(VertexFormat.POSITION_3_COLOR_4_TEXTURE_2, BufferUsage.STATIC); 
+        IndexBuffer ibo = Oasis.graphics.createIndexBuffer(BufferUsage.STATIC); 
         
         vbo.setVertices(new float[] {
                 -0.5f, -0.5f, 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 
@@ -72,14 +72,14 @@ public class Sample2App extends Application {
         boxVao.setVertexBuffer(vbo);
         boxVao.setIndexBuffer(ibo);
         
-        texture = graphics.createTexture2D(Texture.Format.RGBA8, 16, 16); 
+        texture = Oasis.graphics.createTexture2D(Texture.Format.RGBA8, 16, 16); 
         texture.setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
         texture.setFilters(MinFilter.LINEAR, MagFilter.LINEAR);
     }
 
     @Override
     public void onUpdate(float dt) {
-        if (display.shouldClose()) engine.stop(); 
+        if (Oasis.display.shouldClose()) Oasis.engine.stop(); 
         
         boxVao.getVertexBuffer(0).setVertices(new float[] {
                 -(float)Math.random(), -(float)Math.random(), 0.0f,   1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 
@@ -98,15 +98,15 @@ public class Sample2App extends Application {
 
     @Override
     public void onRender() {
-        graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
+        Oasis.graphics.clearScreen(new ColorRgba(0.6f, 0.8f, 1.0f, 1.0f));
         
         shader.setFloat("uLight", 0.5f);
         shader.setInt("uTexture", 1);
         
-        graphics.setShader(shader);
-        graphics.setTexture(1, texture);
-        graphics.setVertexArray(boxVao);
-        graphics.drawElements(Primitive.TRIANGLE_LIST, 0, boxVao.getIndexBuffer().getIndexCount());
+        Oasis.graphics.setShader(shader);
+        Oasis.graphics.setTexture(1, texture);
+        Oasis.graphics.setVertexArray(boxVao);
+        Oasis.graphics.drawElements(Primitive.TRIANGLE_LIST, 0, boxVao.getIndexBuffer().getIndexCount());
     }
 
     @Override

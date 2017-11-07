@@ -3,9 +3,9 @@ package oasis.graphics.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import oasis.core.Oasis;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.FrontFace;
-import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.Primitive;
 import oasis.graphics.VertexArray;
@@ -35,17 +35,14 @@ public class Mesh {
     
     private boolean update; 
     
-    private GraphicsDevice gd; 
-    
     /**
      * Constructor. Needs a graphics device to manage 
      * buffers 
      * 
      * @param gd Graphics device 
      */
-    public Mesh(GraphicsDevice gd) {
-        this.gd = gd; 
-        this.vao = gd.createVertexArray(); 
+    public Mesh() {
+        this.vao = Oasis.graphics.createVertexArray(); 
     }
     
     /**
@@ -56,13 +53,13 @@ public class Mesh {
             updateVao(); 
         }
         
-        gd.setVertexArray(vao);
-        gd.setFrontFace(frontFace); 
+        Oasis.graphics.setVertexArray(vao);
+        Oasis.graphics.setFrontFace(frontFace); 
         if (vao.getIndexBuffer() == null) {
-            gd.drawArrays(Primitive.TRIANGLE_LIST, 0, vao.getVertexBuffer(0).getVertexCount());
+            Oasis.graphics.drawArrays(Primitive.TRIANGLE_LIST, 0, vao.getVertexBuffer(0).getVertexCount());
         }
         else {
-            gd.drawElements(Primitive.TRIANGLE_LIST, 0, vao.getIndexBuffer().getIndexCount());
+            Oasis.graphics.drawElements(Primitive.TRIANGLE_LIST, 0, vao.getIndexBuffer().getIndexCount());
         }
     }
     
@@ -98,7 +95,7 @@ public class Mesh {
         }
         else {
             if (ibo == null) {
-                ibo = gd.createIndexBuffer(BufferUsage.DYNAMIC); 
+                ibo = Oasis.graphics.createIndexBuffer(BufferUsage.DYNAMIC); 
             }
             
             ibo.setData(inds);
@@ -144,7 +141,7 @@ public class Mesh {
         }
         else {
             if (vbo == null) {
-                vbo = gd.createVertexBuffer(fmt, BufferUsage.DYNAMIC); 
+                vbo = Oasis.graphics.createVertexBuffer(fmt, BufferUsage.DYNAMIC); 
             }
             
             vbo.setVertices(data);
