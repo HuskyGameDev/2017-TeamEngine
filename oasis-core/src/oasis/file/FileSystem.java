@@ -11,25 +11,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.core.GameLogger;
+import oasis.core.Oasis;
 
-/**
- * File loading and saving utilities 
- * 
- * @author Nicholas Hamilton 
- *
- */
-public class FileUtil {
+public class FileSystem {
 
-    private static final GameLogger log = new GameLogger(FileUtil.class); 
+    private static final GameLogger log = new GameLogger(FileSystem.class); 
     
-    /**
-     * Get the data of a text file 
-     * 
-     * @param path
-     * @return
-     */
-    public static String readTextFile(String path) {
-        return readTextFile(path, PathList.DEFAULT); 
+    private PathList pathList; 
+    
+    public FileSystem() {
+        pathList = new PathList(); 
+        pathList.add(".");
+        pathList.add(Oasis.DEFAULT_ASSET_FOLDER);
+        pathList.add(Oasis.DEFAULT_SHADER_FOLDER);
+        pathList.add(Oasis.DEFAULT_SOUND_FOLDER);
+        pathList.add(Oasis.DEFAULT_TEXTURE_FOLDER);
+        pathList.add(FileSystem.class.getResource("/").getFile()); 
+    }
+    
+    public FileSystem(PathList list) {
+        pathList = list; 
+    }
+    
+    public PathList getPathList() {
+        return pathList; 
     }
     
     /**
@@ -38,17 +43,7 @@ public class FileUtil {
      * @param path
      * @return
      */
-    public static String[] readTextFileLines(String path) {
-        return readTextFileLines(path, PathList.DEFAULT); 
-    }
-    
-    /**
-     * Get the data of a text file 
-     * 
-     * @param path
-     * @return
-     */
-    public static String readTextFile(String path, PathList pathList) {
+    public String readTextFile(String path) {
         File file = new File(pathList.find(path)); 
         
         if (file.exists() && file.isFile()) {
@@ -89,7 +84,7 @@ public class FileUtil {
      * @param path
      * @return
      */
-    public static String[] readTextFileLines(String path, PathList pathList) {
+    public String[] readTextFileLines(String path) {
         File file = new File(pathList.find(path)); 
         List<String> lines = new ArrayList<>(); 
         

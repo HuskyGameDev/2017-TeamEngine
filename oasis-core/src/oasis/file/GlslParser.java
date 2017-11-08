@@ -3,6 +3,7 @@ package oasis.file;
 import java.net.URLDecoder;
 
 import oasis.core.GameLogger;
+import oasis.core.Oasis;
 
 @SuppressWarnings("deprecation")
 public class GlslParser {
@@ -40,7 +41,7 @@ public class GlslParser {
             log.warning("Could not find GLSL file: " + file);
             return null; 
         }
-        String[] lines = FileUtil.readTextFileLines(path); 
+        String[] lines = Oasis.files.readTextFileLines(path); 
         StringBuilder sb = new StringBuilder(); 
         Mode curMode = mode; 
         

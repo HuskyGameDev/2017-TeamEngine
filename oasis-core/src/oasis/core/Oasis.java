@@ -1,5 +1,6 @@
 package oasis.core;
 
+import oasis.file.FileSystem;
 import oasis.graphics.Display;
 import oasis.graphics.GraphicsDevice;
 import oasis.input.Keyboard;
@@ -92,6 +93,11 @@ public final class Oasis {
      * Mouse reference
      */
     public static Mouse mouse = null; 
+    
+    /**
+     * File system reference
+     */
+    public static FileSystem files = new FileSystem(); 
     
     /**
      * Called by the engine
