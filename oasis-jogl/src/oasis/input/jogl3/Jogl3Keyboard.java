@@ -3,13 +3,10 @@ package oasis.input.jogl3;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import oasis.core.GameLogger;
 import oasis.input.Keyboard;
 
 public class Jogl3Keyboard implements Keyboard, KeyListener {
 
-    private static final GameLogger log = new GameLogger(Jogl3Keyboard.class); 
-    
     public static final int MAX_KEYS = 1024; 
     
     private boolean[] down; 
@@ -38,7 +35,7 @@ public class Jogl3Keyboard implements Keyboard, KeyListener {
 
     @Override
     public boolean isKeyJustDown(int keycode) {
-        return keys[keycode] == 0; 
+        return keys[keycode] == 1; 
     }
 
     @Override

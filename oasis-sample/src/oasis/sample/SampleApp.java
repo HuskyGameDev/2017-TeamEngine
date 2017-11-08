@@ -10,6 +10,7 @@ import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl3.Jogl3Engine;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.FillMode;
 import oasis.graphics.FrontFace;
 import oasis.graphics.light.PointLight;
 import oasis.graphics.model.Material;
@@ -76,11 +77,9 @@ public class SampleApp extends Application {
         // water
         htmap.setFlat(true);
         water = new Mesh(); 
-        water.setFrontFace(FrontFace.CCW); 
         htmap.genMeshData(new Vector3f(-10, height * 0.65f - offset, -10), new Vector3f(10, height * 0.65f + offset, 10), (int) res, (int) res, 5, freq * 10, 0.9f).apply(water);
         // terrain 
         heightmap = new Mesh(); 
-        heightmap.setFrontFace(FrontFace.CCW);
         htmap.setFlat(false);
         htmap.genMeshData(new Vector3f(-10, 0, -10), new Vector3f(10, height, 10), (int) res, (int) res, octs, freq, pers).apply(heightmap);
         
@@ -91,6 +90,7 @@ public class SampleApp extends Application {
         waterMaterial.specularPower = 100.0f; 
         waterMaterial.specularColor = new Vector4f(1); 
         waterMaterial.shader = null; 
+        waterMaterial.frontFace = FrontFace.CCW; 
         
         // terrain material, opaque and no shine 
         heightmapMaterial = new Material(); 
@@ -99,6 +99,7 @@ public class SampleApp extends Application {
         heightmapMaterial.specularPower = 200.0f; 
         heightmapMaterial.specularColor = new Vector4f(0); 
         heightmapMaterial.shader = null; 
+        heightmapMaterial.frontFace = FrontFace.CCW; 
         
         // create a model that contains both meshes
         terrainModel = new Model(); 
@@ -114,7 +115,7 @@ public class SampleApp extends Application {
         // make 32 different cube positions 
         List<Vector3f> posList = new ArrayList<>(); 
         Random rand = new Random(); 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 16; i++) {
             Vector3f v = new Vector3f(
                     rand.nextInt(20) - 10,
                     0,
@@ -123,7 +124,7 @@ public class SampleApp extends Application {
             int height = rand.nextInt(10) + 10; 
             
             for (int j = 0; j < height; j++) {
-                posList.add(new Vector3f(v).setY(j * 0.5f)); 
+                posList.add(new Vector3f(v).setY(j * 0.5f + 2)); 
             }
         }
         
@@ -135,14 +136,14 @@ public class SampleApp extends Application {
         Vector3f[] positions = new Vector3f[] {
                 // front
                 new Vector3f(-s, -s, -s), 
-                new Vector3f( s, -s, -s),
-                new Vector3f( s,  s, -s),
                 new Vector3f(-s,  s, -s),
+                new Vector3f( s,  s, -s),
+                new Vector3f( s, -s, -s),
                 // back
                 new Vector3f( s, -s,  s),
-                new Vector3f(-s, -s,  s),
-                new Vector3f(-s,  s,  s),
                 new Vector3f( s,  s,  s),
+                new Vector3f(-s,  s,  s),
+                new Vector3f(-s, -s,  s),
                 // left
                 new Vector3f(-s, -s, -s),
                 new Vector3f(-s, -s,  s),
@@ -222,7 +223,6 @@ public class SampleApp extends Application {
         
         // create actual mesh 
         cube = new Mesh();
-        cube.setFrontFace(FrontFace.BOTH); // some faces are not CCW and I don't have time to fix it right now 
         cube.setColors(colors);
         cube.setPositions(positions);
         cube.setNormals(normals);
@@ -234,19 +234,23 @@ public class SampleApp extends Application {
         cubeMaterial.specularColor = new Vector4f(1, 1, 1, 1); 
 //        cubeMaterial.emissiveColor = new Vector4f(0.5f, 0.5f, 1, 1); 
         cubeMaterial.specularPower = 20.0f; 
+        cubeMaterial.frontFace = FrontFace.CCW; 
         
         // sun material 
         sunMaterial = new Material(); 
         sunMaterial.diffuseColor = new Vector4f(0, 1); 
         sunMaterial.emissiveColor = new Vector4f(1, 1, 1, 1); 
+        sunMaterial.frontFace = FrontFace.CCW; 
         
         lightMaterial1 = new Material(); 
         lightMaterial1.diffuseColor = new Vector4f(0, 1); 
         lightMaterial1.emissiveColor = new Vector4f(1, 0.5f, 0.5f, 1); 
+        lightMaterial1.frontFace = FrontFace.CCW; 
         
         lightMaterial2 = new Material(); 
         lightMaterial2.diffuseColor = new Vector4f(0, 1); 
         lightMaterial2.emissiveColor = new Vector4f(0.5f, 0.5f, 1, 1); 
+        lightMaterial2.frontFace = FrontFace.CCW; 
         
         // put mesh into a model 
         cubeModel = new Model(); 
@@ -277,6 +281,18 @@ public class SampleApp extends Application {
         Vector3f move = new Vector3f(); 
         Vector3f vertMove = new Vector3f(); 
         float speed = 4; 
+        
+        if (Oasis.keyboard.isKeyJustDown(Keyboard.KEY_W)) {
+            if (Oasis.graphics.getFillMode() == FillMode.FILL) {
+                Oasis.graphics.setFillMode(FillMode.LINE);
+            }
+            else if (Oasis.graphics.getFillMode() == FillMode.LINE) {
+                Oasis.graphics.setFillMode(FillMode.POINT);
+            }
+            else {
+                Oasis.graphics.setFillMode(FillMode.FILL);
+            }
+        }
         
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_I)) {
             move.addSelf(new Vector3f(0, 0, -1).rotateSelf(camera.getRotation())); 

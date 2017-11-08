@@ -9,6 +9,7 @@ import oasis.core.EngineException;
 import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.ColorRgba;
+import oasis.graphics.FillMode;
 import oasis.graphics.FrontFace;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.IndexBuffer;
@@ -36,6 +37,7 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
     private boolean depthTest = true; 
     private BlendMode srcBlend = BlendMode.ONE, dstBlend = BlendMode.ZERO; 
     private FrontFace frontFace = FrontFace.BOTH; 
+    private FillMode fillMode = FillMode.FILL; 
     private boolean depthWrite = true; 
     
     public Jogl3GraphicsDevice(Jogl3Display display) {
@@ -332,6 +334,32 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
             gl.glEnable(GL.GL_CULL_FACE);
             gl.glCullFace(GL.GL_BACK);
             gl.glFrontFace(GL.GL_CCW);
+            break; 
+        }
+    }
+    
+    @Override
+    public FillMode getFillMode() {
+        return fillMode; 
+    }
+    
+    @Override
+    public void setFillMode(FillMode fill) {
+        fill = fill == null ? FillMode.FILL : fill; 
+        
+//        if (fillMode == fill) return; 
+        
+        fillMode = fill; 
+        
+        switch (fill) {
+        case FILL: 
+            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL2.GL_FILL); 
+            break; 
+        case LINE: 
+            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL2.GL_LINE); 
+            break; 
+        case POINT: 
+            gl.glPolygonMode(GL.GL_FRONT_AND_BACK, GL2.GL_POINT); 
             break; 
         }
     }

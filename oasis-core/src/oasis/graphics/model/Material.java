@@ -1,5 +1,6 @@
 package oasis.graphics.model;
 
+import oasis.graphics.FrontFace;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
@@ -58,6 +59,11 @@ public class Material {
     public Shader shader = null;
 
     /**
+     * Front face
+     */
+    public FrontFace frontFace = FrontFace.BOTH; 
+    
+    /**
      * Applies material values as uniforms to a shader 
      * 
      * @param gd graphics device 
@@ -71,6 +77,8 @@ public class Material {
         shader.setVector4f("Material.SpecularColor", specularColor == null ? new Vector4f(0, 0, 0, 1) : specularColor);
         shader.setVector4f("Material.EmissiveColor", (!firstPass || emissiveColor == null) ? new Vector4f(0, 0, 0, 1) : emissiveColor);
         shader.setFloat("Material.SpecularPower", specularPower);
+        
+        gd.setFrontFace(frontFace); 
         
         gd.setTexture(0, diffuseTexture);
         gd.setTexture(1, specularTexture);

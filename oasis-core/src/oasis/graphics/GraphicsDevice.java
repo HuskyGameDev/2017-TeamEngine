@@ -148,6 +148,11 @@ public interface GraphicsDevice {
     boolean isDepthWriteEnabled(); 
     
     /**
+     * Get fill mode
+     */
+    FillMode getFillMode(); 
+    
+    /**
      * Get the current blend mode for the source graphic
      * 
      * @return Source blend mode 
@@ -233,6 +238,11 @@ public interface GraphicsDevice {
      * @param face Which face to show 
      */
     void setFrontFace(FrontFace face); 
+    
+    /**
+     * Set fill mode
+     */
+    void setFillMode(FillMode fill); 
     
     // rendering
     
