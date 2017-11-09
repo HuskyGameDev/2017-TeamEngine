@@ -51,6 +51,8 @@ public class Mesh {
             updateVao(); 
         }
         
+        if (vao.getVertexBufferCount() == 0) return; 
+        
         Oasis.graphics.setVertexArray(vao);
         if (vao.getIndexBuffer() == null) {
             Oasis.graphics.drawArrays(Primitive.TRIANGLE_LIST, 0, vao.getVertexBuffer(0).getVertexCount());

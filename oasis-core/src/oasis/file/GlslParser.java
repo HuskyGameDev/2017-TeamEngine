@@ -16,6 +16,8 @@ public class GlslParser {
     
     private static final PathList INTERNAL_PATHS = new PathList(); 
     
+    private GlslParser() {} 
+    
     private enum Mode {
         ANY, VERTEX, FRAGMENT
     }; 

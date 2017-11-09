@@ -9,6 +9,7 @@ import oasis.core.Config;
 import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.core.jogl3.Jogl3Engine;
+import oasis.file.ObjImporter;
 import oasis.graphics.ColorRgba;
 import oasis.graphics.FillMode;
 import oasis.graphics.FrontFace;
@@ -42,7 +43,7 @@ public class SampleApp extends Application {
     private ModelRenderer renderer; 
     
     // meshes and materials 
-    private Mesh heightmap, water, cube; 
+    private Mesh heightmap, water, cube, sphere; 
     private Material heightmapMaterial, waterMaterial, cubeMaterial, sunMaterial, lightMaterial1, lightMaterial2; 
     private Model terrainModel, cubeModel, sunModel, lightModel1, lightModel2; 
     
@@ -115,123 +116,29 @@ public class SampleApp extends Application {
         // make 32 different cube positions 
         List<Vector3f> posList = new ArrayList<>(); 
         Random rand = new Random(); 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 6; i++) {
             Vector3f v = new Vector3f(
                     rand.nextInt(20) - 10,
                     0,
                     rand.nextInt(20) - 10); 
             
-            int height = rand.nextInt(10) + 10; 
+            int height = 1;//rand.nextInt(5) + 5; 
             
             for (int j = 0; j < height; j++) {
-                posList.add(new Vector3f(v).setY(j * 0.5f + 2)); 
+                posList.add(new Vector3f(v).setY(j + 2.8f)); 
             }
         }
         
         cubePositions = new Vector3f[posList.size()]; 
         posList.toArray(cubePositions); 
         
-        // cube model positions 
-        float s = 0.25f; 
-        Vector3f[] positions = new Vector3f[] {
-                // front
-                new Vector3f(-s, -s, -s), 
-                new Vector3f(-s,  s, -s),
-                new Vector3f( s,  s, -s),
-                new Vector3f( s, -s, -s),
-                // back
-                new Vector3f( s, -s,  s),
-                new Vector3f( s,  s,  s),
-                new Vector3f(-s,  s,  s),
-                new Vector3f(-s, -s,  s),
-                // left
-                new Vector3f(-s, -s, -s),
-                new Vector3f(-s, -s,  s),
-                new Vector3f(-s,  s,  s),
-                new Vector3f(-s,  s, -s),
-                // right 
-                new Vector3f( s, -s,  s),
-                new Vector3f( s, -s, -s),
-                new Vector3f( s,  s, -s),
-                new Vector3f( s,  s,  s),
-                // top 
-                new Vector3f(-s,  s,  s),
-                new Vector3f( s,  s,  s),
-                new Vector3f( s,  s, -s),
-                new Vector3f(-s,  s, -s),
-                // bottom
-                new Vector3f(-s, -s, -s),
-                new Vector3f( s, -s, -s),
-                new Vector3f( s, -s,  s),
-                new Vector3f(-s, -s,  s),
-        }; 
-        
-        // cube model normals 
-        Vector3f[] normals = new Vector3f[] {
-                // front
-                new Vector3f(0, 0, -1), 
-                new Vector3f(0, 0, -1), 
-                new Vector3f(0, 0, -1), 
-                new Vector3f(0, 0, -1),
-                // back
-                new Vector3f(0, 0, 1), 
-                new Vector3f(0, 0, 1), 
-                new Vector3f(0, 0, 1), 
-                new Vector3f(0, 0, 1), 
-                // left
-                new Vector3f(-1, 0, 0), 
-                new Vector3f(-1, 0, 0), 
-                new Vector3f(-1, 0, 0), 
-                new Vector3f(-1, 0, 0), 
-                // right
-                new Vector3f(1, 0, 0), 
-                new Vector3f(1, 0, 0), 
-                new Vector3f(1, 0, 0), 
-                new Vector3f(1, 0, 0), 
-                // top
-                new Vector3f(0, 1, 0), 
-                new Vector3f(0, 1, 0), 
-                new Vector3f(0, 1, 0), 
-                new Vector3f(0, 1, 0), 
-                // bottom
-                new Vector3f(0,-1, 0), 
-                new Vector3f(0,-1, 0), 
-                new Vector3f(0,-1, 0), 
-                new Vector3f(0,-1, 0), 
-        };
-        
-        // cube is gray 
-        Vector4f color = new Vector4f(1.0f, 1.0f); 
-        Vector4f[] colors = new Vector4f[] {
-                color, color, color, color,
-                color, color, color, color, 
-                color, color, color, color, 
-                color, color, color, color, 
-                color, color, color, color, 
-                color, color, color, color, 
-        };
-        
-        // indices of cube model 
-        int[] indices = new int[] {
-                0, 1, 2, 0, 2, 3, 
-                4, 5, 6, 4, 6, 7, 
-                8, 9, 10, 8, 10, 11, 
-                12, 13, 14, 12, 14, 15, 
-                16, 17, 18, 16, 18, 19, 
-                20, 21, 22, 20, 22, 23, 
-        }; 
-        
-        // create actual mesh 
-        cube = new Mesh();
-        cube.setColors(colors);
-        cube.setPositions(positions);
-        cube.setNormals(normals);
-        cube.setIndices(indices);
+        cube = ObjImporter.load("fir.obj"); 
+        sphere = ObjImporter.load("sphere.obj"); 
         
         // shiny metallic cube material 
         cubeMaterial = new Material(); 
-        cubeMaterial.diffuseColor = new Vector4f(0.5f, 1.0f); 
-        cubeMaterial.specularColor = new Vector4f(1, 1, 1, 1); 
+        cubeMaterial.diffuseColor = new Vector4f(0.4f, 0.6f, 0.4f, 1.0f); 
+        cubeMaterial.specularColor = new Vector4f(0); 
 //        cubeMaterial.emissiveColor = new Vector4f(0.5f, 0.5f, 1, 1); 
         cubeMaterial.specularPower = 20.0f; 
         cubeMaterial.frontFace = FrontFace.CCW; 
@@ -239,17 +146,17 @@ public class SampleApp extends Application {
         // sun material 
         sunMaterial = new Material(); 
         sunMaterial.diffuseColor = new Vector4f(0, 1); 
-        sunMaterial.emissiveColor = new Vector4f(1, 1, 1, 1); 
+        sunMaterial.emissiveColor = new Vector4f(1, 1, 0.8f, 1); 
         sunMaterial.frontFace = FrontFace.CCW; 
         
         lightMaterial1 = new Material(); 
-        lightMaterial1.diffuseColor = new Vector4f(0, 1); 
-        lightMaterial1.emissiveColor = new Vector4f(1, 0.5f, 0.5f, 1); 
+        lightMaterial1.diffuseColor = new Vector4f(0.2f, 1); 
+        lightMaterial1.emissiveColor = new Vector4f(1, 0.75f, 0.75f, 1); 
         lightMaterial1.frontFace = FrontFace.CCW; 
         
         lightMaterial2 = new Material(); 
-        lightMaterial2.diffuseColor = new Vector4f(0, 1); 
-        lightMaterial2.emissiveColor = new Vector4f(0.5f, 0.5f, 1, 1); 
+        lightMaterial2.diffuseColor = new Vector4f(0.2f, 1); 
+        lightMaterial2.emissiveColor = new Vector4f(0.75f, 0.75f, 1, 1); 
         lightMaterial2.frontFace = FrontFace.CCW; 
         
         // put mesh into a model 
@@ -257,13 +164,13 @@ public class SampleApp extends Application {
         cubeModel.add(cube, cubeMaterial);
         
         sunModel = new Model(); 
-        sunModel.add(cube, sunMaterial);
+        sunModel.add(sphere, sunMaterial);
         
         lightModel1 = new Model(); 
-        lightModel1.add(cube, lightMaterial1);
+        lightModel1.add(sphere, lightMaterial1);
         
         lightModel2 = new Model(); 
-        lightModel2.add(cube, lightMaterial2);
+        lightModel2.add(sphere, lightMaterial2);
     }
 
     @Override
@@ -354,16 +261,16 @@ public class SampleApp extends Application {
         lightPos.multiplySelf(8); 
         lightPos.y = 5; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.4f, 0.4f), lightPos, 10));
+        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.4f, 0.4f), lightPos, 20));
         renderer.draw(lightModel1, lightPos, new Quaternionf());
         
         lightPos.x *= -1; 
         lightPos.z *= -1; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.4f, 0.8f), lightPos, 10));
+        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.4f, 0.8f), lightPos, 20));
         renderer.draw(lightModel2, lightPos, new Quaternionf());
         
-        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.8f), sunPos, 80));
+        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.7f), sunPos, 80));
         renderer.draw(sunModel, sunPos, new Quaternionf());
         
         renderer.draw(terrainModel, new Vector3f(0, 0, 0), new Quaternionf());

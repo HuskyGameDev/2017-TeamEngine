@@ -26,6 +26,7 @@ public class FileSystem {
         pathList.add(Oasis.DEFAULT_SHADER_FOLDER);
         pathList.add(Oasis.DEFAULT_SOUND_FOLDER);
         pathList.add(Oasis.DEFAULT_TEXTURE_FOLDER);
+        pathList.add(Oasis.DEFAULT_MODEL_FOLDER);
         pathList.add(FileSystem.class.getResource("/").getFile()); 
     }
     
@@ -35,6 +36,18 @@ public class FileSystem {
     
     public PathList getPathList() {
         return pathList; 
+    }
+    
+    public void addPath(String path) {
+        pathList.add(path); 
+    }
+    
+    public void removePath(String path) {
+        pathList.remove(path); 
+    }
+    
+    public String find(String path) {
+        return pathList.find(path); 
     }
     
     /**

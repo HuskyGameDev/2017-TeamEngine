@@ -53,7 +53,7 @@ public class Vertex {
         
         mesh.setPositions(positions);
         mesh.setNormals(normals);
-        mesh.setColors(colors);
+//        mesh.setColors(colors);
         // TODO UV coords
     }
     
@@ -144,4 +144,30 @@ public class Vertex {
 //            System.out.println(verts[i].normal);
         }
     }
+    
+    public int hashCode() {
+        int hash = 0;
+        if (position != null) hash ^= 31 * position.hashCode(); 
+        if (normal != null) hash ^= 31 * normal.hashCode(); 
+        if (color != null) hash ^= 31 * color.hashCode(); 
+        if (texCoord0 != null) hash ^= 31 * texCoord0.hashCode(); 
+        return hash; 
+    }
+    
+    public boolean equals(Object obj) {
+        if (obj == this) return true; 
+        if (!(obj instanceof Vertex)) return false; 
+        
+        Vertex v = (Vertex)obj;
+        
+        return nullOrEqual(position, v.position) && 
+               nullOrEqual(normal, v.normal) && 
+               nullOrEqual(color, v.color) && 
+               nullOrEqual(texCoord0, v.texCoord0); 
+    }
+    
+    private static boolean nullOrEqual(Object a, Object b) {
+        return a == null && b == null || a != null && a.equals(b); 
+    }
+    
 }

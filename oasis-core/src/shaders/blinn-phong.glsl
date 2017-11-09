@@ -26,7 +26,7 @@ attribute vec2 aTexCoord0;
 
 void main() 
 {
-	vColor = aColor; 
+	vColor = vec4(1.0); //aColor;
 	vNormal = normalize(NormalMat * aNormal); 
 	
 	gl_Position = Model * vec4(aPosition, 1.0);

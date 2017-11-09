@@ -65,6 +65,11 @@ public final class Oasis {
     public static final String DEFAULT_SOUND_FOLDER = DEFAULT_ASSET_FOLDER + "sounds/";
     
     /**
+     * Default location of models
+     */
+    public static final String DEFAULT_MODEL_FOLDER = DEFAULT_ASSET_FOLDER + "models/";
+    
+    /**
      * Engine reference
      */
     public static Engine engine = null; 

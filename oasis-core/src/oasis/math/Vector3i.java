@@ -18,6 +18,12 @@ public class Vector3i {
         this.z = z; 
     }
     
+    public Vector3i(int[] a) {
+        this.x = a[0]; 
+        this.y = a[1];
+        this.z = a[2]; 
+    }
+    
     public Vector3i(Vector3i r) {
         this.x = r.x; 
         this.y = r.y; 

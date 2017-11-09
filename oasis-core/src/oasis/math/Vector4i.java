@@ -19,6 +19,13 @@ public class Vector4i {
         this.w = w; 
     }
     
+    public Vector4i(int[] a) {
+        this.x = a[0]; 
+        this.y = a[1];
+        this.z = a[2];
+        this.w = a[3]; 
+    }
+    
     public Vector4i(Vector4i r) {
         this.x = r.x; 
         this.y = r.y; 

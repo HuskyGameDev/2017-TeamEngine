@@ -17,6 +17,11 @@ public class Vector2f {
         this.y = y; 
     }
     
+    public Vector2f(float[] a) {
+        this.x = a[0]; 
+        this.y = a[1]; 
+    }
+    
     public Vector2f(Vector2i r) {
         this.x = r.x; 
         this.y = r.y; 
