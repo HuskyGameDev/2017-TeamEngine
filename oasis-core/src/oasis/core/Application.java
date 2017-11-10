@@ -68,8 +68,7 @@ public abstract class Application {
             log.fatal("Could not access " + config.engine);
             e.printStackTrace();
         }
-        engine.setFrameRate(config.fps);
-        engine.setUpdateRate(config.ups);
+        engine.setConfig(config);
         engine.setApplication(this);
         engine.start(); 
     }

@@ -6,6 +6,7 @@ import com.jogamp.opengl.GL2;
 import oasis.core.Engine;
 import oasis.core.EngineException;
 import oasis.core.GameLogger;
+import oasis.core.Oasis;
 import oasis.graphics.jogl3.Jogl3Display;
 import oasis.graphics.jogl3.Jogl3GraphicsDevice;
 import oasis.input.Keyboard;
@@ -32,6 +33,7 @@ public class Jogl3Engine extends Engine {
     }
     
     protected void initEngine() {
+        display.setSize(startWidth, startHeight); 
         display.show();
         // create GL context before continuing to init()
         try {
@@ -81,6 +83,7 @@ public class Jogl3Engine extends Engine {
                     GL gl = display.getContext().getGL();
                     gl.glClearColor(0.6f, 0.8f, 1.0f, 1.0f);
                     gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
+                    Oasis.graphics.setRenderTarget(null); 
                     listener.onRender();
                 }
             });

@@ -10,6 +10,8 @@ import oasis.core.jogl3.Jogl3Engine;
  */
 public class Config {
 
+    public static final int UNLIMITED_FPS = -1; 
+    
     /**
      * Type of engine 
      */
@@ -24,5 +26,15 @@ public class Config {
      * Starting updates per second 
      */
     public float ups = 60.0f;
+    
+    /**
+     * Starting width 
+     */
+    public int width = 800; 
+    
+    /**
+     * Starting height
+     */
+    public int height = 600; 
     
 }

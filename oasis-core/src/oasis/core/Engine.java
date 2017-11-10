@@ -32,6 +32,8 @@ public abstract class Engine {
     protected boolean resetLoop;
     protected float targetFps = DEFAULT_FRAME_RATE;
     protected float targetUps = DEFAULT_UPDATE_RATE;
+    protected int startWidth; 
+    protected int startHeight; 
     
     /**
      * Starts the engine. The engine cannot start if it is already running
@@ -59,6 +61,13 @@ public abstract class Engine {
             return;
         }
         running = false;
+    }
+    
+    public void setConfig(Config conf) {
+        targetFps = conf.fps; 
+        targetUps = conf.ups; 
+        startWidth = conf.width; 
+        startHeight = conf.height; 
     }
     
     /**

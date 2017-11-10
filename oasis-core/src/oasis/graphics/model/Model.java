@@ -58,6 +58,13 @@ public class Model {
     }
     
     /**
+     * Set a mesh for the model 
+     */
+    public void setMesh(int index, Mesh mesh) {
+        meshes.get(index).mesh = mesh; 
+    }
+    
+    /**
      * Get a material from the model 
      * 
      * @param index
@@ -65,6 +72,13 @@ public class Model {
      */
     public Material getMaterial(int index) {
         return meshes.get(index).material; 
+    }
+    
+    /**
+     * Set a material for a mesh
+     */
+    public void setMaterial(int index, Material mat) {
+        meshes.get(index).material = mat; 
     }
     
     /**

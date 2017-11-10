@@ -135,7 +135,7 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
 
     @Override
     public void mouseExited(MouseEvent e) {}
-
+    
     @Override
     public void mousePressed(MouseEvent e) {
         down[e.getButton()] = true; 

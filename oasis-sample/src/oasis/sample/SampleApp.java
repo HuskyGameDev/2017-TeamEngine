@@ -43,49 +43,34 @@ public class SampleApp extends Application {
     private ModelRenderer renderer; 
     
     // meshes and materials 
-    private Mesh heightmap, water, cube, sphere; 
-    private Material heightmapMaterial, waterMaterial, cubeMaterial, sunMaterial, lightMaterial1, lightMaterial2; 
-    private Model terrainModel, cubeModel, sunModel, lightModel1, lightModel2; 
+    private Model terrainModel, cubeModel, sunModel, lightModel1, lightModel2, lightModel3, lightModel4, dragonModel; 
     
     // current angle 
     private float angle = 0.0f; 
     
-    // heightmap settings 
-    private float freq = 1 / 16.0f; 
-    private float pers = 0.45f; 
-    private int octs = 10; 
-    private long res = 64; 
-    
-    // height of water 
-    private float height = 4.5f; 
-    
     // positions of the cubes 
-    private Vector3f[] cubePositions; 
+    private Vector3f[] treePositions; 
 
     @Override
     public void onInit() {
         Oasis.display.setResizable(true);
-        Oasis.display.setSize(800, 400);
         Oasis.mouse.setCursorVisible(false); 
         
         renderer = new ModelRenderer(); 
         camera = new PerspectiveCamera(800, 600, 70.0f, 0.1f, 1000.0f); 
         camera.setPosition(new Vector3f(0, 5, 0));
         
-        // generate water and terrain
-        float offset = 0.015f; 
-        Heightmap htmap = new Heightmap();
-        // water
-        htmap.setFlat(true);
-        water = new Mesh(); 
-        htmap.genMeshData(new Vector3f(-10, height * 0.65f - offset, -10), new Vector3f(10, height * 0.65f + offset, 10), (int) res, (int) res, 5, freq * 10, 0.9f).apply(water);
-        // terrain 
-        heightmap = new Mesh(); 
-        htmap.setFlat(false);
-        htmap.genMeshData(new Vector3f(-10, 0, -10), new Vector3f(10, height, 10), (int) res, (int) res, octs, freq, pers).apply(heightmap);
+        // load meshes 
         
-        // water material, translucent and shiny
-        waterMaterial = new Material(); 
+        Mesh water = ObjImporter.load("plane.obj"); 
+        Mesh heightmap = ObjImporter.load("terrain3.obj"); 
+        Mesh dragon = ObjImporter.load("dragon.obj"); 
+        Mesh tree = ObjImporter.load("fir.obj"); 
+        Mesh sphere = ObjImporter.load("sphere.obj"); 
+        
+        // load materials 
+        
+        Material waterMaterial = new Material(); 
         waterMaterial.renderQueue = RenderQueue.TRANSLUCENT; 
         waterMaterial.diffuseColor = new Vector4f(0.45f, 0.55f, 0.85f, 0.7f); 
         waterMaterial.specularPower = 100.0f; 
@@ -93,75 +78,62 @@ public class SampleApp extends Application {
         waterMaterial.shader = null; 
         waterMaterial.frontFace = FrontFace.CCW; 
         
-        // terrain material, opaque and no shine 
-        heightmapMaterial = new Material(); 
+        Material heightmapMaterial = new Material(); 
         heightmapMaterial.renderQueue = RenderQueue.OPAQUE;
-        heightmapMaterial.diffuseColor = new Vector4f(1); 
+        heightmapMaterial.diffuseColor = new Vector4f(0.6f, 0.8f, 0.6f, 1.0f); 
         heightmapMaterial.specularPower = 200.0f; 
         heightmapMaterial.specularColor = new Vector4f(0); 
         heightmapMaterial.shader = null; 
         heightmapMaterial.frontFace = FrontFace.CCW; 
         
-        // create a model that contains both meshes
-        terrainModel = new Model(); 
-        terrainModel.add(water, waterMaterial);
-        terrainModel.add(heightmap, heightmapMaterial);
+        Material treeMaterial = new Material(); 
+        treeMaterial.diffuseColor = new Vector4f(0.4f, 0.6f, 0.4f, 1.0f); 
+        treeMaterial.specularColor = new Vector4f(0); 
+        treeMaterial.specularPower = 20.0f; 
+        treeMaterial.frontFace = FrontFace.CCW; 
         
-        // create cube data 
-        generateCube(); 
-    }
-    
-    // generate cube data 
-    private void generateCube() {
-        // make 32 different cube positions 
-        List<Vector3f> posList = new ArrayList<>(); 
-        Random rand = new Random(); 
-        for (int i = 0; i < 6; i++) {
-            Vector3f v = new Vector3f(
-                    rand.nextInt(20) - 10,
-                    0,
-                    rand.nextInt(20) - 10); 
-            
-            int height = 1;//rand.nextInt(5) + 5; 
-            
-            for (int j = 0; j < height; j++) {
-                posList.add(new Vector3f(v).setY(j + 2.8f)); 
-            }
-        }
-        
-        cubePositions = new Vector3f[posList.size()]; 
-        posList.toArray(cubePositions); 
-        
-        cube = ObjImporter.load("fir.obj"); 
-        sphere = ObjImporter.load("sphere.obj"); 
-        
-        // shiny metallic cube material 
-        cubeMaterial = new Material(); 
-        cubeMaterial.diffuseColor = new Vector4f(0.4f, 0.6f, 0.4f, 1.0f); 
-        cubeMaterial.specularColor = new Vector4f(0); 
-//        cubeMaterial.emissiveColor = new Vector4f(0.5f, 0.5f, 1, 1); 
-        cubeMaterial.specularPower = 20.0f; 
-        cubeMaterial.frontFace = FrontFace.CCW; 
-        
-        // sun material 
-        sunMaterial = new Material(); 
+        Material sunMaterial = new Material(); 
         sunMaterial.diffuseColor = new Vector4f(0, 1); 
         sunMaterial.emissiveColor = new Vector4f(1, 1, 0.8f, 1); 
         sunMaterial.frontFace = FrontFace.CCW; 
         
-        lightMaterial1 = new Material(); 
+        Material lightMaterial1 = new Material(); 
         lightMaterial1.diffuseColor = new Vector4f(0.2f, 1); 
         lightMaterial1.emissiveColor = new Vector4f(1, 0.75f, 0.75f, 1); 
         lightMaterial1.frontFace = FrontFace.CCW; 
         
-        lightMaterial2 = new Material(); 
+        Material lightMaterial2 = new Material(); 
         lightMaterial2.diffuseColor = new Vector4f(0.2f, 1); 
         lightMaterial2.emissiveColor = new Vector4f(0.75f, 0.75f, 1, 1); 
         lightMaterial2.frontFace = FrontFace.CCW; 
         
-        // put mesh into a model 
+        Material lightMaterial3 = new Material(); 
+        lightMaterial3.diffuseColor = new Vector4f(0.2f, 1); 
+        lightMaterial3.emissiveColor = new Vector4f(0.75f, 1, 0.75f, 1); 
+        lightMaterial3.frontFace = FrontFace.CCW; 
+        
+        Material lightMaterial4 = new Material(); 
+        lightMaterial4.diffuseColor = new Vector4f(0.2f, 1); 
+        lightMaterial4.emissiveColor = new Vector4f(1, 1, 0.75f, 1); 
+        lightMaterial4.frontFace = FrontFace.CCW; 
+
+        Material metal = new Material(); 
+        metal.diffuseColor = new Vector4f(0.6f, 0.6f, 0.6f, 1.0f); 
+        metal.specularColor = new Vector4f(1); 
+        metal.specularPower = 20.0f; 
+        metal.frontFace = FrontFace.CCW; 
+        
+        // model creation 
+        
+        terrainModel = new Model(); 
+        terrainModel.add(water, waterMaterial);
+        terrainModel.add(heightmap, heightmapMaterial);
+        
+        dragonModel = new Model(); 
+        dragonModel.add(dragon, metal); 
+        
         cubeModel = new Model(); 
-        cubeModel.add(cube, cubeMaterial);
+        cubeModel.add(tree, treeMaterial);
         
         sunModel = new Model(); 
         sunModel.add(sphere, sunMaterial);
@@ -171,6 +143,32 @@ public class SampleApp extends Application {
         
         lightModel2 = new Model(); 
         lightModel2.add(sphere, lightMaterial2);
+        
+        lightModel3 = new Model(); 
+        lightModel3.add(sphere, lightMaterial3);
+        
+        lightModel4 = new Model(); 
+        lightModel4.add(sphere, lightMaterial4);
+        
+        // create cube data 
+        generateTreePositions(); 
+    }
+    
+    // generate cube data 
+    private void generateTreePositions() {
+        List<Vector3f> posList = new ArrayList<>(); 
+        Random rand = new Random(); 
+        for (int i = 0; i < 64; i++) {
+            Vector3f v = new Vector3f(
+                    rand.nextInt(300) - 150,
+                    0,
+                    rand.nextInt(300) - 150); 
+            
+            posList.add(new Vector3f(v).setY(1.0f)); 
+        }
+        
+        treePositions = new Vector3f[posList.size()]; 
+        posList.toArray(treePositions); 
     }
 
     @Override
@@ -187,18 +185,23 @@ public class SampleApp extends Application {
         
         Vector3f move = new Vector3f(); 
         Vector3f vertMove = new Vector3f(); 
-        float speed = 4; 
+        float speed = 20; 
         
         if (Oasis.keyboard.isKeyJustDown(Keyboard.KEY_W)) {
-            if (Oasis.graphics.getFillMode() == FillMode.FILL) {
-                Oasis.graphics.setFillMode(FillMode.LINE);
+            FillMode fill = null; 
+            switch (Oasis.graphics.getFillMode()) {
+            case FILL: 
+                fill = FillMode.LINE; 
+                break; 
+            case LINE: 
+                fill = FillMode.POINT; 
+                break; 
+            case POINT: 
+                fill = FillMode.FILL; 
+                break; 
             }
-            else if (Oasis.graphics.getFillMode() == FillMode.LINE) {
-                Oasis.graphics.setFillMode(FillMode.POINT);
-            }
-            else {
-                Oasis.graphics.setFillMode(FillMode.FILL);
-            }
+            
+            Oasis.graphics.setFillMode(fill); 
         }
         
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_I)) {
@@ -238,7 +241,6 @@ public class SampleApp extends Application {
             camPitch = Mathf.toRadians(89.999f); 
         }
         camera.setRotation(camYaw, camPitch);
-        
         camera.setPosition(camera.getPosition().add(move));
     }
 
@@ -248,7 +250,7 @@ public class SampleApp extends Application {
         sunPos.x = Mathf.cos(angle * 0.02f);
         sunPos.y = Mathf.sin(angle * 0.02f); 
         sunPos.z = 0; 
-        sunPos.multiplySelf(20); 
+        sunPos.multiplySelf(200); 
         
         Oasis.graphics.clearScreen(new ColorRgba(new Vector4f(0.8f, 0.9f, 1.0f, 1.0f).multiply(new Vector3f(0, 1, 0).dot(sunPos.normalize())))); 
         
@@ -258,25 +260,39 @@ public class SampleApp extends Application {
         Vector3f lightPos = new Vector3f(); 
         lightPos.x = Mathf.cos(angle * 0.2f);
         lightPos.z = Mathf.sin(angle * 0.2f); 
-        lightPos.multiplySelf(8); 
+        lightPos.multiplySelf(80); 
         lightPos.y = 5; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.4f, 0.4f), lightPos, 20));
+        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.4f, 0.4f), lightPos, 80));
         renderer.draw(lightModel1, lightPos, new Quaternionf());
+        
+        float tmp = lightPos.x; 
+        lightPos.x = -lightPos.z; 
+        lightPos.z = tmp; 
+        
+        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.4f, 0.8f), lightPos, 80));
+        renderer.draw(lightModel2, lightPos, new Quaternionf());
         
         lightPos.x *= -1; 
         lightPos.z *= -1; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.4f, 0.8f), lightPos, 20));
-        renderer.draw(lightModel2, lightPos, new Quaternionf());
+        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.8f, 0.4f), lightPos, 80));
+        renderer.draw(lightModel3, lightPos, new Quaternionf());
         
-        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.7f), sunPos, 80));
+        tmp = lightPos.x; 
+        lightPos.x = lightPos.z; 
+        lightPos.z = -tmp; 
+        
+        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.4f), lightPos, 80));
+        renderer.draw(lightModel4, lightPos, new Quaternionf());
+        
+        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.7f), sunPos, 600));
         renderer.draw(sunModel, sunPos, new Quaternionf());
         
+        renderer.draw(dragonModel, new Vector3f(0, 2, 0), new Quaternionf());
         renderer.draw(terrainModel, new Vector3f(0, 0, 0), new Quaternionf());
-        for (int i = 1; i < cubePositions.length + 1; i++) {
-            // rotate each cube slightly differently
-            renderer.draw(cubeModel, cubePositions[i - 1], new Quaternionf()); 
+        for (int i = 1; i < treePositions.length + 1; i++) {
+            renderer.draw(cubeModel, treePositions[i - 1], new Quaternionf()); 
         }
         renderer.end(); 
     }
@@ -291,8 +307,10 @@ public class SampleApp extends Application {
         
         Config cfg = new Config();
         cfg.engine = Jogl3Engine.class;
-        cfg.fps = 60.0f;
+        cfg.fps = Config.UNLIMITED_FPS;
         cfg.ups = 60.0f;
+        cfg.width = 800; 
+        cfg.height = 600; 
         
         Application app = new SampleApp();
         app.start(cfg);

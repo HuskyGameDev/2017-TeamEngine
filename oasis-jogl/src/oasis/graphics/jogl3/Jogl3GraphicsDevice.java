@@ -270,7 +270,10 @@ public class Jogl3GraphicsDevice implements GraphicsDevice {
 
 	@Override
 	public void setRenderTarget(RenderTarget fbo) {
-		if (fbo == currentFbo) {
+	    if (fbo == currentFbo) {
+	        if (fbo == null) {
+	            gl.glViewport(0, 0, getWidth(), getHeight());
+	        }
 			return; 
 		}
 		
