@@ -4,7 +4,7 @@ import oasis.graphics.FrontFace;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
-import oasis.math.Vector4f;
+import oasis.math.Vector4;
 
 /**
  * Shader settings for a mesh
@@ -26,7 +26,7 @@ public class Material {
     /**
      * If a mesh has a tint, put it here 
      */
-    public Vector4f diffuseColor;
+    public Vector4 diffuseColor;
 
     /**
      * If a mesh has a specular texture, put it here 
@@ -37,7 +37,7 @@ public class Material {
      * All 1's means the mesh is fully specular
      * All 0's means the mesh is not specular at all 
      */
-    public Vector4f specularColor;
+    public Vector4 specularColor;
     /**
      * How shiny a mesh is. 
      * Smaller numbers mean more spread out highlights 
@@ -51,7 +51,7 @@ public class Material {
     /**
      * Color shown even without any light
      */
-    public Vector4f emissiveColor = null; 
+    public Vector4 emissiveColor = null; 
     
     /**
      * Uses the model renderer's default shader otherwise 
@@ -73,9 +73,9 @@ public class Material {
         shader.setInt("Material.HasDiffuseTexture", diffuseTexture == null ? 0 : 1);
         shader.setInt("Material.HasSpecularTexture", specularTexture == null ? 0 : 1);
         shader.setInt("Material.HasEmissiveTexture", emissiveTexture == null ? 0 : 1);
-        shader.setVector4f("Material.DiffuseColor", diffuseColor == null ? new Vector4f(1, 0, 1, 1) : diffuseColor);
-        shader.setVector4f("Material.SpecularColor", specularColor == null ? new Vector4f(0, 0, 0, 1) : specularColor);
-        shader.setVector4f("Material.EmissiveColor", (!firstPass || emissiveColor == null) ? new Vector4f(0, 0, 0, 1) : emissiveColor);
+        shader.setVector4("Material.DiffuseColor", diffuseColor == null ? new Vector4(1, 0, 1, 1) : diffuseColor);
+        shader.setVector4("Material.SpecularColor", specularColor == null ? new Vector4(0, 0, 0, 1) : specularColor);
+        shader.setVector4("Material.EmissiveColor", (!firstPass || emissiveColor == null) ? new Vector4(0, 0, 0, 1) : emissiveColor);
         shader.setFloat("Material.SpecularPower", specularPower);
         
         gd.setFrontFace(frontFace); 

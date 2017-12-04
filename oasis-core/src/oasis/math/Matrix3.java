@@ -6,7 +6,7 @@ package oasis.math;
  * @author Nicholas Hamilton 
  *
  */
-public class Matrix3f {
+public class Matrix3 {
 
     public float m00; 
     public float m10; 
@@ -18,7 +18,7 @@ public class Matrix3f {
     public float m12; 
     public float m22; 
     
-    public Matrix3f(float m00, float m10, float m20,
+    public Matrix3(float m00, float m10, float m20,
                     float m01, float m11, float m21, 
                     float m02, float m12, float m22) {
         this.m00 = m00; 
@@ -32,7 +32,7 @@ public class Matrix3f {
         this.m22 = m22; 
     }
     
-    public Matrix3f(Matrix3f r) {
+    public Matrix3(Matrix3 r) {
         this.m00 = r.m00; 
         this.m10 = r.m10; 
         this.m20 = r.m20; 
@@ -44,7 +44,7 @@ public class Matrix3f {
         this.m22 = r.m22; 
     }
     
-    public Matrix3f(Matrix4f r) {
+    public Matrix3(Matrix4 r) {
         this.m00 = r.m00; 
         this.m10 = r.m10; 
         this.m20 = r.m20; 
@@ -56,37 +56,37 @@ public class Matrix3f {
         this.m22 = r.m22; 
     }
     
-    public Matrix3f() {}
+    public Matrix3() {}
     
-    public static Matrix3f zero() {
-        return new Matrix3f(); 
+    public static Matrix3 zero() {
+        return new Matrix3(); 
     }
     
-    public static Matrix3f identity() {
-        Matrix3f m = new Matrix3f(); 
+    public static Matrix3 identity() {
+        Matrix3 m = new Matrix3(); 
         m.m00 = 1f; 
         m.m11 = 1f; 
         m.m22 = 1f; 
         return m; 
     }
     
-    public static Matrix3f scale(Vector2f scale) {
-        Matrix3f m = Matrix3f.zero();  
+    public static Matrix3 scale(Vector2 scale) {
+        Matrix3 m = Matrix3.zero();  
         m.m00 = scale.x; 
         m.m11 = scale.y; 
         m.m22 = 1f; 
         return m; 
     }
     
-    public static Matrix3f translation(Vector2f translate) {
-        Matrix3f m = Matrix3f.identity(); 
+    public static Matrix3 translation(Vector2 translate) {
+        Matrix3 m = Matrix3.identity(); 
         m.m02 = translate.x; 
         m.m12 = translate.y; 
         return m; 
     }
     
-    public static Matrix3f rotation(float theta) {
-        Matrix3f m = Matrix3f.zero(); 
+    public static Matrix3 rotation(float theta) {
+        Matrix3 m = Matrix3.zero(); 
         float c = Mathf.cos(theta); 
         float s = Mathf.sin(theta); 
         m.m00 = c; 
@@ -120,17 +120,17 @@ public class Matrix3f {
         return out; 
     }
     
-    public Matrix3f setM00(float m00) { this.m00 = m00; return this; }
-    public Matrix3f setM10(float m10) { this.m10 = m10; return this; }
-    public Matrix3f setM20(float m20) { this.m20 = m20; return this; }
-    public Matrix3f setM01(float m01) { this.m01 = m01; return this; }
-    public Matrix3f setM11(float m11) { this.m11 = m11; return this; }
-    public Matrix3f setM21(float m21) { this.m21 = m21; return this; }
-    public Matrix3f setM02(float m02) { this.m02 = m02; return this; }
-    public Matrix3f setM12(float m12) { this.m12 = m12; return this; }
-    public Matrix3f setM22(float m22) { this.m22 = m22; return this; }
+    public Matrix3 setM00(float m00) { this.m00 = m00; return this; }
+    public Matrix3 setM10(float m10) { this.m10 = m10; return this; }
+    public Matrix3 setM20(float m20) { this.m20 = m20; return this; }
+    public Matrix3 setM01(float m01) { this.m01 = m01; return this; }
+    public Matrix3 setM11(float m11) { this.m11 = m11; return this; }
+    public Matrix3 setM21(float m21) { this.m21 = m21; return this; }
+    public Matrix3 setM02(float m02) { this.m02 = m02; return this; }
+    public Matrix3 setM12(float m12) { this.m12 = m12; return this; }
+    public Matrix3 setM22(float m22) { this.m22 = m22; return this; }
 
-    public Matrix3f set(float m00, float m10, float m20, 
+    public Matrix3 set(float m00, float m10, float m20, 
                         float m01, float m11, float m21, 
                         float m02, float m12, float m22) {
         this.m00 = m00; 
@@ -145,7 +145,7 @@ public class Matrix3f {
         return this; 
     }
     
-    public Matrix3f set(Matrix3f r) {
+    public Matrix3 set(Matrix3 r) {
         this.m00 = r.m00; 
         this.m10 = r.m10; 
         this.m20 = r.m20; 
@@ -158,8 +158,8 @@ public class Matrix3f {
         return this; 
     }
     
-    public Matrix3f add(Matrix3f r) {
-        Matrix3f out = new Matrix3f(this); 
+    public Matrix3 add(Matrix3 r) {
+        Matrix3 out = new Matrix3(this); 
         out.m00 += r.m00; 
         out.m10 += r.m10; 
         out.m20 += r.m20; 
@@ -172,8 +172,8 @@ public class Matrix3f {
         return out; 
     }
     
-    public Matrix3f subtract(Matrix3f r) {
-        Matrix3f out = new Matrix3f(this); 
+    public Matrix3 subtract(Matrix3 r) {
+        Matrix3 out = new Matrix3(this); 
         out.m00 -= r.m00; 
         out.m10 -= r.m10; 
         out.m20 -= r.m20; 
@@ -186,8 +186,8 @@ public class Matrix3f {
         return out; 
     }
     
-    public Matrix3f multiply(float s) {
-        Matrix3f out = new Matrix3f(this); 
+    public Matrix3 multiply(float s) {
+        Matrix3 out = new Matrix3(this); 
         out.m00 *= s; 
         out.m10 *= s; 
         out.m20 *= s; 
@@ -200,8 +200,8 @@ public class Matrix3f {
         return out; 
     }
     
-    public Matrix3f multiply(Matrix3f r) {
-        Matrix3f out = new Matrix3f(); 
+    public Matrix3 multiply(Matrix3 r) {
+        Matrix3 out = new Matrix3(); 
         
         out.m00 = m00 * r.m00 + m01 * r.m10 + m02 * r.m20; 
         out.m10 = m10 * r.m00 + m11 * r.m10 + m12 * r.m20; 
@@ -218,23 +218,23 @@ public class Matrix3f {
         return out; 
     }
     
-    public Vector3f multiply(Vector3f r) {
-        Vector3f out = new Vector3f(); 
+    public Vector3 multiply(Vector3 r) {
+        Vector3 out = new Vector3(); 
         out.x = m00 * r.x + m01 * r.y + m02 * r.z; 
         out.y = m10 * r.x + m11 * r.y + m12 * r.z; 
         out.z = m20 * r.x + m21 * r.y + m22 * r.z; 
         return out; 
     }
     
-    public Vector2f multiply(Vector2f r, float z) {
-        Vector2f out = new Vector2f(); 
+    public Vector2 multiply(Vector2 r, float z) {
+        Vector2 out = new Vector2(); 
         out.x = m00 * r.x + m01 * r.y + m02 * z; 
         out.y = m10 * r.x + m11 * r.y + m12 * z; 
         float z_ = m20 * r.x + m21 * r.y + m22 * z;
         return out.multiply(1f / z_); 
     }
     
-    public Matrix3f addSelf(Matrix3f r) {
+    public Matrix3 addSelf(Matrix3 r) {
         this.m00 += r.m00; 
         this.m10 += r.m10; 
         this.m20 += r.m20; 
@@ -247,7 +247,7 @@ public class Matrix3f {
         return this; 
     }
     
-    public Matrix3f subtractSelf(Matrix3f r) {
+    public Matrix3 subtractSelf(Matrix3 r) {
         this.m00 -= r.m00; 
         this.m10 -= r.m10; 
         this.m20 -= r.m20; 
@@ -260,7 +260,7 @@ public class Matrix3f {
         return this; 
     }
     
-    public Matrix3f multiplySelf(float s) {
+    public Matrix3 multiplySelf(float s) {
         this.m00 *= s; 
         this.m10 *= s; 
         this.m20 *= s; 
@@ -273,8 +273,8 @@ public class Matrix3f {
         return this; 
     }
     
-    public Matrix3f multiplySelf(Matrix3f r) {
-        Matrix3f out = new Matrix3f(); 
+    public Matrix3 multiplySelf(Matrix3 r) {
+        Matrix3 out = new Matrix3(); 
         
         out.m00 = m00 * r.m00 + m01 * r.m10 + m02 * r.m20; 
         out.m10 = m10 * r.m00 + m11 * r.m10 + m12 * r.m20; 

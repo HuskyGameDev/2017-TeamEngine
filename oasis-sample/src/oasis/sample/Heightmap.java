@@ -6,8 +6,8 @@ import java.util.Arrays;
 import oasis.graphics.model.MeshData;
 import oasis.graphics.model.Vertex;
 import oasis.math.Mathf;
-import oasis.math.Vector3f;
-import oasis.math.Vector4f;
+import oasis.math.Vector3;
+import oasis.math.Vector4;
 import oasis.util.ArrayUtil;
 import oasis.util.QuickHash;
 
@@ -46,7 +46,7 @@ public class Heightmap {
      * @param pers persistance 
      * @return mesh data of terrain 
      */
-    public MeshData genMeshData(Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
+    public MeshData genMeshData(Vector3 min, Vector3 max, int width, int height, int octaves, float initialFreq, float pers) {
         verts.clear(); 
         inds.clear();
         
@@ -84,7 +84,7 @@ public class Heightmap {
     }
     
     // compute vertex for a position 
-    private Vertex getVertex(float u, float v, Vector3f min, Vector3f max, int width, int height, int octaves, float initialFreq, float pers) {
+    private Vertex getVertex(float u, float v, Vector3 min, Vector3 max, int width, int height, int octaves, float initialFreq, float pers) {
         float uFrac = (float) u / width;
         float vFrac = (float) v / height;
         
@@ -95,22 +95,22 @@ public class Heightmap {
         float y = Mathf.lerp(min.getY(), max.getY(), f);
         
         Vertex vert = new Vertex(); 
-        vert.position = new Vector3f(x, y, z);
+        vert.position = new Vector3(x, y, z);
         
         if (flat) {
-            vert.color = new Vector4f(1); 
+            vert.color = new Vector4(1); 
         }
         else {
             vert.color = getTerrainColor(f); //new ColorRgba(0.50f, f * 0.15f + 0.45f, 0.45f, 1.0f).toVector4();
         }
         
-        vert.normal = new Vector3f(0, 1, 0); 
+        vert.normal = new Vector3(0, 1, 0); 
         
         return vert; 
     }
     
     // get color of terrain based on height 
-    private static Vector4f getTerrainColor(float height) {
+    private static Vector4 getTerrainColor(float height) {
 //        if (height > 0.89f) {
 //            return new Vector4f(0.9f, 0.9f, 0.9f, 1.0f);
 //        }
@@ -119,10 +119,10 @@ public class Heightmap {
 //        }
 //        else 
         if (height > 0.72f) {
-            return new Vector4f(0.50f, height * 0.15f + 0.45f, 0.45f, 1.0f);
+            return new Vector4(0.50f, height * 0.15f + 0.45f, 0.45f, 1.0f);
         }
         else { //if (height > 0.63f) {
-            return new Vector4f(0.85f, 0.79f, 0.75f, 1.0f); 
+            return new Vector4(0.85f, 0.79f, 0.75f, 1.0f); 
         }
 //        else {
 //            return new Vector4f(0.55f, 0.60f, 0.55f, 1f); 

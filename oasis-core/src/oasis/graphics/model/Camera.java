@@ -1,8 +1,8 @@
 package oasis.graphics.model;
 
-import oasis.math.Matrix4f;
-import oasis.math.Quaternionf;
-import oasis.math.Vector3f;
+import oasis.math.Matrix4;
+import oasis.math.Quaternion;
+import oasis.math.Vector3;
 
 /**
  * Where the camera is positioned and orientated. 
@@ -13,13 +13,13 @@ import oasis.math.Vector3f;
  */
 public abstract class Camera {
 
-    private static final Vector3f UP = new Vector3f(0, 1, 0); 
+    private static final Vector3 UP = new Vector3(0, 1, 0); 
     
-    private Vector3f position; 
-    private Quaternionf rotation; 
+    private Vector3 position; 
+    private Quaternion rotation; 
     
     // cached view matrix 
-    private Matrix4f viewMatrix; 
+    private Matrix4 viewMatrix; 
     private boolean dirty = true; 
     
     protected int width; 
@@ -28,12 +28,12 @@ public abstract class Camera {
     public Camera(int width, int height) {
         this.width = width; 
         this.height = height; 
-        position = new Vector3f(); 
-        rotation = new Quaternionf(); 
-        viewMatrix = new Matrix4f(); 
+        position = new Vector3(); 
+        rotation = new Quaternion(); 
+        viewMatrix = new Matrix4(); 
     }
     
-    public abstract Matrix4f getProjectionMatrix(); 
+    public abstract Matrix4 getProjectionMatrix(); 
     
     public int getWidth() {
         return width; 
@@ -59,10 +59,10 @@ public abstract class Camera {
      * 
      * @return View matrix 
      */
-    public Matrix4f getViewMatrix() {
+    public Matrix4 getViewMatrix() {
         if (dirty) {
-            Vector3f forward = new Vector3f(0, 0, -1).rotate(rotation); 
-            viewMatrix.set(Matrix4f.lookAt(position, position.add(forward), UP)); 
+            Vector3 forward = new Vector3(0, 0, -1).rotate(rotation); 
+            viewMatrix.set(Matrix4.lookAt(position, position.add(forward), UP)); 
         }
         return viewMatrix; 
     }
@@ -74,37 +74,37 @@ public abstract class Camera {
      * 
      * @param position target to look at 
      */
-    public void lookAt(Vector3f position) {
+    public void lookAt(Vector3 position) {
         // TODO FINISH 
     }
     
-    public Vector3f getPosition() {
+    public Vector3 getPosition() {
         return position; 
     }
     
-    public Quaternionf getRotation() {
+    public Quaternion getRotation() {
         return rotation; 
     }
     
-    public void setPosition(Vector3f position) {
+    public void setPosition(Vector3 position) {
         this.position.set(position); 
         dirty = true; 
     }
     
-    public void move(Vector3f move) {
+    public void move(Vector3 move) {
         this.position.addSelf(move); 
         dirty = true; 
     }
     
-    public void setRotation(Quaternionf rotation) {
+    public void setRotation(Quaternion rotation) {
         this.rotation.set(rotation); 
         dirty = true; 
     }
     
     public void setRotation(float yaw, float pitch) {
         // TODO 
-        rotation.set(Quaternionf.axisAngle(new Vector3f(0, 1, 0), yaw));
-        rotation.multiplySelf(Quaternionf.axisAngle(new Vector3f(1, 0, 0), pitch));
+        rotation.set(Quaternion.axisAngle(new Vector3(0, 1, 0), yaw));
+        rotation.multiplySelf(Quaternion.axisAngle(new Vector3(1, 0, 0), pitch));
         rotation.normalizeSelf(); 
         dirty = true; 
     }

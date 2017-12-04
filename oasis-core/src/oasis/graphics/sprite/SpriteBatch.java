@@ -16,9 +16,9 @@ import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexElement;
 import oasis.graphics.VertexFormat;
 import oasis.math.Mathf;
-import oasis.math.Matrix4f;
-import oasis.math.Vector2f;
-import oasis.math.Vector3f;
+import oasis.math.Matrix4;
+import oasis.math.Vector2;
+import oasis.math.Vector3;
 
 /**
  * Basic 2D sprite rendering class.  
@@ -74,7 +74,7 @@ public class SpriteBatch {
     private int curSprites; 
     private int maxSprites; 
     private int vertOffset; 
-    private Matrix4f projection; 
+    private Matrix4 projection; 
     private ColorRgba tint = new ColorRgba(1, 1, 1, 1); 
     
     /**
@@ -205,9 +205,9 @@ public class SpriteBatch {
         Oasis.graphics.setFrontFace(FrontFace.BOTH);
         
         shader.setInt("Texture", 0);
-        shader.setVector2f("InvTextureSize", new Vector2f(1.0f / lastTex.getWidth(), 1.0f / lastTex.getHeight()));
-        shader.setVector4f("Color", tint.toVector4());
-        shader.setMatrix4f("Projection", projection); 
+        shader.setVector("InvTextureSize", new Vector2(1.0f / lastTex.getWidth(), 1.0f / lastTex.getHeight()));
+        shader.setVector4("Color", tint.toVector4());
+        shader.setMatrix4("Projection", projection); 
         Oasis.graphics.setDepthTestEnabled(false);
         Oasis.graphics.drawElements(Primitive.TRIANGLE_LIST, 0, curSprites * 6);
         
@@ -376,7 +376,7 @@ public class SpriteBatch {
     }
     
     private void buildMatrices() {
-        projection = Matrix4f.orthographic(new Vector3f(0, -1, 0), new Vector3f(Oasis.graphics.getWidth(), Oasis.graphics.getHeight(), 1)); 
+        projection = Matrix4.orthographic(new Vector3(0, -1, 0), new Vector3(Oasis.graphics.getWidth(), Oasis.graphics.getHeight(), 1)); 
     }
     
     private void check(Texture2D texture) {

@@ -4,20 +4,20 @@ import com.jogamp.openal.AL;
 
 import oasis.audio.AudioBuffer;
 import oasis.audio.AudioSource;
-import oasis.math.Vector3f;
+import oasis.math.Vector3;
 
 public class JoalAudioSource implements AudioSource {
 
     private JoalAudioDevice ad; 
     
     private JoalAudioBuffer buffer; 
-    private Vector3f position; 
+    private Vector3 position; 
     
     private int[] id = new int[1]; 
     
     public JoalAudioSource(JoalAudioDevice ad) {
         this.ad = ad; 
-        position = new Vector3f(); 
+        position = new Vector3(); 
         ad.al.alGenSources(1, id, 0); 
     }
     
@@ -43,11 +43,11 @@ public class JoalAudioSource implements AudioSource {
         }
     }
     
-    public Vector3f getPosition() {
+    public Vector3 getPosition() {
         return position; 
     }
     
-    public void setPosition(Vector3f pos) {
+    public void setPosition(Vector3 pos) {
         position.set(pos); 
         ad.al.alSource3f(id[0], AL.AL_POSITION, position.x, position.y, position.z);
     }

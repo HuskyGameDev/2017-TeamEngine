@@ -7,7 +7,7 @@ package oasis.math;
  *
  */
 // TODO inverse and transpose 
-public class Matrix4f {
+public class Matrix4 {
 
     public float m00; 
     public float m10; 
@@ -26,7 +26,7 @@ public class Matrix4f {
     public float m23; 
     public float m33; 
     
-    public Matrix4f(float m00, float m10, float m20, float m30, 
+    public Matrix4(float m00, float m10, float m20, float m30, 
                     float m01, float m11, float m21, float m31, 
                     float m02, float m12, float m22, float m32, 
                     float m03, float m13, float m23, float m33) {
@@ -48,7 +48,7 @@ public class Matrix4f {
         this.m33 = m33; 
     }
     
-    public Matrix4f(Matrix4f r) {
+    public Matrix4(Matrix4 r) {
         this.m00 = r.m00; 
         this.m10 = r.m10; 
         this.m20 = r.m20; 
@@ -67,14 +67,14 @@ public class Matrix4f {
         this.m33 = r.m33; 
     }
     
-    public Matrix4f() {}
+    public Matrix4() {}
     
-    public static Matrix4f zero() {
-        return new Matrix4f(); 
+    public static Matrix4 zero() {
+        return new Matrix4(); 
     }
     
-    public static Matrix4f identity() {
-        Matrix4f m = new Matrix4f(); 
+    public static Matrix4 identity() {
+        Matrix4 m = new Matrix4(); 
         m.m00 = 1f; 
         m.m11 = 1f; 
         m.m22 = 1f; 
@@ -82,8 +82,8 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f scale(Vector3f scale) {
-        Matrix4f m = Matrix4f.zero();  
+    public static Matrix4 scale(Vector3 scale) {
+        Matrix4 m = Matrix4.zero();  
         m.m00 = scale.x; 
         m.m11 = scale.y; 
         m.m22 = scale.z; 
@@ -91,16 +91,16 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f translation(Vector3f translate) {
-        Matrix4f m = Matrix4f.identity(); 
+    public static Matrix4 translation(Vector3 translate) {
+        Matrix4 m = Matrix4.identity(); 
         m.m03 = translate.x; 
         m.m13 = translate.y; 
         m.m23 = translate.z; 
         return m; 
     }
     
-    public static Matrix4f rotationX(float theta) {
-        Matrix4f m = Matrix4f.identity(); 
+    public static Matrix4 rotationX(float theta) {
+        Matrix4 m = Matrix4.identity(); 
         float c = Mathf.cos(theta); 
         float s = Mathf.sin(theta); 
         m.m11 = c; 
@@ -110,8 +110,8 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f rotationY(float theta) {
-        Matrix4f m = Matrix4f.identity(); 
+    public static Matrix4 rotationY(float theta) {
+        Matrix4 m = Matrix4.identity(); 
         float c = Mathf.cos(theta); 
         float s = Mathf.sin(theta); 
         m.m00 = c; 
@@ -121,8 +121,8 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f rotationZ(float theta) {
-        Matrix4f m = Matrix4f.identity(); 
+    public static Matrix4 rotationZ(float theta) {
+        Matrix4 m = Matrix4.identity(); 
         float c = Mathf.cos(theta); 
         float s = Mathf.sin(theta); 
         m.m00 = c; 
@@ -132,8 +132,8 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f perspective(float fov, float ratio, float near, float far) {
-        Matrix4f m = Matrix4f.zero(); 
+    public static Matrix4 perspective(float fov, float ratio, float near, float far) {
+        Matrix4 m = Matrix4.zero(); 
         fov = 1f / Mathf.tan(fov * 0.5f); 
         m.m00 = fov / ratio; 
         m.m11 = fov; 
@@ -143,8 +143,8 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f orthographic(Vector3f min, Vector3f max) {
-        Matrix4f m = Matrix4f.identity(); 
+    public static Matrix4 orthographic(Vector3 min, Vector3 max) {
+        Matrix4 m = Matrix4.identity(); 
         m.m00 = 2f / (max.x - min.x); 
         m.m11 = 2f / (max.y - min.y); 
         m.m22 = 2f / (max.z - min.z); 
@@ -154,20 +154,20 @@ public class Matrix4f {
         return m; 
     }
     
-    public static Matrix4f lookAt(Vector3f eye, Vector3f target, Vector3f up) {
-        Matrix4f m = Matrix4f.zero(); 
-        Vector3f f = target.subtract(eye).normalizeSelf(); 
-        Vector3f s = f.cross(up).normalizeSelf(); 
-        Vector3f y = s.cross(f).normalizeSelf(); 
+    public static Matrix4 lookAt(Vector3 eye, Vector3 target, Vector3 up) {
+        Matrix4 m = Matrix4.zero(); 
+        Vector3 f = target.subtract(eye).normalizeSelf(); 
+        Vector3 s = f.cross(up).normalizeSelf(); 
+        Vector3 y = s.cross(f).normalizeSelf(); 
         m.m00 = s.x; m.m01 = s.y; m.m02 = s.z; 
         m.m10 = y.x; m.m11 = y.y; m.m12 = y.z; 
         m.m20 = -f.x; m.m21 = -f.y; m.m22 = -f.z; 
         m.m33 = 1f;  
-        m.multiplySelf(Matrix4f.translation(eye.multiply(-1))); 
+        m.multiplySelf(Matrix4.translation(eye.multiply(-1))); 
         return m; 
     }
     
-    public static Matrix4f rotation(Quaternionf r) {
+    public static Matrix4 rotation(Quaternion r) {
         return r.toMatrix4f(); 
     }
     
@@ -208,24 +208,24 @@ public class Matrix4f {
         return out; 
     }
     
-    public Matrix4f setM00(float m00) { this.m00 = m00; return this; }
-    public Matrix4f setM10(float m10) { this.m10 = m10; return this; }
-    public Matrix4f setM20(float m20) { this.m20 = m20; return this; }
-    public Matrix4f setM30(float m30) { this.m30 = m30; return this; }
-    public Matrix4f setM01(float m01) { this.m01 = m01; return this; }
-    public Matrix4f setM11(float m11) { this.m11 = m11; return this; }
-    public Matrix4f setM21(float m21) { this.m21 = m21; return this; }
-    public Matrix4f setM31(float m31) { this.m31 = m31; return this; }
-    public Matrix4f setM02(float m02) { this.m02 = m02; return this; }
-    public Matrix4f setM12(float m12) { this.m12 = m12; return this; }
-    public Matrix4f setM22(float m22) { this.m22 = m22; return this; }
-    public Matrix4f setM32(float m32) { this.m32 = m32; return this; }
-    public Matrix4f setM03(float m03) { this.m03 = m03; return this; }
-    public Matrix4f setM13(float m13) { this.m13 = m13; return this; }
-    public Matrix4f setM23(float m23) { this.m23 = m23; return this; }
-    public Matrix4f setM33(float m33) { this.m33 = m33; return this; }
+    public Matrix4 setM00(float m00) { this.m00 = m00; return this; }
+    public Matrix4 setM10(float m10) { this.m10 = m10; return this; }
+    public Matrix4 setM20(float m20) { this.m20 = m20; return this; }
+    public Matrix4 setM30(float m30) { this.m30 = m30; return this; }
+    public Matrix4 setM01(float m01) { this.m01 = m01; return this; }
+    public Matrix4 setM11(float m11) { this.m11 = m11; return this; }
+    public Matrix4 setM21(float m21) { this.m21 = m21; return this; }
+    public Matrix4 setM31(float m31) { this.m31 = m31; return this; }
+    public Matrix4 setM02(float m02) { this.m02 = m02; return this; }
+    public Matrix4 setM12(float m12) { this.m12 = m12; return this; }
+    public Matrix4 setM22(float m22) { this.m22 = m22; return this; }
+    public Matrix4 setM32(float m32) { this.m32 = m32; return this; }
+    public Matrix4 setM03(float m03) { this.m03 = m03; return this; }
+    public Matrix4 setM13(float m13) { this.m13 = m13; return this; }
+    public Matrix4 setM23(float m23) { this.m23 = m23; return this; }
+    public Matrix4 setM33(float m33) { this.m33 = m33; return this; }
 
-    public Matrix4f set(float m00, float m10, float m20, float m30, 
+    public Matrix4 set(float m00, float m10, float m20, float m30, 
                         float m01, float m11, float m21, float m31, 
                         float m02, float m12, float m22, float m32, 
                         float m03, float m13, float m23, float m33) {
@@ -248,7 +248,7 @@ public class Matrix4f {
         return this; 
     }
     
-    public Matrix4f set(Matrix4f r) {
+    public Matrix4 set(Matrix4 r) {
         this.m00 = r.m00; 
         this.m10 = r.m10; 
         this.m20 = r.m20; 
@@ -268,8 +268,8 @@ public class Matrix4f {
         return this; 
     }
     
-    public Matrix4f add(Matrix4f r) {
-        Matrix4f out = new Matrix4f(this); 
+    public Matrix4 add(Matrix4 r) {
+        Matrix4 out = new Matrix4(this); 
         out.m00 += r.m00; 
         out.m10 += r.m10; 
         out.m20 += r.m20; 
@@ -289,8 +289,8 @@ public class Matrix4f {
         return out; 
     }
     
-    public Matrix4f subtract(Matrix4f r) {
-        Matrix4f out = new Matrix4f(this); 
+    public Matrix4 subtract(Matrix4 r) {
+        Matrix4 out = new Matrix4(this); 
         out.m00 -= r.m00; 
         out.m10 -= r.m10; 
         out.m20 -= r.m20; 
@@ -310,8 +310,8 @@ public class Matrix4f {
         return out; 
     }
     
-    public Matrix4f multiply(float s) {
-        Matrix4f out = new Matrix4f(this); 
+    public Matrix4 multiply(float s) {
+        Matrix4 out = new Matrix4(this); 
         out.m00 *= s; 
         out.m10 *= s; 
         out.m20 *= s; 
@@ -331,8 +331,8 @@ public class Matrix4f {
         return out; 
     }
     
-    public Matrix4f multiply(Matrix4f r) {
-        Matrix4f out = new Matrix4f(); 
+    public Matrix4 multiply(Matrix4 r) {
+        Matrix4 out = new Matrix4(); 
         
         out.m00 = m00 * r.m00 + m01 * r.m10 + m02 * r.m20 + m03 * r.m30; 
         out.m10 = m10 * r.m00 + m11 * r.m10 + m12 * r.m20 + m13 * r.m30; 
@@ -357,8 +357,8 @@ public class Matrix4f {
         return out; 
     }
     
-    public Vector4f multiply(Vector4f r) {
-        Vector4f out = new Vector4f(); 
+    public Vector4 multiply(Vector4 r) {
+        Vector4 out = new Vector4(); 
         out.x = m00 * r.x + m01 * r.y + m02 * r.z + m03 * r.w; 
         out.y = m10 * r.x + m11 * r.y + m12 * r.z + m13 * r.w; 
         out.z = m20 * r.x + m21 * r.y + m22 * r.z + m23 * r.w; 
@@ -366,8 +366,8 @@ public class Matrix4f {
         return out; 
     }
     
-    public Vector3f multiply(Vector3f r, float w) {
-        Vector3f out = new Vector3f(); 
+    public Vector3 multiply(Vector3 r, float w) {
+        Vector3 out = new Vector3(); 
         out.x = m00 * r.x + m01 * r.y + m02 * r.z + m03 * w; 
         out.y = m10 * r.x + m11 * r.y + m12 * r.z + m13 * w; 
         out.z = m20 * r.x + m21 * r.y + m22 * r.z + m23 * w; 
@@ -375,7 +375,7 @@ public class Matrix4f {
         return out.multiply(1f / w_); 
     }
     
-    public Matrix4f addSelf(Matrix4f r) {
+    public Matrix4 addSelf(Matrix4 r) {
         this.m00 += r.m00; 
         this.m10 += r.m10; 
         this.m20 += r.m20; 
@@ -395,7 +395,7 @@ public class Matrix4f {
         return this; 
     }
     
-    public Matrix4f subtractSelf(Matrix4f r) {
+    public Matrix4 subtractSelf(Matrix4 r) {
         this.m00 -= r.m00; 
         this.m10 -= r.m10; 
         this.m20 -= r.m20; 
@@ -415,7 +415,7 @@ public class Matrix4f {
         return this; 
     }
     
-    public Matrix4f multiplySelf(float s) {
+    public Matrix4 multiplySelf(float s) {
         this.m00 *= s; 
         this.m10 *= s; 
         this.m20 *= s; 
@@ -435,8 +435,8 @@ public class Matrix4f {
         return this; 
     }
     
-    public Matrix4f multiplySelf(Matrix4f r) {
-        Matrix4f out = new Matrix4f(); 
+    public Matrix4 multiplySelf(Matrix4 r) {
+        Matrix4 out = new Matrix4(); 
         
         out.m00 = m00 * r.m00 + m01 * r.m10 + m02 * r.m20 + m03 * r.m30; 
         out.m10 = m10 * r.m00 + m11 * r.m10 + m12 * r.m20 + m13 * r.m30; 

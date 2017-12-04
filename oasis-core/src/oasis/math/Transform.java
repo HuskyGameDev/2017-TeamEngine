@@ -9,43 +9,43 @@ package oasis.math;
  */
 public class Transform {
 
-    private Vector3f position; 
-    private Quaternionf rotation; 
-    private Vector3f scale; 
-    private Matrix4f matrix; 
+    private Vector3 position; 
+    private Quaternion rotation; 
+    private Vector3 scale; 
+    private Matrix4 matrix; 
     private boolean dirty = true; 
     
     public Transform() {
-        position = new Vector3f(); 
-        rotation = new Quaternionf(); 
-        scale = new Vector3f();
-        matrix = Matrix4f.identity(); 
+        position = new Vector3(); 
+        rotation = new Quaternion(); 
+        scale = new Vector3();
+        matrix = Matrix4.identity(); 
     }
     
-    public Vector3f getWorldPosition() { return position; }
-    public Quaternionf getWorldRotation() { return rotation; } 
-    public Vector3f getWorldScale() { return scale; } 
+    public Vector3 getWorldPosition() { return position; }
+    public Quaternion getWorldRotation() { return rotation; } 
+    public Vector3 getWorldScale() { return scale; } 
     
-    public Matrix4f getWorldMatrix() { 
+    public Matrix4 getWorldMatrix() { 
         return getMatrix(); 
     }
     
-    public Vector3f getPosition() { return position; } 
-    public Quaternionf getRotation() { return rotation; } 
-    public Vector3f getScale() { return scale; } 
+    public Vector3 getPosition() { return position; } 
+    public Quaternion getRotation() { return rotation; } 
+    public Vector3 getScale() { return scale; } 
     
-    public Matrix4f getMatrix() { 
+    public Matrix4 getMatrix() { 
         if (dirty) {
-            matrix = Matrix4f.identity(); 
-            matrix.multiplySelf(Matrix4f.translation(position)); 
-            matrix.multiplySelf(Matrix4f.rotation(rotation)); 
-            matrix.multiplySelf(Matrix4f.scale(scale)); 
+            matrix = Matrix4.identity(); 
+            matrix.multiplySelf(Matrix4.translation(position)); 
+            matrix.multiplySelf(Matrix4.rotation(rotation)); 
+            matrix.multiplySelf(Matrix4.scale(scale)); 
         }
         return matrix; 
     }
     
-    public void setPosition(Vector3f pos) { position.set(pos); } 
-    public void setRotation(Quaternionf rot) { rotation.set(rot); } 
-    public void setScale(Vector3f scl) { scale.set(scl); } 
+    public void setPosition(Vector3 pos) { position.set(pos); } 
+    public void setRotation(Quaternion rot) { rotation.set(rot); } 
+    public void setScale(Vector3 scl) { scale.set(scl); } 
     
 }

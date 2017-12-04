@@ -9,7 +9,7 @@ import oasis.core.Config;
 import oasis.core.Oasis;
 import oasis.core.jogl3.Jogl3Engine;
 import oasis.graphics.ColorRgba;
-import oasis.math.Vector3f;
+import oasis.math.Vector3;
 
 public class SoundApp extends Application {
 
@@ -42,7 +42,7 @@ public class SoundApp extends Application {
         
         buffer.setData(data, 44100);
         source.setBuffer(buffer); 
-        source.setPosition(new Vector3f(1, 2, 3));
+        source.setPosition(new Vector3(1, 2, 3));
         
         Oasis.audio.setListener(listener); 
         Oasis.audio.addSource(source); 

@@ -13,8 +13,8 @@ import oasis.audio.AudioFormat;
 import oasis.audio.AudioListener;
 import oasis.audio.AudioSource;
 import oasis.core.GameLogger;
-import oasis.math.Quaternionf;
-import oasis.math.Vector3f;
+import oasis.math.Quaternion;
+import oasis.math.Vector3;
 
 public class JoalAudioDevice implements AudioDevice {
 
@@ -107,8 +107,8 @@ public class JoalAudioDevice implements AudioDevice {
     
     protected void updateListener(JoalAudioListener jal) {
         if (listener == jal) {
-            Vector3f pos = jal.getPosition(); 
-            Quaternionf rot = jal.getOrientation(); 
+            Vector3 pos = jal.getPosition(); 
+            Quaternion rot = jal.getOrientation(); 
             
             al.alListener3f(AL.AL_POSITION, pos.x, pos.y, pos.z);
         }

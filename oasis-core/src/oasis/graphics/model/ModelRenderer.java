@@ -13,10 +13,10 @@ import oasis.graphics.light.DirectionalLight;
 import oasis.graphics.light.Light;
 import oasis.graphics.light.LightList;
 import oasis.graphics.light.PointLight;
-import oasis.math.Matrix3f;
-import oasis.math.Matrix4f;
-import oasis.math.Quaternionf;
-import oasis.math.Vector3f;
+import oasis.math.Matrix3;
+import oasis.math.Matrix4;
+import oasis.math.Quaternion;
+import oasis.math.Vector3;
 
 /**
  * Renders models and meshes. 
@@ -34,10 +34,10 @@ public class ModelRenderer {
     private class MeshRenderCommand {
         public Mesh mesh; 
         public Material material; 
-        public Matrix4f matrix;
-        public Matrix3f normalMatrix; 
+        public Matrix4 matrix;
+        public Matrix3 normalMatrix; 
         
-        public MeshRenderCommand(Mesh mesh, Material material, Matrix4f matrix, Matrix3f normalMat) {
+        public MeshRenderCommand(Mesh mesh, Material material, Matrix4 matrix, Matrix3 normalMat) {
             this.mesh = mesh; 
             this.material = material; 
             this.matrix = matrix; 
@@ -100,8 +100,8 @@ public class ModelRenderer {
         Oasis.graphics.setRenderTarget(null);
         Oasis.graphics.setDepthTestEnabled(true);
         
-        Matrix4f projection = camera.getProjectionMatrix(); 
-        Matrix4f view = camera.getViewMatrix(); 
+        Matrix4 projection = camera.getProjectionMatrix(); 
+        Matrix4 view = camera.getViewMatrix(); 
         
         // draw opaque 
         Oasis.graphics.setDepthWriteEnabled(true); 
@@ -129,11 +129,11 @@ public class ModelRenderer {
     }
     
     // draw meshes in a queue
-    private void drawMeshes(List<MeshRenderCommand> meshes, Shader defaultShader, Matrix4f projection, Matrix4f view) {
+    private void drawMeshes(List<MeshRenderCommand> meshes, Shader defaultShader, Matrix4 projection, Matrix4 view) {
         Shader shader = null; 
         
-        Vector3f ambient = new Vector3f(0.2f); 
-        Vector3f zero = new Vector3f(0); 
+        Vector3 ambient = new Vector3(0.2f); 
+        Vector3 zero = new Vector3(0); 
         
         for (int i = 0; i < Math.max(lightList.getLightCount(), 1); i++) {
             if (i != 0) {
@@ -145,13 +145,13 @@ public class ModelRenderer {
                 if (shader == null) shader = defaultShader; 
                 Oasis.graphics.setShader(shader);
                 
-                shader.setMatrix4f("Projection", projection);
-                shader.setMatrix4f("View", view);
-                shader.setMatrix4f("Model", c.matrix);
-                shader.setMatrix3f("NormalMat", c.normalMatrix);
-                shader.setVector3f("CameraPosition", camera.getPosition());
+                shader.setMatrix4("Projection", projection);
+                shader.setMatrix4("View", view);
+                shader.setMatrix4("Model", c.matrix);
+                shader.setMatrix3("NormalMat", c.normalMatrix);
+                shader.setVector3("CameraPosition", camera.getPosition());
                 
-                shader.setVector3f("AmbientColor", i == 0 ? ambient : zero); 
+                shader.setVector3("AmbientColor", i == 0 ? ambient : zero); 
                 applyLight(shader, lightList.getLightCount() == 0 ? null : lightList.get(i)); 
                 
                 c.material.apply(Oasis.graphics, shader, i == 0);
@@ -165,41 +165,41 @@ public class ModelRenderer {
             DirectionalLight dl = (DirectionalLight) light; 
             shader.setInt("Light.Type", 0);
             shader.setFloat("Light.Radius", 0);
-            shader.setVector3f("Light.Color", light.getColor());
-            shader.setVector3f("Light.Position", dl.getDirection());
+            shader.setVector3("Light.Color", light.getColor());
+            shader.setVector3("Light.Position", dl.getDirection());
         }
         else if (light instanceof PointLight) {
             PointLight pl = (PointLight) light; 
             shader.setInt("Light.Type", 1);
             shader.setFloat("Light.Radius", pl.getRadius());
-            shader.setVector3f("Light.Color", light.getColor());
-            shader.setVector3f("Light.Position", pl.getPosition());
+            shader.setVector3("Light.Color", light.getColor());
+            shader.setVector3("Light.Position", pl.getPosition());
         }
         else if (light == null) {
             shader.setInt("Light.Type", -1);
             shader.setFloat("Light.Radius", 0);
-            shader.setVector3f("Light.Color", new Vector3f(0));
-            shader.setVector3f("Light.Position", new Vector3f(0));
+            shader.setVector3("Light.Color", new Vector3(0));
+            shader.setVector3("Light.Position", new Vector3(0));
         }
         else {
             throw new EngineException("Unknown light type: " + light); 
         }
     }
     
-    public void draw(Mesh mesh, Material material, Vector3f position, Quaternionf rotation) {
-        Matrix4f modelMat = Matrix4f.translation(position)
-                .multiply(Matrix4f.rotation(rotation)); 
+    public void draw(Mesh mesh, Material material, Vector3 position, Quaternion rotation) {
+        Matrix4 modelMat = Matrix4.translation(position)
+                .multiply(Matrix4.rotation(rotation)); 
         
-        addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3f(modelMat)), material.renderQueue); 
+        addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3(modelMat)), material.renderQueue); 
     }
     
     // TODO compute a normal matrix 
-    public void draw(Mesh mesh, Material material, Matrix4f modelMat) {
-        addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3f(modelMat)), material.renderQueue); 
+    public void draw(Mesh mesh, Material material, Matrix4 modelMat) {
+        addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3(modelMat)), material.renderQueue); 
     }
     
     // add each part of a model to the render queue
-    public void draw(Model model, Vector3f position, Quaternionf rotation) {
+    public void draw(Model model, Vector3 position, Quaternion rotation) {
         for (int i = 0; i < model.getPartCount(); i++) {
             draw(model.getMesh(i), model.getMaterial(i), position, rotation); 
         }

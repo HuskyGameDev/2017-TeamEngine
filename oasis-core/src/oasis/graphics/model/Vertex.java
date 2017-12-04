@@ -1,8 +1,8 @@
 package oasis.graphics.model;
 
-import oasis.math.Vector2f;
-import oasis.math.Vector3f;
-import oasis.math.Vector4f;
+import oasis.math.Vector2;
+import oasis.math.Vector3;
+import oasis.math.Vector4;
 
 /**
  * Helper class to keep track of vertex data
@@ -15,22 +15,22 @@ public class Vertex {
     /**
      * Position 
      */
-    public Vector3f position;
+    public Vector3 position;
     
     /**
      * Normal 
      */
-    public Vector3f normal;
+    public Vector3 normal;
     
     /**
      * Color 
      */
-    public Vector4f color;
+    public Vector4 color;
     
     /**
      * Texture coordinates 
      */
-    public Vector2f texCoord0; 
+    public Vector2 texCoord0; 
     
     /**
      * Set mesh data to an array of vertices 
@@ -39,9 +39,9 @@ public class Vertex {
      * @param mesh Mesh to modify 
      */
     public static void setMesh(Vertex[] verts, Mesh mesh) { 
-        Vector3f[] positions = new Vector3f[verts.length]; 
-        Vector3f[] normals = new Vector3f[verts.length]; 
-        Vector4f[] colors = new Vector4f[verts.length]; 
+        Vector3[] positions = new Vector3[verts.length]; 
+        Vector3[] normals = new Vector3[verts.length]; 
+        Vector4[] colors = new Vector4[verts.length]; 
 //        Vector2[] uvs = new Vector2[verts.length]; 
         
         for (int i = 0; i < verts.length; i++) { 
@@ -65,9 +65,9 @@ public class Vertex {
      * @return MeshData
      */
     public static MeshData createMeshData(Vertex[] verts, int[] inds) {
-        Vector3f[] positions = new Vector3f[verts.length]; 
-        Vector3f[] normals = new Vector3f[verts.length]; 
-        Vector4f[] colors = new Vector4f[verts.length]; 
+        Vector3[] positions = new Vector3[verts.length]; 
+        Vector3[] normals = new Vector3[verts.length]; 
+        Vector4[] colors = new Vector4[verts.length]; 
 //        Vector2[] uvs = new Vector2[verts.length]; 
         
         for (int i = 0; i < verts.length; i++) { 
@@ -108,9 +108,9 @@ public class Vertex {
      */
     public static void calculateNormals(Vertex[] verts) { 
         for (int i = 0; i < verts.length; i += 3) { 
-            Vector3f a = verts[i + 1].position.subtract(verts[i + 0].position).normalize(); 
-            Vector3f b = verts[i + 2].position.subtract(verts[i + 0].position).normalize(); 
-            Vector3f normal = a.cross(b).normalize(); 
+            Vector3 a = verts[i + 1].position.subtract(verts[i + 0].position).normalize(); 
+            Vector3 b = verts[i + 2].position.subtract(verts[i + 0].position).normalize(); 
+            Vector3 normal = a.cross(b).normalize(); 
             verts[i + 0].normal = normal; 
             verts[i + 1].normal = normal; 
             verts[i + 2].normal = normal; 
@@ -127,13 +127,13 @@ public class Vertex {
      */
     public static void calculateNormals(Vertex[] verts, int[] inds) { 
         for (int i = 0; i < verts.length; i++) { 
-            verts[i].normal = new Vector3f(); 
+            verts[i].normal = new Vector3(); 
         }
         
         for (int i = 0; i < inds.length; i += 3) { 
-            Vector3f a = verts[inds[i + 1]].position.subtract(verts[inds[i + 0]].position).normalize(); 
-            Vector3f b = verts[inds[i + 2]].position.subtract(verts[inds[i + 0]].position).normalize(); 
-            Vector3f normal = a.cross(b).normalize(); 
+            Vector3 a = verts[inds[i + 1]].position.subtract(verts[inds[i + 0]].position).normalize(); 
+            Vector3 b = verts[inds[i + 2]].position.subtract(verts[inds[i + 0]].position).normalize(); 
+            Vector3 normal = a.cross(b).normalize(); 
             verts[inds[i + 0]].normal.addSelf(normal); 
             verts[inds[i + 1]].normal.addSelf(normal); 
             verts[inds[i + 2]].normal.addSelf(normal); 

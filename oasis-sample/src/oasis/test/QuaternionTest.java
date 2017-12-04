@@ -1,17 +1,17 @@
 package oasis.test;
 
 import oasis.math.Mathf;
-import oasis.math.Quaternionf;
-import oasis.math.Vector3f;
+import oasis.math.Quaternion;
+import oasis.math.Vector3;
 
 public class QuaternionTest {
 
     public static void main(String[] args) {
-        Quaternionf q1 = Quaternionf.axisAngle(new Vector3f(0, 1, 0), Mathf.toRadians(45f)); 
-        Quaternionf q2 = Quaternionf.axisAngle(new Vector3f(0, 0, 1), Mathf.toRadians(45f)); 
-        Quaternionf q3 = q2.multiply(q1).normalizeSelf(); 
-        Vector3f v1 = new Vector3f(1, 0, 0); 
-        Vector3f v2 = new Vector3f(0, 1, 0); 
+        Quaternion q1 = Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(45f)); 
+        Quaternion q2 = Quaternion.axisAngle(new Vector3(0, 0, 1), Mathf.toRadians(45f)); 
+        Quaternion q3 = q2.multiply(q1).normalizeSelf(); 
+        Vector3 v1 = new Vector3(1, 0, 0); 
+        Vector3 v2 = new Vector3(0, 1, 0); 
         
         System.out.println(v1.cross(v2));
         

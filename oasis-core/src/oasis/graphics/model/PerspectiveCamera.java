@@ -1,6 +1,6 @@
 package oasis.graphics.model;
 
-import oasis.math.Matrix4f;
+import oasis.math.Matrix4;
 
 /**
  * Camera with a perspective projection 
@@ -34,8 +34,8 @@ public class PerspectiveCamera extends Camera {
      * Generate a perspective projection matrix 
      */
     @Override
-    public Matrix4f getProjectionMatrix() {
-        return Matrix4f.perspective(fov, (float)width / height, near, far); 
+    public Matrix4 getProjectionMatrix() {
+        return Matrix4.perspective(fov, (float)width / height, near, far); 
     }
 
 }

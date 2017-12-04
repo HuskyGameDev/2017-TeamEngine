@@ -1,6 +1,6 @@
 package oasis.audio;
 
-import oasis.math.Vector3f;
+import oasis.math.Vector3;
 
 public interface AudioSource {
 
@@ -10,9 +10,9 @@ public interface AudioSource {
     
     void setBuffer(AudioBuffer buffer); 
     
-    Vector3f getPosition(); 
+    Vector3 getPosition(); 
     
-    void setPosition(Vector3f pos); 
+    void setPosition(Vector3 pos); 
     
     void play(); 
     

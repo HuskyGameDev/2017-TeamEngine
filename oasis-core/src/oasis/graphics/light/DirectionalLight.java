@@ -1,6 +1,6 @@
 package oasis.graphics.light;
 
-import oasis.math.Vector3f;
+import oasis.math.Vector3;
 
 /**
  * Light where all rays are parallel. 
@@ -11,18 +11,18 @@ import oasis.math.Vector3f;
  */
 public class DirectionalLight extends Light {
 
-    private Vector3f direction; 
+    private Vector3 direction; 
     
-    public DirectionalLight(Vector3f color, Vector3f direction) {
+    public DirectionalLight(Vector3 color, Vector3 direction) {
         super(color); 
-        this.direction = new Vector3f(direction); 
+        this.direction = new Vector3(direction); 
     }
     
-    public Vector3f getDirection() {
+    public Vector3 getDirection() {
         return direction; 
     }
     
-    public void setDirection(Vector3f direction) {
+    public void setDirection(Vector3 direction) {
         this.direction.set(direction); 
     }
     

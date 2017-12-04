@@ -1,7 +1,7 @@
 package oasis.graphics;
 
 import oasis.math.Mathf;
-import oasis.math.Vector4f;
+import oasis.math.Vector4;
 
 /**
  * Floating point values for color
@@ -30,7 +30,7 @@ public class ColorRgba {
      * 
      * @param other The color to copy 
      */
-    public ColorRgba(Vector4f other) {
+    public ColorRgba(Vector4 other) {
         this(other.x, other.y, other.z, other.w); 
     }
     
@@ -73,8 +73,8 @@ public class ColorRgba {
      * 
      * @return Vector4 equivalent 
      */
-    public Vector4f toVector4() { 
-        return new Vector4f(r, g, b, a); 
+    public Vector4 toVector4() { 
+        return new Vector4(r, g, b, a); 
     }
     
     /**

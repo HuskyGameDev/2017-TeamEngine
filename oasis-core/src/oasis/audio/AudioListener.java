@@ -1,13 +1,13 @@
 package oasis.audio;
 
-import oasis.math.Vector3f;
+import oasis.math.Vector3;
 
 public interface AudioListener {
 
     void dispose(); 
     
-    Vector3f getPosition(); 
+    Vector3 getPosition(); 
     
-    void setPosition(Vector3f pos); 
+    void setPosition(Vector3 pos); 
     
 }

@@ -23,9 +23,9 @@ import oasis.graphics.model.RenderQueue;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
 import oasis.math.Mathf;
-import oasis.math.Quaternionf;
-import oasis.math.Vector3f;
-import oasis.math.Vector4f;
+import oasis.math.Quaternion;
+import oasis.math.Vector3;
+import oasis.math.Vector4;
 
 /**
  * displays basic terrain and cubes
@@ -49,7 +49,7 @@ public class SampleApp extends Application {
     private float angle = 0.0f; 
     
     // positions of the cubes 
-    private Vector3f[] treePositions; 
+    private Vector3[] treePositions; 
 
     @Override
     public void onInit() {
@@ -58,7 +58,7 @@ public class SampleApp extends Application {
         
         renderer = new ModelRenderer(); 
         camera = new PerspectiveCamera(800, 600, 70.0f, 0.1f, 1000.0f); 
-        camera.setPosition(new Vector3f(0, 5, 0));
+        camera.setPosition(new Vector3(0, 5, 0));
         
         // load meshes 
         
@@ -72,54 +72,54 @@ public class SampleApp extends Application {
         
         Material waterMaterial = new Material(); 
         waterMaterial.renderQueue = RenderQueue.TRANSLUCENT; 
-        waterMaterial.diffuseColor = new Vector4f(0.45f, 0.55f, 0.85f, 0.7f); 
+        waterMaterial.diffuseColor = new Vector4(0.45f, 0.55f, 0.85f, 0.7f); 
         waterMaterial.specularPower = 100.0f; 
-        waterMaterial.specularColor = new Vector4f(1); 
+        waterMaterial.specularColor = new Vector4(1); 
         waterMaterial.shader = null; 
         waterMaterial.frontFace = FrontFace.CCW; 
         
         Material heightmapMaterial = new Material(); 
         heightmapMaterial.renderQueue = RenderQueue.OPAQUE;
-        heightmapMaterial.diffuseColor = new Vector4f(0.6f, 0.8f, 0.6f, 1.0f); 
+        heightmapMaterial.diffuseColor = new Vector4(0.6f, 0.8f, 0.6f, 1.0f); 
         heightmapMaterial.specularPower = 200.0f; 
-        heightmapMaterial.specularColor = new Vector4f(0); 
+        heightmapMaterial.specularColor = new Vector4(0); 
         heightmapMaterial.shader = null; 
         heightmapMaterial.frontFace = FrontFace.CCW; 
         
         Material treeMaterial = new Material(); 
-        treeMaterial.diffuseColor = new Vector4f(0.4f, 0.6f, 0.4f, 1.0f); 
-        treeMaterial.specularColor = new Vector4f(0); 
+        treeMaterial.diffuseColor = new Vector4(0.4f, 0.6f, 0.4f, 1.0f); 
+        treeMaterial.specularColor = new Vector4(0); 
         treeMaterial.specularPower = 20.0f; 
         treeMaterial.frontFace = FrontFace.CCW; 
         
         Material sunMaterial = new Material(); 
-        sunMaterial.diffuseColor = new Vector4f(0, 1); 
-        sunMaterial.emissiveColor = new Vector4f(1, 1, 0.8f, 1); 
+        sunMaterial.diffuseColor = new Vector4(0, 1); 
+        sunMaterial.emissiveColor = new Vector4(1, 1, 0.8f, 1); 
         sunMaterial.frontFace = FrontFace.CCW; 
         
         Material lightMaterial1 = new Material(); 
-        lightMaterial1.diffuseColor = new Vector4f(0.2f, 1); 
-        lightMaterial1.emissiveColor = new Vector4f(1, 0.75f, 0.75f, 1); 
+        lightMaterial1.diffuseColor = new Vector4(0.2f, 1); 
+        lightMaterial1.emissiveColor = new Vector4(1, 0.75f, 0.75f, 1); 
         lightMaterial1.frontFace = FrontFace.CCW; 
         
         Material lightMaterial2 = new Material(); 
-        lightMaterial2.diffuseColor = new Vector4f(0.2f, 1); 
-        lightMaterial2.emissiveColor = new Vector4f(0.75f, 0.75f, 1, 1); 
+        lightMaterial2.diffuseColor = new Vector4(0.2f, 1); 
+        lightMaterial2.emissiveColor = new Vector4(0.75f, 0.75f, 1, 1); 
         lightMaterial2.frontFace = FrontFace.CCW; 
         
         Material lightMaterial3 = new Material(); 
-        lightMaterial3.diffuseColor = new Vector4f(0.2f, 1); 
-        lightMaterial3.emissiveColor = new Vector4f(0.75f, 1, 0.75f, 1); 
+        lightMaterial3.diffuseColor = new Vector4(0.2f, 1); 
+        lightMaterial3.emissiveColor = new Vector4(0.75f, 1, 0.75f, 1); 
         lightMaterial3.frontFace = FrontFace.CCW; 
         
         Material lightMaterial4 = new Material(); 
-        lightMaterial4.diffuseColor = new Vector4f(0.2f, 1); 
-        lightMaterial4.emissiveColor = new Vector4f(1, 1, 0.75f, 1); 
+        lightMaterial4.diffuseColor = new Vector4(0.2f, 1); 
+        lightMaterial4.emissiveColor = new Vector4(1, 1, 0.75f, 1); 
         lightMaterial4.frontFace = FrontFace.CCW; 
 
         Material metal = new Material(); 
-        metal.diffuseColor = new Vector4f(0.6f, 0.6f, 0.6f, 1.0f); 
-        metal.specularColor = new Vector4f(1); 
+        metal.diffuseColor = new Vector4(0.6f, 0.6f, 0.6f, 1.0f); 
+        metal.specularColor = new Vector4(1); 
         metal.specularPower = 20.0f; 
         metal.frontFace = FrontFace.CCW; 
         
@@ -156,18 +156,18 @@ public class SampleApp extends Application {
     
     // generate cube data 
     private void generateTreePositions() {
-        List<Vector3f> posList = new ArrayList<>(); 
+        List<Vector3> posList = new ArrayList<>(); 
         Random rand = new Random(); 
         for (int i = 0; i < 64; i++) {
-            Vector3f v = new Vector3f(
+            Vector3 v = new Vector3(
                     rand.nextInt(300) - 150,
                     0,
                     rand.nextInt(300) - 150); 
             
-            posList.add(new Vector3f(v).setY(1.0f)); 
+            posList.add(new Vector3(v).setY(1.0f)); 
         }
         
-        treePositions = new Vector3f[posList.size()]; 
+        treePositions = new Vector3[posList.size()]; 
         posList.toArray(treePositions); 
     }
 
@@ -183,8 +183,8 @@ public class SampleApp extends Application {
             System.out.println(Oasis.mouse.getScroll());
         }
         
-        Vector3f move = new Vector3f(); 
-        Vector3f vertMove = new Vector3f(); 
+        Vector3 move = new Vector3(); 
+        Vector3 vertMove = new Vector3(); 
         float speed = 20; 
         
         if (Oasis.keyboard.isKeyJustDown(Keyboard.KEY_W)) {
@@ -205,23 +205,23 @@ public class SampleApp extends Application {
         }
         
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_I)) {
-            move.addSelf(new Vector3f(0, 0, -1).rotateSelf(camera.getRotation())); 
+            move.addSelf(new Vector3(0, 0, -1).rotateSelf(camera.getRotation())); 
         }
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_K)) {
-            move.addSelf(new Vector3f(0, 0, 1).rotateSelf(camera.getRotation()));
+            move.addSelf(new Vector3(0, 0, 1).rotateSelf(camera.getRotation()));
         }
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_J)) {
-            move.addSelf(new Vector3f(-1, 0, 0).rotateSelf(camera.getRotation()));
+            move.addSelf(new Vector3(-1, 0, 0).rotateSelf(camera.getRotation()));
         }
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_L)) {
-            move.addSelf(new Vector3f(1, 0, 0).rotateSelf(camera.getRotation()));
+            move.addSelf(new Vector3(1, 0, 0).rotateSelf(camera.getRotation()));
         }
         
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            vertMove.addSelf(new Vector3f(0, 1, 0).rotateSelf(camera.getRotation()));
+            vertMove.addSelf(new Vector3(0, 1, 0).rotateSelf(camera.getRotation()));
         }
         if (Oasis.keyboard.isKeyDown(Keyboard.KEY_SHIFT)) {
-            vertMove.addSelf(new Vector3f(0, -1, 0).rotateSelf(camera.getRotation()));
+            vertMove.addSelf(new Vector3(0, -1, 0).rotateSelf(camera.getRotation()));
         }
         
         vertMove.x = vertMove.z = 0; 
@@ -246,53 +246,53 @@ public class SampleApp extends Application {
 
     @Override
     public void onRender() {
-        Vector3f sunPos = new Vector3f();
+        Vector3 sunPos = new Vector3();
         sunPos.x = Mathf.cos(angle * 0.02f);
         sunPos.y = Mathf.sin(angle * 0.02f); 
         sunPos.z = 0; 
         sunPos.multiplySelf(200); 
         
-        Oasis.graphics.clearScreen(new ColorRgba(new Vector4f(0.8f, 0.9f, 1.0f, 1.0f).multiply(new Vector3f(0, 1, 0).dot(sunPos.normalize())))); 
+        Oasis.graphics.clearScreen(new ColorRgba(new Vector4(0.8f, 0.9f, 1.0f, 1.0f).multiply(new Vector3(0, 1, 0).dot(sunPos.normalize())))); 
         
         // render scene 
         renderer.begin(camera);
         
-        Vector3f lightPos = new Vector3f(); 
+        Vector3 lightPos = new Vector3(); 
         lightPos.x = Mathf.cos(angle * 0.2f);
         lightPos.z = Mathf.sin(angle * 0.2f); 
         lightPos.multiplySelf(80); 
         lightPos.y = 5; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.4f, 0.4f), lightPos, 80));
-        renderer.draw(lightModel1, lightPos, new Quaternionf());
+        renderer.addLight(new PointLight(new Vector3(0.8f, 0.4f, 0.4f), lightPos, 80));
+        renderer.draw(lightModel1, lightPos, new Quaternion());
         
         float tmp = lightPos.x; 
         lightPos.x = -lightPos.z; 
         lightPos.z = tmp; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.4f, 0.8f), lightPos, 80));
-        renderer.draw(lightModel2, lightPos, new Quaternionf());
+        renderer.addLight(new PointLight(new Vector3(0.4f, 0.4f, 0.8f), lightPos, 80));
+        renderer.draw(lightModel2, lightPos, new Quaternion());
         
         lightPos.x *= -1; 
         lightPos.z *= -1; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.4f, 0.8f, 0.4f), lightPos, 80));
-        renderer.draw(lightModel3, lightPos, new Quaternionf());
+        renderer.addLight(new PointLight(new Vector3(0.4f, 0.8f, 0.4f), lightPos, 80));
+        renderer.draw(lightModel3, lightPos, new Quaternion());
         
         tmp = lightPos.x; 
         lightPos.x = lightPos.z; 
         lightPos.z = -tmp; 
         
-        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.4f), lightPos, 80));
-        renderer.draw(lightModel4, lightPos, new Quaternionf());
+        renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.4f), lightPos, 80));
+        renderer.draw(lightModel4, lightPos, new Quaternion());
         
-        renderer.addLight(new PointLight(new Vector3f(0.8f, 0.8f, 0.7f), sunPos, 600));
-        renderer.draw(sunModel, sunPos, new Quaternionf());
+        renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.7f), sunPos, 600));
+        renderer.draw(sunModel, sunPos, new Quaternion());
         
-        renderer.draw(dragonModel, new Vector3f(0, 2, 0), new Quaternionf());
-        renderer.draw(terrainModel, new Vector3f(0, 0, 0), new Quaternionf());
+        renderer.draw(dragonModel, new Vector3(0, 2, 0), new Quaternion());
+        renderer.draw(terrainModel, new Vector3(0, 0, 0), new Quaternion());
         for (int i = 1; i < treePositions.length + 1; i++) {
-            renderer.draw(cubeModel, treePositions[i - 1], new Quaternionf()); 
+            renderer.draw(cubeModel, treePositions[i - 1], new Quaternion()); 
         }
         renderer.end(); 
     }

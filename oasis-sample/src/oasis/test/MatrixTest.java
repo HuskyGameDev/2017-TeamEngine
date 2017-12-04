@@ -3,17 +3,17 @@ package oasis.test;
 import java.util.Arrays;
 
 import oasis.math.Mathf;
-import oasis.math.Matrix3f;
-import oasis.math.Matrix4f;
-import oasis.math.Quaternionf;
-import oasis.math.Vector2f;
-import oasis.math.Vector3f;
+import oasis.math.Matrix3;
+import oasis.math.Matrix4;
+import oasis.math.Quaternion;
+import oasis.math.Vector2;
+import oasis.math.Vector3;
 
 public class MatrixTest {
 
     public static void main(String[] args) {
-        Matrix4f m1 = Matrix4f.translation(new Vector3f(1f, 2f, 3f)); 
-        Matrix4f m2 = Matrix4f.scale(new Vector3f(1f, 2f, 3f)); 
+        Matrix4 m1 = Matrix4.translation(new Vector3(1f, 2f, 3f)); 
+        Matrix4 m2 = Matrix4.scale(new Vector3(1f, 2f, 3f)); 
         
         System.out.println(Arrays.toString(m1.get(new float[16])));
         
@@ -25,8 +25,8 @@ public class MatrixTest {
         
         System.out.println("=========================");
         
-        Vector3f v2 = new Vector3f(4, 5, 8); 
-        Quaternionf q1 = Quaternionf.axisAngle(new Vector3f(1, 3, 4), Mathf.toRadians(45f)); 
+        Vector3 v2 = new Vector3(4, 5, 8); 
+        Quaternion q1 = Quaternion.axisAngle(new Vector3(1, 3, 4), Mathf.toRadians(45f)); 
         System.out.println(q1);
         System.out.println(q1.toMatrix4f());
         System.out.println(v2.rotate(q1));
@@ -34,8 +34,8 @@ public class MatrixTest {
         
         System.out.println("=========================");
         
-        Matrix3f m3 = Matrix3f.translation(new Vector2f(2, 3)); 
-        Vector2f v1 = new Vector2f(); 
+        Matrix3 m3 = Matrix3.translation(new Vector2(2, 3)); 
+        Vector2 v1 = new Vector2(); 
         
         System.out.println(m3);
         System.out.println(m3.multiply(v1, 1f));

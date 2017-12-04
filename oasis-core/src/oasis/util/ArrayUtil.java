@@ -1,8 +1,8 @@
 package oasis.util;
 
-import oasis.math.Vector2f;
-import oasis.math.Vector3f;
-import oasis.math.Vector4f;
+import oasis.math.Vector2;
+import oasis.math.Vector3;
+import oasis.math.Vector4;
 
 /**
  * Useful array util, such as converting math objects to primitives arrays
@@ -24,7 +24,7 @@ public final class ArrayUtil {
         return a; 
     }
     
-    public static float[] toFloatArray(Vector2f[] list) {
+    public static float[] toFloatArray(Vector2[] list) {
         float[] out = new float[list.length * 2]; 
         
         for (int i = 0; i < list.length; i++) {
@@ -35,7 +35,7 @@ public final class ArrayUtil {
         return out; 
     }
     
-    public static float[] toFloatArray(Vector3f[] list) {
+    public static float[] toFloatArray(Vector3[] list) {
         float[] out = new float[list.length * 3]; 
         
         for (int i = 0; i < list.length; i++) {
@@ -47,7 +47,7 @@ public final class ArrayUtil {
         return out; 
     }
     
-    public static float[] toFloatArray(Vector4f[] list) {
+    public static float[] toFloatArray(Vector4[] list) {
         float[] out = new float[list.length * 4]; 
         
         for (int i = 0; i < list.length; i++) {

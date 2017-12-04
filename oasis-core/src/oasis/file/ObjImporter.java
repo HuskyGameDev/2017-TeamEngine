@@ -9,8 +9,8 @@ import oasis.core.GameLogger;
 import oasis.core.Oasis;
 import oasis.graphics.model.Mesh;
 import oasis.graphics.model.Vertex;
-import oasis.math.Vector2f;
-import oasis.math.Vector3f;
+import oasis.math.Vector2;
+import oasis.math.Vector3;
 import oasis.util.ArrayUtil;
 
 public class ObjImporter {
@@ -20,9 +20,9 @@ public class ObjImporter {
     private ObjImporter() {} 
     
     private static int getVertexIndex(
-            List<Vector3f> positions, 
-            List<Vector3f> normals, 
-            List<Vector2f> texCoords, 
+            List<Vector3> positions, 
+            List<Vector3> normals, 
+            List<Vector2> texCoords, 
             List<Vertex> verts, 
             Map<String, Integer> map, 
             String key) {
@@ -55,9 +55,9 @@ public class ObjImporter {
             return null; 
         }
         
-        List<Vector3f> positions = new ArrayList<>(); 
-        List<Vector3f> normals = new ArrayList<>(); 
-        List<Vector2f> texCoords = new ArrayList<>(); 
+        List<Vector3> positions = new ArrayList<>(); 
+        List<Vector3> normals = new ArrayList<>(); 
+        List<Vector2> texCoords = new ArrayList<>(); 
         List<Integer> inds = new ArrayList<>(); 
         List<Vertex> verts = new ArrayList<>(); 
         
@@ -72,21 +72,21 @@ public class ObjImporter {
                 if (words.length == 0) continue; 
                 
                 if (words[0].equals("v")) {
-                    positions.add(new Vector3f(
+                    positions.add(new Vector3(
                             Float.parseFloat(words[1]),
                             Float.parseFloat(words[2]), 
                             Float.parseFloat(words[3])
                     )); 
                 }
                 else if (words[0].equals("vn")) {
-                    normals.add(new Vector3f(
+                    normals.add(new Vector3(
                             Float.parseFloat(words[1]),
                             Float.parseFloat(words[2]), 
                             Float.parseFloat(words[3])
                     )); 
                 }
                 else if (words[0].equals("vt")) {
-                    texCoords.add(new Vector2f(
+                    texCoords.add(new Vector2(
                             Float.parseFloat(words[1]),
                             Float.parseFloat(words[2])
                     )); 
