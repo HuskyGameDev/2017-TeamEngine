@@ -1,5 +1,6 @@
 package oasis.core;
 
+import oasis.audio.AudioDevice;
 import oasis.graphics.Display;
 import oasis.graphics.GraphicsDevice;
 import oasis.input.Keyboard;
@@ -104,6 +105,13 @@ public abstract class Engine {
      * @return graphics device 
      */
     public abstract GraphicsDevice getGraphicsDevice();
+    
+    /**
+     * Get the audio device 
+     * 
+     * @return audio device 
+     */
+    public abstract AudioDevice getAudioDevice(); 
     
     /**
      * Initialize engine resources 

@@ -3,6 +3,8 @@ package oasis.core.jogl3;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 
+import oasis.audio.AudioDevice;
+import oasis.audio.joal.JoalAudioDevice;
 import oasis.core.Engine;
 import oasis.core.EngineException;
 import oasis.core.GameLogger;
@@ -17,9 +19,11 @@ public class Jogl3Engine extends Engine {
     private static final GameLogger log = new GameLogger(Jogl3Engine.class);
 
     private Jogl3Display display;
+    private JoalAudioDevice audio; 
 
     public Jogl3Engine() {
         display = new Jogl3Display();
+        audio = new JoalAudioDevice(); 
     }
 
     @Override
@@ -117,6 +121,11 @@ public class Jogl3Engine extends Engine {
     @Override
     public Mouse getMouse() {
         return display.getMouse(); 
+    }
+
+    @Override
+    public AudioDevice getAudioDevice() {
+        return audio; 
     }
 
 }

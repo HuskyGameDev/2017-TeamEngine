@@ -1,5 +1,6 @@
 package oasis.core;
 
+import oasis.audio.AudioDevice;
 import oasis.file.FileSystem;
 import oasis.graphics.Display;
 import oasis.graphics.GraphicsDevice;
@@ -90,6 +91,11 @@ public final class Oasis {
     public static GraphicsDevice graphics = null; 
     
     /**
+     * Audio device reference 
+     */
+    public static AudioDevice audio = null; 
+    
+    /**
      * Keyboard reference
      */
     public static Keyboard keyboard = null; 
@@ -112,6 +118,7 @@ public final class Oasis {
         Oasis.app = engine.getApplication(); 
         Oasis.display = engine.getDisplay(); 
         Oasis.graphics = engine.getGraphicsDevice(); 
+        Oasis.audio = engine.getAudioDevice(); 
         Oasis.keyboard = engine.getKeyboard(); 
         Oasis.mouse = engine.getMouse(); 
     }

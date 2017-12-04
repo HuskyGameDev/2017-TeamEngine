@@ -4,19 +4,22 @@ public interface AudioDevice {
 
     // resource creation
     
-    Listener createListener(); 
-    Sound createSound(); 
+    AudioListener createListener(); 
+    AudioSource createSource(); 
+    AudioBuffer createBuffer(AudioFormat fmt); 
     
     // getters
     
-    Listener getListener(); 
-    Sound getSound(int index); 
-    int getMaxSoundCount(); 
+    AudioListener getListener(); 
+    AudioSource getSource(int index); 
+    int getSourceCount(); 
+    int getMaxSourceCount(); 
     
     // setters
     
-    void setListener(Listener listener); 
-    void setSound(int index, Sound source); 
-    void clearSounds(); 
+    void setListener(AudioListener listener); 
+    void addSource(AudioSource source);
+    void removeSource(AudioSource source); 
+    void clearSources(); 
     
 }
