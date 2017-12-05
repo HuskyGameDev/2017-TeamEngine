@@ -34,12 +34,11 @@ public class SoundApp extends Application {
     public void onInit() {
         listener = Oasis.audio.createListener(); 
         source = Oasis.audio.createSource(); 
-        buffer = Oasis.audio.createBuffer(AudioFormat.STEREO16); 
+        buffer = Oasis.audio.createBuffer(AudioFormat.MONO16); 
         
-        short[] data = new short[44100 * 2]; 
-        for (int i = 0; i < data.length / 2; i++) {
-            data[i*2+0] = (short) (Short.MAX_VALUE * Math.sin(i * i * 0.000001)); 
-            data[i*2+1] = (short) (Short.MAX_VALUE * Math.sin(i * i * 0.000001)); 
+        short[] data = new short[44100]; 
+        for (int i = 0; i < data.length; i++) {
+            data[i] = (short) (Short.MAX_VALUE * i * 1.0 / 128.0); 
         }
         
         buffer.setData(data, 44100);
@@ -51,9 +50,9 @@ public class SoundApp extends Application {
 
         System.out.println("Playing: " + source.isPlaying()); 
         
-        source.setGain(1f);
+        source.setGain(0.5f);
         source.setLooping(true); 
-        source.setPitch(1f);
+        source.setPitch(0.5f);
         
         System.out.println(source.isLooping());
         source.play(); 
