@@ -7,5 +7,6 @@ public interface AudioBuffer {
     AudioFormat getFormat(); 
     
     void setData(byte[] data, int freq); 
+    void setData(short[] data, int freq); 
     
 }

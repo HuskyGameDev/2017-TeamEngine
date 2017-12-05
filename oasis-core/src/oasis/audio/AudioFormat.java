@@ -2,12 +2,12 @@ package oasis.audio;
 
 public enum AudioFormat {
 
-    MONO_8, 
+    MONO8, 
     
-    STEREO_8, 
+    STEREO8, 
     
-    MONO_16, 
+    MONO16, 
     
-    STEREO_16
+    STEREO16
     
 }

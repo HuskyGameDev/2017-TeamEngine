@@ -58,27 +58,64 @@ public class JoalAudioSource implements AudioSource {
 
     @Override
     public void play() {
-        // TODO Auto-generated method stub
-        ad.al.alSourcei(id[0], AL.AL_LOOPING, AL.AL_TRUE); 
-        ad.checkError(); 
         ad.al.alSourcePlay(id[0]); 
-        ad.checkError(); 
     }
 
     @Override
+    public void pause() {
+        ad.al.alSourcePause(id[0]);
+    }
+    
+    @Override
     public void stop() {
-        // TODO Auto-generated method stub
-        ad.al.alSourcePause(id[0]); 
-        ad.checkError(); 
+        ad.al.alSourceStop(id[0]); 
     }
 
     @Override
     public boolean isPlaying() {
+        return getInt(AL.AL_SOURCE_STATE) == AL.AL_PLAYING; 
+    }
+
+    @Override
+    public void setLooping(boolean loop) {
+        ad.al.alSourcei(id[0], AL.AL_LOOPING, loop ? AL.AL_TRUE : AL.AL_FALSE); 
+    }
+
+    @Override
+    public boolean isLooping() {
+        return getInt(AL.AL_LOOPING) == AL.AL_TRUE; 
+    }
+
+    @Override
+    public void setGain(float gain) {
+        ad.al.alSourcef(id[0], AL.AL_GAIN, gain); 
+    }
+
+    @Override
+    public float getGain() {
+        return getFloat(AL.AL_GAIN); 
+    }
+    
+    private int getInt(int value) {
         int[] tmp = new int[1]; 
-        ad.al.alGetSourcei(id[0], AL.AL_SOURCE_STATE, tmp, 0);
-        ad.checkError();
-        System.out.printf("%x\n", tmp[0]);
-        return tmp[0] == AL.AL_PLAYING; 
+        ad.al.alGetSourcei(id[0], value, tmp, 0);
+        return tmp[0]; 
+    }
+    
+    private float getFloat(int value) {
+        float[] tmp = new float[1]; 
+        ad.al.alGetSourcef(id[0], value, tmp, 0);
+        return tmp[0]; 
+    }
+
+    @Override
+    public void setPitch(float pitch) {
+        ad.al.alSourcef(id[0], AL.AL_PITCH, pitch);
+    }
+
+    @Override
+    public float getPitch() {
+        return getFloat(AL.AL_PITCH); 
     }
 
 }

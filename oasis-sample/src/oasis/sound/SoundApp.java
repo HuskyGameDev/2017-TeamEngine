@@ -9,6 +9,7 @@ import oasis.core.Config;
 import oasis.core.Oasis;
 import oasis.core.jogl3.Jogl3Engine;
 import oasis.graphics.ColorRgba;
+import oasis.input.Keyboard;
 import oasis.math.Vector3;
 
 public class SoundApp extends Application {
@@ -33,11 +34,12 @@ public class SoundApp extends Application {
     public void onInit() {
         listener = Oasis.audio.createListener(); 
         source = Oasis.audio.createSource(); 
-        buffer = Oasis.audio.createBuffer(AudioFormat.MONO_8); 
+        buffer = Oasis.audio.createBuffer(AudioFormat.STEREO16); 
         
-        byte[] data = new byte[44100]; 
-        for (int i = 0; i < data.length; i++) {
-            data[i] = (byte) (127 * Math.sin(i * 0.01)); 
+        short[] data = new short[44100 * 2]; 
+        for (int i = 0; i < data.length / 2; i++) {
+            data[i*2+0] = (short) (Short.MAX_VALUE * Math.sin(i * i * 0.000001)); 
+            data[i*2+1] = (short) (Short.MAX_VALUE * Math.sin(i * i * 0.000001)); 
         }
         
         buffer.setData(data, 44100);
@@ -49,15 +51,27 @@ public class SoundApp extends Application {
 
         System.out.println("Playing: " + source.isPlaying()); 
         
+        source.setGain(1f);
+        source.setLooping(true); 
+        source.setPitch(1f);
+        
+        System.out.println(source.isLooping());
         source.play(); 
+        System.out.println(source.isLooping());
 
         System.out.println("Playing: " + source.isPlaying()); 
     }
 
     @Override
     public void onUpdate(float dt) {
-        // TODO Auto-generated method stub
-        listener.setPosition(listener.getPosition().add(new Vector3(0, 1, 0).multiplySelf(dt)));
+        if (Oasis.keyboard.isKeyJustDown(Keyboard.KEY_SPACE)) {
+            if (source.isPlaying()) {
+                source.stop(); 
+            }
+            else {
+                source.play(); 
+            }
+        }
     }
 
     @Override

@@ -16,8 +16,22 @@ public interface AudioSource {
     
     void play(); 
     
+    void pause(); 
+    
     void stop(); 
     
     boolean isPlaying(); 
+    
+    void setLooping(boolean loop); 
+    
+    boolean isLooping(); 
+    
+    void setGain(float gain); 
+    
+    float getGain(); 
+    
+    void setPitch(float pitch);
+    
+    float getPitch(); 
     
 }
