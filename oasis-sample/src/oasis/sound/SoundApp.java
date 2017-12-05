@@ -37,23 +37,27 @@ public class SoundApp extends Application {
         
         byte[] data = new byte[44100]; 
         for (int i = 0; i < data.length; i++) {
-            data[i] = (byte) (127 * Math.sin(i * 0.001)); 
+            data[i] = (byte) (127 * Math.sin(i * 0.01)); 
         }
         
         buffer.setData(data, 44100);
         source.setBuffer(buffer); 
-        source.setPosition(new Vector3(1, 2, 3));
+        source.setPosition(new Vector3(0, 0, 0));
         
         Oasis.audio.setListener(listener); 
         Oasis.audio.addSource(source); 
+
+        System.out.println("Playing: " + source.isPlaying()); 
         
         source.play(); 
+
+        System.out.println("Playing: " + source.isPlaying()); 
     }
 
     @Override
     public void onUpdate(float dt) {
         // TODO Auto-generated method stub
-        
+        listener.setPosition(listener.getPosition().add(new Vector3(0, 1, 0).multiplySelf(dt)));
     }
 
     @Override

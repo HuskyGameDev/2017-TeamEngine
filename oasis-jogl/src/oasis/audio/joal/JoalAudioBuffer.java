@@ -18,6 +18,7 @@ public class JoalAudioBuffer implements AudioBuffer {
         this.ad = ad; 
         
         ad.al.alGenBuffers(1, id, 0); 
+        ad.checkError();
     }
     
     public AudioFormat getFormat() {
@@ -31,12 +32,16 @@ public class JoalAudioBuffer implements AudioBuffer {
     @Override
     public void dispose() {
         ad.al.alDeleteBuffers(1, id, 0); 
+        ad.checkError();
     }
 
     @Override
     public void setData(byte[] data, int freq) {
         ByteBuffer buffer = ByteBuffer.wrap(data); 
+        buffer.position(data.length - 1); 
+        buffer.flip(); 
         ad.al.alBufferData(id[0], AL.AL_FORMAT_MONO8, buffer, data.length, freq);
+        ad.checkError();
     }
 
 }

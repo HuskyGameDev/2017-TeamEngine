@@ -1,6 +1,7 @@
 package oasis.audio.joal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.jogamp.openal.AL;
@@ -24,6 +25,14 @@ public class JoalAudioDevice implements AudioDevice {
     
     private JoalAudioListener listener; 
     private List<JoalAudioSource> sources; 
+    
+    public void checkError() {
+        System.out.println("AL Error : " + al.alGetError());
+    }
+    
+    public void checkError(String command) {
+        System.out.println("AL Error (" + command + ") : " + al.alGetError());
+    }
     
     public JoalAudioDevice() {
         al = ALFactory.getAL(); 
@@ -109,8 +118,15 @@ public class JoalAudioDevice implements AudioDevice {
         if (listener == jal) {
             Vector3 pos = jal.getPosition(); 
             Quaternion rot = jal.getOrientation(); 
+            Vector3 f = rot.getForward(); 
+            Vector3 u = rot.getUp(); 
             
-            al.alListener3f(AL.AL_POSITION, pos.x, pos.y, pos.z);
+            float[] ori = new float[] { f.x, f.y, f.z, u.x, u.y, u.z }; 
+            System.out.println(Arrays.toString(ori));
+            System.out.println(pos); 
+            al.alListenerfv(AL.AL_POSITION, new float[] { pos.x, pos.y, pos.z }, 0);
+            al.alListenerfv(AL.AL_ORIENTATION, ori, 0); 
+            al.alListenerfv(AL.AL_VELOCITY, new float[] { 0, 0, 0 }, 0); 
         }
     }
 

@@ -156,6 +156,30 @@ public class Quaternion {
         return out; 
     }
     
+    public Vector3 getForward() {
+        return new Vector3(0, 0, -1).rotate(this); 
+    }
+    
+    public Vector3 getBackward() {
+        return new Vector3(0, 0, 1).rotate(this); 
+    }
+    
+    public Vector3 getUp() {
+        return new Vector3(0, 1, 0).rotate(this); 
+    }
+    
+    public Vector3 getDown() {
+        return new Vector3(0, -1, 0).rotate(this); 
+    }
+    
+    public Vector3 getLeft() {
+        return new Vector3(-1, 0, 0).rotate(this); 
+    }
+    
+    public Vector3 getRight() {
+        return new Vector3(1, 0, 0).rotate(this); 
+    }
+    
     public boolean equals(Object obj) {
         if (obj == this) return true; 
         if (obj == null) return false; 
