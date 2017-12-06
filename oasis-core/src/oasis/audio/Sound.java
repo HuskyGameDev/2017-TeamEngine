@@ -1,6 +1,7 @@
 package oasis.audio;
 
 import oasis.core.Oasis;
+import oasis.math.Vector3;
 
 public class Sound {
 
@@ -9,6 +10,39 @@ public class Sound {
     public Sound(AudioBuffer buffer) {
         source = Oasis.audio.createSource(); 
         source.setBuffer(buffer); 
+    }
+    
+    public Sound(String file) {
+        source = Oasis.audio.createSource(); 
+        source.setBuffer(Oasis.audio.loadWAVBuffer(file));
+    }
+    
+    public AudioFormat getFormat() {
+        return source.getBuffer().getFormat(); 
+    }
+    
+    public void setMinDistance(float dist) {
+        source.setMinDistance(dist); 
+    }
+    
+    public float getMinDistance() {
+        return source.getMinDistance(); 
+    }
+    
+    public void setMaxDistance(float dist) {
+        source.setMaxDistance(dist); 
+    }
+    
+    public float getMaxDistance() {
+        return source.getMaxDistance(); 
+    }
+    
+    public void setPosition(Vector3 pos) {
+        source.setPosition(pos); 
+    }
+    
+    public Vector3 getPosition() {
+        return source.getPosition(); 
     }
     
     public void setGain(float gain) {

@@ -48,6 +48,8 @@ public class JoalAudioDevice implements AudioDevice {
         log.info("AL Renderer: " + al.alGetString(AL.AL_RENDERER));
         log.info("AL Version: " + al.alGetString(AL.AL_VERSION));
         
+        al.alDistanceModel(AL.AL_LINEAR_DISTANCE);
+        
         sources = new ArrayList<>(); 
     }
     
@@ -130,8 +132,7 @@ public class JoalAudioDevice implements AudioDevice {
             Vector3 u = rot.getUp(); 
             
             float[] ori = new float[] { f.x, f.y, f.z, u.x, u.y, u.z }; 
-//            System.out.println(Arrays.toString(ori));
-//            System.out.println(pos); 
+            
             al.alListenerfv(AL.AL_POSITION, new float[] { pos.x, pos.y, pos.z }, 0);
             al.alListenerfv(AL.AL_ORIENTATION, ori, 0); 
             al.alListenerfv(AL.AL_VELOCITY, new float[] { 0, 0, 0 }, 0); 

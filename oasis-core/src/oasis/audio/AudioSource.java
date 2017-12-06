@@ -34,4 +34,12 @@ public interface AudioSource {
     
     float getPitch(); 
     
+    void setMinDistance(float dist); 
+    
+    float getMinDistance(); 
+    
+    void setMaxDistance(float dist); 
+    
+    float getMaxDistance(); 
+    
 }

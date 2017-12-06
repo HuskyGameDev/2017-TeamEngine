@@ -19,11 +19,14 @@ public class JoalAudioSource implements AudioSource {
     private boolean playing = false; 
     private boolean looping = false; 
     private float pitch = 1.0f; 
+    private float minDist = 1.0f; 
+    private float maxDist = Float.MAX_VALUE; 
     
     public JoalAudioSource(JoalAudioDevice ad) {
         this.ad = ad; 
         position = new Vector3(); 
         ad.al.alGenSources(1, id, 0); 
+//        ad.al.alSourcef(id[0], AL.AL_ROLLOFF_FACTOR, 40f);
     }
     
     @Override
@@ -49,6 +52,24 @@ public class JoalAudioSource implements AudioSource {
             ad.al.alSourcei(id[0], AL.AL_BUFFER, 0);
             ad.checkError("set source buffer null");
         }
+    }
+    
+    public float getMinDistance() {
+        return getFloat(AL.AL_REFERENCE_DISTANCE); //minDist; 
+    }
+    
+    public float getMaxDistance() {
+        return getFloat(AL.AL_MAX_DISTANCE); //maxDist; 
+    }
+    
+    public void setMinDistance(float dist) {
+        ad.al.alSourcef(id[0], AL.AL_REFERENCE_DISTANCE, dist);
+        minDist = dist; 
+    }
+    
+    public void setMaxDistance(float dist) {
+        ad.al.alSourcef(id[0], AL.AL_MAX_DISTANCE, dist);
+        maxDist = dist; 
     }
     
     public Vector3 getPosition() {
@@ -108,17 +129,17 @@ public class JoalAudioSource implements AudioSource {
         return gain; //getFloat(AL.AL_GAIN); 
     }
     
-    private int getInt(int value) {
-        int[] tmp = new int[1]; 
-        ad.al.alGetSourcei(id[0], value, tmp, 0);
-        return tmp[0]; 
-    }
-    
-//    private float getFloat(int value) {
-//        float[] tmp = new float[1]; 
-//        ad.al.alGetSourcef(id[0], value, tmp, 0);
+//    private int getInt(int value) {
+//        int[] tmp = new int[1]; 
+//        ad.al.alGetSourcei(id[0], value, tmp, 0);
 //        return tmp[0]; 
 //    }
+    
+    private float getFloat(int value) {
+        float[] tmp = new float[1]; 
+        ad.al.alGetSourcef(id[0], value, tmp, 0);
+        return tmp[0]; 
+    }
 
     @Override
     public void setPitch(float pitch) {

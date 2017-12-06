@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import oasis.audio.AudioListener;
+import oasis.audio.Sound;
 import oasis.core.Application;
 import oasis.core.Config;
 import oasis.core.GameLogger;
@@ -43,7 +45,11 @@ public class SampleApp extends Application {
     private ModelRenderer renderer; 
     
     // meshes and materials 
-    private Model terrainModel, cubeModel, sunModel, lightModel1, lightModel2, lightModel3, lightModel4, dragonModel; 
+    private Model terrainModel, treeModel, sunModel, lightModel1, lightModel2, lightModel3, lightModel4, dragonModel; 
+    
+    // sounds 
+    private Sound sound; 
+    private AudioListener listener; 
     
     // current angle 
     private float angle = 0.0f; 
@@ -60,10 +66,20 @@ public class SampleApp extends Application {
         camera = new PerspectiveCamera(800, 600, 70.0f, 0.1f, 1000.0f); 
         camera.setPosition(new Vector3(0, 5, 0));
         
+        // load audio 
+        listener = Oasis.audio.createListener(); 
+        Oasis.audio.setListener(listener); 
+        
+        sound = new Sound("pitfall.wav"); 
+        sound.setLooping(true); 
+        sound.setMinDistance(10.0f); 
+        sound.setMaxDistance(100.0f); 
+        sound.play(); 
+        
         // load meshes 
         
         Mesh water = ObjImporter.load("plane.obj"); 
-        Mesh heightmap = ObjImporter.load("terrain3.obj"); 
+        Mesh heightmap = ObjImporter.load("terrain4.obj"); 
         Mesh dragon = ObjImporter.load("dragon.obj"); 
         Mesh tree = ObjImporter.load("fir.obj"); 
         Mesh sphere = ObjImporter.load("sphere.obj"); 
@@ -132,8 +148,8 @@ public class SampleApp extends Application {
         dragonModel = new Model(); 
         dragonModel.add(dragon, metal); 
         
-        cubeModel = new Model(); 
-        cubeModel.add(tree, treeMaterial);
+        treeModel = new Model(); 
+        treeModel.add(tree, treeMaterial);
         
         sunModel = new Model(); 
         sunModel.add(sphere, sunMaterial);
@@ -242,6 +258,9 @@ public class SampleApp extends Application {
         }
         camera.setRotation(camYaw, camPitch);
         camera.setPosition(camera.getPosition().add(move));
+        
+        listener.setPosition(camera.getPosition());
+        listener.setOrientation(camera.getRotation()); 
     }
 
     @Override
@@ -263,36 +282,37 @@ public class SampleApp extends Application {
         lightPos.multiplySelf(80); 
         lightPos.y = 5; 
         
-        renderer.addLight(new PointLight(new Vector3(0.8f, 0.4f, 0.4f), lightPos, 80));
+        renderer.addLight(new PointLight(new Vector3(0.8f, 0.4f, 0.4f), lightPos, 180));
         renderer.draw(lightModel1, lightPos, new Quaternion());
         
         float tmp = lightPos.x; 
         lightPos.x = -lightPos.z; 
         lightPos.z = tmp; 
         
-        renderer.addLight(new PointLight(new Vector3(0.4f, 0.4f, 0.8f), lightPos, 80));
+        renderer.addLight(new PointLight(new Vector3(0.4f, 0.4f, 0.8f), lightPos, 180));
         renderer.draw(lightModel2, lightPos, new Quaternion());
         
         lightPos.x *= -1; 
         lightPos.z *= -1; 
         
-        renderer.addLight(new PointLight(new Vector3(0.4f, 0.8f, 0.4f), lightPos, 80));
+        renderer.addLight(new PointLight(new Vector3(0.4f, 0.8f, 0.4f), lightPos, 180));
         renderer.draw(lightModel3, lightPos, new Quaternion());
         
         tmp = lightPos.x; 
         lightPos.x = lightPos.z; 
         lightPos.z = -tmp; 
         
-        renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.4f), lightPos, 80));
+        renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.4f), lightPos, 180));
         renderer.draw(lightModel4, lightPos, new Quaternion());
         
         renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.7f), sunPos, 600));
         renderer.draw(sunModel, sunPos, new Quaternion());
         
-        renderer.draw(dragonModel, new Vector3(0, 2, 0), new Quaternion());
+        sound.setPosition(new Vector3(0, 2, 0)); 
+//        renderer.draw(dragonModel, new Vector3(0, 2, 0), new Quaternion());
         renderer.draw(terrainModel, new Vector3(0, 0, 0), new Quaternion());
         for (int i = 1; i < treePositions.length + 1; i++) {
-            renderer.draw(cubeModel, treePositions[i - 1], new Quaternion()); 
+            renderer.draw(treeModel, treePositions[i - 1], new Quaternion()); 
         }
         renderer.end(); 
     }
@@ -307,7 +327,7 @@ public class SampleApp extends Application {
         
         Config cfg = new Config();
         cfg.engine = Jogl3Engine.class;
-        cfg.fps = Config.UNLIMITED_FPS;
+        cfg.fps = 60.0f; //Config.UNLIMITED_FPS;
         cfg.ups = 60.0f;
         cfg.width = 800; 
         cfg.height = 600; 
