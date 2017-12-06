@@ -44,6 +44,12 @@ public class JoalAudioBuffer implements AudioBuffer {
         ad.checkError();
     }
     
+    public void setData(ByteBuffer buffer, int size, int freq) {
+        ad.checkError("pre alBufferData");
+        ad.al.alBufferData(id[0], JoalConvert.getBufferFormat(fmt), buffer, size, freq);
+        ad.checkError("alBufferData");
+    }
+    
     @Override
     public void setData(short[] data, int freq) {
         ShortBuffer buffer = ShortBuffer.wrap(data); 

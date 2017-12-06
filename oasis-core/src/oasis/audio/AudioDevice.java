@@ -7,6 +7,7 @@ public interface AudioDevice {
     AudioListener createListener(); 
     AudioSource createSource(); 
     AudioBuffer createBuffer(AudioFormat fmt); 
+    AudioBuffer loadWAVBuffer(String file); 
     
     // getters
     

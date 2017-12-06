@@ -1,5 +1,6 @@
 package oasis.audio.joal;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import oasis.audio.AudioFormat;
 import oasis.audio.AudioListener;
 import oasis.audio.AudioSource;
 import oasis.core.GameLogger;
+import oasis.core.Oasis;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
 
@@ -116,7 +118,7 @@ public class JoalAudioDevice implements AudioDevice {
     }
 
     @Override
-    public AudioBuffer createBuffer(AudioFormat fmt) {
+    public JoalAudioBuffer createBuffer(AudioFormat fmt) {
         return new JoalAudioBuffer(this, fmt); 
     }
     
@@ -134,6 +136,29 @@ public class JoalAudioDevice implements AudioDevice {
             al.alListenerfv(AL.AL_ORIENTATION, ori, 0); 
             al.alListenerfv(AL.AL_VELOCITY, new float[] { 0, 0, 0 }, 0); 
         }
+    }
+
+    @Override
+    public AudioBuffer loadWAVBuffer(String file) {
+        int[] format = new int[1]; 
+        ByteBuffer[] data = new ByteBuffer[1]; 
+        int[] size = new int[1]; 
+        int[] freq = new int[1]; 
+        int[] loop = new int[1]; 
+        
+        file = Oasis.files.find(file); 
+        
+        if (file == null) {
+            log.warning("Could not find file: " + file); 
+            return null; 
+        }
+        
+        ALut.alutLoadWAVFile(file, format, data, size, freq, loop);
+        
+        JoalAudioBuffer b = createBuffer(JoalConvert.getAudioFormat(format[0])); 
+        b.setData(data[0], size[0], freq[0]);
+        
+        return b;
     }
 
 }

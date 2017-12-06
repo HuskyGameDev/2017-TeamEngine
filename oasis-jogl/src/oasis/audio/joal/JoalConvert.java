@@ -6,7 +6,7 @@ import oasis.audio.AudioFormat;
 
 public class JoalConvert {
 
-    private static final int[] bufferFormat = new int[AudioFormat.values().length]; 
+    public static final int[] bufferFormat = new int[AudioFormat.values().length]; 
     
     static {
         bufferFormat[AudioFormat.MONO8.ordinal()] = AL.AL_FORMAT_MONO8;
@@ -17,6 +17,13 @@ public class JoalConvert {
     
     public static final int getBufferFormat(AudioFormat format) {
         return format == null ? AL.AL_FORMAT_MONO8 : bufferFormat[format.ordinal()]; 
+    }
+    
+    public static final AudioFormat getAudioFormat(int format) {
+        for (AudioFormat fmt : AudioFormat.values()) {
+            if (getBufferFormat(fmt) == format) return fmt; 
+        }
+        return null; 
     }
     
 }

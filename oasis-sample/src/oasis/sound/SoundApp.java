@@ -34,14 +34,15 @@ public class SoundApp extends Application {
     @Override
     public void onInit() {
         listener = Oasis.audio.createListener(); 
-        buffer = Oasis.audio.createBuffer(AudioFormat.MONO16); 
-        
-        short[] data = new short[100]; 
-        for (int i = 0; i < data.length; i++) {
-            data[i] = (short) (Short.MAX_VALUE * Math.sin(i * 1.0 * Math.PI * 440.0 / 44100)); 
-        }
-        
-        buffer.setData(data, 44100);
+        buffer = Oasis.audio.loadWAVBuffer("overworld.wav"); 
+//        buffer = Oasis.audio.createBuffer(AudioFormat.MONO16); 
+//        
+//        short[] data = new short[100]; 
+//        for (int i = 0; i < data.length; i++) {
+//            data[i] = (short) (Short.MAX_VALUE * Math.sin(i * 1.0 * Math.PI * 440.0 / 44100)); 
+//        }
+//        
+//        buffer.setData(data, 44100);
 
         keycodes = new int[] {
                 Keyboard.KEY_Z, 
@@ -73,11 +74,7 @@ public class SoundApp extends Application {
     public void onUpdate(float dt) {
         for (int i = 0; i < notes.length; i++) {
             if (Oasis.keyboard.isKeyDown(keycodes[i])) {
-                System.out.println("Playing " + i);
-                notes[i].changeGain(1f);
-                if (notes[i].getGain() > 0.3f) {
-                    notes[i].setGain(0.3f); 
-                }
+                notes[i].setGain(0.7f);
             }
             else {
                 notes[i].changeGain(-0.05f);
