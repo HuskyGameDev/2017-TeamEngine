@@ -15,6 +15,11 @@ public class JoalAudioSource implements AudioSource {
     
     private int[] id = new int[1]; 
     
+    private float gain = 1.0f;
+    private boolean playing = false; 
+    private boolean looping = false; 
+    private float pitch = 1.0f; 
+    
     public JoalAudioSource(JoalAudioDevice ad) {
         this.ad = ad; 
         position = new Vector3(); 
@@ -58,42 +63,49 @@ public class JoalAudioSource implements AudioSource {
 
     @Override
     public void play() {
-        ad.al.alSourcePlay(id[0]); 
+        if (ad.isPlayable(this) && !isPlaying()) ad.al.alSourcePlay(id[0]); 
+        playing = true; 
     }
 
     @Override
     public void pause() {
+        playing = false; 
         ad.al.alSourcePause(id[0]);
     }
     
     @Override
     public void stop() {
+        playing = false; 
         ad.al.alSourceStop(id[0]); 
     }
 
     @Override
     public boolean isPlaying() {
-        return getInt(AL.AL_SOURCE_STATE) == AL.AL_PLAYING; 
+        return playing; //getInt(AL.AL_SOURCE_STATE) == AL.AL_PLAYING; 
     }
 
     @Override
     public void setLooping(boolean loop) {
+        looping = loop; 
         ad.al.alSourcei(id[0], AL.AL_LOOPING, loop ? AL.AL_TRUE : AL.AL_FALSE); 
     }
 
     @Override
     public boolean isLooping() {
-        return getInt(AL.AL_LOOPING) == AL.AL_TRUE; 
+        return looping; //getInt(AL.AL_LOOPING) == AL.AL_TRUE; 
     }
 
     @Override
     public void setGain(float gain) {
+        if (gain < 0.0) gain = 0; 
+        if (gain > 1.0) gain = 1; 
+        this.gain = gain; 
         ad.al.alSourcef(id[0], AL.AL_GAIN, gain); 
     }
 
     @Override
     public float getGain() {
-        return getFloat(AL.AL_GAIN); 
+        return gain; //getFloat(AL.AL_GAIN); 
     }
     
     private int getInt(int value) {
@@ -102,20 +114,21 @@ public class JoalAudioSource implements AudioSource {
         return tmp[0]; 
     }
     
-    private float getFloat(int value) {
-        float[] tmp = new float[1]; 
-        ad.al.alGetSourcef(id[0], value, tmp, 0);
-        return tmp[0]; 
-    }
+//    private float getFloat(int value) {
+//        float[] tmp = new float[1]; 
+//        ad.al.alGetSourcef(id[0], value, tmp, 0);
+//        return tmp[0]; 
+//    }
 
     @Override
     public void setPitch(float pitch) {
+        this.pitch = pitch; 
         ad.al.alSourcef(id[0], AL.AL_PITCH, pitch);
     }
 
     @Override
     public float getPitch() {
-        return getFloat(AL.AL_PITCH); 
+        return pitch; //getFloat(AL.AL_PITCH); 
     }
 
 }

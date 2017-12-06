@@ -49,7 +49,7 @@ public class JoalAudioBuffer implements AudioBuffer {
         ShortBuffer buffer = ShortBuffer.wrap(data); 
         buffer.position(data.length - 1); 
         buffer.flip(); 
-        ad.al.alBufferData(id[0], JoalConvert.getBufferFormat(fmt), buffer, data.length * 2 - 2, freq);
+        ad.al.alBufferData(id[0], JoalConvert.getBufferFormat(fmt), buffer, data.length * 2 - 4, freq);
         ad.checkError();
     }
 

@@ -1,7 +1,6 @@
 package oasis.audio.joal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.jogamp.openal.AL;
@@ -27,11 +26,17 @@ public class JoalAudioDevice implements AudioDevice {
     private List<JoalAudioSource> sources; 
     
     public void checkError() {
-        System.out.println("AL Error : " + al.alGetError());
+        int err = al.alGetError(); 
+        if (err != AL.AL_NO_ERROR) System.out.println("AL Error : " + err);
     }
     
     public void checkError(String command) {
-        System.out.println("AL Error (" + command + ") : " + al.alGetError());
+        int err = al.alGetError(); 
+        if (err != AL.AL_NO_ERROR) System.out.println("AL Error (" + command + ") : " + err);
+    }
+    
+    protected boolean isPlayable(JoalAudioSource s) {
+        return sources.contains(s); 
     }
     
     public JoalAudioDevice() {
@@ -88,7 +93,7 @@ public class JoalAudioDevice implements AudioDevice {
         if (s == null) return; 
         
         if (sources.size() < getMaxSourceCount() - 1) {
-            sources.add(s); 
+            if (!sources.contains(s)) sources.add(s); 
         }
         else {
             // TODO 
@@ -101,6 +106,7 @@ public class JoalAudioDevice implements AudioDevice {
         
         if (s == null) return; 
         
+        s.pause(); 
         sources.remove(s); 
     }
 
