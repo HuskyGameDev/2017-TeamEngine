@@ -26,6 +26,7 @@ import oasis.input.Keyboard;
 import oasis.input.Mouse;
 import oasis.math.Mathf;
 import oasis.math.Quaternion;
+import oasis.math.Transform;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
@@ -48,14 +49,14 @@ public class SampleApp extends Application {
     private Model terrainModel, treeModel, sunModel, lightModel1, lightModel2, lightModel3, lightModel4, dragonModel; 
     
     // sounds 
-    private Sound sound; 
+    private Sound sound, music; 
     private AudioListener listener; 
     
     // current angle 
     private float angle = 0.0f; 
     
     // positions of the cubes 
-    private Vector3[] treePositions; 
+    private Transform[] treeTransforms; 
 
     @Override
     public void onInit() {
@@ -70,18 +71,24 @@ public class SampleApp extends Application {
         listener = Oasis.audio.createListener(); 
         Oasis.audio.setListener(listener); 
         
-        sound = new Sound("pitfall.wav"); 
+        sound = new Sound("theme_song.wav"); 
         sound.setLooping(true); 
         sound.setMinDistance(10.0f); 
         sound.setMaxDistance(100.0f); 
         sound.play(); 
+        
+        music = new Sound("overworld.wav"); 
+        music.setLooping(true); 
+        music.setGain(0.05f);
+        music.play(); 
         
         // load meshes 
         
         Mesh water = ObjImporter.load("plane.obj"); 
         Mesh heightmap = ObjImporter.load("terrain4.obj"); 
         Mesh dragon = ObjImporter.load("dragon.obj"); 
-        Mesh tree = ObjImporter.load("fir.obj"); 
+        Mesh treeTrunk = ObjImporter.load("tree-trunk.obj"); 
+        Mesh treeLeaves = ObjImporter.load("tree-leaves.obj"); 
         Mesh sphere = ObjImporter.load("sphere.obj"); 
         
         // load materials 
@@ -102,11 +109,17 @@ public class SampleApp extends Application {
         heightmapMaterial.shader = null; 
         heightmapMaterial.frontFace = FrontFace.CCW; 
         
-        Material treeMaterial = new Material(); 
-        treeMaterial.diffuseColor = new Vector4(0.4f, 0.6f, 0.4f, 1.0f); 
-        treeMaterial.specularColor = new Vector4(0); 
-        treeMaterial.specularPower = 20.0f; 
-        treeMaterial.frontFace = FrontFace.CCW; 
+        Material woodMaterial = new Material(); 
+        woodMaterial.diffuseColor = new Vector4(0.6f, 0.4f, 0.3f, 1.0f); 
+        woodMaterial.specularColor = new Vector4(0); 
+        woodMaterial.specularPower = 20.0f; 
+        woodMaterial.frontFace = FrontFace.CCW; 
+        
+        Material leafMaterial = new Material(); 
+        leafMaterial.diffuseColor = new Vector4(0.4f, 0.6f, 0.4f, 1.0f); 
+        leafMaterial.specularColor = new Vector4(0); 
+        leafMaterial.specularPower = 20.0f; 
+        leafMaterial.frontFace = FrontFace.CCW; 
         
         Material sunMaterial = new Material(); 
         sunMaterial.diffuseColor = new Vector4(0, 1); 
@@ -149,7 +162,8 @@ public class SampleApp extends Application {
         dragonModel.add(dragon, metal); 
         
         treeModel = new Model(); 
-        treeModel.add(tree, treeMaterial);
+        treeModel.add(treeTrunk, woodMaterial);
+        treeModel.add(treeLeaves, leafMaterial);
         
         sunModel = new Model(); 
         sunModel.add(sphere, sunMaterial);
@@ -172,19 +186,23 @@ public class SampleApp extends Application {
     
     // generate cube data 
     private void generateTreePositions() {
-        List<Vector3> posList = new ArrayList<>(); 
+        List<Transform> posList = new ArrayList<>(); 
         Random rand = new Random(); 
         for (int i = 0; i < 64; i++) {
+            Transform t = new Transform(); 
             Vector3 v = new Vector3(
                     rand.nextInt(300) - 150,
                     0,
                     rand.nextInt(300) - 150); 
             
-            posList.add(new Vector3(v).setY(1.0f)); 
+            t.setPosition(new Vector3(v).setY(1.0f)); 
+            t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), rand.nextFloat() * 2 * Mathf.PI));
+            
+            posList.add(t); 
         }
         
-        treePositions = new Vector3[posList.size()]; 
-        posList.toArray(treePositions); 
+        treeTransforms = new Transform[posList.size()]; 
+        posList.toArray(treeTransforms); 
     }
 
     @Override
@@ -305,14 +323,14 @@ public class SampleApp extends Application {
         renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.4f), lightPos, 180));
         renderer.draw(lightModel4, lightPos, new Quaternion());
         
-        renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.7f), sunPos, 600));
+        if (sunPos.y >= 0) renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.7f), sunPos, 600));
         renderer.draw(sunModel, sunPos, new Quaternion());
         
         sound.setPosition(new Vector3(0, 2, 0)); 
-//        renderer.draw(dragonModel, new Vector3(0, 2, 0), new Quaternion());
+        renderer.draw(dragonModel, new Vector3(0, 2, 0), new Quaternion());
         renderer.draw(terrainModel, new Vector3(0, 0, 0), new Quaternion());
-        for (int i = 1; i < treePositions.length + 1; i++) {
-            renderer.draw(treeModel, treePositions[i - 1], new Quaternion()); 
+        for (int i = 1; i < treeTransforms.length + 1; i++) {
+            renderer.draw(treeModel, treeTransforms[i - 1]); 
         }
         renderer.end(); 
     }

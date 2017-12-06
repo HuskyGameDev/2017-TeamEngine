@@ -18,7 +18,7 @@ public class Transform {
     public Transform() {
         position = new Vector3(); 
         rotation = new Quaternion(); 
-        scale = new Vector3();
+        scale = new Vector3(1);
         matrix = Matrix4.identity(); 
     }
     

@@ -16,6 +16,7 @@ import oasis.graphics.light.PointLight;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
 import oasis.math.Quaternion;
+import oasis.math.Transform;
 import oasis.math.Vector3;
 
 /**
@@ -198,10 +199,21 @@ public class ModelRenderer {
         addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3(modelMat)), material.renderQueue); 
     }
     
+    public void draw(Mesh mesh, Material material, Transform transform) {
+        draw(mesh, material, transform.getMatrix()); 
+    }
+    
     // add each part of a model to the render queue
     public void draw(Model model, Vector3 position, Quaternion rotation) {
         for (int i = 0; i < model.getPartCount(); i++) {
             draw(model.getMesh(i), model.getMaterial(i), position, rotation); 
+        }
+    }
+    
+    // add each part of a model to the render queue
+    public void draw(Model model, Transform transform) {
+        for (int i = 0; i < model.getPartCount(); i++) {
+            draw(model.getMesh(i), model.getMaterial(i), transform.getMatrix()); 
         }
     }
     
