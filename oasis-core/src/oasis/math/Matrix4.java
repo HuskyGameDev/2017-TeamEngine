@@ -519,9 +519,6 @@ public class Matrix4 {
     
     /**
      * Transpose-inverse matrix4
-     * Modified from https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
-     * 
-     * @return
      */
     public Matrix4 transposeInverse() {
         return transpose().inverseSelf(); 
@@ -534,8 +531,6 @@ public class Matrix4 {
     /**
      * Inverse matrx4
      * modified from https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix 
-     * 
-     * @return
      */
     public Matrix4 inverse() {
         Matrix4 out = new Matrix4(); 

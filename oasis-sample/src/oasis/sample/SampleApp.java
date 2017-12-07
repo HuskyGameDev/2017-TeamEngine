@@ -168,9 +168,6 @@ public class SampleApp extends Application {
         dragonTransform.setRotation(Quaternion.axisAngle(new Vector3(1, 0, 0), Mathf.toRadians(180)).multiply(Quaternion.axisAngle(new Vector3(0, 1, 1), Mathf.toRadians(130))));
         dragonTransform.setScale(new Vector3(8, 6, 4)); 
         
-        System.out.println(dragonTransform.getMatrix() + "\n");
-        System.out.println(dragonTransform.getMatrix().getNormalMatrix() + "\n");
-        
         treeModel = new Model(); 
         treeModel.add(treeTrunk, woodMaterial);
         treeModel.add(treeLeaves, leafMaterial);
@@ -223,7 +220,7 @@ public class SampleApp extends Application {
 
         angle += 2f / 60.0f; 
         
-//        dragonTransform.setRotation(Quaternion.axisAngle(new Vector3(Mathf.sin(angle * 0.3f), 1, Mathf.cos(angle * 0.5f)), 2 * dt).multiply(dragonTransform.getRotation()));
+        dragonTransform.setRotation(Quaternion.axisAngle(new Vector3(Mathf.sin(angle * 0.3f), 1, Mathf.cos(angle * 0.5f)), 2 * dt).multiply(dragonTransform.getRotation()));
         
         if (Oasis.mouse.getScroll() != Mouse.ScrollDirection.NONE) { 
             System.out.println(Oasis.mouse.getScroll());
@@ -336,10 +333,19 @@ public class SampleApp extends Application {
         renderer.draw(lightModel4, lightPos, new Quaternion());
         
         if (sunPos.y >= 0) renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.7f), sunPos, 600));
-        renderer.draw(sunModel, sunPos, new Quaternion());
+        
+        Transform sunTfm = new Transform(); 
+        sunTfm.setPosition(sunPos);
+        sunTfm.setScale(new Vector3(10));
+        
+        renderer.draw(sunModel, sunTfm);
+        
+        Transform tfm = new Transform(); 
+        tfm.setPosition(dragonTransform.getPosition().add(new Vector3(16, 0, 0)));
         
         sound.setPosition(dragonTransform.getPosition()); 
         renderer.draw(dragonModel, dragonTransform);
+        renderer.draw(dragonModel, tfm);
         renderer.draw(terrainModel, new Vector3(0, 0, 0), new Quaternion());
         for (int i = 1; i < treeTransforms.length + 1; i++) {
             renderer.draw(treeModel, treeTransforms[i - 1]); 
