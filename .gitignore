@@ -1,4 +1,5 @@
 /bin/
 .project
 .classpath
+hs_err*
 

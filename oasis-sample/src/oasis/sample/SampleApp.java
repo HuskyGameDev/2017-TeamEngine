@@ -57,6 +57,8 @@ public class SampleApp extends Application {
     
     // positions of the cubes 
     private Transform[] treeTransforms; 
+    
+    private Transform dragonTransform; 
 
     @Override
     public void onInit() {
@@ -86,7 +88,7 @@ public class SampleApp extends Application {
         
         Mesh water = ObjImporter.load("plane.obj"); 
         Mesh heightmap = ObjImporter.load("terrain4.obj"); 
-        Mesh dragon = ObjImporter.load("dragon.obj"); 
+        Mesh dragon = ObjImporter.load("monkey.obj"); 
         Mesh treeTrunk = ObjImporter.load("tree-trunk.obj"); 
         Mesh treeLeaves = ObjImporter.load("tree-leaves.obj"); 
         Mesh sphere = ObjImporter.load("sphere.obj"); 
@@ -161,6 +163,10 @@ public class SampleApp extends Application {
         dragonModel = new Model(); 
         dragonModel.add(dragon, metal); 
         
+        dragonTransform = new Transform(); 
+        dragonTransform.setPosition(new Vector3(0, 6, 0));
+        dragonTransform.setScale(new Vector3(8)); 
+        
         treeModel = new Model(); 
         treeModel.add(treeTrunk, woodMaterial);
         treeModel.add(treeLeaves, leafMaterial);
@@ -212,6 +218,8 @@ public class SampleApp extends Application {
         }
 
         angle += 2f / 60.0f; 
+        
+        dragonTransform.setRotation(dragonTransform.getRotation().multiply(Quaternion.axisAngle(new Vector3(0, 1, 0), 2 * dt)));
         
         if (Oasis.mouse.getScroll() != Mouse.ScrollDirection.NONE) { 
             System.out.println(Oasis.mouse.getScroll());
@@ -326,8 +334,8 @@ public class SampleApp extends Application {
         if (sunPos.y >= 0) renderer.addLight(new PointLight(new Vector3(0.8f, 0.8f, 0.7f), sunPos, 600));
         renderer.draw(sunModel, sunPos, new Quaternion());
         
-        sound.setPosition(new Vector3(0, 2, 0)); 
-        renderer.draw(dragonModel, new Vector3(0, 2, 0), new Quaternion());
+        sound.setPosition(dragonTransform.getPosition()); 
+        renderer.draw(dragonModel, dragonTransform);
         renderer.draw(terrainModel, new Vector3(0, 0, 0), new Quaternion());
         for (int i = 1; i < treeTransforms.length + 1; i++) {
             renderer.draw(treeModel, treeTransforms[i - 1]); 
