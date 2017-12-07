@@ -116,7 +116,12 @@ public class JoalAudioDevice implements AudioDevice {
 
     @Override
     public void clearSources() {
-        // TODO 
+        for (int i = sources.size() - 1; i >= 0; i--) {
+            if (sources.get(i) != null) {
+                sources.get(i).pause(); 
+            }
+            sources.remove(i); 
+        }
     }
 
     @Override
