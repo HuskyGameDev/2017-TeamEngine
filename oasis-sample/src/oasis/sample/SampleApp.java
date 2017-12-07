@@ -165,7 +165,11 @@ public class SampleApp extends Application {
         
         dragonTransform = new Transform(); 
         dragonTransform.setPosition(new Vector3(0, 6, 0));
-        dragonTransform.setScale(new Vector3(8)); 
+        dragonTransform.setRotation(Quaternion.axisAngle(new Vector3(1, 0, 0), Mathf.toRadians(180)).multiply(Quaternion.axisAngle(new Vector3(0, 1, 1), Mathf.toRadians(130))));
+        dragonTransform.setScale(new Vector3(8, 6, 4)); 
+        
+        System.out.println(dragonTransform.getMatrix() + "\n");
+        System.out.println(dragonTransform.getMatrix().getNormalMatrix() + "\n");
         
         treeModel = new Model(); 
         treeModel.add(treeTrunk, woodMaterial);
@@ -219,7 +223,7 @@ public class SampleApp extends Application {
 
         angle += 2f / 60.0f; 
         
-        dragonTransform.setRotation(dragonTransform.getRotation().multiply(Quaternion.axisAngle(new Vector3(0, 1, 0), 2 * dt)));
+//        dragonTransform.setRotation(Quaternion.axisAngle(new Vector3(Mathf.sin(angle * 0.3f), 1, Mathf.cos(angle * 0.5f)), 2 * dt).multiply(dragonTransform.getRotation()));
         
         if (Oasis.mouse.getScroll() != Mouse.ScrollDirection.NONE) { 
             System.out.println(Oasis.mouse.getScroll());

@@ -191,12 +191,11 @@ public class ModelRenderer {
         Matrix4 modelMat = Matrix4.translation(position)
                 .multiply(Matrix4.rotation(rotation)); 
         
-        addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3(modelMat)), material.renderQueue); 
+        addMesh(new MeshRenderCommand(mesh, material, modelMat, modelMat.getNormalMatrix()), material.renderQueue); 
     }
     
-    // TODO compute a normal matrix 
     public void draw(Mesh mesh, Material material, Matrix4 modelMat) {
-        addMesh(new MeshRenderCommand(mesh, material, modelMat, new Matrix3(modelMat)), material.renderQueue); 
+        addMesh(new MeshRenderCommand(mesh, material, modelMat, modelMat.getNormalMatrix()), material.renderQueue); 
     }
     
     public void draw(Mesh mesh, Material material, Transform transform) {

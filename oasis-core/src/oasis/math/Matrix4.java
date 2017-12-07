@@ -208,6 +208,27 @@ public class Matrix4 {
         return out; 
     }
     
+    public Matrix4 set(float[] in) {
+        m00 = in[0];  
+        m10 = in[1];  
+        m20 = in[2];  
+        m30 = in[3];  
+        m01 = in[4];  
+        m11 = in[5];  
+        m21 = in[6];  
+        m31 = in[7];  
+        m02 = in[8];  
+        m12 = in[9];  
+        m22 = in[10];  
+        m32 = in[11];  
+        m03 = in[12];  
+        m13 = in[13];  
+        m23 = in[14];  
+        m33 = in[15];  
+
+        return this; 
+    }
+    
     public Matrix4 setM00(float m00) { this.m00 = m00; return this; }
     public Matrix4 setM10(float m10) { this.m10 = m10; return this; }
     public Matrix4 setM20(float m20) { this.m20 = m20; return this; }
@@ -266,6 +287,10 @@ public class Matrix4 {
         this.m23 = r.m23; 
         this.m33 = r.m33; 
         return this; 
+    }
+    
+    public Matrix3 getNormalMatrix() {
+        return new Matrix3(transposeInverse()); 
     }
     
     public Matrix4 add(Matrix4 r) {
@@ -459,6 +484,190 @@ public class Matrix4 {
         out.m33 = m30 * r.m03 + m31 * r.m13 + m32 * r.m23 + m33 * r.m33; 
         
         return set(out); 
+    }
+    
+    public Matrix4 transposeSelf() {
+        return set(transpose()); 
+    }
+    
+    public Matrix4 transpose() {
+        Matrix4 out = new Matrix4();
+        
+        out.m00 = m00; 
+        out.m01 = m10; 
+        out.m02 = m20; 
+        out.m03 = m30; 
+        out.m10 = m01; 
+        out.m11 = m11; 
+        out.m12 = m21; 
+        out.m13 = m31;
+        out.m20 = m02; 
+        out.m21 = m12; 
+        out.m22 = m22; 
+        out.m23 = m32; 
+        out.m30 = m03; 
+        out.m31 = m13; 
+        out.m32 = m23; 
+        out.m33 = m33; 
+        
+        return out; 
+    }
+    
+    public Matrix4 transposeInverseSelf() {
+        return transposeSelf().inverseSelf(); 
+    }
+    
+    /**
+     * Transpose-inverse matrix4
+     * Modified from https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
+     * 
+     * @return
+     */
+    public Matrix4 transposeInverse() {
+        return transpose().inverseSelf(); 
+    }
+    
+    public Matrix4 inverseSelf() {
+        return set(inverse()); 
+    }
+    
+    /**
+     * Inverse matrx4
+     * modified from https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix 
+     * 
+     * @return
+     */
+    public Matrix4 inverse() {
+        Matrix4 out = new Matrix4(); 
+        
+        double[] inv = new double[16]; 
+        double det;
+        int i;
+        float[] m = this.get(new float[16]); 
+
+        inv[0] = m[5]  * m[10] * m[15] - 
+                m[5]  * m[11] * m[14] - 
+                m[9]  * m[6]  * m[15] + 
+                m[9]  * m[7]  * m[14] +
+                m[13] * m[6]  * m[11] - 
+                m[13] * m[7]  * m[10];
+
+       inv[4] = -m[4]  * m[10] * m[15] + 
+                 m[4]  * m[11] * m[14] + 
+                 m[8]  * m[6]  * m[15] - 
+                 m[8]  * m[7]  * m[14] - 
+                 m[12] * m[6]  * m[11] + 
+                 m[12] * m[7]  * m[10];
+
+       inv[8] = m[4]  * m[9] * m[15] - 
+                m[4]  * m[11] * m[13] - 
+                m[8]  * m[5] * m[15] + 
+                m[8]  * m[7] * m[13] + 
+                m[12] * m[5] * m[11] - 
+                m[12] * m[7] * m[9];
+
+       inv[12] = -m[4]  * m[9] * m[14] + 
+                  m[4]  * m[10] * m[13] +
+                  m[8]  * m[5] * m[14] - 
+                  m[8]  * m[6] * m[13] - 
+                  m[12] * m[5] * m[10] + 
+                  m[12] * m[6] * m[9];
+
+       inv[1] = -m[1]  * m[10] * m[15] + 
+                 m[1]  * m[11] * m[14] + 
+                 m[9]  * m[2] * m[15] - 
+                 m[9]  * m[3] * m[14] - 
+                 m[13] * m[2] * m[11] + 
+                 m[13] * m[3] * m[10];
+
+       inv[5] = m[0]  * m[10] * m[15] - 
+                m[0]  * m[11] * m[14] - 
+                m[8]  * m[2] * m[15] + 
+                m[8]  * m[3] * m[14] + 
+                m[12] * m[2] * m[11] - 
+                m[12] * m[3] * m[10];
+
+       inv[9] = -m[0]  * m[9] * m[15] + 
+                 m[0]  * m[11] * m[13] + 
+                 m[8]  * m[1] * m[15] - 
+                 m[8]  * m[3] * m[13] - 
+                 m[12] * m[1] * m[11] + 
+                 m[12] * m[3] * m[9];
+
+       inv[13] = m[0]  * m[9] * m[14] - 
+                 m[0]  * m[10] * m[13] - 
+                 m[8]  * m[1] * m[14] + 
+                 m[8]  * m[2] * m[13] + 
+                 m[12] * m[1] * m[10] - 
+                 m[12] * m[2] * m[9];
+
+       inv[2] = m[1]  * m[6] * m[15] - 
+                m[1]  * m[7] * m[14] - 
+                m[5]  * m[2] * m[15] + 
+                m[5]  * m[3] * m[14] + 
+                m[13] * m[2] * m[7] - 
+                m[13] * m[3] * m[6];
+
+       inv[6] = -m[0]  * m[6] * m[15] + 
+                 m[0]  * m[7] * m[14] + 
+                 m[4]  * m[2] * m[15] - 
+                 m[4]  * m[3] * m[14] - 
+                 m[12] * m[2] * m[7] + 
+                 m[12] * m[3] * m[6];
+
+       inv[10] = m[0]  * m[5] * m[15] - 
+                 m[0]  * m[7] * m[13] - 
+                 m[4]  * m[1] * m[15] + 
+                 m[4]  * m[3] * m[13] + 
+                 m[12] * m[1] * m[7] - 
+                 m[12] * m[3] * m[5];
+
+       inv[14] = -m[0]  * m[5] * m[14] + 
+                  m[0]  * m[6] * m[13] + 
+                  m[4]  * m[1] * m[14] - 
+                  m[4]  * m[2] * m[13] - 
+                  m[12] * m[1] * m[6] + 
+                  m[12] * m[2] * m[5];
+
+       inv[3] = -m[1] * m[6] * m[11] + 
+                 m[1] * m[7] * m[10] + 
+                 m[5] * m[2] * m[11] - 
+                 m[5] * m[3] * m[10] - 
+                 m[9] * m[2] * m[7] + 
+                 m[9] * m[3] * m[6];
+
+       inv[7] = m[0] * m[6] * m[11] - 
+                m[0] * m[7] * m[10] - 
+                m[4] * m[2] * m[11] + 
+                m[4] * m[3] * m[10] + 
+                m[8] * m[2] * m[7] - 
+                m[8] * m[3] * m[6];
+
+       inv[11] = -m[0] * m[5] * m[11] + 
+                  m[0] * m[7] * m[9] + 
+                  m[4] * m[1] * m[11] - 
+                  m[4] * m[3] * m[9] - 
+                  m[8] * m[1] * m[7] + 
+                  m[8] * m[3] * m[5];
+
+       inv[15] = m[0] * m[5] * m[10] - 
+                 m[0] * m[6] * m[9] - 
+                 m[4] * m[1] * m[10] + 
+                 m[4] * m[2] * m[9] + 
+                 m[8] * m[1] * m[6] - 
+                 m[8] * m[2] * m[5];
+
+        det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+        if (det == 0) // set to zeros 
+           return set(new float[16]);
+
+        det = 1.0 / det;
+
+        for (i = 0; i < 16; i++)
+           m[i] = (float) (inv[i] * det);
+
+        return out.set(m); 
     }
     
     public String toString() {
