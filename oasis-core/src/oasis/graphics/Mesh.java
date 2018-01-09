@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.core.Logger;
-import oasis.core.Oasis;
 import oasis.core.OasisException;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
@@ -21,8 +20,9 @@ public class Mesh {
         private IndexBuffer indices; 
         
         public Submesh() {
-            indices = Oasis.getGraphicsDevice().createIndexBuffer(0, BufferUsage.DYNAMIC); 
-            geometry = Oasis.getGraphicsDevice().createGeometry(indices); 
+            indices = new IndexBuffer(0, BufferUsage.DYNAMIC); 
+            geometry = new Geometry(); 
+            geometry.setIndexBuffer(indices); 
         }
         
     }
@@ -70,6 +70,7 @@ public class Mesh {
         for (int i = 0; i < submeshes.length; i++) {
             submeshes[i].indices.upload(); 
             submeshes[i].geometry.setVertexBuffers(vbs); 
+            submeshes[i].geometry.upload(); 
         }
     }
     
@@ -81,7 +82,7 @@ public class Mesh {
         return submeshes.length; 
     }
     
-    public void setPrimitive(int submesh, Geometry.Primitive prim) {
+    public void setPrimitive(int submesh, Primitive prim) {
         submeshes[submesh].geometry.setPrimitive(prim); 
     }
     
@@ -110,7 +111,7 @@ public class Mesh {
             int vertCount = verts.length / format.getFloatsPerElement(); 
             
             if (vb == null) {
-                vb = Oasis.getGraphicsDevice().createVertexBuffer(format, vertCount, BufferUsage.DYNAMIC); 
+                vb = new VertexBuffer(format, vertCount, BufferUsage.DYNAMIC); 
             }
             
             if (vb.getVertexCount() != vertCount) {
@@ -139,7 +140,7 @@ public class Mesh {
         setVertices(Attribute.TEX_COORD, ArrayUtil.toFloatArray(texCoords)); 
     }
     
-    public Geometry.Primitive getPrimitive(int submesh) {
+    public Primitive getPrimitive(int submesh) {
         return submeshes[submesh].geometry.getPrimitive(); 
     }
     

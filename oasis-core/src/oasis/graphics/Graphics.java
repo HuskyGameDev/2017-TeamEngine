@@ -107,7 +107,7 @@ public class Graphics {
         if (light != null) light.apply(shader); 
         
         gd.setShader(shader); 
-        gd.drawGeometry(geom);
+        gd.drawGeometry(geom); 
     }
     
     public void setCamera(Camera camera) {

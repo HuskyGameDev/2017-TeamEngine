@@ -5,9 +5,9 @@ import oasis.graphics.BufferUsage;
 import oasis.graphics.Geometry;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
-import oasis.graphics.IndexBuffer;
+import oasis.graphics.HardwareBufferResource;
+import oasis.graphics.HardwareGeometryResource;
 import oasis.graphics.Shader;
-import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
 import oasis.math.Vector4;
 
@@ -47,23 +47,23 @@ public class OglGraphics implements GraphicsDevice {
     }
 
     @Override
-    public VertexBuffer createVertexBuffer(VertexFormat format, int vertCount, BufferUsage usage) {
-        return new OglVertexBuffer(ogl, format, vertCount, usage); 
+    public HardwareBufferResource createVertexHardwareBufferResource() {
+        return new OglHardwareBufferResource(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
     }
 
     @Override
-    public IndexBuffer createIndexBuffer(int indCount, BufferUsage usage) {
-        return new OglIndexBuffer(ogl, indCount, usage); 
+    public HardwareBufferResource createIndexHardwareBufferResource() {
+        return new OglHardwareBufferResource(ogl, Ogl.GL_ELEMENT_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
     }
 
+    @Override
+    public HardwareGeometryResource createHardwareGeometryResource() {
+        return new OglHardwareGeometryResource(ogl); 
+    }
+    
     @Override
     public Shader createShader(String vs, String fs) {
         return new OglShader(ogl, vs, fs); 
-    }
-
-    @Override
-    public Geometry createGeometry(IndexBuffer ib, VertexBuffer... vbs) {
-        return new OglGeometry(ogl, ib, vbs); 
     }
 
     @Override
@@ -91,20 +91,20 @@ public class OglGraphics implements GraphicsDevice {
         
         OglShader.bind(ogl, curShader); 
         
-        OglGeometry geom = (OglGeometry) g; 
+        OglHardwareGeometryResource geom = (OglHardwareGeometryResource) g.getHardwareGeometryResource(); 
         geom.setBuffers(); 
-        int prim = OglConvert.getPrimitive(geom.getPrimitive()); 
+        int prim = OglConvert.getPrimitive(g.getPrimitive()); 
         int size; 
         
-        if (geom.hasIndexBuffer()) {
-            size = geom.getIndexBuffer().getIndexCount(); 
+        if (g.hasIndexBuffer()) {
+            size = g.getIndexBuffer().getIndexCount(); 
             ogl.glDrawElements(prim, size, Ogl.GL_UNSIGNED_SHORT, 0);
         }
         else {
-            size = geom.getVertexBuffer(0).getVertexCount(); 
+            size = g.getVertexBuffer(0).getVertexCount(); 
             ogl.glDrawArrays(prim, 0, size); 
         }
-    }
+}
 
     @Override
     public void clearBuffers(Vector4 color, boolean depth) {

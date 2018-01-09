@@ -214,6 +214,11 @@ public class Engine {
                 secondTimer.reset();
                 log.debug("Time: " + String.format("%1.0f", time.getTime()) + "s, Frames: " + frames + ", Ticks: " + ticks);
                 frames = ticks = 0;
+                // reset fps timer so that if framerate 
+                // was really low for a while, it won't 
+                // try to render hundreds of frames once 
+                // it can
+                frameTimer = time.getTime(); 
             }
         }
 

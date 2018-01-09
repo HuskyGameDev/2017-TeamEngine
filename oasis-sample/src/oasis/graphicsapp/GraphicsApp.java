@@ -57,9 +57,7 @@ public class GraphicsApp implements Application {
         
         mesh = ObjImporter.load("sphere.obj");
 //        mesh2 = ObjImporter.load("bunny.obj"); 
-//        mesh3 = ObjImporter.load("terrain4.obj"); 
-        
-        log.debug(mesh.getGeometry(0).getVertexBuffer(0).getVertexCount()); 
+        mesh3 = ObjImporter.load("terrain4.obj"); 
         
         String vs = GlslParser.getVertexSource("test.glsl"); 
         String fs = GlslParser.getFragmentSource("test.glsl"); 
@@ -83,7 +81,7 @@ public class GraphicsApp implements Application {
         grassMat.setSpecularColor(new Vector3(0)); 
         
         camera = new Camera(); 
-        camera.setPosition(new Vector3(0, 0, 10));
+        camera.setPosition(new Vector3(0, 3, 0));
         
         Oasis.getMouse().setCursorVisible(false); 
         Oasis.getMouse().center(); 
@@ -191,23 +189,23 @@ public class GraphicsApp implements Application {
         t.setPosition(new Vector3(10, -4, 10)); 
         t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(ticks * 1f))); 
         t.setScale(new Vector3(1)); 
-//        g.drawMesh(mesh, 0, material2, t.getMatrix()); 
+        g.drawMesh(mesh3, 0, material2, Matrix4.translation(new Vector3(0, 0, 0))); 
         
         Material[] mats = new Material[] { material, material2, grassMat }; 
         
         int count = 0; 
         Random r = new Random(1); 
-        for (int i = -20; i < 20; i++) {
-            for (int j = -20; j < 20; j++) {
+        for (int i = -10; i < 10; i++) {
+            for (int j = -10; j < 10; j++) {
                 for (int k = -0; k < 1; k++) {
-                    Material mat = new Material(); 
-                    mat.setShader(shader); 
+//                    Material mat = new Material(); 
+//                    mat.setShader(shader); 
+//                    
+//                    mat.setDiffuseColor(new Vector3(r.nextFloat(), r.nextFloat(), r.nextFloat())); 
+//                    mat.setSpecularColor(mat.getDiffuseColor().multiply(r.nextFloat()* 1)); 
+//                    mat.setSpecularPower((float) Math.pow(2, r.nextFloat() * 4));
                     
-                    mat.setDiffuseColor(new Vector3(r.nextFloat(), r.nextFloat(), r.nextFloat())); 
-                    mat.setSpecularColor(mat.getDiffuseColor().multiply(r.nextFloat()* 1)); 
-                    mat.setSpecularPower((float) Math.pow(2, r.nextFloat() * 4));
-                    
-                    g.drawMesh(mesh, 0, mat, Matrix4.translation(new Vector3(i * 2, k * 2, j * 2)));
+                    g.drawMesh(mesh, 0, material, Matrix4.translation(new Vector3(i * 2, k * 2, j * 2)));
                     count++; 
                 }
             }

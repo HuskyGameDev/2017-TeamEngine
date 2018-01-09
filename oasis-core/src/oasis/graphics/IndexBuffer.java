@@ -1,32 +1,35 @@
 package oasis.graphics;
 
-import java.nio.Buffer;
 import java.nio.ShortBuffer;
 
 import oasis.core.Oasis;
 
-public abstract class IndexBuffer extends GraphicsResource {
+public class IndexBuffer extends GraphicsResource {
 
     private ShortBuffer buffer; 
     private int size;
     private BufferUsage usage; 
+    private HardwareBufferResource hwBuffer; 
     
     public IndexBuffer(int indices, BufferUsage usage) {
         this.size = indices; 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 2).asShortBuffer(); 
+        this.hwBuffer = Oasis.getGraphicsDevice().createIndexHardwareBufferResource(); 
     }
     
-    public abstract void upload(); 
-    
-    protected Buffer getBuffer() {
-        return buffer; 
-    }
-    
-    protected Buffer getAndFlipBuffer() {
-        buffer.position(size); 
+    public void upload() {
+        buffer.position(getSizeInShorts()); 
         buffer.flip(); 
-        return buffer; 
+        hwBuffer.upload(getSizeInBytes(), buffer, usage); 
+    }
+    
+    public void release() {
+        hwBuffer.release(); 
+    }
+    
+    public HardwareBufferResource getHardwareBuffer() {
+        return hwBuffer; 
     }
     
     public BufferUsage getUsage() {

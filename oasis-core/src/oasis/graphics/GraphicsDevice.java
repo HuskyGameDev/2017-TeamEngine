@@ -8,13 +8,13 @@ public interface GraphicsDevice {
 
     void postRender();
 
-    VertexBuffer createVertexBuffer(VertexFormat format, int vertCount, BufferUsage usage); 
+    HardwareBufferResource createVertexHardwareBufferResource(); 
     
-    IndexBuffer createIndexBuffer(int indCount, BufferUsage usage); 
+    HardwareBufferResource createIndexHardwareBufferResource(); 
+    
+    HardwareGeometryResource createHardwareGeometryResource(); 
     
     Shader createShader(String vs, String fs); 
-    
-    Geometry createGeometry(IndexBuffer ib, VertexBuffer... vbs); 
     
     void clearBuffers(Vector4 color, boolean depth); 
     

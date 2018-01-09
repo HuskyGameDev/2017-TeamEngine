@@ -3,10 +3,10 @@ package oasis.graphics.ogl;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
 import oasis.graphics.BufferUsage;
-import oasis.graphics.Geometry;
 import oasis.graphics.GraphicsState.BlendMode;
 import oasis.graphics.GraphicsState.FillMode;
 import oasis.graphics.GraphicsState.FrontFace;
+import oasis.graphics.Primitive;
 import oasis.graphics.Uniform;
 
 public class OglConvert {
@@ -56,7 +56,7 @@ public class OglConvert {
         }
     }
     
-    public static int getPrimitive(Geometry.Primitive prim) {
+    public static int getPrimitive(Primitive prim) {
         switch (prim) {
         default: 
             throw new OasisException("Unknown Primitive: " + prim); 
