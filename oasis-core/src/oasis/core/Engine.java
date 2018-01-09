@@ -1,10 +1,5 @@
 package oasis.core;
 
-import oasis.audio.AudioDevice;
-import oasis.graphics.Display;
-import oasis.graphics.GraphicsDevice;
-import oasis.input.Keyboard;
-import oasis.input.Mouse;
 import oasis.util.Timer;
 
 /**
@@ -13,9 +8,9 @@ import oasis.util.Timer;
  * @author Nicholas Hamilton
  *
  */
-public abstract class Engine {
+public class Engine {
 
-    private static final GameLogger log = new GameLogger(Engine.class);
+    private static final Logger log = new Logger(Engine.class);
     
     /**
      * Starting updates per second
@@ -26,15 +21,21 @@ public abstract class Engine {
      */
     public static final float DEFAULT_FRAME_RATE = 60.0f;
     
-    protected Application listener;
+    private Application app;
     
-    protected volatile boolean running = false;
-    protected Thread thread = null;
-    protected boolean resetLoop;
-    protected float targetFps = DEFAULT_FRAME_RATE;
-    protected float targetUps = DEFAULT_UPDATE_RATE;
-    protected int startWidth; 
-    protected int startHeight; 
+    private volatile boolean running = false;
+    private Thread thread = null;
+    private boolean resetLoop;
+    private float targetFps = DEFAULT_FRAME_RATE;
+    private float targetUps = DEFAULT_UPDATE_RATE;
+    private Backend backend; 
+    
+    public Engine(Config config, Backend backend, Application app) {
+        this.backend = backend; 
+        this.app = app; 
+        backend.applyConfig(config); 
+        setConfig(config); 
+    }
     
     /**
      * Starts the engine. The engine cannot start if it is already running
@@ -64,89 +65,67 @@ public abstract class Engine {
         running = false;
     }
     
-    public void setConfig(Config conf) {
+    private void setConfig(Config conf) {
         targetFps = conf.fps; 
         targetUps = conf.ups; 
-        startWidth = conf.width; 
-        startHeight = conf.height; 
     }
-    
-    /**
-     * Get the application
-     */
-    public Application getApplication() {
-        return listener; 
-    }
-    
-    /**
-     * Get the display 
-     * 
-     * @return display  
-     */
-    public abstract Display getDisplay();
-    
-    /**
-     * Get the keyboard 
-     * 
-     * @return keyboard 
-     */
-    public abstract Keyboard getKeyboard(); 
-    
-    /**
-     * Get the mouse 
-     * 
-     * @return mouse 
-     */
-    public abstract Mouse getMouse(); 
-    
-    /**
-     * Get the graphics device 
-     * 
-     * @return graphics device 
-     */
-    public abstract GraphicsDevice getGraphicsDevice();
-    
-    /**
-     * Get the audio device 
-     * 
-     * @return audio device 
-     */
-    public abstract AudioDevice getAudioDevice(); 
-    
-    /**
-     * Initialize engine resources 
-     */
-    protected abstract void initEngine();
     
     /**
      * Initialize the engine listener (the game) 
      */
-    protected abstract void init();
+    private void init() {
+        backend.preInit(); 
+        backend.runOnMainThread(new Runnable() {
+            public void run() {
+                app.init(); 
+            }
+        }); 
+        backend.postInit(); 
+    }
     
     /**
      * Update the engine listener
      * 
      * @param dt Amount of time since the last update 
      */
-    protected abstract void update(float dt);
+    private void update(float dt) {
+        backend.preUpdate(dt); 
+        backend.runOnMainThread(new Runnable() {
+            public void run() {
+                app.update(dt); 
+            }
+        });
+        backend.postUpdate(dt); 
+    }
     
     /**
      * Render the engine listener
      */
-    protected abstract void render();
+    private void render() {
+        backend.preRender(); 
+        backend.runOnMainThread(new Runnable() {
+            public void run() {
+                backend.getGraphicsDevice().preRender(); 
+                app.render(); 
+                backend.getGraphicsDevice().postRender(); 
+                backend.getDisplay().swapBuffers(); 
+            }
+        });
+        backend.postRender(); 
+    }
     
     /**
      * Exit the engine listener 
      */
-    protected abstract void exit();
-    
-    /**
-     * Sets the engine listener 
-     * 
-     * @param listener The engine listener (the game) 
-     */
-    public void setApplication(Application listener) {
-        this.listener = listener;
+    private void exit() {
+        backend.preExit(); 
+        backend.runOnMainThread(new Runnable() {
+            public void run() {
+                app.exit(); 
+            }
+        });
+        backend.postExit(); 
+        System.exit(0); 
     }
     
     /**
@@ -173,8 +152,6 @@ public abstract class Engine {
      * Main game loop. This is called when the engine is running 
      */
     protected void gameLoop() {
-        initEngine();
-        Oasis.setEngine(this);
         init();
 
         Timer secondTimer = new Timer();
@@ -203,11 +180,10 @@ public abstract class Engine {
             
             // ask the engine listener what to do 
             // when the window is trying to close 
-            if (getDisplay().shouldClose()) {
-                if (listener.onCloseAttempt()) {
-                    getDisplay().hide(); 
+            if (backend.getDisplay().shouldClose()) {
+                if (app.closeAttempt()) {
                     exit(); 
-                    System.exit(0); 
+                    backend.getDisplay().hide(); 
                 }
             }
             
@@ -235,7 +211,6 @@ public abstract class Engine {
         }
 
         exit();
-        System.exit(0);
 
         try {
             thread.join();

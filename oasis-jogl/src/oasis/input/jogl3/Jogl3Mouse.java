@@ -11,15 +11,15 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
-import oasis.core.EngineException;
-import oasis.graphics.jogl3.Jogl3Display;
+import oasis.core.OasisException;
+import oasis.core.jogl3.Jogl3Window;
 import oasis.input.Mouse;
 
 public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, MouseWheelListener {
 
     public static final int MAX_BUTTONS = 32; 
     
-    private Jogl3Display display; 
+    private Jogl3Window display; 
     
     private boolean[] down; 
     private int[] buttons; 
@@ -34,11 +34,11 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
     
     private Cursor basicCursor, blankCursor; 
     
-    public Jogl3Mouse(Jogl3Display display) {
+    public Jogl3Mouse(Jogl3Window display) {
         try {
             robot = new Robot();
         } catch (AWTException e) {
-            throw new EngineException("AWT robot creation failed"); 
+            throw new OasisException("AWT robot creation failed"); 
         } 
         
         basicCursor = display.getCanvas().getCursor(); 

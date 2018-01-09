@@ -2,13 +2,13 @@ package oasis.file;
 
 import java.net.URLDecoder;
 
-import oasis.core.GameLogger;
+import oasis.core.Logger;
 import oasis.core.Oasis;
 
 @SuppressWarnings("deprecation")
 public class GlslParser {
 
-    private static final GameLogger log = new GameLogger(GlslParser.class); 
+    private static final Logger log = new Logger(GlslParser.class); 
     
     public static final String ANY_MODE = "#anyshader"; 
     public static final String VERTEX_MODE = "#vertexshader";
@@ -24,6 +24,14 @@ public class GlslParser {
     
     static {
         INTERNAL_PATHS.add(URLDecoder.decode(GlslParser.class.getResource("/shaders/").getFile()));
+    }
+    
+    public static String getVertexSource(String file) {
+        return genericParse(file, PathList.DEFAULT, Mode.VERTEX); 
+    }
+    
+    public static String getFragmentSource(String file) {
+        return genericParse(file, PathList.DEFAULT, Mode.FRAGMENT); 
     }
     
     public static String getVertexSource(String file, PathList list) {
@@ -43,7 +51,7 @@ public class GlslParser {
             log.warning("Could not find GLSL file: " + file);
             return null; 
         }
-        String[] lines = Oasis.files.readTextFileLines(path); 
+        String[] lines = Oasis.getFileSystem().readTextFileLines(path); 
         StringBuilder sb = new StringBuilder(); 
         Mode curMode = mode; 
         

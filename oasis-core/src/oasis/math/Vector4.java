@@ -62,6 +62,13 @@ public class Vector4 {
         this.w = 1f; 
     }
     
+    public Vector4(Vector3 r, float w) {
+        this.x = r.x; 
+        this.y = r.y; 
+        this.z = r.z; 
+        this.w = w; 
+    }
+    
     public Vector4(Vector2 r) { 
         this.x = r.x; 
         this.y = r.y; 

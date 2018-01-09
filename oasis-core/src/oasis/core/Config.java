@@ -1,7 +1,5 @@
 package oasis.core;
 
-import oasis.core.jogl3.Jogl3Engine;
-
 /** 
  * Engine configuration 
  * 
@@ -10,12 +8,12 @@ import oasis.core.jogl3.Jogl3Engine;
  */
 public class Config {
 
-    public static final int UNLIMITED_FPS = -1; 
+    public static final float UNLIMITED_FPS = -1.0f; 
     
     /**
      * Type of engine 
      */
-    public Class<? extends Engine> engine = Jogl3Engine.class;
+    public BackendType backend = BackendType.AUTO; 
     
     /**
      * Starting frames per second 

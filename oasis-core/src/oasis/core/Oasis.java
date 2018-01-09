@@ -1,8 +1,7 @@
 package oasis.core;
 
-import oasis.audio.AudioDevice;
 import oasis.file.FileSystem;
-import oasis.graphics.Display;
+import oasis.graphics.Graphics;
 import oasis.graphics.GraphicsDevice;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
@@ -23,7 +22,7 @@ public final class Oasis {
     /**
      * Minor version number 
      */
-    public static final int VERSION_MINOR = 2;
+    public static final int VERSION_MINOR = 3;
     
     /**
      * Revision version number 
@@ -70,66 +69,87 @@ public final class Oasis {
      */
     public static final String DEFAULT_MODEL_FOLDER = DEFAULT_ASSET_FOLDER + "models/";
     
-    /**
-     * Engine reference
-     */
-    public static Engine engine = null; 
+    private static volatile boolean running = false; 
+    private static Backend backend; 
+    private static Engine engine; 
+    private static Graphics graphics; 
+    private static GraphicsDevice graphicsDevice; 
+    private static DirectBufferAllocator alloc; 
+    private static Display display; 
+    private static Keyboard keyboard; 
+    private static Mouse mouse; 
+    private static FileSystem files = new FileSystem(); 
     
-    /**
-     * Application reference
-     */
-    public static Application app = null; 
-    
-    /**
-     * Display reference
-     */
-    public static Display display = null; 
-    
-    /**
-     * Graphics device reference
-     */
-    public static GraphicsDevice graphics = null; 
-    
-    /**
-     * Audio device reference 
-     */
-    public static AudioDevice audio = null; 
-    
-    /**
-     * Keyboard reference
-     */
-    public static Keyboard keyboard = null; 
-    
-    /**
-     * Mouse reference
-     */
-    public static Mouse mouse = null; 
-    
-    /**
-     * File system reference
-     */
-    public static FileSystem files = new FileSystem(); 
-    
-    /**
-     * Called by the engine
-     */
-    public static void setEngine(Engine engine) {
-        Oasis.engine = engine; 
-        Oasis.app = engine.getApplication(); 
-        Oasis.display = engine.getDisplay(); 
-        Oasis.graphics = engine.getGraphicsDevice(); 
-        Oasis.audio = engine.getAudioDevice(); 
-        Oasis.keyboard = engine.getKeyboard(); 
-        Oasis.mouse = engine.getMouse(); 
+    public static Graphics getGraphics() {
+        return graphics; 
     }
     
-    /** 
-     * Get information about the engine 
-     * 
-     * @return Information about the engine 
-     */
-    public static String getEngineInfo() {
-        return "Running " + FULL_NAME;
+    public static GraphicsDevice getGraphicsDevice() {
+        return graphicsDevice; 
+    }
+    
+    public static DirectBufferAllocator getDirectBufferAllocator() {
+        return alloc; 
+    }
+    
+    public static FileSystem getFileSystem() {
+        return files; 
+    }
+    
+    public static Display getDisplay() {
+        return display; 
+    }
+    
+    public static Keyboard getKeyboard() {
+        return keyboard; 
+    }
+    
+    public static Mouse getMouse() {
+        return mouse; 
+    }
+    
+    public static void start(Config config, Application application) {
+        if (running) {
+            throw new OasisException("Oasis is already running"); 
+        }
+        
+        if (application == null) {
+            throw new OasisException("Application must not be null"); 
+        }
+        
+        if (config == null) {
+            config = new Config(); 
+        }
+        
+        if (config.backend == null) {
+            config.backend = BackendType.AUTO; 
+        }
+        
+        backend = config.backend.create();
+        
+        if (backend == null) {
+            throw new OasisException("Platform could not be created"); 
+        }
+        
+        engine = new Engine(config, backend, application); 
+        graphics = new Graphics(); 
+        graphicsDevice = backend.getGraphicsDevice(); 
+        alloc = backend.getDirectBufferAllocator(); 
+        display = backend.getDisplay(); 
+        keyboard = backend.getKeyboard(); 
+        mouse = backend.getMouse(); 
+        
+        running = true; 
+        engine.start(); 
+    }
+    
+    public static void stop() {
+        if (!running) {
+            throw new OasisException("Oasis is not running"); 
+        }
+        
+        engine.stop(); 
+        running = false; 
     }
     
     /**

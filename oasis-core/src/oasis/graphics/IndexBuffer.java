@@ -1,53 +1,67 @@
 package oasis.graphics;
 
-import oasis.core.Disposable;
+import java.nio.Buffer;
+import java.nio.ShortBuffer;
 
-/**
- * Holds indices for geometry. 
- * 
- * Do NOT implement this yourself, instead only use
- * this interface through objects created by a 
- * GraphicsDevice 
- * 
- * @author Nicholas Hamilton
- *
- */
-public interface IndexBuffer extends Disposable {
+import oasis.core.Oasis;
 
-    /**
-     * Get the buffer usage type of this buffer 
-     * 
-     * @return Buffer usage 
-     */
-    BufferUsage getUsage(); 
+public abstract class IndexBuffer extends GraphicsResource {
 
-    /** 
-     * Get number of indices in the buffer 
-     * 
-     * @return Number of indices 
-     */
-    int getIndexCount(); 
+    private ShortBuffer buffer; 
+    private int size;
+    private BufferUsage usage; 
     
-    /** 
-     * Get the indices and fill [out] with them 
-     * 
-     * @param out Array to fill with index values 
-     * @return Reference to [out] 
-     */
-    int[] getIndices(int[] out); 
+    public IndexBuffer(int indices, BufferUsage usage) {
+        this.size = indices; 
+        this.usage = usage; 
+        this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 2).asShortBuffer(); 
+    }
     
-    /**
-     * Get a copy of index values 
-     * 
-     * @return Index values 
-     */
-    int[] getIndices(); 
+    public abstract void upload(); 
     
-    /**
-     * Set the index data of the buffer 
-     * 
-     * @param inds New index data 
-     */
-    void setData(int[] inds); 
+    protected Buffer getBuffer() {
+        return buffer; 
+    }
+    
+    protected Buffer getAndFlipBuffer() {
+        buffer.position(size); 
+        buffer.flip(); 
+        return buffer; 
+    }
+    
+    public BufferUsage getUsage() {
+        return usage; 
+    }
+
+    public int getSizeInBytes() {
+        return size * 2; 
+    }
+    
+    public int getSizeInShorts() {
+        return size; 
+    }
+    
+    public int getIndexCount() {
+        return size; 
+    }
+
+    public void resize(int indices) {
+        if (indices > buffer.capacity()) {
+            Oasis.getDirectBufferAllocator().free(buffer); 
+            buffer = Oasis.getDirectBufferAllocator().allocate(indices * 2).asShortBuffer(); 
+        }
+        size = indices; 
+        buffer.limit(size); 
+    }
+
+    public void getIndices(int start, int count, int outOffset, short[] out) {
+        buffer.position(start); 
+        buffer.get(out, outOffset, count); 
+    }
+
+    public void setIndices(int start, int count, int inOffset, short[] in) {
+        buffer.position(start); 
+        buffer.put(in, inOffset, count); 
+    }
     
 }

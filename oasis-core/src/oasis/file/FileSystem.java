@@ -10,12 +10,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import oasis.core.GameLogger;
+import oasis.core.Logger;
 import oasis.core.Oasis;
 
 public class FileSystem {
 
-    private static final GameLogger log = new GameLogger(FileSystem.class); 
+    private static final Logger log = new Logger(FileSystem.class); 
     
     private PathList pathList; 
     

@@ -1,92 +1,55 @@
 package oasis.graphics;
 
-import oasis.core.Disposable;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-/**
- * Shader program for the graphics device 
- * 
- * Do NOT implement this yourself, instead only use
- * this interface through objects created by a 
- * GraphicsDevice 
- * 
- * @author Nicholas Hamilton
- * 
- */
-public interface Shader extends Disposable {
+public abstract class Shader extends GraphicsResource {
 
-    /**
-     * Get the source code of the vertex shader 
-     * 
-     * @return Vertex shader code 
-     */
-    String getVertexSource(); 
+    private String vs; 
+    private String fs; 
     
-    /**
-     * Get the source code of the fragment shader 
-     * 
-     * @return Fragment shader code 
-     */
-    String getFragmentSource(); 
+    public Shader(String vs, String fs) {
+        this.vs = vs; 
+        this.fs = fs; 
+    }
     
-    /**
-     * Set an int uniform 
-     * 
-     * @param name Uniform name 
-     * @param value Int value 
-     */
-    void setInt(String name, int value); 
+    public abstract void upload(); 
     
-    /**
-     * Set a float uniform 
-     * 
-     * @param name Uniform name 
-     * @param value Float value 
-     */
-    void setFloat(String name, float value); 
+    public abstract boolean isValid(); 
+    public abstract String getErrorMessage(); 
     
-    /**
-     * Set a 2-vector uniform 
-     * 
-     * @param name Uniform name 
-     * @param value 2-vector value 
-     */
-    void setVector(String name, Vector2 value); 
+    public abstract Uniform[] getUniforms(); 
+    public abstract boolean isUniform(String name); 
+    public abstract Uniform getUniform(String name); 
     
-    /**
-     * Set a 3-vector uniform 
-     * 
-     * @param name Uniform name 
-     * @param value 3-vector value 
-     */
-    void setVector3(String name, Vector3 value);
+    public abstract void clearUniform(String name); 
+    public abstract void setInt(String name, int value); 
+    public abstract void setFloat(String name, float value); 
+    public abstract void setVector2(String name, Vector2 value); 
+    public abstract void setVector3(String name, Vector3 value); 
+    public abstract void setVector4(String name, Vector4 value); 
+    public abstract void setMatrix3(String name, Matrix3 value); 
+    public abstract void setMatrix4(String name, Matrix4 value);
     
-    /**
-     * Set a 4-vector uniform 
-     * 
-     * @param name Uniform name 
-     * @param value 4-vector value 
-     */
-    void setVector4(String name, Vector4 value);
+    public void reset() {
+        if (!isValid()) return; 
+        
+        Uniform[] list = getUniforms();
+        
+        for (int i = 0; i < list.length; i++) {
+            clearUniform(list[i].getName()); 
+        }
+    }
     
-    /**
-     * Set a 4x4 matrix uniform 
-     * 
-     * @param name Uniform name 
-     * @param value 4x4 matrix value 
-     */
-    void setMatrix4(String name, Matrix4 value);
+    public String getVertexSource() {
+        return vs; 
+    }
     
-    /**
-     * Set a 3x3 matrix uniform 
-     * 
-     * @param name Uniform name 
-     * @param normalMatrix 3x3 matrix value 
-     */
-    void setMatrix3(String name, Matrix3 normalMatrix);
-
+    public String getFragmentSource() {
+        return fs; 
+    }
+    
 }

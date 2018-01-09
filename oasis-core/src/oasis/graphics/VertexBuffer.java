@@ -1,70 +1,79 @@
 package oasis.graphics;
 
-import oasis.core.Disposable;
+import java.nio.Buffer;
+import java.nio.FloatBuffer;
 
-/**
- * Holds a list of vertices.  
- * 
- * Do NOT implement this yourself, instead only use
- * this interface through objects created by a 
- * GraphicsDevice 
- * 
- * @author Nicholas Hamilton
- *
- */
-public interface VertexBuffer extends Disposable {
+import oasis.core.Oasis;
 
-    /**
-     * Gets the buffer usage type of the vertex buffer 
-     * 
-     * @return Buffer usage 
-     */
-    BufferUsage getUsage(); 
+public abstract class VertexBuffer extends GraphicsResource {
     
-    /**
-     * Gets the vertex format of the vertex buffer 
-     * 
-     * @return Vertex format 
-     */
-    VertexFormat getFormat(); 
+    private VertexFormat format; 
+    private BufferUsage usage; 
+    private FloatBuffer buffer; 
+    private int size; 
     
-    /**
-     * Gets the number of vertices in the buffer. 
-     * This is equivalent to the number of floats 
-     * divided by VertexFormat.getFloatCount()
-     * 
-     * @return Number of vertices
-     */
-    int getVertexCount(); 
+    public VertexBuffer(VertexFormat format, int vertices, BufferUsage usage) {
+        this.format = format; 
+        this.size = vertices * format.getFloatsPerElement(); 
+        this.usage = usage; 
+        this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 4).asFloatBuffer(); 
+    }
+
+    public abstract void upload(); 
     
-    /**
-     * Gets the number of floats in the buffer 
-     * 
-     * @return Number of floats 
-     */
-    int getFloatCount(); 
+    protected Buffer getBuffer() {
+        return buffer; 
+    }
     
-    /**
-     * Gets the data of the buffer and puts it in
-     * [out] 
-     * 
-     * @param out Array that a copy of data will be stored 
-     * @return Reference to [out] 
-     */
-    float[] getVertices(float[] out); 
+    protected Buffer getAndFlipBuffer() {
+        buffer.position(size); 
+        buffer.flip(); 
+        return buffer; 
+    }
     
-    /**
-     * Gets the data of the buffer 
-     * 
-     * @return Copy of buffer data 
-     */
-    float[] getVertices(); 
+    public VertexFormat getFormat() {
+        return format; 
+    }
+
+    public BufferUsage getUsage() {
+        return usage;
+    }
     
-    /**
-     * Sets the data of the buffer 
-     * 
-     * @param data Buffer data 
-     */
-    void setVertices(float[] data); 
+    public int getSizeInBytes() {
+        return size * 4; 
+    }
+
+    public int getSizeInFloats() {
+        return size; 
+    }
+
+    public int getVertexCount() {
+        return size / format.getFloatsPerElement(); 
+    }
+
+    public void resize(int vertices) {
+        int sizeInFloats = vertices * format.getFloatsPerElement(); 
+        
+        if (sizeInFloats > buffer.capacity()) {
+            Oasis.getDirectBufferAllocator().free(buffer); 
+            buffer = Oasis.getDirectBufferAllocator().allocate(sizeInFloats * 4).asFloatBuffer(); 
+        }
+        size = sizeInFloats; 
+        buffer.limit(size * sizeInFloats); 
+    }
+
+    public void getVertices(int start, int count, int outOffset, float[] out) {
+        int numFloats = format.getFloatsPerElement(); 
+        
+        buffer.position(start * numFloats); 
+        buffer.get(out, outOffset, count * numFloats); 
+    }
+
+    public void setVertices(int start, int count, int inOffset, float[] in) {
+        int numFloats = format.getFloatsPerElement(); 
+        
+        buffer.position(start * numFloats); 
+        buffer.put(in, inOffset, count * numFloats); 
+    }
     
 }

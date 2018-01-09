@@ -6,71 +6,35 @@ package oasis.core;
  * @author Nicholas Hamilton
  *
  */
-public abstract class Application {
+public interface Application {
 
-    private static final GameLogger log = new GameLogger(Application.class);
-    
     /**
      * Called when application is initializing 
      */
-    public abstract void onInit();
+    void init();
     
     /**
      * Called when application is updating 
      * 
      * @param dt Time since last update 
      */
-    public abstract void onUpdate(float dt);
+    void update(float dt);
     
     /**
      * Called when application is rendering 
      */
-    public abstract void onRender();
+    void render();
     
     /**
      * Called when application is exiting 
      */
-    public abstract void onExit();
+    void exit();
     
     /**
      * Called when window is trying to close 
      * 
      * @return Whether window should close 
      */
-    public boolean onCloseAttempt() {
-        return true; 
-    }
-    
-    /**
-     * Start the application 
-     * 
-     * @param config Engine configuration 
-     */
-    public final synchronized void start(Config config) {
-        initEngine(config);
-    }
-    
-    /** 
-     * Stop the application 
-     */
-    public final synchronized void stop() {
-        Oasis.engine.stop();
-    }
-    
-    private void initEngine(Config config) {
-        Engine engine = null; 
-        try {
-            engine = config.engine.newInstance();
-        } catch (InstantiationException e) {
-            log.fatal("Could not instantiate " + config.engine);
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            log.fatal("Could not access " + config.engine);
-            e.printStackTrace();
-        }
-        engine.setConfig(config);
-        engine.setApplication(this);
-        engine.start(); 
-    }
+    boolean closeAttempt();
     
 }
