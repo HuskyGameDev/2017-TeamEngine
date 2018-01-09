@@ -190,14 +190,21 @@ public class Engine {
             // keep updates up to date 
             int loops = 0;
             while (running && tickTimer < time.getTime() && loops++ < 10) {
+                if (loops > 1) {
+//                    log.warning("Extra update: " + loops); 
+                }
+//                long start = System.nanoTime(); 
                 update(1.0f / targetUps);
+//                log.debug("Update time: " + (System.nanoTime() - start) / 1000000.0);
                 ticks++;
                 tickTimer += skipTicks;
             }
             
             // keep frames up to date 
             if (running && frameTimer < time.getTime()) {
+//                long start = System.nanoTime(); 
                 render();
+//                log.debug("Render time: " + (System.nanoTime() - start) / 1000000.0);
                 frames++;
                 frameTimer += skipFrames;
             }

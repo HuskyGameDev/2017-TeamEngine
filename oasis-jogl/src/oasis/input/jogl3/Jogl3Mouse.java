@@ -26,13 +26,12 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
     
     private boolean[] down; 
     private int[] buttons; 
+    private int dx, dy; 
     private int x, y; 
-    private int lastX, lastY; 
     private ScrollDirection dir = ScrollDirection.NONE; 
     
     private Robot robot; 
     
-    private int curX, curY; 
     private ScrollDirection curDir = ScrollDirection.NONE; 
     
     private Cursor basicCursor, blankCursor; 
@@ -52,7 +51,7 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
         this.display = display; 
         down = new boolean[MAX_BUTTONS]; 
         buttons = new int[MAX_BUTTONS]; 
-        x = y = lastX = lastY = 0; 
+        x = y = dx = dy = 0; 
     }
     
     public void setCursorVisible(boolean visible) {
@@ -70,10 +69,10 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
                 }
             }
             Point p = MouseInfo.getPointerInfo().getLocation(); 
-            curX = p.x - display.getX(); 
-            curY = p.y - display.getY(); 
-            lastX = x; 
-            lastY = y; 
+            int curX = p.x - display.getX(); 
+            int curY = p.y - display.getY(); 
+            dx = curX - x; 
+            dy = curY - y; 
             x = curX; 
             y = curY; 
             dir = curDir; 
@@ -82,18 +81,30 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
         }
     }
     
-    private void resetPosition() {
-        lastX = x; 
-        lastY = y; 
-    }
+//    private void resetPosition() {
+//        lastX = x; 
+//        lastY = y; 
+//    }
     
     @Override
-    public void setPosition(float x, float y) {
+    public void setPosition(float newX, float newY) {
         synchronized (lock) {
-            this.x = (int)x; 
-            this.y = (int)(display.getHeight() - (int)y - 1); 
+            Point p = MouseInfo.getPointerInfo().getLocation(); 
+            int curX = p.x - display.getX(); 
+            int curY = p.y - display.getY(); 
+            int oldX = x; 
+            int oldY = x; 
+            
+            this.x = (int)newX; 
+            this.y = (int)(display.getHeight() - (int)newY - 1); 
             if (display.getCanvas().hasFocus()) robot.mouseMove(display.getX() + this.x, display.getY() + this.y); 
-            resetPosition(); 
+//            resetPosition(); 
+            
+            this.dx = curX - oldX; 
+            this.dy = curY - oldY; 
+            
+//            lastX += -(curX - oldX); 
+//            lastY += -(curY - oldY); 
         }
     }
 
@@ -114,12 +125,12 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
 
     @Override
     public float getDx() {
-        return x - lastX; 
+        return dx; 
     }
 
     @Override
     public float getDy() {
-        return y - lastY; 
+        return dy; 
     }
 
     @Override

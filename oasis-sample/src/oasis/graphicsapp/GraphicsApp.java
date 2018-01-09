@@ -1,5 +1,7 @@
 package oasis.graphicsapp;
 
+import java.util.Random;
+
 import oasis.core.Application;
 import oasis.core.BackendType;
 import oasis.core.Config;
@@ -53,9 +55,11 @@ public class GraphicsApp implements Application {
         state = new GraphicsState(); 
 //        state.setFrontFace(FrontFace.BOTH);
         
-        mesh = ObjImporter.load("dragon.obj");
-        mesh2 = ObjImporter.load("bunny.obj"); 
-        mesh3 = ObjImporter.load("terrain4.obj"); 
+        mesh = ObjImporter.load("sphere.obj");
+//        mesh2 = ObjImporter.load("bunny.obj"); 
+//        mesh3 = ObjImporter.load("terrain4.obj"); 
+        
+        log.debug(mesh.getGeometry(0).getVertexBuffer(0).getVertexCount()); 
         
         String vs = GlslParser.getVertexSource("test.glsl"); 
         String fs = GlslParser.getFragmentSource("test.glsl"); 
@@ -64,7 +68,7 @@ public class GraphicsApp implements Application {
         material = new Material(); 
         material.setShader(shader); 
         material.setDiffuseColor(new Vector3(0.4f, 0.5f, 0.7f)); 
-//        material.setSpecularColor(new Vector3(1)); 
+        material.setSpecularColor(new Vector3(0.5f)); 
         material.setSpecularPower(100);
         
         material2 = new Material(); 
@@ -181,15 +185,39 @@ public class GraphicsApp implements Application {
         
         Transform t = new Transform(); 
         t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(-ticks * 0.1f))); 
-        g.drawMesh(mesh, 0, material, t.getMatrix()); 
+//        g.drawMesh(mesh, 0, material, t.getMatrix()); 
         
         t = new Transform(); 
         t.setPosition(new Vector3(10, -4, 10)); 
         t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(ticks * 1f))); 
-        t.setScale(new Vector3(60)); 
-        g.drawMesh(mesh2, 0, material2, t.getMatrix()); 
+        t.setScale(new Vector3(1)); 
+//        g.drawMesh(mesh, 0, material2, t.getMatrix()); 
         
-        g.drawMesh(mesh3, 0, grassMat, Matrix4.identity()); 
+        Material[] mats = new Material[] { material, material2, grassMat }; 
+        
+        int count = 0; 
+        Random r = new Random(1); 
+        for (int i = -20; i < 20; i++) {
+            for (int j = -20; j < 20; j++) {
+                for (int k = -0; k < 1; k++) {
+                    Material mat = new Material(); 
+                    mat.setShader(shader); 
+                    
+                    mat.setDiffuseColor(new Vector3(r.nextFloat(), r.nextFloat(), r.nextFloat())); 
+                    mat.setSpecularColor(mat.getDiffuseColor().multiply(r.nextFloat()* 1)); 
+                    mat.setSpecularPower((float) Math.pow(2, r.nextFloat() * 4));
+                    
+                    g.drawMesh(mesh, 0, mat, Matrix4.translation(new Vector3(i * 2, k * 2, j * 2)));
+                    count++; 
+                }
+            }
+        }
+        
+//        log.debug("Drawing " + count + " objects"); 
+        
+//        g.drawMesh(mesh, 0, material, Matrix4.translation(new Vector3(4, 0, 0))); 
+//        g.drawMesh(mesh, 0, material2, Matrix4.translation(new Vector3(7, 0, 0))); 
+//        g.drawMesh(mesh, 0, grassMat, Matrix4.translation(new Vector3(10, 0, 0))); 
         g.finish(); 
     }
 
