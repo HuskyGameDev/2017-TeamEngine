@@ -94,7 +94,7 @@ public class Mesh {
             ib.resize(newSize); 
         }
         
-        ib.setIndices(0, newSize, 0, data);
+        ib.setIndices(0, newSize, data, 0);
     }
     
     private void setVertices(Attribute attrib, float[] verts) {
@@ -117,7 +117,7 @@ public class Mesh {
                 vb.resize(vertCount); 
             }
             
-            vb.setVertices(0, vertCount, 0, verts); 
+            vb.setVertices(0, vertCount, verts, 0); 
             
             vertexBuffers[attrib.ordinal()] = vb; 
         }
@@ -146,7 +146,7 @@ public class Mesh {
     public short[] getIndices(int submesh) {
         IndexBuffer ib = submeshes[submesh].indices; 
         short[] out = new short[ib.getSizeInShorts()]; 
-        ib.getIndices(0, ib.getIndexCount(), 0, out);
+        ib.getIndices(0, ib.getIndexCount(), out, 0);
         return out; 
     }
     

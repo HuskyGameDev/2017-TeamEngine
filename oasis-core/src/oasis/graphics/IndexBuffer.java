@@ -54,12 +54,12 @@ public abstract class IndexBuffer extends GraphicsResource {
         buffer.limit(size); 
     }
 
-    public void getIndices(int start, int count, int outOffset, short[] out) {
+    public void getIndices(int start, int count, short[] out, int outOffset) {
         buffer.position(start); 
         buffer.get(out, outOffset, count); 
     }
 
-    public void setIndices(int start, int count, int inOffset, short[] in) {
+    public void setIndices(int start, int count, short[] in, int inOffset) {
         buffer.position(start); 
         buffer.put(in, inOffset, count); 
     }

@@ -62,14 +62,14 @@ public abstract class VertexBuffer extends GraphicsResource {
         buffer.limit(size * sizeInFloats); 
     }
 
-    public void getVertices(int start, int count, int outOffset, float[] out) {
+    public void getVertices(int start, int count, float[] out, int outOffset) {
         int numFloats = format.getFloatsPerElement(); 
         
         buffer.position(start * numFloats); 
         buffer.get(out, outOffset, count * numFloats); 
     }
 
-    public void setVertices(int start, int count, int inOffset, float[] in) {
+    public void setVertices(int start, int count, float[] in, int inOffset) {
         int numFloats = format.getFloatsPerElement(); 
         
         buffer.position(start * numFloats); 

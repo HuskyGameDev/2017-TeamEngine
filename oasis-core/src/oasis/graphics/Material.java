@@ -29,15 +29,19 @@ public class Material {
         return alpha; 
     }
     
-    public Vector3 getDiffuse() {
+    public Vector3 getDiffuseColor() {
         return new Vector3(diffuse);
     }
 
-    public Vector3 getSpecular() {
+    public Vector3 getSpecularColor() {
         return new Vector3(specular);
     }
+    
+    public float getSpecularPower() {
+        return specularPower; 
+    }
 
-    public Vector3 getEmissive() {
+    public Vector3 getEmissiveColor() {
         return new Vector3(emissive);
     }
 
@@ -53,20 +57,24 @@ public class Material {
         this.alpha = a; 
     }
 
-    public void setDiffuse(Vector3 diffuse) {
+    public void setDiffuseColor(Vector3 diffuse) {
         this.diffuse.set(diffuse);
     }
 
-    public void setSpecular(Vector3 specular) {
+    public void setSpecularColor(Vector3 specular) {
         this.specular.set(specular);
     }
 
-    public void setEmissive(Vector3 emissive) {
+    public void setEmissiveColor(Vector3 emissive) {
         this.emissive.set(emissive);
     }
 
     public void setShader(Shader shader) {
         this.shader = shader;
+    }
+
+    public void setSpecularPower(float pow) {
+        this.specularPower = pow; 
     } 
     
 }

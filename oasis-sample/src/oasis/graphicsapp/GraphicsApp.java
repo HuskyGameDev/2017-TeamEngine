@@ -12,7 +12,6 @@ import oasis.graphics.DirectionalLight;
 import oasis.graphics.Graphics;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
-import oasis.graphics.GraphicsState.FrontFace;
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
 import oasis.graphics.Shader;
@@ -35,12 +34,15 @@ public class GraphicsApp implements Application {
     private Mesh mesh2; 
     private Mesh mesh3; 
     private Material material; 
+    private Material material2; 
     private Material grassMat; 
     private Shader shader; 
     private GraphicsState state; 
     private Camera camera; 
     
     private float yaw, pitch; 
+    
+    private boolean[] lights = new boolean[4]; 
     
     @Override
     public void init() {
@@ -61,13 +63,20 @@ public class GraphicsApp implements Application {
         
         material = new Material(); 
         material.setShader(shader); 
-        material.setDiffuse(new Vector3(0.3f, 0.3f, 0.3f)); 
-        material.setSpecular(new Vector3(1)); 
+        material.setDiffuseColor(new Vector3(0.4f, 0.5f, 0.7f)); 
+//        material.setSpecularColor(new Vector3(1)); 
+        material.setSpecularPower(100);
+        
+        material2 = new Material(); 
+        material2.setShader(shader); 
+        material2.setDiffuseColor(new Vector3(0.3f, 0.3f, 0.3f)); 
+        material2.setSpecularColor(new Vector3(1)); 
+        material2.setSpecularPower(10);
         
         grassMat = new Material(); 
         grassMat.setShader(shader); 
-        grassMat.setDiffuse(new Vector3(0.3f, 0.6f, 0.3f)); 
-        grassMat.setSpecular(new Vector3(0)); 
+        grassMat.setDiffuseColor(new Vector3(0.3f, 0.6f, 0.3f)); 
+        grassMat.setSpecularColor(new Vector3(0)); 
         
         camera = new Camera(); 
         camera.setPosition(new Vector3(0, 0, 10));
@@ -79,7 +88,7 @@ public class GraphicsApp implements Application {
     @Override
     public void update(float dt) {
         Keyboard keys = Oasis.getKeyboard(); 
-        if (keys.isKeyDown(Keyboard.KEY_Q)) {
+        if (keys.isKeyDown(Keyboard.KEY_ESCAPE)) {
             Oasis.stop();
         }
         
@@ -89,6 +98,11 @@ public class GraphicsApp implements Application {
         Quaternion camRot = camera.getRotation(); 
         
         Vector3 dir = new Vector3(); 
+        
+        if (keys.isKeyJustDown(Keyboard.KEY_Q)) lights[0] = !lights[0]; 
+        if (keys.isKeyJustDown(Keyboard.KEY_W)) lights[1] = !lights[1]; 
+        if (keys.isKeyJustDown(Keyboard.KEY_E)) lights[2] = !lights[2]; 
+        if (keys.isKeyJustDown(Keyboard.KEY_R)) lights[3] = !lights[3]; 
         
         if (keys.isKeyDown(Keyboard.KEY_I)) {
             dir.addSelf(new Vector3(0, 0, -1)); 
@@ -140,22 +154,41 @@ public class GraphicsApp implements Application {
         gd.clearBuffers(new Vector4(sky, 1.0f), true); 
         gd.setState(state); 
         
-        Transform t = new Transform(); 
-        t.setPosition(new Vector3(10, -4, 10)); 
-        t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(ticks * 1f))); 
-        t.setScale(new Vector3(60)); 
-        
         g.begin(); 
         g.addAmbient(sky.multiply(0.6f)); 
         
         DirectionalLight light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f)); 
-        light.setDirection(new Vector3(-1, -1, 0).normalize()); 
+        light.setColor(new Vector3(0.6f, 0, 0)); 
+        light.setDirection(new Vector3(-1, -1, -1).normalize()); 
+        if (lights[0]) g.addLight(light);
         
-        g.addLight(light);
+        light = new DirectionalLight(); 
+        light.setColor(new Vector3(0, 0, 0.6f)); 
+        light.setDirection(new Vector3(-1, -1, 1).normalize()); 
+        if (lights[1]) g.addLight(light);
+        
+        light = new DirectionalLight(); 
+        light.setColor(new Vector3(0.6f, 0.6f, 0.6f)); 
+        light.setDirection(new Vector3(1, -1, -1).normalize()); 
+        if (lights[2]) g.addLight(light);
+        
+        light = new DirectionalLight(); 
+        light.setColor(new Vector3(0, 0.6f, 0)); 
+        light.setDirection(new Vector3(1, -1, 1).normalize()); 
+        if (lights[3]) g.addLight(light);
+        
         g.setCamera(camera); 
-        g.drawMesh(mesh, 0, material, Matrix4.identity()); 
-        g.drawMesh(mesh2, 0, material, t.getMatrix()); 
+        
+        Transform t = new Transform(); 
+        t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(-ticks * 0.1f))); 
+        g.drawMesh(mesh, 0, material, t.getMatrix()); 
+        
+        t = new Transform(); 
+        t.setPosition(new Vector3(10, -4, 10)); 
+        t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(ticks * 1f))); 
+        t.setScale(new Vector3(60)); 
+        g.drawMesh(mesh2, 0, material2, t.getMatrix()); 
+        
         g.drawMesh(mesh3, 0, grassMat, Matrix4.identity()); 
         g.finish(); 
     }
@@ -175,8 +208,8 @@ public class GraphicsApp implements Application {
         conf.backend = BackendType.AUTO; 
         conf.width = 800; 
         conf.height = 600; 
-        conf.fps = 60.001f; 
-        conf.ups = 60; 
+        conf.fps = 59.97f; 
+        conf.ups = 60f; 
         Oasis.start(conf, new GraphicsApp()); 
     }
 

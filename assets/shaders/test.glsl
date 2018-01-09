@@ -54,6 +54,6 @@ void main()
     float diffuse = Diffuse(v_Normal, lightDir); 
     float specular = Specular(v_Normal, lightDir, cameraDir, oasis_SpecularColor.a); 
 
-    gl_FragColor.rgb = (oasis_AmbientColor.rgb + diffuse) * oasis_DiffuseColor.rgb + specular * oasis_SpecularColor.rgb; 
+    gl_FragColor.rgb = (oasis_AmbientColor.rgb + diffuse * oasis_LightColor) * oasis_DiffuseColor.rgb + specular * oasis_LightColor * oasis_SpecularColor.rgb; 
     gl_FragColor.a = 1.0; 
 }

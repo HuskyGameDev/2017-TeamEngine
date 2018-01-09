@@ -18,6 +18,7 @@ public class Jogl3DebugOgl implements Ogl {
     
     public void setOgl(GL3 gl) {
         this.gl = gl; 
+        gl.setSwapInterval(0);
     }
     
     public void checkError(String desc) {

@@ -52,6 +52,7 @@ public interface Keyboard {
     public static final int KEY_SHIFT = 0x10; 
     public static final int KEY_COMMA = 0x2C; 
     public static final int KEY_PERIOD = 0x2E; 
+    public static final int KEY_ESCAPE = 0x1B; 
     
     /**
      * Checks if a key is down

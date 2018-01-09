@@ -1,7 +1,25 @@
 package oasis.graphics;
 
+import java.nio.ByteBuffer;
+
+import oasis.graphics.texture.Rgba32fCodec;
+import oasis.graphics.texture.Rgba8Codec;
+import oasis.math.Vector4;
+
 public abstract class Texture extends GraphicsResource {
 
+    public interface Codec {
+
+        void setPixelInt(ByteBuffer buffer, int rgba); 
+        
+        int getPixelInt(ByteBuffer buffer); 
+        
+        void setPixelVector4(ByteBuffer buffer, Vector4 in); 
+        
+        void getPixelVector4(ByteBuffer buffer, Vector4 out); 
+        
+    }
+    
     /**
      * Pixel format 
      * 
@@ -13,39 +31,51 @@ public abstract class Texture extends GraphicsResource {
         /**
          * Packed int with 8 bits for each of red, green, blue, alpha, in that order 
          */
-        RGBA8(false), 
+        RGBA8(8, false, new Rgba8Codec()), 
         
         /**
          * Half-floats (16 bit) values for red, green, blue, alpha 
          */
-        RGBA16F(false), 
+        RGBA16F(64, false, null), 
         
         /**
          * 32 bit float values for red, green, blue, alpha 
          */
-        RGBA32F(false), 
+        RGBA32F(128, false, new Rgba32fCodec()), 
         
         /**
          * 24 bit depth values
          */
-        DEPTH24(true), 
+        DEPTH24(96, true, null), 
         
         /**
          * 24 bit depth values with 8 bits for stencil 
          */
-        DEPTH24STENCIL8(true), 
+        DEPTH24STENCIL8(128, true, null), 
         
         /**
          * 32 bit depth values
          */
-        DEPTH32(true);
+        DEPTH32(128, true, null);
 
         private final boolean depth;
-
-        private Format(boolean depth) {
+        private final int bytes; 
+        private final Codec codec; 
+        
+        private Format(int bytes, boolean depth, Codec codec) {
+            this.bytes = bytes; 
             this.depth = depth;
+            this.codec = codec; 
+        }
+        
+        public Codec getCodec() {
+            return codec; 
         }
 
+        public int getBytesPerPixel() {
+            return bytes; 
+        }
+        
         /**
          * Check if format is a depth format 
          * 
@@ -182,6 +212,74 @@ public abstract class Texture extends GraphicsResource {
          */
         REPEAT;
         
+    }
+    
+    private Format format; 
+    private int width; 
+    private int height; 
+    private MinFilter minFilter = MinFilter.LINEAR_MIPMAP_LINEAR; 
+    private MagFilter magFilter = MagFilter.LINEAR; 
+    private WrapMode wrapU = WrapMode.REPEAT; 
+    private WrapMode wrapV = WrapMode.REPEAT; 
+    
+    public Texture(Format format, int width, int height) {
+        this.format = format; 
+        this.width = width; 
+        this.height = height; 
+    }
+    
+    public Format getFormat() {
+        return format; 
+    }
+    
+    public int getWidth() {
+        return width; 
+    }
+    
+    public int getHeight() {
+        return height; 
+    }
+    
+    public MinFilter getMinFilter() {
+        return minFilter; 
+    }
+    
+    public MagFilter getMagFilter() {
+        return magFilter; 
+    }
+    
+    public WrapMode getUWrapMode() {
+        return wrapU; 
+    }
+    
+    public WrapMode getVWrapMode() {
+        return wrapV; 
+    }
+    
+    public void setMinFilter(MinFilter min) {
+        minFilter = min; 
+    }
+    
+    public void setMagFilter(MagFilter mag) {
+        magFilter = mag; 
+    }
+    
+    public void setFilters(MinFilter min, MagFilter mag) {
+        setMinFilter(min); 
+        setMagFilter(mag); 
+    }
+    
+    public void setUWrapMode(WrapMode u) {
+        wrapU = u; 
+    }
+    
+    public void setVWrapMode(WrapMode v) {
+        wrapV = v; 
+    }
+    
+    public void setWrapModes(WrapMode u, WrapMode v) {
+        setUWrapMode(u); 
+        setVWrapMode(v); 
     }
     
 }

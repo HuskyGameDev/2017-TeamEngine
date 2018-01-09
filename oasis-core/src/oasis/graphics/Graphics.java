@@ -19,6 +19,14 @@ public class Graphics {
 
     private static final Logger log = new Logger(Graphics.class); 
     
+    private static final GraphicsState BASE_STATE = new GraphicsState(); 
+    private static final GraphicsState ADD_STATE = new GraphicsState(); 
+    
+    static {
+        ADD_STATE.setSourceBlendMode(GraphicsState.BlendMode.ONE); 
+        ADD_STATE.setDestBlendMode(GraphicsState.BlendMode.ONE); 
+    }
+    
     private List<RenderData> opaqueQueue = new ArrayList<>(); 
     private LightList lights = new LightList(); 
     private Camera camera = null; 
@@ -58,6 +66,8 @@ public class Graphics {
             Geometry geom = data.getMesh().getGeometry(data.getSubmesh()); 
             Material mat = data.getMaterial(); 
             
+            gd.setState(BASE_STATE); 
+            
             {
                 Light light = null; 
                 
@@ -67,6 +77,8 @@ public class Graphics {
                 
                 renderGeometry(gd, camera, shader, geom, mat, mMatrix, nMatrix, light, ambient, true); 
             }
+            
+            gd.setState(ADD_STATE); 
             
             for (int i = 1; i < renderLights.getLightCount(); i++) {
                 Light light = renderLights.get(i); 

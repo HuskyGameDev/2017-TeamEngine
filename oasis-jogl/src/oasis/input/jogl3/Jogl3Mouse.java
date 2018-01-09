@@ -2,6 +2,7 @@ package oasis.input.jogl3;
 
 import java.awt.AWTException;
 import java.awt.Cursor;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
 import java.awt.event.MouseEvent;
@@ -18,6 +19,8 @@ import oasis.input.Mouse;
 public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, MouseWheelListener {
 
     public static final int MAX_BUTTONS = 32; 
+    
+    private final Object lock = new Object(); 
     
     private Jogl3Window display; 
     
@@ -57,21 +60,26 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
     }
     
     public void update() {
-        for (int i = 0; i < MAX_BUTTONS; i++) {
-            if (down[i]) {
-                buttons[i]++; 
+        synchronized (lock) {
+            for (int i = 0; i < MAX_BUTTONS; i++) {
+                if (down[i]) {
+                    buttons[i]++; 
+                }
+                else {
+                    buttons[i] = 0; 
+                }
             }
-            else {
-                buttons[i] = 0; 
-            }
+            Point p = MouseInfo.getPointerInfo().getLocation(); 
+            curX = p.x - display.getX(); 
+            curY = p.y - display.getY(); 
+            lastX = x; 
+            lastY = y; 
+            x = curX; 
+            y = curY; 
+            dir = curDir; 
+            
+            curDir = ScrollDirection.NONE; 
         }
-        lastX = x; 
-        lastY = y; 
-        x = curX; 
-        y = curY; 
-        dir = curDir; 
-        
-        curDir = ScrollDirection.NONE; 
     }
     
     private void resetPosition() {
@@ -81,10 +89,12 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
     
     @Override
     public void setPosition(float x, float y) {
-        this.x = (int)x; 
-        this.y = (int)(display.getHeight() - (int)y - 1); 
-        if (display.getCanvas().hasFocus()) robot.mouseMove(display.getX() + this.x, display.getY() + this.y); 
-        resetPosition(); 
+        synchronized (lock) {
+            this.x = (int)x; 
+            this.y = (int)(display.getHeight() - (int)y - 1); 
+            if (display.getCanvas().hasFocus()) robot.mouseMove(display.getX() + this.x, display.getY() + this.y); 
+            resetPosition(); 
+        }
     }
 
     @Override
@@ -138,38 +148,48 @@ public class Jogl3Mouse implements Mouse, MouseListener, MouseMotionListener, Mo
     
     @Override
     public void mousePressed(MouseEvent e) {
-        down[e.getButton()] = true; 
+        synchronized (lock) {
+            down[e.getButton()] = true; 
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        down[e.getButton()] = false; 
+        synchronized (lock) {
+            down[e.getButton()] = false; 
+        }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        curX = e.getX(); 
-        curY = e.getY(); 
+        synchronized (lock) {
+//            curX = e.getX(); 
+//            curY = e.getY(); 
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        curX = e.getX(); 
-        curY = e.getY(); 
+        synchronized (lock) {
+//            curX = e.getX(); 
+//            curY = e.getY(); 
+        }
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        int d = e.getWheelRotation(); 
-        
-        if (d < 0) {
-            curDir = ScrollDirection.UP; 
-        }
-        else if (d > 0) {
-            curDir = ScrollDirection.DOWN; 
-        }
-        else {
-            curDir = ScrollDirection.NONE; 
+        synchronized (lock) {
+            int d = e.getWheelRotation(); 
+            
+            if (d < 0) {
+                curDir = ScrollDirection.UP; 
+            }
+            else if (d > 0) {
+                curDir = ScrollDirection.DOWN; 
+            }
+            else {
+                curDir = ScrollDirection.NONE; 
+            }
         }
     }
 
