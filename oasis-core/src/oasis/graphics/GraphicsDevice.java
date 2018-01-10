@@ -8,11 +8,13 @@ public interface GraphicsDevice {
 
     void postRender();
 
-    HardwareBufferResource createHardwareBufferResource(HardwareBufferResource.Type type); 
+    NativeBuffer createNativeBuffer(NativeBuffer.Type type); 
     
-    HardwareGeometryResource createHardwareGeometryResource(); 
+    NativeGeometry createNativeGeometry(); 
     
-    HardwareShaderResource createHardwareShaderResource(String vs, String fs); 
+    NativeShader createNativeShader(String vs, String fs); 
+    
+    NativeTexture createNativeTexture(Texture.Type type, Texture.Format format, int width, int height, int depth); 
     
     void clearBuffers(Vector4 color, boolean depth); 
     

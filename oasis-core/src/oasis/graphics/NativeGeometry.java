@@ -1,6 +1,6 @@
 package oasis.graphics;
 
-public interface HardwareGeometryResource {
+public interface NativeGeometry {
 
     void upload(IndexBuffer submeshes, VertexBuffer[] vertices); 
     

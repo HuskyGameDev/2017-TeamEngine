@@ -5,10 +5,12 @@ import oasis.graphics.BufferUsage;
 import oasis.graphics.Geometry;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
-import oasis.graphics.HardwareBufferResource;
-import oasis.graphics.HardwareGeometryResource;
-import oasis.graphics.HardwareShaderResource;
+import oasis.graphics.NativeBuffer;
+import oasis.graphics.NativeGeometry;
+import oasis.graphics.NativeShader;
+import oasis.graphics.NativeTexture;
 import oasis.graphics.Shader;
+import oasis.graphics.Texture;
 import oasis.math.Vector4;
 
 public class OglGraphics implements GraphicsDevice {
@@ -17,7 +19,7 @@ public class OglGraphics implements GraphicsDevice {
     
     private int[] vao = new int[1]; 
     
-    private OglHardwareShaderResource curShader = null; 
+    private OglShader curShader = null; 
     private GraphicsState curState = null; 
     
     public OglGraphics(Ogl ogl) {
@@ -47,27 +49,35 @@ public class OglGraphics implements GraphicsDevice {
     }
 
     @Override
-    public HardwareBufferResource createHardwareBufferResource(HardwareBufferResource.Type type) {
+    public NativeBuffer createNativeBuffer(NativeBuffer.Type type) {
         switch (type) {
         case VERTEX: 
-            return new OglHardwareBufferResource(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
+            return new OglBuffer(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
         case INDEX: 
-            return new OglHardwareBufferResource(ogl, Ogl.GL_ELEMENT_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
-        case TEXTURE: 
-            return null; 
+            return new OglBuffer(ogl, Ogl.GL_ELEMENT_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC));
         default: 
-            throw new OasisException("Unknown HardwareBufferResource type: " + type); 
+            throw new OasisException("Unknown NativeBuffer type: " + type); 
+        }
+    }
+    
+    @Override
+    public NativeTexture createNativeTexture(Texture.Type type, Texture.Format format, int width, int height, int depth) {
+        switch (type) {
+        case TEXTURE_2D: 
+            return null; //new OglHardwareBufferResource(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
+        default: 
+            throw new OasisException("Unknown NativeTexture type: " + type); 
         }
     }
 
     @Override
-    public HardwareGeometryResource createHardwareGeometryResource() {
-        return new OglHardwareGeometryResource(ogl); 
+    public NativeGeometry createNativeGeometry() {
+        return new OglGeometry(ogl); 
     }
     
     @Override
-    public HardwareShaderResource createHardwareShaderResource(String vs, String fs) {
-        return new OglHardwareShaderResource(ogl, vs, fs); 
+    public NativeShader createNativeShader(String vs, String fs) {
+        return new OglShader(ogl, vs, fs); 
     }
 
     @Override
@@ -76,7 +86,7 @@ public class OglGraphics implements GraphicsDevice {
             curShader = null; 
         }
         else {
-            curShader = (OglHardwareShaderResource) s.getHardwareShaderResource(); 
+            curShader = (OglShader) s.getNativeResource(); 
             curShader.upload(); 
         }
     }
@@ -93,10 +103,10 @@ public class OglGraphics implements GraphicsDevice {
             throw new OasisException("Shader is not valid"); 
         }
         
-        OglHardwareShaderResource.bind(ogl, curShader); 
+        OglShader.bind(ogl, curShader); 
         curShader.upload(); 
         
-        OglHardwareGeometryResource geom = (OglHardwareGeometryResource) g.getHardwareGeometryResource(); 
+        OglGeometry geom = (OglGeometry) g.getNativeResource(); 
         geom.setBuffers(); 
         int prim = OglConvert.getPrimitive(g.getPrimitive()); 
         int size; 

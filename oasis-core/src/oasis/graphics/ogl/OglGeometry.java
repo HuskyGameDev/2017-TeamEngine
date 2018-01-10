@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.graphics.Attribute;
-import oasis.graphics.HardwareGeometryResource;
+import oasis.graphics.NativeGeometry;
 import oasis.graphics.IndexBuffer;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
 
 // TODO implement VAO
-public class OglHardwareGeometryResource implements HardwareGeometryResource {
+public class OglGeometry implements NativeGeometry {
 
     private Ogl ogl;
     
     private IndexBuffer ib; 
     private List<VertexBuffer> vbs = new ArrayList<>(); 
 
-    public OglHardwareGeometryResource(Ogl ogl) {
+    public OglGeometry(Ogl ogl) {
         this.ogl = ogl; 
     }
 
@@ -39,7 +39,7 @@ public class OglHardwareGeometryResource implements HardwareGeometryResource {
                 ogl.glEnableVertexAttribArray(i);
 
                 VertexBuffer vb = vbs.get(attribIds[i]); 
-                OglHardwareBufferResource hb = (OglHardwareBufferResource) vb.getHardwareBuffer();
+                OglBuffer hb = (OglBuffer) vb.getNativeResource();
 
                 // log.debug("Bind VertexBuffer: " + vb.getId());
                 ogl.glBindBuffer(Ogl.GL_ARRAY_BUFFER, hb.getId());
@@ -54,7 +54,7 @@ public class OglHardwareGeometryResource implements HardwareGeometryResource {
         }
 
         if (ib != null) {
-            OglHardwareBufferResource hb = (OglHardwareBufferResource) ib.getHardwareBuffer();
+            OglBuffer hb = (OglBuffer) ib.getNativeResource();
 
             // log.debug("Bind IndexBuffer: " + ib.getId());
             ogl.glBindBuffer(Ogl.GL_ELEMENT_ARRAY_BUFFER, hb.getId());

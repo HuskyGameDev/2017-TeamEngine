@@ -9,7 +9,7 @@ public class VertexBuffer extends GraphicsResource {
     private VertexFormat format; 
     private BufferUsage usage; 
     private FloatBuffer buffer; 
-    private HardwareBufferResource hwBuffer; 
+    private NativeBuffer hwBuffer; 
     private int size; 
     
     public VertexBuffer(VertexFormat format, int vertices, BufferUsage usage) {
@@ -17,7 +17,7 @@ public class VertexBuffer extends GraphicsResource {
         this.size = vertices * format.getFloatsPerElement(); 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 4).asFloatBuffer(); 
-        this.hwBuffer = Oasis.getGraphicsDevice().createHardwareBufferResource(HardwareBufferResource.Type.VERTEX); 
+        this.hwBuffer = Oasis.getGraphicsDevice().createNativeBuffer(NativeBuffer.Type.VERTEX); 
     }
 
     public void upload() {
@@ -30,7 +30,7 @@ public class VertexBuffer extends GraphicsResource {
         this.hwBuffer.release(); 
     }
     
-    public HardwareBufferResource getHardwareBuffer() {
+    public NativeBuffer getNativeResource() {
         return hwBuffer; 
     }
     

@@ -2,15 +2,13 @@ package oasis.graphics;
 
 import java.nio.Buffer;
 
-public interface HardwareBufferResource {
+public interface NativeBuffer {
 
     public enum Type {
         
         VERTEX, 
         
-        INDEX, 
-        
-        TEXTURE; 
+        INDEX; 
         
     }
     

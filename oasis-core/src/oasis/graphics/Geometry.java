@@ -7,14 +7,14 @@ import oasis.core.Oasis;
 
 public class Geometry extends GraphicsResource {
 
-    private HardwareGeometryResource hwGeom; 
+    private NativeGeometry hwGeom; 
     
     private Primitive primitive = Primitive.TRIANGLE_LIST; 
     private IndexBuffer ib; 
     private List<VertexBuffer> vbs = new ArrayList<>(); 
     
     public Geometry() {
-        hwGeom = Oasis.getGraphicsDevice().createHardwareGeometryResource(); 
+        hwGeom = Oasis.getGraphicsDevice().createNativeGeometry(); 
     }
     
     public boolean isValid() {
@@ -29,7 +29,7 @@ public class Geometry extends GraphicsResource {
         primitive = prim; 
     }
     
-    public HardwareGeometryResource getHardwareGeometryResource() {
+    public NativeGeometry getNativeResource() {
         return hwGeom; 
     }
     

@@ -9,13 +9,13 @@ public class IndexBuffer extends GraphicsResource {
     private ShortBuffer buffer; 
     private int size;
     private BufferUsage usage; 
-    private HardwareBufferResource hwBuffer; 
+    private NativeBuffer hwBuffer; 
     
     public IndexBuffer(int indices, BufferUsage usage) {
         this.size = indices; 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 2).asShortBuffer(); 
-        this.hwBuffer = Oasis.getGraphicsDevice().createHardwareBufferResource(HardwareBufferResource.Type.INDEX); 
+        this.hwBuffer = Oasis.getGraphicsDevice().createNativeBuffer(NativeBuffer.Type.INDEX); 
     }
     
     public void upload() {
@@ -28,7 +28,7 @@ public class IndexBuffer extends GraphicsResource {
         hwBuffer.release(); 
     }
     
-    public HardwareBufferResource getHardwareBuffer() {
+    public NativeBuffer getNativeResource() {
         return hwBuffer; 
     }
     

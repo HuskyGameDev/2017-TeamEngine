@@ -3,16 +3,16 @@ package oasis.graphics.ogl;
 import java.nio.Buffer;
 
 import oasis.graphics.BufferUsage;
-import oasis.graphics.HardwareBufferResource;
+import oasis.graphics.NativeBuffer;
 
-public class OglHardwareBufferResource implements HardwareBufferResource {
+public class OglBuffer implements NativeBuffer {
 
     private int[] id = new int[1]; 
     private Ogl ogl; 
     private int type; 
     private int usage; 
     
-    public OglHardwareBufferResource(Ogl ogl, int type, int usage) {
+    public OglBuffer(Ogl ogl, int type, int usage) {
         this.ogl = ogl; 
         this.type = type; 
         this.usage = usage; 

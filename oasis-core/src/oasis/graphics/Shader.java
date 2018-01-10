@@ -10,7 +10,7 @@ public class Shader extends GraphicsResource {
     private String vs; 
     private String fs; 
     
-    private HardwareShaderResource hwShader; 
+    private NativeShader hwShader; 
     
     private UniformValue[] uniformValues; 
     private Uniform[] uniforms; 
@@ -21,7 +21,7 @@ public class Shader extends GraphicsResource {
         this.vs = vs; 
         this.fs = fs; 
         
-        hwShader = Oasis.getGraphicsDevice().createHardwareShaderResource(vs, fs); 
+        hwShader = Oasis.getGraphicsDevice().createNativeShader(vs, fs); 
     }
     
     private void checkResources() {
@@ -39,7 +39,7 @@ public class Shader extends GraphicsResource {
         }
     }
     
-    public HardwareShaderResource getHardwareShaderResource() {
+    public NativeShader getNativeResource() {
         return hwShader; 
     }
     

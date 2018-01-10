@@ -1,6 +1,6 @@
 package oasis.graphics;
 
-public interface HardwareShaderResource {
+public interface NativeShader {
 
     boolean isValid(); 
     

@@ -3,7 +3,7 @@ package oasis.graphics.ogl;
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
-import oasis.graphics.HardwareShaderResource;
+import oasis.graphics.NativeShader;
 import oasis.graphics.Uniform;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
@@ -11,9 +11,9 @@ import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-public class OglHardwareShaderResource implements HardwareShaderResource {
+public class OglShader implements NativeShader {
 
-    private static final Logger log = new Logger(OglHardwareShaderResource.class); 
+    private static final Logger log = new Logger(OglShader.class); 
     
     private static int currentId = 0; 
     
@@ -27,7 +27,7 @@ public class OglHardwareShaderResource implements HardwareShaderResource {
     private boolean foundUniforms = false; 
     private OglUniformValue[] oglUniformValues; 
     
-    public OglHardwareShaderResource(Ogl ogl, String vs, String fs) {
+    public OglShader(Ogl ogl, String vs, String fs) {
         this.vs = vs; 
         this.fs = fs; 
         this.ogl = ogl; 
@@ -35,7 +35,7 @@ public class OglHardwareShaderResource implements HardwareShaderResource {
         compileAndLink(); 
     }
     
-    protected static void bind(Ogl ogl, OglHardwareShaderResource shader) {
+    protected static void bind(Ogl ogl, OglShader shader) {
         if (shader == null && currentId != 0) {
             ogl.glUseProgram(0); 
         }

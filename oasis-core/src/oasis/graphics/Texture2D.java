@@ -8,17 +8,17 @@ import oasis.core.Oasis;
 public class Texture2D extends Texture {
 
     private ByteBuffer buffer; 
-    private HardwareBufferResource hwBuffer; 
+    private NativeTexture hwBuffer; 
     
     public Texture2D(Format format, int width, int height) {
         super(format, width, height); 
         
         buffer = Oasis.getDirectBufferAllocator().allocate(getSizeInBytes()); 
-        hwBuffer = Oasis.getGraphicsDevice().createHardwareBufferResource(HardwareBufferResource.Type.TEXTURE); 
+        hwBuffer = Oasis.getGraphicsDevice().createNativeTexture(Type.TEXTURE_2D, format, width, height, 1); 
     }
     
     public void upload() {
-        hwBuffer.upload(getSizeInBytes(), buffer, BufferUsage.DYNAMIC); 
+        hwBuffer.upload(0, 0, 0, getWidth(), getHeight(), 1, buffer); 
     }
     
     public void release() {

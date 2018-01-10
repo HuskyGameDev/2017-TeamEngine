@@ -50,6 +50,8 @@ public class GraphicsApp implements Application {
     public void init() {
         log.debug("init"); 
         
+        lights[2] = true; 
+        
         Oasis.getDisplay().setResizable(true); 
         
         state = new GraphicsState(); 
