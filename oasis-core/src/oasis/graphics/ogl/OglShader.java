@@ -6,7 +6,7 @@ import java.util.Map;
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
-import oasis.graphics.Shader;
+import oasis.graphics.HardwareShaderResource;
 import oasis.graphics.Uniform;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
@@ -14,12 +14,13 @@ import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-public class OglShader extends Shader {
+public class OglShader implements HardwareShaderResource {
 
     private static final Logger log = new Logger(OglShader.class); 
     
     private static int currentId = 0; 
     
+    private String vs, fs; 
     private Ogl ogl; 
     private int id;
     private boolean valid = false; 
@@ -27,11 +28,11 @@ public class OglShader extends Shader {
     private String error = ""; 
     
     private boolean foundUniforms = false; 
-    private UniformValue[] uniformValues; 
-    private Map<String, UniformValue> uniformMap; 
+    private OglUniformValue[] oglUniformValues; 
     
     public OglShader(Ogl ogl, String vs, String fs) {
-        super(vs, fs);
+        this.vs = vs; 
+        this.fs = fs; 
         this.ogl = ogl; 
         
         compileAndLink(); 
@@ -68,7 +69,7 @@ public class OglShader extends Shader {
         vert = ogl.glCreateShader(Ogl.GL_VERTEX_SHADER); 
         frag = ogl.glCreateShader(Ogl.GL_FRAGMENT_SHADER); 
         
-        ogl.glShaderSource(vert, 1, new String[] { getVertexSource() }, new int[] { getVertexSource().length() }, 0);
+        ogl.glShaderSource(vert, 1, new String[] { vs }, new int[] { vs.length() }, 0);
         ogl.glCompileShader(vert);
         ogl.glGetShaderiv(vert, Ogl.GL_COMPILE_STATUS, status, 0);
         if (status[0] != Ogl.GL_TRUE) {
@@ -81,7 +82,7 @@ public class OglShader extends Shader {
             log.debug("Vertex Shader Compile Success!");
         }
         
-        ogl.glShaderSource(frag, 1, new String[] { getFragmentSource() }, new int[] { getFragmentSource().length() }, 0);
+        ogl.glShaderSource(frag, 1, new String[] { fs }, new int[] { fs.length() }, 0);
         ogl.glCompileShader(frag);
         ogl.glGetShaderiv(frag, Ogl.GL_COMPILE_STATUS, status, 0);
         if (status[0] != Ogl.GL_TRUE) {
@@ -144,8 +145,7 @@ public class OglShader extends Shader {
             
             ogl.glGetProgramiv(id, Ogl.GL_ACTIVE_UNIFORMS, count, 0);
             
-            uniformValues = new UniformValue[count[0]]; 
-            uniformMap = new HashMap<>(); 
+            oglUniformValues = new OglUniformValue[count[0]]; 
             
             byte[] name = new byte[1024]; 
             int[] length = new int[1]; 
@@ -157,18 +157,16 @@ public class OglShader extends Shader {
                 
                 String realName = new String(name).substring(0, length[0]); 
                 
-                uniformValues[i] = new UniformValue(
+                oglUniformValues[i] = new OglUniformValue(
                         ogl.glGetUniformLocation(id, realName), 
                         new Uniform(OglConvert.getUniformType(type[0]), realName), 
                         null
                 ); 
-                uniformMap.put(realName, uniformValues[i]); 
             }
         }
     }
     
-    @Override
-    public void upload() {
+    protected void upload() {
         compileAndLink(); 
         
         if (isValid()) {
@@ -176,9 +174,9 @@ public class OglShader extends Shader {
             
             bind(ogl, this); 
             
-            for (int i = 0; i < uniformValues.length; i++) {
-                if (uniformValues[i].needsUpdate()) {
-                    UniformValue uv = uniformValues[i]; 
+            for (int i = 0; i < oglUniformValues.length; i++) {
+                if (oglUniformValues[i].needsUpdate()) {
+                    OglUniformValue uv = oglUniformValues[i]; 
                     int location = uv.getLocation(); 
                     Uniform u = uv.getUniform(); 
                     Object v = uv.getValue(); 
@@ -250,7 +248,7 @@ public class OglShader extends Shader {
                         break; 
                     }
                     
-                    uniformValues[i].clearNeedsUpdate(); 
+                    oglUniformValues[i].clearNeedsUpdate(); 
                 }
             }
         }
@@ -276,117 +274,10 @@ public class OglShader extends Shader {
     }
 
     @Override
-    public Uniform[] getUniforms() {
+    public oasis.graphics.UniformValue[] getUniformValues() {
         findUniforms(); 
         
-        if (isValid()) {
-            Uniform[] list = new Uniform[uniformValues.length]; 
-            
-            for (int i = 0; i < list.length; i++) {
-                list[i] = uniformValues[i].getUniform(); 
-            }
-            
-            return list; 
-        }
-        else {
-            return null; 
-        }
-    }
-    
-    @Override
-    public boolean isUniform(String name) {
-        findUniforms(); 
-        
-        // if shader is valid, uniformMap will exist after
-        // calling findUniforms() 
-        if (isValid()) {
-            return uniformMap.containsKey(name); 
-        }
-        else {
-            log.warning("Shader is invalid, cannot check for uniform");
-            return false; 
-        }
-    }
-
-    private void setUniform(String name, Object value) {
-        findUniforms(); 
-        
-        // if shader is valid, uniformMap will exist after
-        // calling findUniforms() 
-        if (isValid()) {
-            UniformValue uv = uniformMap.get(name); 
-            if (uv != null) {
-                uv.setValue(value); 
-            }
-            else {
-//                log.warning("Uniform does not exist in shader, cannot set: " + name); 
-            }
-        }
-        else {
-            log.warning("Shader is invalid, cannot set uniform");
-        }
-    }
-    
-    @Override
-    public Uniform getUniform(String name) {
-        findUniforms(); 
-        
-        // if shader is valid, uniformMap will exist after
-        // calling findUniforms() 
-        if (isValid()) {
-            UniformValue value = uniformMap.get(name); 
-            if (value != null) {
-                return value.getUniform(); 
-            }
-            else {
-//                log.warning("Uniform does not exist in shader, cannot get: " + name); 
-                return null; 
-            }
-        }
-        else {
-            log.warning("Shader is invalid, cannot set uniform");
-            return null; 
-        }
-    }
-
-    @Override
-    public void clearUniform(String name) {
-        setUniform(name, null); 
-    }
-
-    @Override
-    public void setInt(String name, int value) {
-        setUniform(name, value); 
-    }
-
-    @Override
-    public void setFloat(String name, float value) {
-        setUniform(name, value); 
-    }
-
-    @Override
-    public void setVector2(String name, Vector2 value) {
-        setUniform(name, new Vector2(value)); 
-    }
-
-    @Override
-    public void setVector3(String name, Vector3 value) {
-        setUniform(name, new Vector3(value)); 
-    }
-
-    @Override
-    public void setVector4(String name, Vector4 value) {
-        setUniform(name, new Vector4(value)); 
-    }
-
-    @Override
-    public void setMatrix3(String name, Matrix3 value) {
-        setUniform(name, new Matrix3(value)); 
-    }
-
-    @Override
-    public void setMatrix4(String name, Matrix4 value) {
-        setUniform(name, new Matrix4(value)); 
+        return oglUniformValues.clone();
     }
 
 }

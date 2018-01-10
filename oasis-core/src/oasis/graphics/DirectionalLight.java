@@ -25,7 +25,7 @@ public class DirectionalLight extends Light {
     }
 
     @Override
-    protected Vector3 getAttenUniform() {
+    protected Vector3 getAttenuationUniform() {
         return new Vector3(1, 0, 0); 
     }
 

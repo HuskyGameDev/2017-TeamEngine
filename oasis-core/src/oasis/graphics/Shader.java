@@ -1,46 +1,101 @@
 package oasis.graphics;
 
-import oasis.math.Matrix3;
-import oasis.math.Matrix4;
-import oasis.math.Vector2;
-import oasis.math.Vector3;
-import oasis.math.Vector4;
+import java.util.HashMap;
+import java.util.Map;
 
-public abstract class Shader extends GraphicsResource {
+import oasis.core.Oasis;
+
+public class Shader extends GraphicsResource {
 
     private String vs; 
     private String fs; 
     
+    private HardwareShaderResource hwShader; 
+    
+    private UniformValue[] uniformValues; 
+    private Uniform[] uniforms; 
+    private Map<String, UniformValue> uniformMap; 
+    private boolean isCompiled = false; 
+    
     public Shader(String vs, String fs) {
         this.vs = vs; 
         this.fs = fs; 
+        
+        hwShader = Oasis.getGraphicsDevice().createHardwareShaderResource(vs, fs); 
     }
     
-    public abstract void upload(); 
+    private void checkResources() {
+        if (!isCompiled) {
+            uniformValues = hwShader.getUniformValues(); 
+            
+            uniforms = new Uniform[uniformValues.length]; 
+            uniformMap = new HashMap<>(); 
+            
+            for (int i = 0; i < uniformValues.length; i++) {
+                uniforms[i] = uniformValues[i].getUniform(); 
+                uniformMap.put(uniformValues[i].getUniform().getName(), uniformValues[i]); 
+            }
+            
+        }
+    }
     
-    public abstract boolean isValid(); 
-    public abstract String getErrorMessage(); 
+    public HardwareShaderResource getHardwareShaderResource() {
+        return hwShader; 
+    }
     
-    public abstract Uniform[] getUniforms(); 
-    public abstract boolean isUniform(String name); 
-    public abstract Uniform getUniform(String name); 
+    public void upload() {
+        checkResources(); 
+    }
     
-    public abstract void clearUniform(String name); 
-    public abstract void setInt(String name, int value); 
-    public abstract void setFloat(String name, float value); 
-    public abstract void setVector2(String name, Vector2 value); 
-    public abstract void setVector3(String name, Vector3 value); 
-    public abstract void setVector4(String name, Vector4 value); 
-    public abstract void setMatrix3(String name, Matrix3 value); 
-    public abstract void setMatrix4(String name, Matrix4 value);
+    public void release() {
+        hwShader.release(); 
+    }
+    
+    public boolean isValid() {
+        return hwShader.isValid(); 
+    }
+    
+    public String getErrorMessage() {
+        return hwShader.getErrorMessage(); 
+    }
+    
+    public Uniform[] getUniforms() {
+        checkResources(); 
+        return uniforms.clone(); 
+    }
+    
+    public UniformValue[] getUniformValues() {
+        checkResources(); 
+        return uniformValues.clone(); 
+    }
+    
+    public boolean isUniform(String name) {
+        checkResources(); 
+        return uniformMap.containsKey(name); 
+    }
+    
+    public UniformValue getUniformValue(String name) {
+        checkResources(); 
+        return uniformMap.get(name); 
+    }
+    
+    public UniformValue getSafeUniformValue(String name) {
+        UniformValue value = getUniformValue(name); 
+        
+        return value == null ? NullUniformValue.VALUE : value; 
+    }
+    
+    public Uniform getUniform(String name) {
+        UniformValue value = getUniformValue(name); 
+        
+        return value == null ? null : value.getUniform(); 
+    }
     
     public void reset() {
-        if (!isValid()) return; 
+        checkResources(); 
         
-        Uniform[] list = getUniforms();
-        
-        for (int i = 0; i < list.length; i++) {
-            clearUniform(list[i].getName()); 
+        for (int i = 0; i < uniformValues.length; i++) {
+            uniformValues[i].clear(); 
         }
     }
     

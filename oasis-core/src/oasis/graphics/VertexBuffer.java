@@ -17,7 +17,7 @@ public class VertexBuffer extends GraphicsResource {
         this.size = vertices * format.getFloatsPerElement(); 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 4).asFloatBuffer(); 
-        this.hwBuffer = Oasis.getGraphicsDevice().createVertexHardwareBufferResource(); 
+        this.hwBuffer = Oasis.getGraphicsDevice().createHardwareBufferResource(HardwareBufferResource.Type.VERTEX); 
     }
 
     public void upload() {

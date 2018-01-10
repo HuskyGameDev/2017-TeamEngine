@@ -90,24 +90,40 @@ public class Graphics {
     
     private void renderGeometry(GraphicsDevice gd, Camera camera, Shader shader, Geometry geom, Material mat, Matrix4 mMatrix, Matrix3 nMatrix, Light light, Vector3 ambient, boolean base) {
         shader.reset(); 
-        mat.apply(shader); 
-        shader.setMatrix4("oasis_ProjectionMatrix", camera.getProjectionMatrix());
-        shader.setMatrix4("oasis_ViewMatrix", camera.getViewMatrix());
-        shader.setMatrix4("oasis_ModelMatrix", mMatrix);
-        shader.setMatrix3("oasis_NormalMatrix", nMatrix); 
-        shader.setVector3("oasis_CameraPosition", camera.getPosition()); 
+        applyMaterial(mat, shader); 
+        shader.getSafeUniformValue("oasis_ProjectionMatrix").setValue(camera.getProjectionMatrix());
+        shader.getSafeUniformValue("oasis_ViewMatrix").setValue(camera.getViewMatrix());
+        shader.getSafeUniformValue("oasis_ModelMatrix").setValue(mMatrix);
+        shader.getSafeUniformValue("oasis_NormalMatrix").setValue(nMatrix); 
+        shader.getSafeUniformValue("oasis_CameraPosition").setValue(camera.getPosition()); 
         
         if (base) {
-            shader.setVector4("oasis_AmbientColor", new Vector4(ambient, 1)); 
+            shader.getSafeUniformValue("oasis_AmbientColor").setValue(new Vector4(ambient, 1)); 
         }
         else {
-            shader.clearUniform("oasis_AmbientColor"); 
+            shader.getSafeUniformValue("oasis_AmbientColor").clear(); 
         }
         
-        if (light != null) light.apply(shader); 
+        if (light != null) applyLight(light, shader); 
         
         gd.setShader(shader); 
         gd.drawGeometry(geom); 
+    }
+    
+    private void applyMaterial(Material mat, Shader shader) {
+        Vector4 diffuse = new Vector4(mat.getDiffuseColor(), mat.getAlpha()); 
+        Vector4 specular = new Vector4(mat.getSpecularColor(), mat.getSpecularPower()); 
+        Vector3 emissive = new Vector3(mat.getEmissiveColor()); 
+        
+        shader.getSafeUniformValue("oasis_DiffuseColor").setValue(diffuse); 
+        shader.getSafeUniformValue("oasis_SpecularColor").setValue(specular); 
+        shader.getSafeUniformValue("oasis_EmissiveColor").setValue(emissive); 
+    }
+    
+    private void applyLight(Light light, Shader shader) {
+        shader.getSafeUniformValue("oasis_LightColor").setValue(light.getColor()); 
+        shader.getSafeUniformValue("oasis_LightPosition").setValue(light.getPositionUniform()); 
+        shader.getSafeUniformValue("oasis_LightAttenuation").setValue(light.getAttenuationUniform()); 
     }
     
     public void setCamera(Camera camera) {

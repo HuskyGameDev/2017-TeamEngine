@@ -24,13 +24,7 @@ public abstract class Light {
     public abstract Type getType(); 
     
     protected abstract Vector4 getPositionUniform(); 
-    protected abstract Vector3 getAttenUniform(); 
-    
-    public void apply(Shader shader) {
-        shader.setVector3("oasis_LightColor", color); 
-        shader.setVector4("oasis_LightPosition", getPositionUniform()); 
-        shader.setVector3("oasis_LightAttenuation", getAttenUniform()); 
-    }
+    protected abstract Vector3 getAttenuationUniform(); 
     
     public Vector3 getColor() {
         return new Vector3(color); 

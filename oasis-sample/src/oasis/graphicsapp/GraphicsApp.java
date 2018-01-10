@@ -61,7 +61,7 @@ public class GraphicsApp implements Application {
         
         String vs = GlslParser.getVertexSource("test.glsl"); 
         String fs = GlslParser.getFragmentSource("test.glsl"); 
-        shader = Oasis.getGraphicsDevice().createShader(vs, fs); 
+        shader = new Shader(vs, fs); 
         
         material = new Material(); 
         material.setShader(shader); 

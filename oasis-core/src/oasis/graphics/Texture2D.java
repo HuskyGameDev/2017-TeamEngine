@@ -5,17 +5,29 @@ import java.nio.ByteBuffer;
 
 import oasis.core.Oasis;
 
-public abstract class Texture2D extends Texture {
+public class Texture2D extends Texture {
 
     private ByteBuffer buffer; 
+    private HardwareBufferResource hwBuffer; 
     
     public Texture2D(Format format, int width, int height) {
         super(format, width, height); 
         
-        buffer = Oasis.getDirectBufferAllocator().allocate(format.getBytesPerPixel() * width * height); 
+        buffer = Oasis.getDirectBufferAllocator().allocate(getSizeInBytes()); 
+        hwBuffer = Oasis.getGraphicsDevice().createHardwareBufferResource(HardwareBufferResource.Type.TEXTURE); 
     }
     
-    public abstract void upload(); 
+    public void upload() {
+        hwBuffer.upload(getSizeInBytes(), buffer, BufferUsage.DYNAMIC); 
+    }
+    
+    public void release() {
+        hwBuffer.release(); 
+    }
+    
+    public int getSizeInBytes() {
+        return getFormat().getBytesPerPixel() * getWidth() * getHeight(); 
+    }
     
     protected Buffer getBuffer() {
         return buffer; 

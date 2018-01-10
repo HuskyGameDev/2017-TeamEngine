@@ -1,7 +1,6 @@
 package oasis.graphics;
 
 import oasis.math.Vector3;
-import oasis.math.Vector4;
 
 public class Material {
 
@@ -15,12 +14,6 @@ public class Material {
     
     public Material() {}
 
-    public void apply(Shader shader) {
-        shader.setVector4("oasis_DiffuseColor", new Vector4(diffuse, alpha)); 
-        shader.setVector4("oasis_SpecularColor", new Vector4(specular, specularPower));
-        shader.setVector3("oasis_EmissiveColor", emissive); 
-    }
-    
     public RenderQueue getRenderQueue() {
         return renderQueue; 
     }

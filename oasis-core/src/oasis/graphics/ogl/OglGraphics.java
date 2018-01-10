@@ -7,8 +7,8 @@ import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
 import oasis.graphics.HardwareBufferResource;
 import oasis.graphics.HardwareGeometryResource;
+import oasis.graphics.HardwareShaderResource;
 import oasis.graphics.Shader;
-import oasis.graphics.VertexFormat;
 import oasis.math.Vector4;
 
 public class OglGraphics implements GraphicsDevice {
@@ -47,13 +47,17 @@ public class OglGraphics implements GraphicsDevice {
     }
 
     @Override
-    public HardwareBufferResource createVertexHardwareBufferResource() {
-        return new OglHardwareBufferResource(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
-    }
-
-    @Override
-    public HardwareBufferResource createIndexHardwareBufferResource() {
-        return new OglHardwareBufferResource(ogl, Ogl.GL_ELEMENT_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
+    public HardwareBufferResource createHardwareBufferResource(HardwareBufferResource.Type type) {
+        switch (type) {
+        case VERTEX: 
+            return new OglHardwareBufferResource(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
+        case INDEX: 
+            return new OglHardwareBufferResource(ogl, Ogl.GL_ELEMENT_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
+        case TEXTURE: 
+            return null; 
+        default: 
+            throw new OasisException("Unknown HardwareBufferResource type: " + type); 
+        }
     }
 
     @Override
@@ -62,7 +66,7 @@ public class OglGraphics implements GraphicsDevice {
     }
     
     @Override
-    public Shader createShader(String vs, String fs) {
+    public HardwareShaderResource createHardwareShaderResource(String vs, String fs) {
         return new OglShader(ogl, vs, fs); 
     }
 
@@ -72,7 +76,7 @@ public class OglGraphics implements GraphicsDevice {
             curShader = null; 
         }
         else {
-            curShader = (OglShader) s; 
+            curShader = (OglShader) s.getHardwareShaderResource(); 
             curShader.upload(); 
         }
     }
@@ -90,6 +94,7 @@ public class OglGraphics implements GraphicsDevice {
         }
         
         OglShader.bind(ogl, curShader); 
+        curShader.upload(); 
         
         OglHardwareGeometryResource geom = (OglHardwareGeometryResource) g.getHardwareGeometryResource(); 
         geom.setBuffers(); 
