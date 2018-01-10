@@ -1,9 +1,13 @@
 package oasis.graphics.ogl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
 import oasis.graphics.NativeShader;
+import oasis.graphics.Texture2D;
 import oasis.graphics.Uniform;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
@@ -171,6 +175,9 @@ public class OglShader implements NativeShader {
             
             bind(ogl, this); 
             
+            int nextTexUnit = 0; 
+            Map<Integer, Integer> mappedTextures = new HashMap<>(); 
+            
             for (int i = 0; i < oglUniformValues.length; i++) {
                 if (oglUniformValues[i].needsUpdate()) {
                     OglUniformValue uv = oglUniformValues[i]; 
@@ -242,6 +249,30 @@ public class OglShader implements NativeShader {
                         else {
                             ogl.glUniformMatrix4fv(location, 1, false, new float[16], 0);
                         }
+                        break; 
+                    case TEXTURE_2D: 
+//                        log.debug("texture2d uniform update");
+                        Texture2D tex = (Texture2D) v; 
+                        
+                        if (tex != null) {
+                            OglTexture2D glTex = (OglTexture2D) tex.getNativeTexture(); 
+                            int id = glTex.getId(); 
+                            Integer unit = mappedTextures.get(id); 
+                            if (unit == null) {
+                                ogl.glActiveTexture(Ogl.GL_TEXTURE0 + nextTexUnit);
+                                ogl.glBindTexture(Ogl.GL_TEXTURE_2D, glTex.getId()); 
+                                ogl.glUniform1i(location, nextTexUnit); 
+                                mappedTextures.put(id, nextTexUnit++); 
+                            }
+                            else {
+                                ogl.glUniform1i(location, unit.intValue()); 
+                            }
+                        }
+                        else {
+//                            log.debug("null texture, should bind a blank texture?");
+                            ogl.glUniform1i(location, 0); 
+                        }
+                        
                         break; 
                     }
                     

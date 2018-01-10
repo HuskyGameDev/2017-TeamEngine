@@ -319,5 +319,53 @@ public class Jogl3DebugOgl implements Ogl {
         gl.glDepthMask(mask); 
         checkError("glDepthMask"); 
     }
+
+    @Override
+    public void glGenTextures(int count, int[] ids, int offset) {
+        gl.glGenTextures(1, ids, offset); 
+        checkError("glGenTextures"); 
+    }
+
+    @Override
+    public void glDeleteTextures(int count, int[] ids, int offset) {
+        gl.glDeleteTextures(count, ids, offset); 
+        checkError("glDeleteTextures"); 
+    }
+
+    @Override
+    public void glBindTexture(int target, int id) {
+        gl.glBindTexture(target, id); 
+        checkError("glBindTexture"); 
+    }
+
+    @Override
+    public void glTexParameteri(int type, int name, int value) {
+        gl.glTexParameteri(type, name, value); 
+        checkError("glTexParameteri"); 
+    }
+
+    @Override
+    public void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels) {
+        gl.glTexImage2D(target, level, internalformat, width, height, border, format, type, pixels); 
+        checkError("glTexImage2D"); 
+    }
+
+    @Override
+    public void glTexSubImage2D(int target, int level, int xOffset, int yOffset, int width, int height, int format, int type, Buffer pixels) {
+        gl.glTexSubImage2D(target, level, xOffset, yOffset, width, height, format, type, pixels); 
+        checkError("glTexSubImage2D"); 
+    }
+
+    @Override
+    public void glActiveTexture(int unit) {
+        gl.glActiveTexture(unit);
+        checkError("glActiveTexture"); 
+    }
+    
+    @Override
+    public void glGenerateMipmap(int target) {
+        gl.glGenerateMipmap(target);
+        checkError("glGenerateMipmap"); 
+    }
     
 }

@@ -1249,4 +1249,20 @@ public interface Ogl {
     
     void glDepthMask(boolean mask); 
     
+    void glGenTextures(int count, int[] ids, int offset); 
+    
+    void glDeleteTextures(int count, int[] ids, int offset); 
+    
+    void glBindTexture(int target, int id); 
+    
+    void glActiveTexture(int unit); 
+    
+    void glTexParameteri(int type, int name, int value); 
+    
+    void glTexImage2D(int target, int level, int internalformat, int width, int height, int border, int format, int type, Buffer pixels); 
+    
+    void glTexSubImage2D(int target, int level, int xOffset, int yOffset, int width, int height, int format, int type, Buffer pixels); 
+    
+    void glGenerateMipmap(int target); 
+    
 }

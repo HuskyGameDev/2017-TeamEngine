@@ -2,11 +2,12 @@ package oasis.graphics.ogl;
 
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
+import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
-import oasis.graphics.GraphicsState.BlendMode;
-import oasis.graphics.GraphicsState.FillMode;
-import oasis.graphics.GraphicsState.FrontFace;
+import oasis.graphics.FillMode;
+import oasis.graphics.FrontFace;
 import oasis.graphics.Primitive;
+import oasis.graphics.Texture.Format;
 import oasis.graphics.Uniform;
 
 public class OglConvert {
@@ -77,6 +78,8 @@ public class OglConvert {
         switch (type) {
         default: 
             return Uniform.Type.UNKNOWN; 
+        case Ogl.GL_SAMPLER_2D: 
+            return Uniform.Type.TEXTURE_2D; 
         case Ogl.GL_INT: 
             return Uniform.Type.INT; 
         case Ogl.GL_FLOAT: 
@@ -131,6 +134,15 @@ public class OglConvert {
             return Ogl.GL_LINE; 
         case POINT: 
             return Ogl.GL_POINT; 
+        }
+    }
+
+    public static int getTextureFormat(Format format) {
+        switch (format) {
+        default: 
+            throw new OasisException("Unknown Texture Format: " + format); 
+        case RGBA8: 
+            return Ogl.GL_RGBA8; 
         }
     }
     

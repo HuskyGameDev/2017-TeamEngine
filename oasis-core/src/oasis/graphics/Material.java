@@ -4,6 +4,7 @@ import oasis.math.Vector3;
 
 public class Material {
 
+    private FrontFace frontFace = FrontFace.CCW; 
     private RenderQueue renderQueue = RenderQueue.OPAQUE; 
     private float alpha = 1.0f; 
     private Vector3 diffuse = new Vector3(); 
@@ -12,10 +13,16 @@ public class Material {
     private Vector3 emissive = new Vector3(); 
     private Shader shader = null; 
     
+    private Texture2D diffuseTex = null; 
+    
     public Material() {}
 
     public RenderQueue getRenderQueue() {
         return renderQueue; 
+    }
+    
+    public FrontFace getFrontFace() {
+        return frontFace; 
     }
     
     public float getAlpha() {
@@ -24,6 +31,10 @@ public class Material {
     
     public Vector3 getDiffuseColor() {
         return new Vector3(diffuse);
+    }
+    
+    public Texture2D getDiffuseTexture() {
+        return diffuseTex; 
     }
 
     public Vector3 getSpecularColor() {
@@ -42,6 +53,10 @@ public class Material {
         return shader;
     }
     
+    public void setFrontFace(FrontFace face) {
+        this.frontFace = face; 
+    }
+    
     public void setRenderQueue(RenderQueue rq) {
         renderQueue = rq; 
     }
@@ -52,6 +67,10 @@ public class Material {
 
     public void setDiffuseColor(Vector3 diffuse) {
         this.diffuse.set(diffuse);
+    }
+    
+    public void setDiffuseTexture(Texture2D tex) {
+        this.diffuseTex = tex; 
     }
 
     public void setSpecularColor(Vector3 specular) {

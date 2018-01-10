@@ -2,6 +2,7 @@ package oasis.graphics.ogl;
 
 import oasis.core.OasisException;
 import oasis.graphics.BufferUsage;
+import oasis.graphics.FrontFace;
 import oasis.graphics.Geometry;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
@@ -64,7 +65,7 @@ public class OglGraphics implements GraphicsDevice {
     public NativeTexture createNativeTexture(Texture.Type type, Texture.Format format, int width, int height, int depth) {
         switch (type) {
         case TEXTURE_2D: 
-            return null; //new OglHardwareBufferResource(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
+            return new OglTexture2D(ogl, OglConvert.getTextureFormat(format), width, height); 
         default: 
             throw new OasisException("Unknown NativeTexture type: " + type); 
         }
@@ -145,7 +146,7 @@ public class OglGraphics implements GraphicsDevice {
         }
         
         if (curState == null || curState.getFrontFace() != state.getFrontFace()) {
-            if (state.getFrontFace() == GraphicsState.FrontFace.BOTH || state.getFrontFace() == null) {
+            if (state.getFrontFace() == FrontFace.BOTH || state.getFrontFace() == null) {
                 ogl.glDisable(Ogl.GL_CULL_FACE);
             }
             else {

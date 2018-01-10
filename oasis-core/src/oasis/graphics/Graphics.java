@@ -34,13 +34,15 @@ public class Graphics {
     private static final int UNIFORM_LIGHT_COL = 9; 
     private static final int UNIFORM_LIGHT_POS = 10; 
     private static final int UNIFORM_LIGHT_ATTEN = 11; 
-    private static final int UNIFORM_COUNT = 12; 
+    private static final int UNIFORM_DIFFUSE_TEX = 12;
+    private static final int UNIFORM_HAS_DIFFUSE_TEX = 13; 
+    private static final int UNIFORM_COUNT = 14; 
     
     private static final String[] UNIFORM_NAMES = new String[UNIFORM_COUNT]; 
     
     static {
-        ADD_STATE.setSourceBlendMode(GraphicsState.BlendMode.ONE); 
-        ADD_STATE.setDestBlendMode(GraphicsState.BlendMode.ONE); 
+        ADD_STATE.setSourceBlendMode(BlendMode.ONE); 
+        ADD_STATE.setDestBlendMode(BlendMode.ONE); 
         
         UNIFORM_NAMES[UNIFORM_PROJ_MAT] = "oasis_ProjectionMatrix"; 
         UNIFORM_NAMES[UNIFORM_VIEW_MAT] = "oasis_ViewMatrix"; 
@@ -54,6 +56,8 @@ public class Graphics {
         UNIFORM_NAMES[UNIFORM_LIGHT_COL] = "oasis_LightColor"; 
         UNIFORM_NAMES[UNIFORM_LIGHT_POS] = "oasis_LightPosition"; 
         UNIFORM_NAMES[UNIFORM_LIGHT_ATTEN] = "oasis_LightAttenuation"; 
+        UNIFORM_NAMES[UNIFORM_DIFFUSE_TEX] = "oasis_DiffuseTexture"; 
+        UNIFORM_NAMES[UNIFORM_HAS_DIFFUSE_TEX] = "oasis_HasDiffuseTexture"; 
     }
     
     private List<RenderData> opaqueQueue = new ArrayList<>(); 
@@ -94,6 +98,11 @@ public class Graphics {
             Material mat = data.getMaterial(); 
             Shader shader = mat.getShader(); 
             
+            if (shader == null) {
+                log.warning("Null shader on material: " + mat); 
+                continue; 
+            }
+            
             if (lastMat == null || lastMat.getShader() != shader) {
                 fillUniforms(shader, uniforms); 
                 
@@ -106,6 +115,8 @@ public class Graphics {
                 applyMaterial(mat, uniforms); 
             }
             
+            lastMat = mat; 
+            
             renderLights.clear(); 
             lightSorter.sort(data, lights, renderLights); 
             
@@ -115,6 +126,7 @@ public class Graphics {
             Vector3 ambient = renderLights.getAmbient(); 
             Geometry geom = data.getMesh().getGeometry(data.getSubmesh()); 
             
+            BASE_STATE.setFrontFace(mat.getFrontFace()); 
             gd.setState(BASE_STATE); 
             
             {
@@ -130,6 +142,7 @@ public class Graphics {
                 renderGeometry(gd, shader, geom); 
             }
             
+            ADD_STATE.setFrontFace(mat.getFrontFace()); 
             gd.setState(ADD_STATE); 
             
             uniforms[UNIFORM_AMBIENT_COL].clear(); 
@@ -159,10 +172,13 @@ public class Graphics {
         Vector4 diffuse = new Vector4(mat.getDiffuseColor(), mat.getAlpha()); 
         Vector4 specular = new Vector4(mat.getSpecularColor(), mat.getSpecularPower()); 
         Vector3 emissive = new Vector3(mat.getEmissiveColor()); 
+        Texture2D diffuseTex = mat.getDiffuseTexture(); 
         
         uniforms[UNIFORM_DIFFUSE_COL].setValue(diffuse); 
         uniforms[UNIFORM_SPECULAR_COL].setValue(specular); 
         uniforms[UNIFORM_EMISSIVE_COL].setValue(emissive); 
+        uniforms[UNIFORM_DIFFUSE_TEX].setValue(diffuseTex); 
+        uniforms[UNIFORM_HAS_DIFFUSE_TEX].setValue(diffuseTex == null ? 0 : 1); 
     }
     
     private void applyLight(Light light, UniformValue[] uniforms) {

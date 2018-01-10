@@ -1,25 +1,7 @@
 package oasis.graphics;
 
-import java.nio.ByteBuffer;
-
-import oasis.graphics.texture.Rgba32fCodec;
-import oasis.graphics.texture.Rgba8Codec;
-import oasis.math.Vector4;
-
 public abstract class Texture extends GraphicsResource {
 
-    public interface Codec {
-
-        void setPixelInt(ByteBuffer buffer, int rgba); 
-        
-        int getPixelInt(ByteBuffer buffer); 
-        
-        void setPixelVector4(ByteBuffer buffer, Vector4 in); 
-        
-        void getPixelVector4(ByteBuffer buffer, Vector4 out); 
-        
-    }
-    
     /**
      * Pixel format 
      * 
@@ -31,47 +13,41 @@ public abstract class Texture extends GraphicsResource {
         /**
          * Packed int with 8 bits for each of red, green, blue, alpha, in that order 
          */
-        RGBA8(8, false, new Rgba8Codec()), 
+        RGBA8(8, false), 
         
         /**
          * Half-floats (16 bit) values for red, green, blue, alpha 
          */
-        RGBA16F(64, false, null), 
+        RGBA16F(64, false), 
         
         /**
          * 32 bit float values for red, green, blue, alpha 
          */
-        RGBA32F(128, false, new Rgba32fCodec()), 
+        RGBA32F(128, false), 
         
         /**
          * 24 bit depth values
          */
-        DEPTH24(96, true, null), 
+        DEPTH24(96, true), 
         
         /**
          * 24 bit depth values with 8 bits for stencil 
          */
-        DEPTH24STENCIL8(128, true, null), 
+        DEPTH24STENCIL8(128, true), 
         
         /**
          * 32 bit depth values
          */
-        DEPTH32(128, true, null);
+        DEPTH32(128, true);
 
         private final boolean depth;
         private final int bytes; 
-        private final Codec codec; 
         
-        private Format(int bytes, boolean depth, Codec codec) {
+        private Format(int bytes, boolean depth) {
             this.bytes = bytes; 
             this.depth = depth;
-            this.codec = codec; 
         }
         
-        public Codec getCodec() {
-            return codec; 
-        }
-
         public int getBytesPerPixel() {
             return bytes; 
         }
