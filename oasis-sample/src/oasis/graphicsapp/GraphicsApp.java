@@ -181,41 +181,16 @@ public class GraphicsApp implements Application {
         
         g.setCamera(camera); 
         
-        Transform t = new Transform(); 
-        t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(-ticks * 0.1f))); 
-//        g.drawMesh(mesh, 0, material, t.getMatrix()); 
-        
-        t = new Transform(); 
-        t.setPosition(new Vector3(10, -4, 10)); 
-        t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), Mathf.toRadians(ticks * 1f))); 
-        t.setScale(new Vector3(1)); 
         g.drawMesh(mesh3, 0, material2, Matrix4.translation(new Vector3(0, 0, 0))); 
         
-        Material[] mats = new Material[] { material, material2, grassMat }; 
-        
-        int count = 0; 
-        Random r = new Random(1); 
         for (int i = -10; i < 10; i++) {
             for (int j = -10; j < 10; j++) {
                 for (int k = -0; k < 1; k++) {
-//                    Material mat = new Material(); 
-//                    mat.setShader(shader); 
-//                    
-//                    mat.setDiffuseColor(new Vector3(r.nextFloat(), r.nextFloat(), r.nextFloat())); 
-//                    mat.setSpecularColor(mat.getDiffuseColor().multiply(r.nextFloat()* 1)); 
-//                    mat.setSpecularPower((float) Math.pow(2, r.nextFloat() * 4));
-                    
                     g.drawMesh(mesh, 0, material, Matrix4.translation(new Vector3(i * 2, k * 2, j * 2)));
-                    count++; 
                 }
             }
         }
         
-//        log.debug("Drawing " + count + " objects"); 
-        
-//        g.drawMesh(mesh, 0, material, Matrix4.translation(new Vector3(4, 0, 0))); 
-//        g.drawMesh(mesh, 0, material2, Matrix4.translation(new Vector3(7, 0, 0))); 
-//        g.drawMesh(mesh, 0, grassMat, Matrix4.translation(new Vector3(10, 0, 0))); 
         g.finish(); 
     }
 

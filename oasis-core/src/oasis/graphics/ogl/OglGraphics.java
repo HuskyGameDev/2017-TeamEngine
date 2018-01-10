@@ -17,7 +17,7 @@ public class OglGraphics implements GraphicsDevice {
     
     private int[] vao = new int[1]; 
     
-    private OglShader curShader = null; 
+    private OglHardwareShaderResource curShader = null; 
     private GraphicsState curState = null; 
     
     public OglGraphics(Ogl ogl) {
@@ -67,7 +67,7 @@ public class OglGraphics implements GraphicsDevice {
     
     @Override
     public HardwareShaderResource createHardwareShaderResource(String vs, String fs) {
-        return new OglShader(ogl, vs, fs); 
+        return new OglHardwareShaderResource(ogl, vs, fs); 
     }
 
     @Override
@@ -76,7 +76,7 @@ public class OglGraphics implements GraphicsDevice {
             curShader = null; 
         }
         else {
-            curShader = (OglShader) s.getHardwareShaderResource(); 
+            curShader = (OglHardwareShaderResource) s.getHardwareShaderResource(); 
             curShader.upload(); 
         }
     }
@@ -93,7 +93,7 @@ public class OglGraphics implements GraphicsDevice {
             throw new OasisException("Shader is not valid"); 
         }
         
-        OglShader.bind(ogl, curShader); 
+        OglHardwareShaderResource.bind(ogl, curShader); 
         curShader.upload(); 
         
         OglHardwareGeometryResource geom = (OglHardwareGeometryResource) g.getHardwareGeometryResource(); 

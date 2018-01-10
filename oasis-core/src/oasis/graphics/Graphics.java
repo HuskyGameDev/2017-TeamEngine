@@ -22,9 +22,38 @@ public class Graphics {
     private static final GraphicsState BASE_STATE = new GraphicsState(); 
     private static final GraphicsState ADD_STATE = new GraphicsState(); 
     
+    private static final int UNIFORM_PROJ_MAT = 0; 
+    private static final int UNIFORM_VIEW_MAT = 1; 
+    private static final int UNIFORM_MODEL_MAT = 2; 
+    private static final int UNIFORM_NORMAL_MAT = 3; 
+    private static final int UNIFORM_CAM_POS = 4; 
+    private static final int UNIFORM_AMBIENT_COL = 5; 
+    private static final int UNIFORM_DIFFUSE_COL = 6; 
+    private static final int UNIFORM_SPECULAR_COL = 7; 
+    private static final int UNIFORM_EMISSIVE_COL = 8; 
+    private static final int UNIFORM_LIGHT_COL = 9; 
+    private static final int UNIFORM_LIGHT_POS = 10; 
+    private static final int UNIFORM_LIGHT_ATTEN = 11; 
+    private static final int UNIFORM_COUNT = 12; 
+    
+    private static final String[] UNIFORM_NAMES = new String[UNIFORM_COUNT]; 
+    
     static {
         ADD_STATE.setSourceBlendMode(GraphicsState.BlendMode.ONE); 
         ADD_STATE.setDestBlendMode(GraphicsState.BlendMode.ONE); 
+        
+        UNIFORM_NAMES[UNIFORM_PROJ_MAT] = "oasis_ProjectionMatrix"; 
+        UNIFORM_NAMES[UNIFORM_VIEW_MAT] = "oasis_ViewMatrix"; 
+        UNIFORM_NAMES[UNIFORM_MODEL_MAT] = "oasis_ModelMatrix"; 
+        UNIFORM_NAMES[UNIFORM_NORMAL_MAT] = "oasis_NormalMatrix"; 
+        UNIFORM_NAMES[UNIFORM_CAM_POS] = "oasis_CameraPosition"; 
+        UNIFORM_NAMES[UNIFORM_AMBIENT_COL] = "oasis_AmbientColor"; 
+        UNIFORM_NAMES[UNIFORM_DIFFUSE_COL] = "oasis_DiffuseColor"; 
+        UNIFORM_NAMES[UNIFORM_SPECULAR_COL] = "oasis_SpecularColor"; 
+        UNIFORM_NAMES[UNIFORM_EMISSIVE_COL] = "oasis_EmissiveColor"; 
+        UNIFORM_NAMES[UNIFORM_LIGHT_COL] = "oasis_LightColor"; 
+        UNIFORM_NAMES[UNIFORM_LIGHT_POS] = "oasis_LightPosition"; 
+        UNIFORM_NAMES[UNIFORM_LIGHT_ATTEN] = "oasis_LightAttenuation"; 
     }
     
     private List<RenderData> opaqueQueue = new ArrayList<>(); 
@@ -54,17 +83,37 @@ public class Graphics {
         
         LightList renderLights = new LightList(); 
         
+        UniformValue[] uniforms = new UniformValue[UNIFORM_COUNT]; 
+        Material lastMat = null; 
+        
+        Matrix4 projMat = camera.getProjectionMatrix(); 
+        Matrix4 viewMat = camera.getViewMatrix(); 
+        Vector3 camPos = camera.getPosition(); 
+        
         for (RenderData data : meshes) {
-            Shader shader = data.getMaterial().getShader(); 
+            Material mat = data.getMaterial(); 
+            Shader shader = mat.getShader(); 
+            
+            if (lastMat == null || lastMat.getShader() != shader) {
+                fillUniforms(shader, uniforms); 
+                
+                uniforms[UNIFORM_PROJ_MAT].setValue(projMat);
+                uniforms[UNIFORM_VIEW_MAT].setValue(viewMat); 
+                uniforms[UNIFORM_CAM_POS].setValue(camPos); 
+            }
+            
+            if (lastMat == null || lastMat != mat) {
+                applyMaterial(mat, uniforms); 
+            }
             
             renderLights.clear(); 
             lightSorter.sort(data, lights, renderLights); 
             
-            Matrix4 mMatrix = data.getModelMatrix(); 
-            Matrix3 nMatrix = data.getNormalMatrix(); 
+            uniforms[UNIFORM_MODEL_MAT].setValue(data.getModelMatrix()); 
+            uniforms[UNIFORM_NORMAL_MAT].setValue(data.getNormalMatrix()); 
+            
             Vector3 ambient = renderLights.getAmbient(); 
             Geometry geom = data.getMesh().getGeometry(data.getSubmesh()); 
-            Material mat = data.getMaterial(); 
             
             gd.setState(BASE_STATE); 
             
@@ -75,55 +124,58 @@ public class Graphics {
                     light = renderLights.get(0); 
                 }
                 
-                renderGeometry(gd, camera, shader, geom, mat, mMatrix, nMatrix, light, ambient, true); 
+                uniforms[UNIFORM_AMBIENT_COL].setValue(new Vector4(ambient, 1)); 
+                applyLight(light, uniforms); 
+                
+                renderGeometry(gd, shader, geom); 
             }
             
             gd.setState(ADD_STATE); 
             
+            uniforms[UNIFORM_AMBIENT_COL].clear(); 
+            
             for (int i = 1; i < renderLights.getLightCount(); i++) {
                 Light light = renderLights.get(i); 
                 
-                renderGeometry(gd, camera, shader, geom, mat, mMatrix, nMatrix, light, ambient, false); 
+                applyLight(light, uniforms); 
+                
+                renderGeometry(gd, shader, geom); 
             }
         }
     }
     
-    private void renderGeometry(GraphicsDevice gd, Camera camera, Shader shader, Geometry geom, Material mat, Matrix4 mMatrix, Matrix3 nMatrix, Light light, Vector3 ambient, boolean base) {
-        shader.reset(); 
-        applyMaterial(mat, shader); 
-        shader.getSafeUniformValue("oasis_ProjectionMatrix").setValue(camera.getProjectionMatrix());
-        shader.getSafeUniformValue("oasis_ViewMatrix").setValue(camera.getViewMatrix());
-        shader.getSafeUniformValue("oasis_ModelMatrix").setValue(mMatrix);
-        shader.getSafeUniformValue("oasis_NormalMatrix").setValue(nMatrix); 
-        shader.getSafeUniformValue("oasis_CameraPosition").setValue(camera.getPosition()); 
-        
-        if (base) {
-            shader.getSafeUniformValue("oasis_AmbientColor").setValue(new Vector4(ambient, 1)); 
+    private void fillUniforms(Shader shader, UniformValue[] values) {
+        for (int i = 0; i < values.length; i++) {
+            values[i] = shader.getSafeUniformValue(UNIFORM_NAMES[i]); 
         }
-        else {
-            shader.getSafeUniformValue("oasis_AmbientColor").clear(); 
-        }
-        
-        if (light != null) applyLight(light, shader); 
-        
+    }
+    
+    private void renderGeometry(GraphicsDevice gd, Shader shader, Geometry geom) {
         gd.setShader(shader); 
         gd.drawGeometry(geom); 
     }
     
-    private void applyMaterial(Material mat, Shader shader) {
+    private void applyMaterial(Material mat, UniformValue[] uniforms) {
         Vector4 diffuse = new Vector4(mat.getDiffuseColor(), mat.getAlpha()); 
         Vector4 specular = new Vector4(mat.getSpecularColor(), mat.getSpecularPower()); 
         Vector3 emissive = new Vector3(mat.getEmissiveColor()); 
         
-        shader.getSafeUniformValue("oasis_DiffuseColor").setValue(diffuse); 
-        shader.getSafeUniformValue("oasis_SpecularColor").setValue(specular); 
-        shader.getSafeUniformValue("oasis_EmissiveColor").setValue(emissive); 
+        uniforms[UNIFORM_DIFFUSE_COL].setValue(diffuse); 
+        uniforms[UNIFORM_SPECULAR_COL].setValue(specular); 
+        uniforms[UNIFORM_EMISSIVE_COL].setValue(emissive); 
     }
     
-    private void applyLight(Light light, Shader shader) {
-        shader.getSafeUniformValue("oasis_LightColor").setValue(light.getColor()); 
-        shader.getSafeUniformValue("oasis_LightPosition").setValue(light.getPositionUniform()); 
-        shader.getSafeUniformValue("oasis_LightAttenuation").setValue(light.getAttenuationUniform()); 
+    private void applyLight(Light light, UniformValue[] uniforms) {
+        if (light != null) {
+            uniforms[UNIFORM_LIGHT_COL].setValue(light.getColor()); 
+            uniforms[UNIFORM_LIGHT_POS].setValue(light.getPositionUniform()); 
+            uniforms[UNIFORM_LIGHT_ATTEN].setValue(light.getAttenuationUniform()); 
+        }
+        else {
+            uniforms[UNIFORM_LIGHT_COL].clear(); 
+            uniforms[UNIFORM_LIGHT_POS].clear(); 
+            uniforms[UNIFORM_LIGHT_ATTEN].clear(); 
+        }
     }
     
     public void setCamera(Camera camera) {

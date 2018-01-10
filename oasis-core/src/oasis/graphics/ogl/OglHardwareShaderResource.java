@@ -1,8 +1,5 @@
 package oasis.graphics.ogl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
@@ -14,9 +11,9 @@ import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-public class OglShader implements HardwareShaderResource {
+public class OglHardwareShaderResource implements HardwareShaderResource {
 
-    private static final Logger log = new Logger(OglShader.class); 
+    private static final Logger log = new Logger(OglHardwareShaderResource.class); 
     
     private static int currentId = 0; 
     
@@ -30,7 +27,7 @@ public class OglShader implements HardwareShaderResource {
     private boolean foundUniforms = false; 
     private OglUniformValue[] oglUniformValues; 
     
-    public OglShader(Ogl ogl, String vs, String fs) {
+    public OglHardwareShaderResource(Ogl ogl, String vs, String fs) {
         this.vs = vs; 
         this.fs = fs; 
         this.ogl = ogl; 
@@ -38,7 +35,7 @@ public class OglShader implements HardwareShaderResource {
         compileAndLink(); 
     }
     
-    protected static void bind(Ogl ogl, OglShader shader) {
+    protected static void bind(Ogl ogl, OglHardwareShaderResource shader) {
         if (shader == null && currentId != 0) {
             ogl.glUseProgram(0); 
         }
