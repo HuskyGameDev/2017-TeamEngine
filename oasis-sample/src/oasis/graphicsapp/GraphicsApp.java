@@ -1,6 +1,7 @@
 package oasis.graphicsapp;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import oasis.core.Application;
 import oasis.core.BackendType;
@@ -22,6 +23,7 @@ import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
+import oasis.math.Mathf;
 import oasis.math.Matrix4;
 import oasis.math.Quaternion;
 import oasis.math.Vector2;
@@ -49,6 +51,8 @@ public class GraphicsApp implements Application {
     
     private Texture2D diffuseTex; 
     private Texture2D diffuseTex2; 
+    private Texture2D normalTex; 
+    private Texture2D normalTex2; 
     
     private float yaw, pitch; 
     
@@ -66,16 +70,28 @@ public class GraphicsApp implements Application {
 //        state.setFrontFace(FrontFace.BOTH);
         
         mesh = ObjImporter.load("texture-sphere.obj");
+        mesh.calculateTangents(); 
+        mesh.upload(); 
 //        mesh2 = ObjImporter.load("bunny.obj"); 
         mesh3 = ObjImporter.load("texture-terrain.obj"); 
+        mesh3.calculateTangents(); 
+        mesh3.upload(); 
         
         quad = ObjImporter.load("texture-sphere.obj"); 
+        quad.calculateTangents(); 
+        quad.upload(); 
 //        quad = new Mesh(); 
 //        quad.setPositions(new Vector3[] {
 //                new Vector3(-1, -1, 0), 
 //                new Vector3( 1, -1, 0), 
 //                new Vector3( 1,  1, 0), 
 //                new Vector3(-1,  1, 0) 
+//        });
+//        quad.setNormals(new Vector3[] {
+//                new Vector3(0, 0, 1), 
+//                new Vector3(0, 0, 1), 
+//                new Vector3(0, 0, 1), 
+//                new Vector3(0, 0, 1) 
 //        });
 //        quad.setTexCoords(new Vector2[] {
 //                new Vector2(0, 0), 
@@ -87,10 +103,12 @@ public class GraphicsApp implements Application {
 //                0, 1, 2, 
 //                0, 2, 3
 //        });
+//        quad.calculateTangents(); 
+//        
 //        quad.upload(); 
         
-        String vs = GlslParser.getVertexSource("test.glsl"); 
-        String fs = GlslParser.getFragmentSource("test.glsl"); 
+        String vs = GlslParser.getVertexSource("basic-blinn-phong.glsl"); 
+        String fs = GlslParser.getFragmentSource("basic-blinn-phong.glsl"); 
         shader = new Shader(vs, fs); 
         
         vs = GlslParser.getVertexSource("texture.glsl"); 
@@ -98,8 +116,10 @@ public class GraphicsApp implements Application {
         quadShader = new Shader(vs, fs); 
         
         diffuseTex = TextureLoader.get("diffuse-and-normals/160.JPG"); 
+        normalTex = TextureLoader.get("diffuse-and-normals/160_norm.JPG"); 
         
         diffuseTex2 = TextureLoader.get("grass.jpg"); 
+        normalTex2 = TextureLoader.get("test-normal.png"); 
         
         quadMat = new Material(); 
         quadMat.setShader(quadShader); 
@@ -108,17 +128,19 @@ public class GraphicsApp implements Application {
         
         material = new Material(); 
         material.setShader(shader); 
-        material.setDiffuseColor(new Vector3(0.8f, 0.8f, 0.8f)); 
-        material.setSpecularColor(new Vector3(1f)); 
-        material.setSpecularPower(5);
+        material.setDiffuseColor(new Vector3(1)); 
+        material.setSpecularColor(new Vector3(1.0f)); 
+        material.setSpecularPower(20);
         material.setDiffuseTexture(diffuseTex); 
+        material.setNormalTexture(normalTex); 
         
         material2 = new Material(); 
         material2.setShader(shader); 
-        material2.setDiffuseColor(new Vector3(1.0f, 1.0f, 1.0f).multiply(0.7f)); 
+        material2.setDiffuseColor(new Vector3(1.0f, 1.0f, 1.0f).multiply(1f)); 
         material2.setSpecularColor(new Vector3(0.0f)); 
-        material2.setSpecularPower(50);
+        material2.setSpecularPower(20);
         material2.setDiffuseTexture(diffuseTex2); 
+        material2.setNormalTexture(normalTex2); 
         
         grassMat = new Material(); 
         grassMat.setShader(shader); 
@@ -202,66 +224,39 @@ public class GraphicsApp implements Application {
         gd.setState(state); 
         
         g.begin(); 
-        g.addAmbient(sky.multiply(0.6f)); 
+        g.addAmbient(new Vector3(0.0f)); //sky.multiply(0.6f)); 
         
         DirectionalLight light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f, 0, 0)); 
-        light.setDirection(new Vector3(-1, -1, -1).normalize()); 
-        if (lights[0]) g.addLight(light);
-        
         light = new DirectionalLight(); 
-        light.setColor(new Vector3(0, 0, 0.6f)); 
-        light.setDirection(new Vector3(-1, -1, 1).normalize()); 
-        if (lights[1]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f, 0.6f, 0.6f)); 
-        light.setDirection(new Vector3(1, -1, 1).normalize().rotate(Quaternion.axisAngle(new Vector3(1, 0, 0), ticks * 0.01f))); 
+        light.setColor(new Vector3(1).multiply(1)); 
+        light.setDirection(new Vector3(-10, -10, -10).normalize().rotate(Quaternion.axisAngle(new Vector3(0, 1, 0), ticks * 0.01f))); 
         if (lights[2]) g.addLight(light);
         
         light = new DirectionalLight(); 
-        light.setColor(new Vector3(0, 0.6f, 0)); 
-        light.setDirection(new Vector3(1, -1, 1).normalize()); 
-        if (lights[3]) g.addLight(light);
+        light.setColor(new Vector3(1, 0, 0)); 
+        light.setDirection(new Vector3(5, -10, 5).normalize()); 
+        if (lights[0]) g.addLight(light);
         
         light = new DirectionalLight(); 
-        light.setColor(new Vector3(0, 0.6f, 0.6f)); 
-        light.setDirection(new Vector3(0, -1, 0).normalize().rotate(Quaternion.axisAngle(new Vector3(1, 0, 0), ticks * 1f))); 
-        if (lights[3]) g.addLight(light);
+        light.setColor(new Vector3(0, 1, 0)); 
+        light.setDirection(new Vector3(0, -10, 0).normalize()); 
+        if (lights[1]) g.addLight(light);
         
         light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f, 0.0f, 0.6f)); 
-        light.setDirection(new Vector3(0, 1, 0).normalize()); 
-        if (lights[3]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f, 0.6f, 0.6f)); 
-        light.setDirection(new Vector3(0, 0, 1).normalize()); 
-        if (lights[3]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f, 0.6f, 0.6f)); 
-        light.setDirection(new Vector3(1, 0, 0).normalize()); 
-        if (lights[3]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f, 0.6f, 0.6f)); 
-        light.setDirection(new Vector3(0, 0, -1).normalize()); 
-        if (lights[3]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(0.6f, 0.6f, 0.6f)); 
-        light.setDirection(new Vector3(-1, 0, 0).normalize()); 
+        light.setColor(new Vector3(0, 0, 1)); 
+        light.setDirection(new Vector3(5, -10, 0).normalize()); 
         if (lights[3]) g.addLight(light);
         
         g.setCamera(camera); 
         
         g.drawMesh(mesh3, 0, material2, Matrix4.translation(new Vector3(0, -1, 0))); 
         
-        for (int i = -10; i < 10; i++) {
-            for (int j = -10; j < 10; j++) {
+        Random r = new Random(1); 
+        for (int i = -5; i < 5; i++) {
+            for (int j = -5; j < 5; j++) {
                 for (int k = -0; k < 1; k++) {
-                    g.drawMesh(mesh, 0, material, Matrix4.translation(new Vector3(i * 2, k * 2, j * 2)));
+                    g.drawMesh(quad, 0, material, Matrix4.translation(new Vector3(i * 2, k * 2, j * 2)).multiply(
+                            Matrix4.rotation(Quaternion.axisAngle(new Vector3(r.nextFloat(), r.nextFloat(), r.nextFloat()).normalize(), ticks * 0.01f * 6.28f * r.nextFloat()))));
                 }
             }
         }

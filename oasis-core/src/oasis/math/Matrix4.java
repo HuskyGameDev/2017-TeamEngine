@@ -400,6 +400,14 @@ public class Matrix4 {
         return out.multiply(1f / w_); 
     }
     
+    public Vector3 multiplyNoTransform(Vector3 r, float w) {
+        Vector3 out = new Vector3(); 
+        out.x = m00 * r.x + m01 * r.y + m02 * r.z + m03 * w; 
+        out.y = m10 * r.x + m11 * r.y + m12 * r.z + m13 * w; 
+        out.z = m20 * r.x + m21 * r.y + m22 * r.z + m23 * w; 
+        return out; 
+    }
+    
     public Matrix4 addSelf(Matrix4 r) {
         this.m00 += r.m00; 
         this.m10 += r.m10; 

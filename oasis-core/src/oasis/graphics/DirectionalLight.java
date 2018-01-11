@@ -1,5 +1,6 @@
 package oasis.graphics;
 
+import oasis.math.Matrix4;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
@@ -20,8 +21,8 @@ public class DirectionalLight extends Light {
     }
 
     @Override
-    protected Vector4 getPositionUniform() {
-        return new Vector4(direction, 0); 
+    protected Vector4 getPositionUniform(Matrix4 view) {
+        return new Vector4(view.multiplyNoTransform(direction, 0), 0); 
     }
 
     @Override

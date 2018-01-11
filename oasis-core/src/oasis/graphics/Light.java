@@ -1,5 +1,6 @@
 package oasis.graphics;
 
+import oasis.math.Matrix4;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
@@ -23,7 +24,7 @@ public abstract class Light {
     
     public abstract Type getType(); 
     
-    protected abstract Vector4 getPositionUniform(); 
+    protected abstract Vector4 getPositionUniform(Matrix4 viewMat); 
     protected abstract Vector3 getAttenuationUniform(); 
     
     public Vector3 getColor() {

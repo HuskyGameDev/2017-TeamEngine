@@ -5,68 +5,76 @@
 varying vec2 v_TexCoord; 
 varying vec3 v_Position; 
 varying vec3 v_Normal; 
+varying mat3 v_Tbn; 
 
-uniform mat4 oasis_ProjectionMatrix; 
-uniform mat4 oasis_ViewMatrix; 
-uniform mat4 oasis_ModelMatrix; 
-uniform mat3 oasis_NormalMatrix; 
-uniform vec3 oasis_CameraPosition; 
+uniform mat4 oa_ProjectionMatrix; 
+uniform mat4 oa_ViewMatrix; 
+uniform mat4 oa_ModelMatrix; 
+uniform mat3 oa_NormalMatrix; 
+uniform vec3 oa_CameraPosition; 
 
-uniform vec4 oasis_DiffuseColor; 
-uniform vec4 oasis_SpecularColor; 
-uniform vec3 oasis_EmissiveColor; 
+uniform vec4 oa_DiffuseColor; 
+uniform vec4 oa_SpecularColor; 
+uniform vec3 oa_EmissiveColor; 
 
-uniform sampler2D oasis_DiffuseTexture; 
-uniform int oasis_HasDiffuseTexture; 
+uniform sampler2D oa_DiffuseTexture; 
+uniform int oa_HasDiffuseTexture; 
 
-uniform vec4 oasis_AmbientColor; 
-uniform vec4 oasis_LightPosition; 
-uniform vec3 oasis_LightColor; 
-uniform vec3 oasis_LightAttenuation; 
+uniform vec4 oa_AmbientColor; 
+uniform vec4 oa_LightPosition; 
+uniform vec3 oa_LightColor; 
+uniform vec3 oa_LightAttenuation; 
 
 #vertexshader 
 
 attribute vec3 a_Position; 
 attribute vec3 a_Normal; 
 attribute vec2 a_TexCoord; 
+attribute vec3 a_Tangent; 
 
 void main() 
 {
-    vec4 tmpPos = oasis_ModelMatrix * vec4(a_Position, 1.0); 
+    vec4 tmpPos = oa_ModelMatrix * vec4(a_Position, 1.0); 
 
     v_Position = tmpPos.xyz; 
     v_TexCoord = a_TexCoord; 
-    v_Normal = normalize(oasis_NormalMatrix * a_Normal); 
-    gl_Position = oasis_ProjectionMatrix * oasis_ViewMatrix * tmpPos; 
+    vec3 v_Normal = normalize(oa_NormalMatrix * a_Normal); 
+    gl_Position = oa_ProjectionMatrix * oa_ViewMatrix * tmpPos; 
+    
+    vec3 tangent = normalize(a_Tangent); 
+    vec3 bitangent = normalize(cross(v_Normal, tangent)); 
+    
+    v_Tbn = transpose(mat3(vec3(0.0), vec3(0.0), v_Normal)); 
 }
 
 #fragmentshader 
 
 void main() 
 {
+    vec3 normal = v_Normal; //v_Tbn * vec3(0, 0, 1); //normalize(texture2D(oa_DiffuseTexture, v_TexCoord).rgb * 2.0 - 1.0); 
     vec3 lightDir; 
     
-    if (oasis_LightPosition.w == 0) 
+    if (oa_LightPosition.w == 0) 
     {
-        lightDir = -normalize(oasis_LightPosition.xyz); 
+        lightDir = -normalize(oa_LightPosition.xyz); 
     }
     else 
     {
-        lightDir = normalize(oasis_LightPosition.xyz - v_Position); 
+        lightDir = normalize(oa_LightPosition.xyz - v_Position); 
     } 
     
-    vec3 cameraDir = normalize(oasis_CameraPosition - v_Position); 
+    vec3 cameraDir = normalize(oa_CameraPosition - v_Position); 
 
-    float diffuse = Diffuse(v_Normal, lightDir); 
-    float specular = Specular(v_Normal, lightDir, cameraDir, oasis_SpecularColor.a); 
+    float diffuse = Diffuse(normal, lightDir); 
+    float specular = Specular(normal, lightDir, cameraDir, oa_SpecularColor.a); 
 
-    vec3 diffuseInput = oasis_DiffuseColor.rgb; 
+    vec3 diffuseInput = oa_DiffuseColor.rgb; 
     
-    if (oasis_HasDiffuseTexture == 1) 
+    if (oa_HasDiffuseTexture == 1) 
     {
-        diffuseInput *= texture2D(oasis_DiffuseTexture, v_TexCoord).rgb; 
+        diffuseInput *= texture2D(oa_DiffuseTexture, v_TexCoord).rgb; 
     }
 
-    gl_FragColor.rgb = (oasis_AmbientColor.rgb + diffuse * oasis_LightColor) * diffuseInput + specular * oasis_LightColor * oasis_SpecularColor.rgb; 
+    gl_FragColor.rgb = (oa_AmbientColor.rgb + diffuse * oa_LightColor) * diffuseInput + specular * oa_LightColor * oa_SpecularColor.rgb; 
     gl_FragColor.a = 1.0; 
 }

@@ -14,6 +14,7 @@ public class Material {
     private Shader shader = null; 
     
     private Texture2D diffuseTex = null; 
+    private Texture2D normalTex = null; 
     
     public Material() {}
 
@@ -48,6 +49,10 @@ public class Material {
     public Vector3 getEmissiveColor() {
         return new Vector3(emissive);
     }
+    
+    public Texture2D getNormalTexture() {
+        return normalTex; 
+    }
 
     public Shader getShader() {
         return shader;
@@ -71,6 +76,10 @@ public class Material {
     
     public void setDiffuseTexture(Texture2D tex) {
         this.diffuseTex = tex; 
+    }
+    
+    public void setNormalTexture(Texture2D tex) {
+        this.normalTex = tex; 
     }
 
     public void setSpecularColor(Vector3 specular) {

@@ -9,6 +9,7 @@ public class VertexFormat {
     public static final VertexFormat NORMAL = new VertexFormat(Attribute.NORMAL); 
     public static final VertexFormat COLOR = new VertexFormat(Attribute.COLOR); 
     public static final VertexFormat TEX_COORD = new VertexFormat(Attribute.TEX_COORD); 
+    public static final VertexFormat TANGENT = new VertexFormat(Attribute.TANGENT); 
     
     private Attribute[] attribs; 
     private int floatsPerElem; 

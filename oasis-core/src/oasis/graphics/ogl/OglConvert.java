@@ -39,6 +39,8 @@ public class OglConvert {
             return 2; 
         case TEX_COORD: 
             return 3; 
+        case TANGENT: 
+            return 4; 
         }
     }
     
@@ -54,6 +56,8 @@ public class OglConvert {
             return "a_Color"; 
         case TEX_COORD: 
             return "a_TexCoord"; 
+        case TANGENT: 
+            return "a_Tangent"; 
         }
     }
     

@@ -8,7 +8,9 @@ public enum Attribute {
     
     COLOR(4), 
     
-    TEX_COORD(2); 
+    TEX_COORD(2), 
+    
+    TANGENT(3); 
     
     private final int comps; 
     
