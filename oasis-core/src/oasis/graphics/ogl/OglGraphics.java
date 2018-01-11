@@ -1,17 +1,19 @@
 package oasis.graphics.ogl;
 
+import com.jogamp.common.nio.NativeBuffer;
+
 import oasis.core.OasisException;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.FrontFace;
 import oasis.graphics.Geometry;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
-import oasis.graphics.NativeBuffer;
-import oasis.graphics.NativeGeometry;
-import oasis.graphics.NativeShader;
-import oasis.graphics.NativeTexture;
+import oasis.graphics.IndexBuffer;
+import oasis.graphics.NativeShaderResource;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
+import oasis.graphics.Texture2D;
+import oasis.graphics.VertexBuffer;
 import oasis.math.Vector4;
 
 public class OglGraphics implements GraphicsDevice {
@@ -49,36 +51,30 @@ public class OglGraphics implements GraphicsDevice {
         
     }
 
+
     @Override
-    public NativeBuffer createNativeBuffer(NativeBuffer.Type type) {
-        switch (type) {
-        case VERTEX: 
-            return new OglBuffer(ogl, Ogl.GL_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC)); 
-        case INDEX: 
-            return new OglBuffer(ogl, Ogl.GL_ELEMENT_ARRAY_BUFFER, OglConvert.getBufferUsage(BufferUsage.DYNAMIC));
-        default: 
-            throw new OasisException("Unknown NativeBuffer type: " + type); 
-        }
-    }
-    
-    @Override
-    public NativeTexture createNativeTexture(Texture.Type type, Texture.Format format, int width, int height, int depth) {
-        switch (type) {
-        case TEXTURE_2D: 
-            return new OglTexture2D(ogl, OglConvert.getTextureFormat(format), width, height); 
-        default: 
-            throw new OasisException("Unknown NativeTexture type: " + type); 
-        }
+    public void assignNativeResource(VertexBuffer vb) {
+        vb.setNativeResource(new OglVertexBuffer(ogl, vb)); 
     }
 
     @Override
-    public NativeGeometry createNativeGeometry() {
-        return new OglGeometry(ogl); 
+    public void assignNativeResource(IndexBuffer ib) {
+        ib.setNativeResource(new OglIndexBuffer(ogl, ib)); 
     }
-    
+
     @Override
-    public NativeShader createNativeShader(String vs, String fs) {
-        return new OglShader(ogl, vs, fs); 
+    public void assignNativeResource(Geometry g) {
+        g.setNativeResource(new OglGeometry(ogl, g)); 
+    }
+
+    @Override
+    public void assignNativeResource(Shader s) {
+        s.setNativeResource(new OglShader(ogl, s)); 
+    }
+
+    @Override
+    public void assignNativeResource(Texture2D t) {
+        t.setNativeResource(new OglTexture2D(ogl, t)); 
     }
 
     @Override
@@ -88,7 +84,7 @@ public class OglGraphics implements GraphicsDevice {
         }
         else {
             curShader = (OglShader) s.getNativeResource(); 
-            curShader.upload(); 
+            curShader.update(); 
         }
     }
     
@@ -105,7 +101,7 @@ public class OglGraphics implements GraphicsDevice {
         }
         
         OglShader.bind(ogl, curShader); 
-        curShader.upload(); 
+        curShader.update(); 
         
         OglGeometry geom = (OglGeometry) g.getNativeResource(); 
         geom.setBuffers(); 

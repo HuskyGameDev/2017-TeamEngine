@@ -1,6 +1,6 @@
 package oasis.graphics;
 
-public abstract class Texture extends GraphicsResource {
+public abstract class Texture extends GraphicsResource<NativeResource> {
 
     /**
      * Pixel format 

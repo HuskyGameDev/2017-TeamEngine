@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.graphics.Attribute;
-import oasis.graphics.NativeGeometry;
+import oasis.graphics.Geometry;
 import oasis.graphics.IndexBuffer;
+import oasis.graphics.NativeResource;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
 
 // TODO implement VAO
-public class OglGeometry implements NativeGeometry {
+public class OglGeometry implements NativeResource {
 
     private Ogl ogl;
     
+    private Geometry geom; 
     private IndexBuffer ib; 
     private List<VertexBuffer> vbs = new ArrayList<>(); 
 
-    public OglGeometry(Ogl ogl) {
+    public OglGeometry(Ogl ogl, Geometry geom) {
         this.ogl = ogl; 
+        this.geom = geom; 
     }
 
     public void setBuffers() {
@@ -39,7 +42,7 @@ public class OglGeometry implements NativeGeometry {
                 ogl.glEnableVertexAttribArray(i);
 
                 VertexBuffer vb = vbs.get(attribIds[i]); 
-                OglBuffer hb = (OglBuffer) vb.getNativeResource();
+                OglVertexBuffer hb = (OglVertexBuffer) vb.getNativeResource();
 
                 // log.debug("Bind VertexBuffer: " + vb.getId());
                 ogl.glBindBuffer(Ogl.GL_ARRAY_BUFFER, hb.getId());
@@ -54,7 +57,7 @@ public class OglGeometry implements NativeGeometry {
         }
 
         if (ib != null) {
-            OglBuffer hb = (OglBuffer) ib.getNativeResource();
+            OglIndexBuffer hb = (OglIndexBuffer) ib.getNativeResource();
 
             // log.debug("Bind IndexBuffer: " + ib.getId());
             ogl.glBindBuffer(Ogl.GL_ELEMENT_ARRAY_BUFFER, hb.getId());
@@ -95,11 +98,11 @@ public class OglGeometry implements NativeGeometry {
     }
 
     @Override
-    public void upload(IndexBuffer ib, VertexBuffer[] vertices) {
-        this.ib = ib; 
+    public void update() {
+        this.ib = geom.getIndexBuffer(); 
         vbs.clear(); 
-        for (int i = 0; i < vertices.length; i++) {
-            vbs.add(vertices[i]); 
+        for (int i = 0; i < geom.getVertexBufferCount(); i++) {
+            vbs.add(geom.getVertexBuffer(i)); 
         }
     }
 

@@ -5,16 +5,18 @@ import java.util.List;
 
 import oasis.core.Oasis;
 
-public class Geometry extends GraphicsResource {
+public class Geometry extends GraphicsResource<NativeResource> {
 
-    private NativeGeometry hwGeom; 
-    
     private Primitive primitive = Primitive.TRIANGLE_LIST; 
     private IndexBuffer ib; 
     private List<VertexBuffer> vbs = new ArrayList<>(); 
     
     public Geometry() {
-        hwGeom = Oasis.getGraphicsDevice().createNativeGeometry(); 
+        Oasis.getGraphicsDevice().assignNativeResource(this); 
+    }
+    
+    public Type getResourceType() {
+        return Type.GEOMETRY; 
     }
     
     public boolean isValid() {
@@ -27,10 +29,6 @@ public class Geometry extends GraphicsResource {
     
     public void setPrimitive(Primitive prim) {
         primitive = prim; 
-    }
-    
-    public NativeGeometry getNativeResource() {
-        return hwGeom; 
     }
     
     public VertexBuffer[] getVertexBuffers() {
@@ -71,13 +69,4 @@ public class Geometry extends GraphicsResource {
         }
     }
     
-    public void upload() {
-        hwGeom.upload(ib, getVertexBuffers());
-    }
-    
-    @Override
-    public void release() {
-        hwGeom.release(); 
-    }
-
 }

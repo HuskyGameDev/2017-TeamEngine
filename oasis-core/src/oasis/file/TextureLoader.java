@@ -71,7 +71,7 @@ public class TextureLoader {
 			}
 			
 			// set pixels of texture
-			tex.setPixels(0, 0, 1, 1, data, 0);
+			tex.setPixels(0, 0, width, height, data, 0);
 			tex.upload(); 
 			
 			return tex; 

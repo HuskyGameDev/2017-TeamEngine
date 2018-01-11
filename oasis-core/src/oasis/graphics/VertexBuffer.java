@@ -1,37 +1,46 @@
 package oasis.graphics;
 
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 import oasis.core.Oasis;
 
-public class VertexBuffer extends GraphicsResource {
+public class VertexBuffer extends GraphicsResource<NativeResource> {
     
     private VertexFormat format; 
     private BufferUsage usage; 
     private FloatBuffer buffer; 
-    private NativeBuffer hwBuffer; 
     private int size; 
+    private boolean needsUpdate = true; 
     
     public VertexBuffer(VertexFormat format, int vertices, BufferUsage usage) {
         this.format = format; 
         this.size = vertices * format.getFloatsPerElement(); 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 4).asFloatBuffer(); 
-        this.hwBuffer = Oasis.getGraphicsDevice().createNativeBuffer(NativeBuffer.Type.VERTEX); 
+        Oasis.getGraphicsDevice().assignNativeResource(this); 
     }
 
     public void upload() {
-        buffer.position(getSizeInFloats()); 
-        buffer.flip(); 
-        hwBuffer.upload(getSizeInBytes(), buffer, usage); 
-    }
-
-    public void release() {
-        this.hwBuffer.release(); 
+        if (needsUpdate) {
+            super.upload(); 
+            needsUpdate = false; 
+        }
     }
     
-    public NativeBuffer getNativeResource() {
-        return hwBuffer; 
+    public void release() {
+        super.release(); 
+        needsUpdate = true; 
+    }
+    
+    public Buffer getAndFlipBuffer() {
+        buffer.position(getSizeInFloats()); 
+        buffer.flip(); 
+        return buffer; 
+    }
+    
+    public Type getResourceType() {
+        return Type.TEXTURE_2D; 
     }
     
     public VertexFormat getFormat() {
@@ -77,6 +86,8 @@ public class VertexBuffer extends GraphicsResource {
         
         buffer.position(start * numFloats); 
         buffer.put(in, inOffset, count * numFloats); 
+        
+        needsUpdate = true; 
     }
 
 }

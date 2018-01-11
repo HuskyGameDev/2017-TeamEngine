@@ -8,13 +8,15 @@ public interface GraphicsDevice {
 
     void postRender();
 
-    NativeBuffer createNativeBuffer(NativeBuffer.Type type); 
+    void assignNativeResource(VertexBuffer vb); 
     
-    NativeGeometry createNativeGeometry(); 
+    void assignNativeResource(IndexBuffer ib); 
     
-    NativeShader createNativeShader(String vs, String fs); 
+    void assignNativeResource(Geometry g); 
     
-    NativeTexture createNativeTexture(Texture.Type type, Texture.Format format, int width, int height, int depth); 
+    void assignNativeResource(Shader s); 
+    
+    void assignNativeResource(Texture2D t); 
     
     void clearBuffers(Vector4 color, boolean depth); 
     

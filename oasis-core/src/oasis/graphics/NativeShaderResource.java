@@ -1,13 +1,11 @@
 package oasis.graphics;
 
-public interface NativeShader {
+public interface NativeShaderResource extends NativeResource {
 
     boolean isValid(); 
     
     String getErrorMessage(); 
     
     UniformValue[] getUniformValues(); 
-    
-    void release(); 
     
 }

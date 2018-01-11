@@ -1,6 +1,5 @@
 package oasis.graphicsapp;
 
-import java.util.Arrays;
 import java.util.Random;
 
 import oasis.core.Application;
@@ -23,10 +22,8 @@ import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
-import oasis.math.Mathf;
 import oasis.math.Matrix4;
 import oasis.math.Quaternion;
-import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
@@ -37,7 +34,6 @@ public class GraphicsApp implements Application {
     private int ticks = 0; 
     
     private Mesh mesh; 
-    private Mesh mesh2; 
     private Mesh mesh3; 
     private Mesh quad; 
     private Material material; 
@@ -130,7 +126,7 @@ public class GraphicsApp implements Application {
         material.setShader(shader); 
         material.setDiffuseColor(new Vector3(1)); 
         material.setSpecularColor(new Vector3(1.0f)); 
-        material.setSpecularPower(20);
+        material.setSpecularPower(200);
         material.setDiffuseTexture(diffuseTex); 
         material.setNormalTexture(normalTex); 
         

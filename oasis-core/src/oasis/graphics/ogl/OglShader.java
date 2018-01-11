@@ -6,7 +6,8 @@ import java.util.Map;
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
-import oasis.graphics.NativeShader;
+import oasis.graphics.NativeShaderResource;
+import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
 import oasis.graphics.Uniform;
 import oasis.math.Matrix3;
@@ -15,7 +16,7 @@ import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-public class OglShader implements NativeShader {
+public class OglShader implements NativeShaderResource {
 
     private static final Logger log = new Logger(OglShader.class); 
     
@@ -28,12 +29,15 @@ public class OglShader implements NativeShader {
     private boolean compiled = false; 
     private String error = ""; 
     
+    private Shader shader; 
+    
     private boolean foundUniforms = false; 
     private OglUniformValue[] oglUniformValues; 
     
-    public OglShader(Ogl ogl, String vs, String fs) {
-        this.vs = vs; 
-        this.fs = fs; 
+    public OglShader(Ogl ogl, Shader shader) {
+        this.shader = shader; 
+        this.vs = shader.getVertexSource(); 
+        this.fs = shader.getFragmentSource(); 
         this.ogl = ogl; 
         
         compileAndLink(); 
@@ -167,7 +171,7 @@ public class OglShader implements NativeShader {
         }
     }
     
-    protected void upload() {
+    private void upload() {
         compileAndLink(); 
         
         if (isValid()) {
@@ -255,7 +259,7 @@ public class OglShader implements NativeShader {
                         Texture2D tex = (Texture2D) v; 
                         
                         if (tex != null) {
-                            OglTexture2D glTex = (OglTexture2D) tex.getNativeTexture(); 
+                            OglTexture2D glTex = (OglTexture2D) tex.getNativeResource(); 
                             int id = glTex.getId(); 
                             Integer unit = mappedTextures.get(id); 
                             if (unit == null) {
@@ -306,6 +310,11 @@ public class OglShader implements NativeShader {
         findUniforms(); 
         
         return oglUniformValues.clone();
+    }
+
+    @Override
+    public void update() {
+        upload(); 
     }
 
 }

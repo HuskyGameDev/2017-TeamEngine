@@ -2,9 +2,10 @@ package oasis.graphics.ogl;
 
 import java.nio.Buffer;
 
-import oasis.graphics.NativeTexture;
+import oasis.graphics.NativeResource;
+import oasis.graphics.Texture2D;
 
-public class OglTexture2D implements NativeTexture {
+public class OglTexture2D implements NativeResource {
 
     private Ogl ogl; 
     
@@ -13,11 +14,14 @@ public class OglTexture2D implements NativeTexture {
     private int width; 
     private int height; 
     
-    public OglTexture2D(Ogl ogl, int format, int width, int height) {
+    private Texture2D tex; 
+    
+    public OglTexture2D(Ogl ogl, Texture2D tex) {
         this.ogl = ogl; 
-        this.format = format; 
-        this.width = width; 
-        this.height = height; 
+        this.tex = tex; 
+        this.format = OglConvert.getTextureFormat(tex.getFormat()); 
+        this.width = tex.getWidth(); 
+        this.height = tex.getHeight(); 
     }
     
     protected int getId() {
@@ -35,13 +39,14 @@ public class OglTexture2D implements NativeTexture {
     }
     
     @Override
-    public void upload(int x, int y, int z, int width, int height, int depth, Buffer data) {
+    public void update() {
         validate(); 
         
         // TODO check for subimage
         
-        ogl.glTexImage2D(Ogl.GL_TEXTURE_2D, 0, format, width, height, 0, Ogl.GL_RGBA, Ogl.GL_UNSIGNED_INT_8_8_8_8, data); 
+        Buffer data = tex.getAndFlipBuffer(); 
         
+        ogl.glTexImage2D(Ogl.GL_TEXTURE_2D, 0, format, width, height, 0, Ogl.GL_RGBA, Ogl.GL_UNSIGNED_INT_8_8_8_8, data); 
         ogl.glGenerateMipmap(Ogl.GL_TEXTURE_2D); 
     }
 

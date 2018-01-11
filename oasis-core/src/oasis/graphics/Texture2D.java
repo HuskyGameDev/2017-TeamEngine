@@ -1,5 +1,6 @@
 package oasis.graphics;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import oasis.core.Oasis;
@@ -7,27 +8,36 @@ import oasis.core.Oasis;
 public class Texture2D extends Texture {
 
     private ByteBuffer buffer; 
-    private NativeTexture hwTexture; 
+    
+    private boolean needsUpdate = true; 
     
     public Texture2D(Format format, int width, int height) {
         super(format, width, height); 
         
         buffer = Oasis.getDirectBufferAllocator().allocate(getSizeInBytes()); 
-        hwTexture = Oasis.getGraphicsDevice().createNativeTexture(Type.TEXTURE_2D, format, width, height, 1); 
+        Oasis.getGraphicsDevice().assignNativeResource(this); 
     }
     
-    public NativeTexture getNativeTexture() {
-        return hwTexture; 
+    public GraphicsResource.Type getResourceType() {
+        return GraphicsResource.Type.TEXTURE_2D; 
+    }
+    
+    public Buffer getAndFlipBuffer() {
+        buffer.position(getWidth() * getHeight() * 4); 
+        buffer.flip(); 
+        return buffer; 
     }
     
     public void upload() {
-        buffer.position(getSizeInBytes()); 
-        buffer.flip(); 
-        hwTexture.upload(0, 0, 0, getWidth(), getHeight(), 1, buffer); 
+        if (needsUpdate) {
+            super.upload(); 
+            needsUpdate = false; 
+        }
     }
     
     public void release() {
-        hwTexture.release(); 
+        super.release(); 
+        needsUpdate = true; 
     }
     
     public int getSizeInBytes() {
@@ -37,33 +47,25 @@ public class Texture2D extends Texture {
     public void getPixels(int x, int y, int width, int height, int[] rgba, int offset) {
         int k = offset; 
         
-        buffer.position(0); 
-        for (int i = 0; i < rgba.length; i++) {
-            rgba[i] = buffer.getInt();  
+        for (int i = 0; i < height; i++) {
+            buffer.position((x + (y + i) * getWidth()) * 4); 
+            for (int j = 0; j < width; j++) {
+                rgba[k++] = buffer.getInt(); 
+            }
         }
-        
-//        for (int i = 0; i < height; i++) {
-//            buffer.position((x + (y + i) * getWidth()) * 4); 
-//            for (int j = 0; j < width; j++) {
-//                rgba[k++] = buffer.getInt(); 
-//            }
-//        }
     }
     
     public void setPixels(int x, int y, int width, int height, int[] rgba, int offset) {
         int k = offset; 
         
-        buffer.position(0); 
-        for (int i = 0; i < rgba.length; i++) {
-            buffer.putInt(rgba[i]); 
+        for (int i = 0; i < height; i++) {
+            buffer.position((x + (y + i) * getWidth()) * 4);  
+            for (int j = 0; j < width; j++) {
+                buffer.putInt(rgba[k++]);
+            }
         }
         
-//        for (int i = 0; i < height; i++) {
-//            buffer.position((x + (y + i) * getWidth()) * 4); 
-//            for (int j = 0; j < width; j++) {
-//                buffer.putInt(rgba[k++]);
-//            }
-//        }
+        needsUpdate = true; 
     }
     
 }

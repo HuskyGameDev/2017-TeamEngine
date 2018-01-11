@@ -2,20 +2,20 @@ package oasis.graphics.ogl;
 
 import java.nio.Buffer;
 
-import oasis.graphics.BufferUsage;
-import oasis.graphics.NativeBuffer;
+import oasis.graphics.IndexBuffer;
+import oasis.graphics.NativeResource;
 
-public class OglBuffer implements NativeBuffer {
+public class OglIndexBuffer implements NativeResource {
 
+    public static final int TYPE = Ogl.GL_ELEMENT_ARRAY_BUFFER; 
+    
     private int[] id = new int[1]; 
     private Ogl ogl; 
-    private int type; 
-    private int usage; 
+    private IndexBuffer ib; 
     
-    public OglBuffer(Ogl ogl, int type, int usage) {
+    public OglIndexBuffer(Ogl ogl, IndexBuffer ib) {
         this.ogl = ogl; 
-        this.type = type; 
-        this.usage = usage; 
+        this.ib = ib; 
     }
     
     public int getId() {
@@ -47,25 +47,21 @@ public class OglBuffer implements NativeBuffer {
     }
 
     @Override
-    public Type getType() {
-        return type == Ogl.GL_ARRAY_BUFFER ? Type.VERTEX : Type.INDEX; 
-    }
-
-    @Override
-    public void upload(int bytes, Buffer data, BufferUsage u) {
+    public void update() {
         boolean alreadyExist = validate(ogl); 
         
-        if (u != null) {
-            usage = OglConvert.getBufferUsage(u); 
-        }
+        int usage = OglConvert.getBufferUsage(ib.getUsage()); 
         
-        ogl.glBindBuffer(type, id[0]); 
+        ogl.glBindBuffer(TYPE, id[0]); 
+        
+        int bytes = ib.getSizeInBytes(); 
+        Buffer data = ib.getAndFlipBuffer(); 
         
         if (alreadyExist) {
-            ogl.glBufferSubData(type, 0, bytes, data);
+            ogl.glBufferSubData(TYPE, 0, bytes, data);
         }
         else {
-            ogl.glBufferData(type, bytes, data, usage);
+            ogl.glBufferData(TYPE, bytes, data, usage);
         }
     }
     

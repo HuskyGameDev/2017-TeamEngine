@@ -1,7 +1,6 @@
 package oasis.graphics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import oasis.core.Logger;
@@ -250,7 +249,6 @@ public class Mesh {
             tan2[i3 * 3 + 2] += tDir.z; 
         }
         
-        System.out.println(Arrays.toString(tan1));
         setVertices(Attribute.TANGENT, tan1); 
     }
     
@@ -272,6 +270,11 @@ public class Mesh {
     
     public Vector3[] getNormals() {
         log.warning("getNormals() not supported yet"); 
+        return null; 
+    }
+    
+    public Vector3[] getTangents() {
+        log.warning("getTangents() not supported yet"); 
         return null; 
     }
     
