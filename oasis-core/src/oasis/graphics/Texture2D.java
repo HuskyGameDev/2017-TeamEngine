@@ -9,8 +9,6 @@ public class Texture2D extends Texture {
 
     private ByteBuffer buffer; 
     
-    private boolean needsUpdate = true; 
-    
     public Texture2D(Format format, int width, int height) {
         super(format, width, height); 
         
@@ -28,16 +26,10 @@ public class Texture2D extends Texture {
         return buffer; 
     }
     
-    public void upload() {
-        if (needsUpdate) {
-            super.upload(); 
-            needsUpdate = false; 
-        }
-    }
-    
     public void release() {
         super.release(); 
         needsUpdate = true; 
+        needsParamUpdate = true; 
     }
     
     public int getSizeInBytes() {

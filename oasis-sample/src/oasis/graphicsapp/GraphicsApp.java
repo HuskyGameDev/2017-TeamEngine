@@ -20,6 +20,8 @@ import oasis.graphics.Material;
 import oasis.graphics.Mesh;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
+import oasis.graphics.Texture.MagFilter;
+import oasis.graphics.Texture.MinFilter;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
 import oasis.math.Matrix4;
@@ -114,8 +116,14 @@ public class GraphicsApp implements Application {
         diffuseTex = TextureLoader.get("diffuse-and-normals/160.JPG"); 
         normalTex = TextureLoader.get("diffuse-and-normals/160_norm.JPG"); 
         
+        diffuseTex.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
+        diffuseTex.upload(); 
+        
         diffuseTex2 = TextureLoader.get("grass.jpg"); 
         normalTex2 = TextureLoader.get("test-normal.png"); 
+        
+        diffuseTex2.setMipmapLevels(0); 
+        diffuseTex2.upload(); 
         
         quadMat = new Material(); 
         quadMat.setShader(quadShader); 
@@ -225,7 +233,7 @@ public class GraphicsApp implements Application {
         DirectionalLight light = new DirectionalLight(); 
         light = new DirectionalLight(); 
         light.setColor(new Vector3(1).multiply(1)); 
-        light.setDirection(new Vector3(-10, -10, -10).normalize().rotate(Quaternion.axisAngle(new Vector3(0, 1, 0), ticks * 0.01f))); 
+        light.setDirection(new Vector3(-10, -10, -10).normalize().rotate(Quaternion.axisAngle(new Vector3(0, 1, 0), ticks * 0.0f))); 
         if (lights[2]) g.addLight(light);
         
         light = new DirectionalLight(); 

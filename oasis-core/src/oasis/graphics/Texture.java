@@ -1,6 +1,6 @@
 package oasis.graphics;
 
-public abstract class Texture extends GraphicsResource<NativeResource> {
+public abstract class Texture extends GraphicsResource<NativeTextureResource> {
 
     /**
      * Pixel format 
@@ -180,7 +180,7 @@ public abstract class Texture extends GraphicsResource<NativeResource> {
          * When sampling past the edge of a texture, return 
          * the color of the edge of the texture 
          */
-        CLAMP_EDGE, 
+        CLAMP_TO_EDGE, 
         
         /**
          * When sampling past the edge of a texture, return 
@@ -197,11 +197,27 @@ public abstract class Texture extends GraphicsResource<NativeResource> {
     private MagFilter magFilter = MagFilter.LINEAR; 
     private WrapMode wrapU = WrapMode.REPEAT; 
     private WrapMode wrapV = WrapMode.REPEAT; 
+    private int levels = 4; 
+    
+    protected boolean needsUpdate = true; 
+    protected boolean needsParamUpdate = true; 
     
     public Texture(Format format, int width, int height) {
         this.format = format; 
         this.width = width; 
         this.height = height; 
+    }
+    
+    public void upload() {
+        if (needsUpdate) {
+            super.upload(); 
+            needsUpdate = false; 
+            needsParamUpdate = false; 
+        }
+        else if (needsParamUpdate) {
+            getNativeResource().updateParams(); 
+            needsParamUpdate = false; 
+        }
     }
     
     public Format getFormat() {
@@ -232,12 +248,18 @@ public abstract class Texture extends GraphicsResource<NativeResource> {
         return wrapV; 
     }
     
+    public int getMipmapLevels() {
+        return levels; 
+    }
+    
     public void setMinFilter(MinFilter min) {
         minFilter = min; 
+        needsParamUpdate = true; 
     }
     
     public void setMagFilter(MagFilter mag) {
         magFilter = mag; 
+        needsParamUpdate = true; 
     }
     
     public void setFilters(MinFilter min, MagFilter mag) {
@@ -247,15 +269,22 @@ public abstract class Texture extends GraphicsResource<NativeResource> {
     
     public void setUWrapMode(WrapMode u) {
         wrapU = u; 
+        needsParamUpdate = true; 
     }
     
     public void setVWrapMode(WrapMode v) {
         wrapV = v; 
+        needsParamUpdate = true; 
     }
     
     public void setWrapModes(WrapMode u, WrapMode v) {
         setUWrapMode(u); 
         setVWrapMode(v); 
+    }
+    
+    public void setMipmapLevels(int levels) {
+        this.levels = levels; 
+        needsParamUpdate = true; 
     }
     
 }

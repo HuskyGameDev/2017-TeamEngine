@@ -8,6 +8,9 @@ import oasis.graphics.FillMode;
 import oasis.graphics.FrontFace;
 import oasis.graphics.Primitive;
 import oasis.graphics.Texture.Format;
+import oasis.graphics.Texture.MagFilter;
+import oasis.graphics.Texture.MinFilter;
+import oasis.graphics.Texture.WrapMode;
 import oasis.graphics.Uniform;
 
 public class OglConvert {
@@ -147,6 +150,47 @@ public class OglConvert {
             throw new OasisException("Unknown Texture Format: " + format); 
         case RGBA8: 
             return Ogl.GL_RGBA8; 
+        }
+    }
+
+    public static int getWrapMode(WrapMode mode) {
+        switch (mode) {
+        default: 
+            throw new OasisException("Unknown WrapMode: " + mode); 
+        case CLAMP_TO_EDGE: 
+            return Ogl.GL_CLAMP_TO_EDGE; 
+        case REPEAT: 
+            return Ogl.GL_REPEAT; 
+        }
+    }
+
+    public static int getMinFilter(MinFilter min) {
+        switch (min) {
+        default: 
+            throw new OasisException("Unknown MinFilter: " + min); 
+        case NEAREST: 
+            return Ogl.GL_NEAREST; 
+        case NEAREST_MIPMAP_NEAREST: 
+            return Ogl.GL_NEAREST_MIPMAP_NEAREST; 
+        case NEAREST_MIPMAP_LINEAR: 
+            return Ogl.GL_NEAREST_MIPMAP_LINEAR; 
+        case LINEAR: 
+            return Ogl.GL_LINEAR; 
+        case LINEAR_MIPMAP_NEAREST: 
+            return Ogl.GL_LINEAR_MIPMAP_NEAREST; 
+        case LINEAR_MIPMAP_LINEAR: 
+            return Ogl.GL_LINEAR_MIPMAP_LINEAR; 
+        }
+    }
+    
+    public static int getMagFilter(MagFilter min) {
+        switch (min) {
+        default: 
+            throw new OasisException("Unknown MinFilter: " + min); 
+        case NEAREST: 
+            return Ogl.GL_NEAREST; 
+        case LINEAR: 
+            return Ogl.GL_LINEAR; 
         }
     }
     
