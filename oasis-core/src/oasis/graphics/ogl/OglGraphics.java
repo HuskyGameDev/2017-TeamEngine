@@ -1,17 +1,13 @@
 package oasis.graphics.ogl;
 
-import com.jogamp.common.nio.NativeBuffer;
-
+import oasis.core.Oasis;
 import oasis.core.OasisException;
-import oasis.graphics.BufferUsage;
 import oasis.graphics.FrontFace;
 import oasis.graphics.Geometry;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
 import oasis.graphics.IndexBuffer;
-import oasis.graphics.NativeShaderResource;
 import oasis.graphics.Shader;
-import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
 import oasis.graphics.VertexBuffer;
 import oasis.math.Vector4;
@@ -43,6 +39,8 @@ public class OglGraphics implements GraphicsDevice {
         ogl.glBlendEquation(Ogl.GL_FUNC_ADD); 
         ogl.glDepthFunc(Ogl.GL_LEQUAL); 
         ogl.glCullFace(Ogl.GL_BACK); 
+        
+        ogl.glViewport(0, 0, Oasis.getDisplay().getWidth(), Oasis.getDisplay().getHeight());
     }
 
     @Override

@@ -183,7 +183,7 @@ public class OglShader implements NativeShaderResource {
             Map<Integer, Integer> mappedTextures = new HashMap<>(); 
             
             for (int i = 0; i < oglUniformValues.length; i++) {
-                if (oglUniformValues[i].needsUpdate()) {
+                if (oglUniformValues[i].needsUpdate() || oglUniformValues[i].getUniform().getType() == Uniform.Type.TEXTURE_2D) {
                     OglUniformValue uv = oglUniformValues[i]; 
                     int location = uv.getLocation(); 
                     Uniform u = uv.getUniform(); 
@@ -263,6 +263,7 @@ public class OglShader implements NativeShaderResource {
                             int id = glTex.getId(); 
                             Integer unit = mappedTextures.get(id); 
                             if (unit == null) {
+//                                log.debug("Binding " + id + " to " + nextTexUnit + " for " + u.getName()); 
                                 ogl.glActiveTexture(Ogl.GL_TEXTURE0 + nextTexUnit);
                                 ogl.glBindTexture(Ogl.GL_TEXTURE_2D, glTex.getId()); 
                                 ogl.glUniform1i(location, nextTexUnit); 

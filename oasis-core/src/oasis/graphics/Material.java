@@ -7,10 +7,10 @@ public class Material {
     private FrontFace frontFace = FrontFace.CCW; 
     private RenderQueue renderQueue = RenderQueue.OPAQUE; 
     private float alpha = 1.0f; 
-    private Vector3 diffuse = new Vector3(); 
-    private Vector3 specular = new Vector3(); 
+    private Vector3 diffuse = new Vector3(1); 
+    private Vector3 specular = new Vector3(0); 
     private float specularPower = 20.0f; 
-    private Vector3 emissive = new Vector3(); 
+    private Vector3 emissive = new Vector3(0); 
     private Shader shader = null; 
     
     private Texture2D diffuseTex = null; 
@@ -74,11 +74,11 @@ public class Material {
         this.diffuse.set(diffuse);
     }
     
-    public void setDiffuseTexture(Texture2D tex) {
+    public void setDiffuseMap(Texture2D tex) {
         this.diffuseTex = tex; 
     }
     
-    public void setNormalTexture(Texture2D tex) {
+    public void setNormalMap(Texture2D tex) {
         this.normalTex = tex; 
     }
 

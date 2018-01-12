@@ -76,6 +76,38 @@ public class Mesh {
         }
     }
     
+    public void release() {
+        VertexBuffer[] vbs = getVertexBuffers(); 
+        
+        for (int i = 0; i < submeshes.length; i++) {
+            submeshes[i].geometry.release(); 
+            submeshes[i].indices.release(); 
+        }
+        
+        for (int i = 0; i < vbs.length; i++) {
+            vbs[i].release(); 
+        }
+    }
+    
+    public void clear() {
+        for (int i = 0; i < vertexBuffers.length; i++) {
+            if (vertexBuffers[i] != null) {
+                vertexBuffers[i].release(); 
+                vertexBuffers[i] = null; 
+            }
+        }
+        
+        for (int i = 0; i < submeshes.length; i++) {
+            if (submeshes[i] != null) {
+                submeshes[i].indices.release(); 
+                submeshes[i].geometry.release(); 
+            }
+        }
+        
+        submeshes = new Submesh[1]; 
+        submeshes[0] = new Submesh(); 
+    }
+    
     public Geometry getGeometry(int submesh) {
         return submeshes[submesh].geometry; 
     }
@@ -170,7 +202,7 @@ public class Mesh {
         
         // make sure we can calculate tangents 
         if (normalVb == null || texCoordVb == null || ib == null) {
-            throw new OasisException(" texture coordinates must be set before tangents can be calculated!"); 
+            throw new OasisException("Position, normal, and texture coordinates must be set before tangents can be calculated!"); 
         }
         
         int vertCount = getVertexCount(); 

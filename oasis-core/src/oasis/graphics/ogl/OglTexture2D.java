@@ -25,7 +25,7 @@ public class OglTexture2D implements NativeTextureResource {
         this.height = tex.getHeight(); 
     }
     
-    protected int getId() {
+    public int getId() {
         return id[0]; 
     }
     

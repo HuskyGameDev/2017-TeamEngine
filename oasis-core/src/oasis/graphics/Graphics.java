@@ -44,6 +44,9 @@ public class Graphics {
     static {
         ADD_STATE.setSourceBlendMode(BlendMode.ONE); 
         ADD_STATE.setDestBlendMode(BlendMode.ONE); 
+//        ADD_STATE.setFillMode(FillMode.LINE);
+        
+//        BASE_STATE.setFillMode(FillMode.LINE);
         
         UNIFORM_NAMES[UNIFORM_PROJ_MAT] = "oasis_Projection"; 
         UNIFORM_NAMES[UNIFORM_VIEW_MAT] = "oasis_View"; 
@@ -65,11 +68,26 @@ public class Graphics {
     private LightList lights = new LightList(); 
     private Camera camera = null; 
     
+    private Texture2D defaultNormalTex = null; 
+    private Texture2D defaultDiffuseTex = null; 
+    
     public Graphics() {}
     
     public void begin() {
         opaqueQueue.clear(); 
         lights.clear(); 
+        
+        if (defaultNormalTex == null) {
+            defaultNormalTex = new Texture2D(Texture.Format.RGBA8, 1, 1); 
+            defaultNormalTex.setPixels(0, 0, 1, 1, new int[] { 0x7F7FFFFF }, 0);
+            defaultNormalTex.upload(); 
+        }
+        
+        if (defaultDiffuseTex == null) {
+            defaultDiffuseTex = new Texture2D(Texture.Format.RGBA8, 1, 1); 
+            defaultDiffuseTex.setPixels(0, 0, 1, 1, new int[] { 0xFFFFFFFF }, 0);
+            defaultDiffuseTex.upload(); 
+        }
     }
     
     public void finish() {
@@ -181,8 +199,8 @@ public class Graphics {
         uniforms[UNIFORM_DIFFUSE_COL].setValue(diffuse); 
         uniforms[UNIFORM_SPECULAR_COL].setValue(specular); 
         uniforms[UNIFORM_EMISSIVE_COL].setValue(emissive); 
-        uniforms[UNIFORM_DIFFUSE_TEX].setValue(diffuseTex); 
-        uniforms[UNIFORM_NORMAL_TEX].setValue(normalTex); 
+        uniforms[UNIFORM_DIFFUSE_TEX].setValue(diffuseTex == null ? defaultDiffuseTex : diffuseTex); 
+        uniforms[UNIFORM_NORMAL_TEX].setValue(normalTex == null ? defaultNormalTex : normalTex); 
         uniforms[UNIFORM_HAS_DIFFUSE_TEX].setValue(diffuseTex == null ? 0 : 1); 
     }
     

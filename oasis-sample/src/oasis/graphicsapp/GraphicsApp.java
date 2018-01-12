@@ -1,29 +1,23 @@
 package oasis.graphicsapp;
 
-import java.util.Random;
-
 import oasis.core.Application;
 import oasis.core.BackendType;
 import oasis.core.Config;
 import oasis.core.Logger;
 import oasis.core.Oasis;
-import oasis.file.GlslParser;
-import oasis.file.ObjImporter;
-import oasis.file.TextureLoader;
+import oasis.core.ResourceManager;
 import oasis.graphics.Camera;
 import oasis.graphics.DirectionalLight;
-import oasis.graphics.FrontFace;
 import oasis.graphics.Graphics;
 import oasis.graphics.GraphicsDevice;
-import oasis.graphics.GraphicsState;
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
 import oasis.graphics.Shader;
+import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.Texture.MagFilter;
-import oasis.graphics.Texture.MinFilter;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
+import oasis.math.Mathf;
 import oasis.math.Matrix4;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
@@ -35,124 +29,100 @@ public class GraphicsApp implements Application {
     
     private int ticks = 0; 
     
-    private Mesh mesh; 
-    private Mesh mesh3; 
-    private Mesh quad; 
-    private Material material; 
-    private Material material2; 
-    private Material grassMat; 
-    private Material quadMat; 
-    private Shader shader; 
-    private Shader quadShader; 
-    private GraphicsState state; 
     private Camera camera; 
-    
-    private Texture2D diffuseTex; 
-    private Texture2D diffuseTex2; 
-    private Texture2D normalTex; 
-    private Texture2D normalTex2; 
-    
     private float yaw, pitch; 
     
-    private boolean[] lights = new boolean[4]; 
+    private Mesh sphereMesh; 
+    private Mesh terrainMesh; 
+    private Material stoneMat; 
+    private Material grassMat; 
+    private Material goldMat; 
+    private Material silverMat; 
+    private Material platinumMat; 
+    private Material bluePlasticMat; 
+    private Material pinkRubberMat; 
+    private Material emeraldMat; 
+    
+    private Vector3 skyColor; 
+    private Vector3 ambientColor; 
+    private DirectionalLight sunLight; 
     
     @Override
     public void init() {
         log.debug("init"); 
         
-        lights[2] = true; 
-        
         Oasis.getDisplay().setResizable(true); 
         
-        state = new GraphicsState(); 
-//        state.setFrontFace(FrontFace.BOTH);
+        sphereMesh = ResourceManager.loadMesh("texture-sphere.obj");
+        terrainMesh = ResourceManager.loadMesh("texture-terrain.obj"); 
         
-        mesh = ObjImporter.load("texture-sphere.obj");
-        mesh.calculateTangents(); 
-        mesh.upload(); 
-//        mesh2 = ObjImporter.load("bunny.obj"); 
-        mesh3 = ObjImporter.load("texture-terrain.obj"); 
-        mesh3.calculateTangents(); 
-        mesh3.upload(); 
+        Shader bbpShader = ResourceManager.loadShader("blinn-phong.glsl"); 
         
-        quad = ObjImporter.load("texture-sphere.obj"); 
-        quad.calculateTangents(); 
-        quad.upload(); 
-//        quad = new Mesh(); 
-//        quad.setPositions(new Vector3[] {
-//                new Vector3(-1, -1, 0), 
-//                new Vector3( 1, -1, 0), 
-//                new Vector3( 1,  1, 0), 
-//                new Vector3(-1,  1, 0) 
-//        });
-//        quad.setNormals(new Vector3[] {
-//                new Vector3(0, 0, 1), 
-//                new Vector3(0, 0, 1), 
-//                new Vector3(0, 0, 1), 
-//                new Vector3(0, 0, 1) 
-//        });
-//        quad.setTexCoords(new Vector2[] {
-//                new Vector2(0, 0), 
-//                new Vector2(1,0), 
-//                new Vector2(1, 1), 
-//                new Vector2(0, 1) 
-//        });
-//        quad.setIndices(0, new short[] {
-//                0, 1, 2, 
-//                0, 2, 3
-//        });
-//        quad.calculateTangents(); 
-//        
-//        quad.upload(); 
+        Texture2D normal = new Texture2D(Texture.Format.RGBA8, 1, 1); 
+        normal.setPixels(0, 0, 1, 1, new int[] { 0x7F7FFFFF }, 0);
+        normal.upload(); 
         
-        String vs = GlslParser.getVertexSource("basic-blinn-phong.glsl"); 
-        String fs = GlslParser.getFragmentSource("basic-blinn-phong.glsl"); 
-        shader = new Shader(vs, fs); 
+        stoneMat = new Material(); 
+        stoneMat.setShader(bbpShader); 
+        stoneMat.setDiffuseColor(new Vector3(0.5f, 0.5f, 0.5f));
+        stoneMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/164_norm.JPG")); 
+        stoneMat.setSpecularColor(new Vector3(0.1f)); 
+        stoneMat.setSpecularPower(20); 
         
-        vs = GlslParser.getVertexSource("texture.glsl"); 
-        fs = GlslParser.getFragmentSource("texture.glsl"); 
-        quadShader = new Shader(vs, fs); 
+        goldMat = new Material(); 
+        goldMat.setShader(bbpShader); 
+        goldMat.setDiffuseColor(new Vector3(0.752f, 0.606f, 0.226f));
+        goldMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/159_norm.JPG")); 
+        goldMat.setSpecularColor(new Vector3(0.628f, 0.556f, 0.366f)); 
+        goldMat.setSpecularPower(128 * 0.4f); 
         
-        diffuseTex = TextureLoader.get("diffuse-and-normals/160.JPG"); 
-        normalTex = TextureLoader.get("diffuse-and-normals/160_norm.JPG"); 
+        platinumMat = new Material(); 
+        platinumMat.setShader(bbpShader); 
+        platinumMat.setDiffuseColor(new Vector3(0.7f, 0.7f, 0.8f));
+        platinumMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/158_norm.JPG")); 
+        platinumMat.setSpecularColor(new Vector3(0.7f)); 
+        platinumMat.setSpecularPower(10); 
         
-        diffuseTex.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
-        diffuseTex.upload(); 
+        silverMat = new Material(); 
+        silverMat.setShader(bbpShader); 
+        silverMat.setDiffuseColor(new Vector3(0.508f, 0.508f, 0.508f));
+        silverMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/160_norm.JPG")); 
+        silverMat.setSpecularColor(new Vector3(0.508f, 0.508f, 0.508f)); 
+        silverMat.setSpecularPower(128 * 0.4f); 
         
-        diffuseTex2 = TextureLoader.get("grass.jpg"); 
-        normalTex2 = TextureLoader.get("test-normal.png"); 
+        bluePlasticMat = new Material(); 
+        bluePlasticMat.setShader(bbpShader); 
+        bluePlasticMat.setDiffuseColor(new Vector3(0.0f, 0.510f, 0.510f));
+        bluePlasticMat.setSpecularColor(new Vector3(0.502f));
+        bluePlasticMat.setSpecularPower(128 * 0.25f);
         
-        diffuseTex2.setMipmapLevels(0); 
-        diffuseTex2.upload(); 
+        pinkRubberMat = new Material(); 
+        pinkRubberMat.setShader(bbpShader); 
+        pinkRubberMat.setDiffuseColor(new Vector3(0.6f, 0.4f, 0.4f));
+        pinkRubberMat.setSpecularColor(new Vector3(0.4f, 0.04f, 0.04f));
+        pinkRubberMat.setSpecularPower(128 * 0.078f);
         
-        quadMat = new Material(); 
-        quadMat.setShader(quadShader); 
-        quadMat.setFrontFace(FrontFace.BOTH);
-        quadMat.setDiffuseTexture(diffuseTex); 
-        
-        material = new Material(); 
-        material.setShader(shader); 
-        material.setDiffuseColor(new Vector3(1)); 
-        material.setSpecularColor(new Vector3(1.0f)); 
-        material.setSpecularPower(200);
-        material.setDiffuseTexture(diffuseTex); 
-        material.setNormalTexture(normalTex); 
-        
-        material2 = new Material(); 
-        material2.setShader(shader); 
-        material2.setDiffuseColor(new Vector3(1.0f, 1.0f, 1.0f).multiply(1f)); 
-        material2.setSpecularColor(new Vector3(0.0f)); 
-        material2.setSpecularPower(20);
-        material2.setDiffuseTexture(diffuseTex2); 
-        material2.setNormalTexture(normalTex2); 
+        emeraldMat = new Material(); 
+        emeraldMat.setShader(bbpShader); 
+        emeraldMat.setDiffuseColor(new Vector3(0.076f, 0.614f, 0.076f)); 
+        emeraldMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/161_norm.JPG")); 
+        emeraldMat.setSpecularColor(new Vector3(0.633f, 0.728f, 0.633f));
+        emeraldMat.setSpecularPower(128 * 0.6f);
         
         grassMat = new Material(); 
-        grassMat.setShader(shader); 
-        grassMat.setDiffuseColor(new Vector3(0.3f, 0.6f, 0.3f)); 
-        grassMat.setSpecularColor(new Vector3(0)); 
+        grassMat.setShader(bbpShader); 
+        grassMat.setDiffuseMap(ResourceManager.loadTexture2D("grass.jpg")); 
         
         camera = new Camera(); 
-        camera.setPosition(new Vector3(0, 3, 0));
+        camera.setPosition(new Vector3(0, 3, 10));
+        camera.setFov(Mathf.toRadians(70.0f)); 
+        
+        skyColor = new Vector3(0.6f, 0.7f, 0.9f); 
+        ambientColor = new Vector3(0.2f); 
+        
+        sunLight = new DirectionalLight(); 
+        sunLight.setColor(new Vector3(0.8f)); 
+        sunLight.setDirection(new Vector3(-2, -10, -5)); 
         
         Oasis.getMouse().setCursorVisible(false); 
         Oasis.getMouse().center(); 
@@ -171,11 +141,6 @@ public class GraphicsApp implements Application {
         Quaternion camRot = camera.getRotation(); 
         
         Vector3 dir = new Vector3(); 
-        
-        if (keys.isKeyJustDown(Keyboard.KEY_Q)) lights[0] = !lights[0]; 
-        if (keys.isKeyJustDown(Keyboard.KEY_W)) lights[1] = !lights[1]; 
-        if (keys.isKeyJustDown(Keyboard.KEY_E)) lights[2] = !lights[2]; 
-        if (keys.isKeyJustDown(Keyboard.KEY_R)) lights[3] = !lights[3]; 
         
         if (keys.isKeyDown(Keyboard.KEY_I)) {
             dir.addSelf(new Vector3(0, 0, -1)); 
@@ -222,47 +187,20 @@ public class GraphicsApp implements Application {
         GraphicsDevice gd = Oasis.getGraphicsDevice(); 
         Graphics g = Oasis.getGraphics(); 
         
-        Vector3 sky = new Vector3(0.6f, 0.7f, 0.9f); 
-        
-        gd.clearBuffers(new Vector4(sky, 1.0f), true); 
-        gd.setState(state); 
+        gd.clearBuffers(new Vector4(skyColor, 1.0f), true); 
         
         g.begin(); 
-        g.addAmbient(new Vector3(0.0f)); //sky.multiply(0.6f)); 
-        
-        DirectionalLight light = new DirectionalLight(); 
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(1).multiply(1)); 
-        light.setDirection(new Vector3(-10, -10, -10).normalize().rotate(Quaternion.axisAngle(new Vector3(0, 1, 0), ticks * 0.0f))); 
-        if (lights[2]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(1, 0, 0)); 
-        light.setDirection(new Vector3(5, -10, 5).normalize()); 
-        if (lights[0]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(0, 1, 0)); 
-        light.setDirection(new Vector3(0, -10, 0).normalize()); 
-        if (lights[1]) g.addLight(light);
-        
-        light = new DirectionalLight(); 
-        light.setColor(new Vector3(0, 0, 1)); 
-        light.setDirection(new Vector3(5, -10, 0).normalize()); 
-        if (lights[3]) g.addLight(light);
+        g.addAmbient(ambientColor); 
+        g.addLight(sunLight); 
         
         g.setCamera(camera); 
         
-        g.drawMesh(mesh3, 0, material2, Matrix4.translation(new Vector3(0, -1, 0))); 
+        g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
         
-        Random r = new Random(1); 
-        for (int i = -5; i < 5; i++) {
-            for (int j = -5; j < 5; j++) {
-                for (int k = -0; k < 1; k++) {
-                    g.drawMesh(quad, 0, material, Matrix4.translation(new Vector3(i * 2, k * 2, j * 2)).multiply(
-                            Matrix4.rotation(Quaternion.axisAngle(new Vector3(r.nextFloat(), r.nextFloat(), r.nextFloat()).normalize(), ticks * 0.01f * 6.28f * r.nextFloat()))));
-                }
-            }
+        Material[] mats = new Material[] { grassMat, bluePlasticMat, pinkRubberMat, stoneMat, silverMat, goldMat, platinumMat, emeraldMat }; 
+        for (int i = 0; i < mats.length; i++) {
+            g.drawMesh(sphereMesh, 0, mats[i], Matrix4.translation(new Vector3(i * 2 - 7, 1, 0)).multiply(
+                    Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
         }
         
         g.finish(); 

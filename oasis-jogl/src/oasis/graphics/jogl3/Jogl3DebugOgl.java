@@ -22,17 +22,14 @@ public class Jogl3DebugOgl implements Ogl {
     }
     
     public void checkError(String desc) {
-//        int err = gl.glGetError(); 
-//        
-//        if (glu == null) glu = new GLU(); 
-//        
-//        if (err != GL.GL_NO_ERROR) {
-//            desc = desc == null ? "" : (" (" + desc + ")"); 
-//            log.warning("GL Error: " + err + desc + " : " + glu.gluErrorString(err));
-//        }
-//        else {
-////            log.debug(desc); 
-//        }
+        int err = gl.glGetError(); 
+        
+        if (glu == null) glu = new GLU(); 
+        
+        if (err != GL.GL_NO_ERROR) {
+            desc = desc == null ? "" : (" (" + desc + ")"); 
+            log.warning("GL Error: " + err + desc + " : " + glu.gluErrorString(err));
+        }
     }
 
     @Override
@@ -366,6 +363,12 @@ public class Jogl3DebugOgl implements Ogl {
     public void glGenerateMipmap(int target) {
         gl.glGenerateMipmap(target);
         checkError("glGenerateMipmap"); 
+    }
+
+    @Override
+    public void glViewport(int x, int y, int w, int h) {
+        gl.glViewport(x, y, w, h); 
+        checkError("glViewport"); 
     }
     
 }

@@ -1265,4 +1265,6 @@ public interface Ogl {
     
     void glGenerateMipmap(int target); 
     
+    void glViewport(int x, int y, int w, int h); 
+    
 }
