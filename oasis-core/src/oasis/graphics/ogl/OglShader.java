@@ -10,7 +10,6 @@ import oasis.graphics.RenderTexture;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
-import oasis.graphics.Uniform;
 import oasis.graphics.internal.InternalShader;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
@@ -167,10 +166,46 @@ public class OglShader implements InternalShader {
                 String realName = new String(name).substring(0, length[0]); 
                 
                 oglUniformValues[i] = new OglUniformValue(
+                        realName, 
                         ogl.glGetUniformLocation(id, realName), 
-                        new Uniform(OglConvert.getUniformType(type[0]), realName), 
+                        Shader.getUniformId(realName), 
+                        OglConvert.getOglUniformType(type[0]), 
                         null
                 ); 
+            }
+        }
+    }
+    
+    private void collectUniforms() {
+        for (int i = 0; i < oglUniformValues.length; i++) {
+            OglUniformValue uv = oglUniformValues[i]; 
+            
+            switch (uv.getType()) {
+            default: 
+                throw new OasisException("Unknown uniform type: " + uv.getType()); 
+            case INT: 
+                uv.setValue(Shader.getInt(uv.getUniformId()));
+                break; 
+            case FLOAT: 
+                uv.setValue(Shader.getFloat(uv.getUniformId()));
+                break; 
+            case VECTOR2: 
+                uv.setValue(Shader.getVector2(uv.getUniformId()));
+                break; 
+            case VECTOR3: 
+                uv.setValue(Shader.getVector3(uv.getUniformId()));
+                break; 
+            case VECTOR4: 
+                uv.setValue(Shader.getVector4(uv.getUniformId()));
+                break; 
+            case MATRIX3: 
+                uv.setValue(Shader.getMatrix3(uv.getUniformId()));
+                break; 
+            case MATRIX4: 
+                uv.setValue(Shader.getMatrix4(uv.getUniformId()));
+                break; 
+            case TEXTURE_2D: 
+                uv.setValue(Shader.getTexture(uv.getUniformId()));
             }
         }
     }
@@ -186,18 +221,19 @@ public class OglShader implements InternalShader {
             int nextTexUnit = 0; 
             Map<Integer, Integer> mappedTextures = new HashMap<>(); 
             
+            collectUniforms(); 
+            
             for (int i = 0; i < oglUniformValues.length; i++) {
-                if (oglUniformValues[i].needsUpdate() || oglUniformValues[i].getUniform().getType() == Uniform.Type.TEXTURE_2D) {
+                if (oglUniformValues[i].needsUpdate() || oglUniformValues[i].getType() == OglUniformType.TEXTURE_2D) {
                     OglUniformValue uv = oglUniformValues[i]; 
                     int location = uv.getLocation(); 
-                    Uniform u = uv.getUniform(); 
                     Object v = uv.getValue(); 
                     
-//                    log.debug("Setting uniform: " + u.getName() + ", " + location); 
+//                    log.debug("Setting uniform: " + uv.getName() + ", " + location + ", " + uv.getUniformId()); 
                     
-                    switch (u.getType()) {
+                    switch (uv.getType()) {
                     default: 
-                        throw new OasisException("Unknown uniform type: " + u.getType()); 
+                        throw new OasisException("Unknown uniform type: " + uv.getType()); 
                     case INT: 
                         Integer integer = (Integer) v; 
 //                        log.debug("Integer: " + integer); 
@@ -264,6 +300,7 @@ public class OglShader implements InternalShader {
                         
                         if (texture == null) {
                             ogl.glUniform1i(location, 0); 
+                            break; 
                         }
                         
                         switch (texture.getType()) {
@@ -342,13 +379,6 @@ public class OglShader implements InternalShader {
     public String getErrorMessage() {
         compileAndLink(); 
         return error; 
-    }
-
-    @Override
-    public oasis.graphics.UniformValue[] getUniformValues() {
-        findUniforms(); 
-        
-        return oglUniformValues.clone();
     }
 
 }

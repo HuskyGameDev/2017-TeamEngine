@@ -11,7 +11,6 @@ import oasis.graphics.Texture.Format;
 import oasis.graphics.Texture.MagFilter;
 import oasis.graphics.Texture.MinFilter;
 import oasis.graphics.Texture.WrapMode;
-import oasis.graphics.Uniform;
 
 public class OglConvert {
 
@@ -81,26 +80,26 @@ public class OglConvert {
         }
     }
 
-    public static Uniform.Type getUniformType(int type) {
+    public static OglUniformType getOglUniformType(int type) {
         switch (type) {
         default: 
-            return Uniform.Type.UNKNOWN; 
+            return OglUniformType.UNKNOWN; 
         case Ogl.GL_SAMPLER_2D: 
-            return Uniform.Type.TEXTURE_2D; 
+            return OglUniformType.TEXTURE_2D; 
         case Ogl.GL_INT: 
-            return Uniform.Type.INT; 
+            return OglUniformType.INT; 
         case Ogl.GL_FLOAT: 
-            return Uniform.Type.FLOAT; 
+            return OglUniformType.FLOAT; 
         case Ogl.GL_FLOAT_VEC2: 
-            return Uniform.Type.VECTOR2; 
+            return OglUniformType.VECTOR2; 
         case Ogl.GL_FLOAT_VEC3: 
-            return Uniform.Type.VECTOR3; 
+            return OglUniformType.VECTOR3; 
         case Ogl.GL_FLOAT_VEC4: 
-            return Uniform.Type.VECTOR4; 
+            return OglUniformType.VECTOR4; 
         case Ogl.GL_FLOAT_MAT3: 
-            return Uniform.Type.MATRIX3; 
+            return OglUniformType.MATRIX3; 
         case Ogl.GL_FLOAT_MAT4: 
-            return Uniform.Type.MATRIX4; 
+            return OglUniformType.MATRIX4; 
         }
     }
 

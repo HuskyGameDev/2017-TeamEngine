@@ -1,19 +1,20 @@
 package oasis.graphics.ogl;
 
-import oasis.graphics.Uniform;
-import oasis.graphics.UniformValue;
-
-public class OglUniformValue implements UniformValue {
+public class OglUniformValue {
 
     private int location; 
-    private Uniform uniform; 
+    private int uniformId; 
+    private OglUniformType type; 
     private Object value; 
     private boolean needsUpdate; 
+    private String name; 
     
-    public OglUniformValue(int location, Uniform uniform, Object value) {
-        this.uniform = uniform; 
+    public OglUniformValue(String name, int location, int uniformId, OglUniformType type, Object value) {
+        this.name = name; 
+        this.type = type; 
         this.value = value; 
         this.location = location; 
+        this.uniformId = uniformId; 
         this.needsUpdate = true; 
     }
     
@@ -25,8 +26,16 @@ public class OglUniformValue implements UniformValue {
         return location; 
     }
     
-    public Uniform getUniform() {
-        return uniform; 
+    protected int getUniformId() {
+        return uniformId; 
+    }
+    
+    public String getName() {
+        return name; 
+    }
+    
+    public OglUniformType getType() {
+        return type; 
     }
     
     public Object getValue() {
@@ -49,7 +58,6 @@ public class OglUniformValue implements UniformValue {
         needsUpdate = false; 
     }
 
-    @Override
     public void clear() {
         setValue(null); 
     }
