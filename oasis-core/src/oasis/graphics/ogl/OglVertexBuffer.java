@@ -2,10 +2,10 @@ package oasis.graphics.ogl;
 
 import java.nio.Buffer;
 
-import oasis.graphics.NativeResource;
 import oasis.graphics.VertexBuffer;
+import oasis.graphics.internal.InternalBuffer;
 
-public class OglVertexBuffer implements NativeResource {
+public class OglVertexBuffer implements InternalBuffer {
 
     public static final int TYPE = Ogl.GL_ARRAY_BUFFER; 
     
@@ -47,7 +47,7 @@ public class OglVertexBuffer implements NativeResource {
     }
 
     @Override
-    public void update() {
+    public void uploadBuffer() {
         boolean alreadyExist = validate(ogl); 
         
         int usage = OglConvert.getBufferUsage(vb.getUsage()); 

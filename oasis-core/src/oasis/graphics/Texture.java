@@ -1,6 +1,8 @@
 package oasis.graphics;
 
-public abstract class Texture extends GraphicsResource<NativeTextureResource> {
+import oasis.graphics.internal.InternalTexture;
+
+public abstract class Texture<T extends InternalTexture> extends GraphicsResource<T> {
 
     /**
      * Pixel format 
@@ -199,7 +201,6 @@ public abstract class Texture extends GraphicsResource<NativeTextureResource> {
     private WrapMode wrapV = WrapMode.REPEAT; 
     private int levels = 4; 
     
-    protected boolean needsUpdate = true; 
     protected boolean needsParamUpdate = true; 
     
     public Texture(Format format, int width, int height) {
@@ -209,13 +210,8 @@ public abstract class Texture extends GraphicsResource<NativeTextureResource> {
     }
     
     public void upload() {
-        if (needsUpdate) {
-            super.upload(); 
-            needsUpdate = false; 
-            needsParamUpdate = false; 
-        }
-        else if (needsParamUpdate) {
-            getNativeResource().updateParams(); 
+        if (needsParamUpdate) {
+            internal.updateParams(); 
             needsParamUpdate = false; 
         }
     }

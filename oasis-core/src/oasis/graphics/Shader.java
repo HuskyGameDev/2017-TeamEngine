@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import oasis.core.Oasis;
+import oasis.graphics.internal.InternalShader;
 
-public class Shader extends GraphicsResource<NativeShaderResource> {
+public class Shader extends GraphicsResource<InternalShader> {
 
     private String vs; 
     private String fs; 
@@ -19,16 +20,12 @@ public class Shader extends GraphicsResource<NativeShaderResource> {
         this.vs = vs; 
         this.fs = fs; 
         
-        Oasis.getGraphicsDevice().assignNativeResource(this); 
-    }
-    
-    public Type getResourceType() {
-        return Type.SHADER;  
+        Oasis.getGraphicsDevice().requestInternalShader(this); 
     }
     
     private void checkResources() {
         if (!isCompiled) {
-            uniformValues = getNativeResource().getUniformValues(); 
+            uniformValues = getInternalResource().getUniformValues(); 
             
             uniforms = new Uniform[uniformValues.length]; 
             uniformMap = new HashMap<>(); 
@@ -42,16 +39,16 @@ public class Shader extends GraphicsResource<NativeShaderResource> {
     }
     
     public void upload() {
-        super.upload(); 
         checkResources(); 
+        internal.uploadUniforms(); 
     }
     
     public boolean isValid() {
-        return getNativeResource().isValid(); 
+        return getInternalResource().isValid(); 
     }
     
     public String getErrorMessage() {
-        return getNativeResource().getErrorMessage(); 
+        return getInternalResource().getErrorMessage(); 
     }
     
     public Uniform[] getUniforms() {

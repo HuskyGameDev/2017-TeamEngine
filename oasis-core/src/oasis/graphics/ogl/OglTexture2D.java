@@ -2,10 +2,10 @@ package oasis.graphics.ogl;
 
 import java.nio.Buffer;
 
-import oasis.graphics.NativeTextureResource;
 import oasis.graphics.Texture2D;
+import oasis.graphics.internal.InternalTexture2D;
 
-public class OglTexture2D implements NativeTextureResource {
+public class OglTexture2D implements InternalTexture2D {
 
     private Ogl ogl; 
     
@@ -40,7 +40,7 @@ public class OglTexture2D implements NativeTextureResource {
     }
     
     @Override
-    public void update() {
+    public void uploadPixelBuffer() {
         validate(); 
         
         // TODO check for subimage

@@ -4,8 +4,9 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
 import oasis.core.Oasis;
+import oasis.graphics.internal.InternalBuffer;
 
-public class VertexBuffer extends GraphicsResource<NativeResource> {
+public class VertexBuffer extends GraphicsResource<InternalBuffer> {
     
     private VertexFormat format; 
     private BufferUsage usage; 
@@ -18,12 +19,12 @@ public class VertexBuffer extends GraphicsResource<NativeResource> {
         this.size = vertices * format.getFloatsPerElement(); 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 4).asFloatBuffer(); 
-        Oasis.getGraphicsDevice().assignNativeResource(this); 
+        Oasis.getGraphicsDevice().requestInternalVertexBuffer(this); 
     }
 
     public void upload() {
         if (needsUpdate) {
-            super.upload(); 
+            internal.uploadBuffer(); 
             needsUpdate = false; 
         }
     }
@@ -37,10 +38,6 @@ public class VertexBuffer extends GraphicsResource<NativeResource> {
         buffer.position(getSizeInFloats()); 
         buffer.flip(); 
         return buffer; 
-    }
-    
-    public Type getResourceType() {
-        return Type.TEXTURE_2D; 
     }
     
     public VertexFormat getFormat() {

@@ -6,12 +6,12 @@ import java.util.List;
 import oasis.graphics.Attribute;
 import oasis.graphics.Geometry;
 import oasis.graphics.IndexBuffer;
-import oasis.graphics.NativeResource;
 import oasis.graphics.VertexBuffer;
 import oasis.graphics.VertexFormat;
+import oasis.graphics.internal.InternalGeometry;
 
 // TODO implement VAO
-public class OglGeometry implements NativeResource {
+public class OglGeometry implements InternalGeometry {
 
     private Ogl ogl;
     
@@ -24,7 +24,7 @@ public class OglGeometry implements NativeResource {
         this.geom = geom; 
     }
 
-    public void setBuffers() {
+    public void bindBuffers() {
         Attribute[] attribs = Attribute.values();
         int attribCount = attribs.length;
 
@@ -42,7 +42,7 @@ public class OglGeometry implements NativeResource {
                 ogl.glEnableVertexAttribArray(i);
 
                 VertexBuffer vb = vbs.get(attribIds[i]); 
-                OglVertexBuffer hb = (OglVertexBuffer) vb.getNativeResource();
+                OglVertexBuffer hb = (OglVertexBuffer) vb.getInternalResource();
 
                 // log.debug("Bind VertexBuffer: " + vb.getId());
                 ogl.glBindBuffer(Ogl.GL_ARRAY_BUFFER, hb.getId());
@@ -57,7 +57,7 @@ public class OglGeometry implements NativeResource {
         }
 
         if (ib != null) {
-            OglIndexBuffer hb = (OglIndexBuffer) ib.getNativeResource();
+            OglIndexBuffer hb = (OglIndexBuffer) ib.getInternalResource();
 
             // log.debug("Bind IndexBuffer: " + ib.getId());
             ogl.glBindBuffer(Ogl.GL_ELEMENT_ARRAY_BUFFER, hb.getId());
@@ -98,7 +98,7 @@ public class OglGeometry implements NativeResource {
     }
 
     @Override
-    public void update() {
+    public void setBuffers() {
         this.ib = geom.getIndexBuffer(); 
         vbs.clear(); 
         for (int i = 0; i < geom.getVertexBufferCount(); i++) {

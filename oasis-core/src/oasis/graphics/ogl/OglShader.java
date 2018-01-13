@@ -6,17 +6,17 @@ import java.util.Map;
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
-import oasis.graphics.NativeShaderResource;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
 import oasis.graphics.Uniform;
+import oasis.graphics.internal.InternalShader;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-public class OglShader implements NativeShaderResource {
+public class OglShader implements InternalShader {
 
     private static final Logger log = new Logger(OglShader.class); 
     
@@ -171,7 +171,7 @@ public class OglShader implements NativeShaderResource {
         }
     }
     
-    private void upload() {
+    public void uploadUniforms() {
         compileAndLink(); 
         
         if (isValid()) {
@@ -259,7 +259,7 @@ public class OglShader implements NativeShaderResource {
                         Texture2D tex = (Texture2D) v; 
                         
                         if (tex != null) {
-                            OglTexture2D glTex = (OglTexture2D) tex.getNativeResource(); 
+                            OglTexture2D glTex = (OglTexture2D) tex.getInternalResource(); 
                             int id = glTex.getId(); 
                             Integer unit = mappedTextures.get(id); 
                             if (unit == null) {
@@ -311,11 +311,6 @@ public class OglShader implements NativeShaderResource {
         findUniforms(); 
         
         return oglUniformValues.clone();
-    }
-
-    @Override
-    public void update() {
-        upload(); 
     }
 
 }

@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oasis.core.Oasis;
+import oasis.graphics.internal.InternalGeometry;
 
-public class Geometry extends GraphicsResource<NativeResource> {
+public class Geometry extends GraphicsResource<InternalGeometry> {
 
     private Primitive primitive = Primitive.TRIANGLE_LIST; 
     private IndexBuffer ib; 
     private List<VertexBuffer> vbs = new ArrayList<>(); 
     
     public Geometry() {
-        Oasis.getGraphicsDevice().assignNativeResource(this); 
+        Oasis.getGraphicsDevice().requestInternalGeometry(this); 
     }
     
-    public Type getResourceType() {
-        return Type.GEOMETRY; 
+    public void upload() {
+        internal.setBuffers(); 
     }
     
     public boolean isValid() {

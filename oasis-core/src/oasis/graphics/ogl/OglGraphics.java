@@ -51,28 +51,28 @@ public class OglGraphics implements GraphicsDevice {
 
 
     @Override
-    public void assignNativeResource(VertexBuffer vb) {
-        vb.setNativeResource(new OglVertexBuffer(ogl, vb)); 
+    public void requestInternalVertexBuffer(VertexBuffer vb) {
+        vb.setInternalResource(new OglVertexBuffer(ogl, vb)); 
     }
 
     @Override
-    public void assignNativeResource(IndexBuffer ib) {
-        ib.setNativeResource(new OglIndexBuffer(ogl, ib)); 
+    public void requestInternalIndexBuffer(IndexBuffer ib) {
+        ib.setInternalResource(new OglIndexBuffer(ogl, ib)); 
     }
 
     @Override
-    public void assignNativeResource(Geometry g) {
-        g.setNativeResource(new OglGeometry(ogl, g)); 
+    public void requestInternalGeometry(Geometry g) {
+        g.setInternalResource(new OglGeometry(ogl, g)); 
     }
 
     @Override
-    public void assignNativeResource(Shader s) {
-        s.setNativeResource(new OglShader(ogl, s)); 
+    public void requestInternalShader(Shader s) {
+        s.setInternalResource(new OglShader(ogl, s)); 
     }
 
     @Override
-    public void assignNativeResource(Texture2D t) {
-        t.setNativeResource(new OglTexture2D(ogl, t)); 
+    public void requestInternalTexture2D(Texture2D t) {
+        t.setInternalResource(new OglTexture2D(ogl, t)); 
     }
 
     @Override
@@ -81,8 +81,8 @@ public class OglGraphics implements GraphicsDevice {
             curShader = null; 
         }
         else {
-            curShader = (OglShader) s.getNativeResource(); 
-            curShader.update(); 
+            curShader = (OglShader) s.getInternalResource(); 
+            curShader.uploadUniforms(); 
         }
     }
     
@@ -99,10 +99,10 @@ public class OglGraphics implements GraphicsDevice {
         }
         
         OglShader.bind(ogl, curShader); 
-        curShader.update(); 
+        curShader.uploadUniforms(); 
         
-        OglGeometry geom = (OglGeometry) g.getNativeResource(); 
-        geom.setBuffers(); 
+        OglGeometry geom = (OglGeometry) g.getInternalResource(); 
+        geom.bindBuffers(); 
         int prim = OglConvert.getPrimitive(g.getPrimitive()); 
         int size; 
         

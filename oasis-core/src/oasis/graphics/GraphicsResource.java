@@ -1,51 +1,33 @@
 package oasis.graphics;
 
 import oasis.core.OasisException;
+import oasis.graphics.internal.InternalResource;
 
-public abstract class GraphicsResource<T extends NativeResource> {
+public abstract class GraphicsResource<T extends InternalResource> {
 
-    public enum Type {
-        
-        VERTEX_BUFFER, 
-        
-        INDEX_BUFFER, 
-        
-        GEOMETRY, 
-        
-        SHADER, 
-        
-        TEXTURE_2D; 
-        
+    protected T internal = null; 
+    
+    protected void onAddInternalResource() {}
+    
+    protected void onRemoveInternalResource() {} 
+    
+    public final T getInternalResource() {
+        return internal; 
     }
     
-    private T nativeRes = null; 
-    
-    public abstract Type getResourceType(); 
-    
-    public final T getNativeResource() {
-        return nativeRes; 
-    }
-    
-    public final void setNativeResource(T res) {
-        if (nativeRes != null) {
-            throw new OasisException("Resource already has a native counterpart"); 
-        }
+    public final void setInternalResource(T res) {
+        if (internal != null) onRemoveInternalResource(); 
         
-        nativeRes = res; 
-    }
-    
-    public void upload() {
-        if (nativeRes == null) {
-            throw new OasisException("Resource cannot upload data because there is no native resource associated with it"); 
-        }
-        nativeRes.update(); 
+        internal = res; 
+        
+        onAddInternalResource(); 
     }
     
     public void release() {
-        if (nativeRes == null) {
+        if (internal == null) {
             throw new OasisException("Resource cannot be released because there is no native resource associated with it"); 
         }
-        nativeRes.release(); 
+        internal.release(); 
     }
     
 }

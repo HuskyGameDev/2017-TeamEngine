@@ -3,9 +3,9 @@ package oasis.graphics.ogl;
 import java.nio.Buffer;
 
 import oasis.graphics.IndexBuffer;
-import oasis.graphics.NativeResource;
+import oasis.graphics.internal.InternalBuffer;
 
-public class OglIndexBuffer implements NativeResource {
+public class OglIndexBuffer implements InternalBuffer {
 
     public static final int TYPE = Ogl.GL_ELEMENT_ARRAY_BUFFER; 
     
@@ -47,7 +47,7 @@ public class OglIndexBuffer implements NativeResource {
     }
 
     @Override
-    public void update() {
+    public void uploadBuffer() {
         boolean alreadyExist = validate(ogl); 
         
         int usage = OglConvert.getBufferUsage(ib.getUsage()); 

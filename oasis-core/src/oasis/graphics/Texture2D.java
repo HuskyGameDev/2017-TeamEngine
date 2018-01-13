@@ -4,20 +4,27 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import oasis.core.Oasis;
+import oasis.graphics.internal.InternalTexture2D;
 
-public class Texture2D extends Texture {
+public class Texture2D extends Texture<InternalTexture2D> {
 
     private ByteBuffer buffer; 
+    
+    private boolean needsUpdate = true; 
     
     public Texture2D(Format format, int width, int height) {
         super(format, width, height); 
         
         buffer = Oasis.getDirectBufferAllocator().allocate(getSizeInBytes()); 
-        Oasis.getGraphicsDevice().assignNativeResource(this); 
+        Oasis.getGraphicsDevice().requestInternalTexture2D(this); 
     }
     
-    public GraphicsResource.Type getResourceType() {
-        return GraphicsResource.Type.TEXTURE_2D; 
+    @Override
+    public void upload() {
+        if (needsUpdate) {
+            internal.uploadPixelBuffer(); 
+        }
+        super.upload(); 
     }
     
     public Buffer getAndFlipBuffer() {

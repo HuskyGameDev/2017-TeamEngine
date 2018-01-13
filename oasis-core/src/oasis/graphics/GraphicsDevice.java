@@ -8,15 +8,15 @@ public interface GraphicsDevice {
 
     void postRender();
 
-    void assignNativeResource(VertexBuffer vb); 
+    void requestInternalVertexBuffer(VertexBuffer vb); 
     
-    void assignNativeResource(IndexBuffer ib); 
+    void requestInternalIndexBuffer(IndexBuffer ib); 
     
-    void assignNativeResource(Geometry g); 
+    void requestInternalGeometry(Geometry g); 
     
-    void assignNativeResource(Shader s); 
+    void requestInternalShader(Shader s); 
     
-    void assignNativeResource(Texture2D t); 
+    void requestInternalTexture2D(Texture2D t); 
     
     void clearBuffers(Vector4 color, boolean depth); 
     
