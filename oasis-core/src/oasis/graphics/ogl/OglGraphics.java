@@ -13,7 +13,7 @@ import oasis.graphics.Texture2D;
 import oasis.graphics.VertexBuffer;
 import oasis.math.Vector4;
 
-public class OglGraphics implements GraphicsDevice {
+public class OglGraphics extends GraphicsDevice {
 
     private Ogl ogl; 
     
@@ -26,6 +26,26 @@ public class OglGraphics implements GraphicsDevice {
         this.ogl = ogl; 
     }
 
+    protected int getVertexBufferId(VertexBuffer vb) {
+        return ((OglVertexBuffer) getInternal(vb)).getId(); 
+    }
+    
+    protected int getIndexBufferId(IndexBuffer vb) {
+        return ((OglIndexBuffer) getInternal(vb)).getId(); 
+    }
+    
+    protected int getTextureId(Texture2D t) {
+        return ((OglTexture2D) getInternal(t)).getId(); 
+    }
+    
+    protected int getTextureId(RenderTexture t) {
+        return ((OglRenderTexture) getInternal(t)).getTextureId(); 
+    }
+
+    protected int getFboId(RenderTexture t) {
+        return ((OglRenderTexture) getInternal(t)).getFboId(); 
+    }
+    
     @Override
     public void preRender() {
         ogl.glClearColor(0.7f, 0.8f, 1.0f, 0.0f); 
@@ -52,33 +72,33 @@ public class OglGraphics implements GraphicsDevice {
 
 
     @Override
-    public void requestInternal(VertexBuffer vb) {
-        vb.setInternalResource(new OglVertexBuffer(ogl, vb)); 
+    public void linkInternal(VertexBuffer vb) {
+        linkInternal(vb, new OglVertexBuffer(ogl, vb)); 
     }
 
     @Override
-    public void requestInternal(IndexBuffer ib) {
-        ib.setInternalResource(new OglIndexBuffer(ogl, ib)); 
+    public void linkInternal(IndexBuffer ib) {
+        linkInternal(ib, new OglIndexBuffer(ogl, ib)); 
     }
 
     @Override
-    public void requestInternal(Geometry g) {
-        g.setInternalResource(new OglGeometry(ogl, g)); 
+    public void linkInternal(Geometry g) {
+        linkInternal(g, new OglGeometry(ogl, this, g)); 
     }
 
     @Override
-    public void requestInternal(Shader s) {
-        s.setInternalResource(new OglShader(ogl, s)); 
+    public void linkInternal(Shader s) {
+        linkInternal(s, new OglShader(ogl, this, s)); 
     }
 
     @Override
-    public void requestInternal(Texture2D t) {
-        t.setInternalResource(new OglTexture2D(ogl, t)); 
+    public void linkInternal(Texture2D t) {
+        linkInternal(t, new OglTexture2D(ogl, t)); 
     }
     
     @Override
-    public void requestInternal(RenderTexture t) {
-        t.setInternalResource(new OglRenderTexture(ogl, t)); 
+    public void linkInternal(RenderTexture t) {
+        linkInternal(t, new OglRenderTexture(ogl, t)); 
     }
 
     @Override
@@ -87,7 +107,7 @@ public class OglGraphics implements GraphicsDevice {
             curShader = null; 
         }
         else {
-            curShader = (OglShader) s.getInternalResource(); 
+            curShader = (OglShader) getInternal(s); 
             curShader.uploadUniforms(); 
         }
     }
@@ -107,7 +127,7 @@ public class OglGraphics implements GraphicsDevice {
         OglShader.bind(ogl, curShader); 
         curShader.uploadUniforms(); 
         
-        OglGeometry geom = (OglGeometry) g.getInternalResource(); 
+        OglGeometry geom = (OglGeometry) getInternal(g); 
         geom.bindBuffers(); 
         int prim = OglConvert.getPrimitive(g.getPrimitive()); 
         int size; 
@@ -178,7 +198,7 @@ public class OglGraphics implements GraphicsDevice {
             ogl.glViewport(0, 0, Oasis.getDisplay().getWidth(), Oasis.getDisplay().getHeight()); 
         }
         else {
-            OglRenderTexture glRt = (OglRenderTexture) rt.getInternalResource(); 
+            OglRenderTexture glRt = (OglRenderTexture) getInternal(rt); 
             
             int fbo = glRt.getFboId(); 
             

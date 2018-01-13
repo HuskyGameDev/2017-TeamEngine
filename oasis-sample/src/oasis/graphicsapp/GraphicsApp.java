@@ -81,7 +81,7 @@ public class GraphicsApp implements Application {
         goldMat = new Material(); 
         goldMat.setShader(bbpShader); 
         goldMat.setDiffuseColor(new Vector3(0.752f, 0.606f, 0.226f));
-        goldMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/159_norm.JPG")); 
+        goldMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/160_norm.JPG")); 
         goldMat.setSpecularColor(new Vector3(0.628f, 0.556f, 0.366f)); 
         goldMat.setSpecularPower(128 * 0.4f); 
         
@@ -95,7 +95,7 @@ public class GraphicsApp implements Application {
         silverMat = new Material(); 
         silverMat.setShader(bbpShader); 
         silverMat.setDiffuseColor(new Vector3(0.608f, 0.608f, 0.608f));
-        silverMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/160_norm.JPG")); 
+        silverMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/170_norm.JPG")); 
         silverMat.setSpecularColor(new Vector3(0.508f, 0.508f, 0.508f)); 
         silverMat.setSpecularPower(128 * 0.4f); 
         

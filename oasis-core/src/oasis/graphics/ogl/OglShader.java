@@ -26,18 +26,20 @@ public class OglShader implements InternalShader {
     
     private String vs, fs; 
     private Ogl ogl; 
+    private OglGraphics graphics; 
     private int id;
     private boolean valid = false; 
     private boolean compiled = false; 
     private String error = ""; 
     
-    private Shader shader; 
+//    private Shader shader; 
     
     private boolean foundUniforms = false; 
     private OglUniformValue[] oglUniformValues; 
     
-    public OglShader(Ogl ogl, Shader shader) {
-        this.shader = shader; 
+    public OglShader(Ogl ogl, OglGraphics graphics, Shader shader) {
+//        this.shader = shader; 
+        this.graphics = graphics; 
         this.vs = shader.getVertexSource(); 
         this.fs = shader.getFragmentSource(); 
         this.ogl = ogl; 
@@ -271,9 +273,7 @@ public class OglShader implements InternalShader {
                             RenderTexture rt = (RenderTexture) texture; 
                             
                             if (rt != null) {
-                                OglRenderTexture glRt = (OglRenderTexture) rt.getInternalResource(); 
-                                
-                                int id = glRt.getTextureId(); 
+                                int id = graphics.getTextureId(rt); 
                                 
                                 Integer unit = mappedTextures.get(id); 
                                 if (unit == null) {
@@ -287,22 +287,21 @@ public class OglShader implements InternalShader {
                                     ogl.glUniform1i(location, unit.intValue()); 
                                 }
                             }
-                            else {
-                                ogl.glUniform1i(location, 0); 
-                            }
+//                            else {
+//                                ogl.glUniform1i(location, 0); 
+//                            }
                             
                             break; 
                         case TEXTURE_2D: 
                             Texture2D tex = (Texture2D) texture; 
                             
                             if (tex != null) {
-                                OglTexture2D glTex = (OglTexture2D) tex.getInternalResource(); 
-                                int id = glTex.getId(); 
+                                int id = graphics.getTextureId(tex); 
                                 Integer unit = mappedTextures.get(id); 
                                 if (unit == null) {
     //                                log.debug("Binding " + id + " to " + nextTexUnit + " for " + u.getName()); 
                                     ogl.glActiveTexture(Ogl.GL_TEXTURE0 + nextTexUnit);
-                                    ogl.glBindTexture(Ogl.GL_TEXTURE_2D, glTex.getId()); 
+                                    ogl.glBindTexture(Ogl.GL_TEXTURE_2D, id); 
                                     ogl.glUniform1i(location, nextTexUnit); 
                                     mappedTextures.put(id, nextTexUnit++); 
                                 }
@@ -310,10 +309,10 @@ public class OglShader implements InternalShader {
                                     ogl.glUniform1i(location, unit.intValue()); 
                                 }
                             }
-                            else {
-    //                            log.debug("null texture, should bind a blank texture?");
-                                ogl.glUniform1i(location, 0); 
-                            }
+//                            else {
+//    //                            log.debug("null texture, should bind a blank texture?");
+//                                ogl.glUniform1i(location, 0); 
+//                            }
                             break; 
                         }
                         

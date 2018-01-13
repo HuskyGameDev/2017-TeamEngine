@@ -7,11 +7,13 @@ import oasis.core.Oasis;
 import oasis.core.OasisException;
 import oasis.graphics.internal.InternalTexture2D;
 
-public class Texture2D extends Texture<InternalTexture2D> {
+public class Texture2D extends Texture {
 
     private ByteBuffer buffer; 
     
     private boolean needsUpdate = true; 
+    
+    private InternalTexture2D internal; 
     
     public Texture2D(Format format, int width, int height) {
         super(format, width, height); 
@@ -21,15 +23,32 @@ public class Texture2D extends Texture<InternalTexture2D> {
         }
         
         buffer = Oasis.getDirectBufferAllocator().allocate(getSizeInBytes()); 
-        Oasis.getGraphicsDevice().requestInternal(this); 
+        Oasis.getGraphicsDevice().linkInternal(this); 
     }
     
-    @Override
+    void setInternal(InternalTexture2D internal) {
+        this.internal = internal; 
+    }
+    
+    InternalTexture2D getInternal() {
+        return internal; 
+    }
+    
     public void upload() {
         if (needsUpdate) {
-            internal.uploadPixelBuffer(); 
+            internal.uploadPixelBuffer();
+            needsUpdate = false; 
         }
-        super.upload(); 
+        if (needsParamUpdate) {
+            internal.updateParams();
+            needsParamUpdate = false; 
+        }
+    }
+    
+    public void release() {
+        internal.release(); 
+        needsUpdate = true; 
+        needsParamUpdate = true; 
     }
     
     public Type getType() {
@@ -40,12 +59,6 @@ public class Texture2D extends Texture<InternalTexture2D> {
         buffer.position(getWidth() * getHeight() * 4); 
         buffer.flip(); 
         return buffer; 
-    }
-    
-    public void release() {
-        super.release(); 
-        needsUpdate = true; 
-        needsParamUpdate = true; 
     }
     
     public int getSizeInBytes() {
@@ -75,5 +88,5 @@ public class Texture2D extends Texture<InternalTexture2D> {
         
         needsUpdate = true; 
     }
-    
+
 }

@@ -6,7 +6,7 @@ import java.nio.ShortBuffer;
 import oasis.core.Oasis;
 import oasis.graphics.internal.InternalBuffer;
 
-public class IndexBuffer extends GraphicsResource<InternalBuffer> {
+public class IndexBuffer {
 
     private ShortBuffer buffer; 
     private int size;
@@ -14,11 +14,26 @@ public class IndexBuffer extends GraphicsResource<InternalBuffer> {
     
     private boolean needsUpdate = true; 
     
+    private InternalBuffer internal; 
+    
     public IndexBuffer(int indices, BufferUsage usage) {
         this.size = indices; 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 2).asShortBuffer(); 
-        Oasis.getGraphicsDevice().requestInternal(this); 
+        Oasis.getGraphicsDevice().linkInternal(this); 
+    }
+    
+    void setInternal(InternalBuffer internal) {
+        this.internal = internal; 
+    }
+    
+    InternalBuffer getInternal() {
+        return internal; 
+    }
+
+    public void release() {
+        internal.release(); 
+        needsUpdate = true; 
     }
     
     public void upload() {
@@ -28,11 +43,6 @@ public class IndexBuffer extends GraphicsResource<InternalBuffer> {
         }
     }
     
-    public void release() {
-        super.release(); 
-        needsUpdate = true; 
-    }
-
     public Buffer getAndFlipBuffer() {
         buffer.position(getSizeInShorts()); 
         buffer.flip(); 
@@ -75,5 +85,5 @@ public class IndexBuffer extends GraphicsResource<InternalBuffer> {
         
         needsUpdate = true; 
     }
-    
+
 }

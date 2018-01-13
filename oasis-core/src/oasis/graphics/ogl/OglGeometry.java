@@ -14,14 +14,16 @@ import oasis.graphics.internal.InternalGeometry;
 public class OglGeometry implements InternalGeometry {
 
     private Ogl ogl;
+    private OglGraphics graphics; 
     
     private Geometry geom; 
     private IndexBuffer ib; 
     private List<VertexBuffer> vbs = new ArrayList<>(); 
 
-    public OglGeometry(Ogl ogl, Geometry geom) {
+    public OglGeometry(Ogl ogl, OglGraphics graphics, Geometry geom) {
         this.ogl = ogl; 
         this.geom = geom; 
+        this.graphics = graphics; 
     }
 
     public void bindBuffers() {
@@ -42,10 +44,9 @@ public class OglGeometry implements InternalGeometry {
                 ogl.glEnableVertexAttribArray(i);
 
                 VertexBuffer vb = vbs.get(attribIds[i]); 
-                OglVertexBuffer hb = (OglVertexBuffer) vb.getInternalResource();
 
                 // log.debug("Bind VertexBuffer: " + vb.getId());
-                ogl.glBindBuffer(Ogl.GL_ARRAY_BUFFER, hb.getId());
+                ogl.glBindBuffer(Ogl.GL_ARRAY_BUFFER, graphics.getVertexBufferId(vb));
 
                 VertexFormat format = vb.getFormat();
                 // log.debug("Attrib pointer: " + i + ", " +
@@ -57,10 +58,8 @@ public class OglGeometry implements InternalGeometry {
         }
 
         if (ib != null) {
-            OglIndexBuffer hb = (OglIndexBuffer) ib.getInternalResource();
-
             // log.debug("Bind IndexBuffer: " + ib.getId());
-            ogl.glBindBuffer(Ogl.GL_ELEMENT_ARRAY_BUFFER, hb.getId());
+            ogl.glBindBuffer(Ogl.GL_ELEMENT_ARRAY_BUFFER, graphics.getIndexBufferId(ib));
         }
     }
 

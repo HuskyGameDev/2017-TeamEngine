@@ -6,14 +6,28 @@ import java.util.List;
 import oasis.core.Oasis;
 import oasis.graphics.internal.InternalGeometry;
 
-public class Geometry extends GraphicsResource<InternalGeometry> {
+public class Geometry {
 
     private Primitive primitive = Primitive.TRIANGLE_LIST; 
     private IndexBuffer ib; 
     private List<VertexBuffer> vbs = new ArrayList<>(); 
+
+    private InternalGeometry internal; 
     
     public Geometry() {
-        Oasis.getGraphicsDevice().requestInternal(this); 
+        Oasis.getGraphicsDevice().linkInternal(this); 
+    }
+    
+    void setInternal(InternalGeometry internal) {
+        this.internal = internal; 
+    }
+    
+    InternalGeometry getInternal() {
+        return internal; 
+    }
+    
+    public void release() {
+        internal.release(); 
     }
     
     public void upload() {
@@ -69,5 +83,5 @@ public class Geometry extends GraphicsResource<InternalGeometry> {
             }
         }
     }
-    
+
 }

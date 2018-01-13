@@ -4,14 +4,16 @@ import oasis.core.Oasis;
 import oasis.core.OasisException;
 import oasis.graphics.internal.InternalRenderTexture;
 
-public class RenderTexture extends Texture<InternalRenderTexture> {
+public class RenderTexture extends Texture {
 
     private Texture.Format depthFormat; 
+    
+    private InternalRenderTexture internal; 
     
     public RenderTexture(oasis.graphics.Texture.Format format, int width, int height, Texture.Format depthFormat) {
         super(format, width, height);
 
-        Oasis.getGraphicsDevice().requestInternal(this);
+        Oasis.getGraphicsDevice().linkInternal(this);
         setDepthFormat(depthFormat); 
     }
     
@@ -19,12 +21,16 @@ public class RenderTexture extends Texture<InternalRenderTexture> {
         this(format, width, height, null); 
     }
 
-    public Type getType() {
-        return Type.RENDER_TEXTURE; 
+    void setInternal(InternalRenderTexture internal) {
+        this.internal = internal; 
     }
     
-    public void upload() {
-        super.upload(); 
+    InternalRenderTexture getInternal() {
+        return internal; 
+    }
+    
+    public Type getType() {
+        return Type.RENDER_TEXTURE; 
     }
     
     public Texture.Format getDepthFormat() {

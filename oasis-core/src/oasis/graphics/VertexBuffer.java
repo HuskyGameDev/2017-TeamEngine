@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 import oasis.core.Oasis;
 import oasis.graphics.internal.InternalBuffer;
 
-public class VertexBuffer extends GraphicsResource<InternalBuffer> {
+public class VertexBuffer {
     
     private VertexFormat format; 
     private BufferUsage usage; 
@@ -14,24 +14,34 @@ public class VertexBuffer extends GraphicsResource<InternalBuffer> {
     private int size; 
     private boolean needsUpdate = true; 
     
+    private InternalBuffer internal; 
+    
     public VertexBuffer(VertexFormat format, int vertices, BufferUsage usage) {
         this.format = format; 
         this.size = vertices * format.getFloatsPerElement(); 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 4).asFloatBuffer(); 
-        Oasis.getGraphicsDevice().requestInternal(this); 
+        Oasis.getGraphicsDevice().linkInternal(this); 
     }
 
+    void setInternal(InternalBuffer internal) {
+        this.internal = internal; 
+    }
+    
+    InternalBuffer getInternal() {
+        return internal; 
+    }
+
+    public void release() {
+        internal.release(); 
+        needsUpdate = true; 
+    }
+    
     public void upload() {
         if (needsUpdate) {
             internal.uploadBuffer(); 
             needsUpdate = false; 
         }
-    }
-    
-    public void release() {
-        super.release(); 
-        needsUpdate = true; 
     }
     
     public Buffer getAndFlipBuffer() {

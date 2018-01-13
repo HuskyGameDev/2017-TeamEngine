@@ -1,8 +1,6 @@
 package oasis.graphics;
 
-import oasis.graphics.internal.InternalTexture;
-
-public abstract class Texture<T extends InternalTexture> extends GraphicsResource<T> {
+public abstract class Texture {
 
     /**
      * Pixel format 
@@ -216,13 +214,6 @@ public abstract class Texture<T extends InternalTexture> extends GraphicsResourc
     }
     
     public abstract Type getType(); 
-    
-    public void upload() {
-        if (needsParamUpdate) {
-            internal.updateParams(); 
-            needsParamUpdate = false; 
-        }
-    }
     
     public Format getFormat() {
         return format; 

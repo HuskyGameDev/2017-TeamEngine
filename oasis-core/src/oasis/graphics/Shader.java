@@ -6,7 +6,7 @@ import java.util.Map;
 import oasis.core.Oasis;
 import oasis.graphics.internal.InternalShader;
 
-public class Shader extends GraphicsResource<InternalShader> {
+public class Shader {
 
     private String vs; 
     private String fs; 
@@ -16,16 +16,26 @@ public class Shader extends GraphicsResource<InternalShader> {
     private Map<String, UniformValue> uniformMap; 
     private boolean isCompiled = false; 
     
+    private InternalShader internal; 
+    
     public Shader(String vs, String fs) {
         this.vs = vs; 
         this.fs = fs; 
         
-        Oasis.getGraphicsDevice().requestInternal(this); 
+        Oasis.getGraphicsDevice().linkInternal(this); 
+    }
+    
+    void setInternal(InternalShader internal) {
+        this.internal = internal; 
+    }
+    
+    InternalShader getInternal() {
+        return internal; 
     }
     
     private void checkResources() {
         if (!isCompiled) {
-            uniformValues = getInternalResource().getUniformValues(); 
+            uniformValues = internal.getUniformValues(); 
             
             uniforms = new Uniform[uniformValues.length]; 
             uniformMap = new HashMap<>(); 
@@ -44,11 +54,11 @@ public class Shader extends GraphicsResource<InternalShader> {
     }
     
     public boolean isValid() {
-        return getInternalResource().isValid(); 
+        return internal.isValid(); 
     }
     
     public String getErrorMessage() {
-        return getInternalResource().getErrorMessage(); 
+        return internal.getErrorMessage(); 
     }
     
     public Uniform[] getUniforms() {
