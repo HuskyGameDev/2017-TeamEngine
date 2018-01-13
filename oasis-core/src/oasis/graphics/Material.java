@@ -13,8 +13,8 @@ public class Material {
     private Vector3 emissive = new Vector3(0); 
     private Shader shader = null; 
     
-    private Texture2D diffuseTex = null; 
-    private Texture2D normalTex = null; 
+    private Texture diffuseTex = null; 
+    private Texture normalTex = null; 
     
     public Material() {}
 
@@ -34,7 +34,7 @@ public class Material {
         return new Vector3(diffuse);
     }
     
-    public Texture2D getDiffuseTexture() {
+    public Texture getDiffuseTexture() {
         return diffuseTex; 
     }
 
@@ -50,7 +50,7 @@ public class Material {
         return new Vector3(emissive);
     }
     
-    public Texture2D getNormalTexture() {
+    public Texture getNormalTexture() {
         return normalTex; 
     }
 
@@ -79,6 +79,14 @@ public class Material {
     }
     
     public void setNormalMap(Texture2D tex) {
+        this.normalTex = tex; 
+    }
+    
+    public void setDiffuseMap(RenderTexture tex) {
+        this.diffuseTex = tex; 
+    }
+    
+    public void setNormalMap(RenderTexture tex) {
         this.normalTex = tex; 
     }
 

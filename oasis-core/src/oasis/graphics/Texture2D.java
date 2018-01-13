@@ -4,6 +4,7 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 import oasis.core.Oasis;
+import oasis.core.OasisException;
 import oasis.graphics.internal.InternalTexture2D;
 
 public class Texture2D extends Texture<InternalTexture2D> {
@@ -15,8 +16,12 @@ public class Texture2D extends Texture<InternalTexture2D> {
     public Texture2D(Format format, int width, int height) {
         super(format, width, height); 
         
+        if (format.isDepthFormat()) {
+            throw new OasisException("Texture format cannot be a depth format"); 
+        }
+        
         buffer = Oasis.getDirectBufferAllocator().allocate(getSizeInBytes()); 
-        Oasis.getGraphicsDevice().requestInternalTexture2D(this); 
+        Oasis.getGraphicsDevice().requestInternal(this); 
     }
     
     @Override
@@ -25,6 +30,10 @@ public class Texture2D extends Texture<InternalTexture2D> {
             internal.uploadPixelBuffer(); 
         }
         super.upload(); 
+    }
+    
+    public Type getType() {
+        return Type.TEXTURE_2D; 
     }
     
     public Buffer getAndFlipBuffer() {

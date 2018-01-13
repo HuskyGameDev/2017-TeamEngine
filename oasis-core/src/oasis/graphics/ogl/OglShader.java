@@ -6,7 +6,9 @@ import java.util.Map;
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
+import oasis.graphics.RenderTexture;
 import oasis.graphics.Shader;
+import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
 import oasis.graphics.Uniform;
 import oasis.graphics.internal.InternalShader;
@@ -256,26 +258,63 @@ public class OglShader implements InternalShader {
                         break; 
                     case TEXTURE_2D: 
 //                        log.debug("texture2d uniform update");
-                        Texture2D tex = (Texture2D) v; 
+                        Texture texture = (Texture) v; 
                         
-                        if (tex != null) {
-                            OglTexture2D glTex = (OglTexture2D) tex.getInternalResource(); 
-                            int id = glTex.getId(); 
-                            Integer unit = mappedTextures.get(id); 
-                            if (unit == null) {
-//                                log.debug("Binding " + id + " to " + nextTexUnit + " for " + u.getName()); 
-                                ogl.glActiveTexture(Ogl.GL_TEXTURE0 + nextTexUnit);
-                                ogl.glBindTexture(Ogl.GL_TEXTURE_2D, glTex.getId()); 
-                                ogl.glUniform1i(location, nextTexUnit); 
-                                mappedTextures.put(id, nextTexUnit++); 
+                        if (texture == null) {
+                            ogl.glUniform1i(location, 0); 
+                        }
+                        
+                        switch (texture.getType()) {
+                        default: 
+                            throw new OasisException("Unsupported texture type for sampler2D: " + texture.getType()); 
+                        case RENDER_TEXTURE:
+                            RenderTexture rt = (RenderTexture) texture; 
+                            
+                            if (rt != null) {
+                                OglRenderTexture glRt = (OglRenderTexture) rt.getInternalResource(); 
+                                
+                                int id = glRt.getTextureId(); 
+                                
+                                Integer unit = mappedTextures.get(id); 
+                                if (unit == null) {
+    //                                log.debug("Binding " + id + " to " + nextTexUnit + " for " + u.getName()); 
+                                    ogl.glActiveTexture(Ogl.GL_TEXTURE0 + nextTexUnit);
+                                    ogl.glBindTexture(Ogl.GL_TEXTURE_2D, id); 
+                                    ogl.glUniform1i(location, nextTexUnit); 
+                                    mappedTextures.put(id, nextTexUnit++); 
+                                }
+                                else {
+                                    ogl.glUniform1i(location, unit.intValue()); 
+                                }
                             }
                             else {
-                                ogl.glUniform1i(location, unit.intValue()); 
+                                ogl.glUniform1i(location, 0); 
                             }
-                        }
-                        else {
-//                            log.debug("null texture, should bind a blank texture?");
-                            ogl.glUniform1i(location, 0); 
+                            
+                            break; 
+                        case TEXTURE_2D: 
+                            Texture2D tex = (Texture2D) texture; 
+                            
+                            if (tex != null) {
+                                OglTexture2D glTex = (OglTexture2D) tex.getInternalResource(); 
+                                int id = glTex.getId(); 
+                                Integer unit = mappedTextures.get(id); 
+                                if (unit == null) {
+    //                                log.debug("Binding " + id + " to " + nextTexUnit + " for " + u.getName()); 
+                                    ogl.glActiveTexture(Ogl.GL_TEXTURE0 + nextTexUnit);
+                                    ogl.glBindTexture(Ogl.GL_TEXTURE_2D, glTex.getId()); 
+                                    ogl.glUniform1i(location, nextTexUnit); 
+                                    mappedTextures.put(id, nextTexUnit++); 
+                                }
+                                else {
+                                    ogl.glUniform1i(location, unit.intValue()); 
+                                }
+                            }
+                            else {
+    //                            log.debug("null texture, should bind a blank texture?");
+                                ogl.glUniform1i(location, 0); 
+                            }
+                            break; 
                         }
                         
                         break; 

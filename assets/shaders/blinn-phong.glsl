@@ -2,12 +2,6 @@
 
 #include <common.glsl> 
 
-// varying 
-varying vec3 v_Position; 
-varying vec3 v_Normal; 
-varying vec2 v_TexCoord; 
-varying mat3 v_TBN; 
-
 // matrices 
 uniform mat4 oasis_Projection; 
 uniform mat4 oasis_ModelView; 
@@ -25,6 +19,12 @@ uniform vec3 oasis_Ambient;
 uniform vec4 oasis_LightPosition; 
 uniform vec3 oasis_LightColor; 
 uniform vec3 oasis_LightAttenuation; 
+
+// varying 
+varying vec3 v_Position; 
+varying vec3 v_Normal; 
+varying vec2 v_TexCoord; 
+varying mat3 v_TBN; 
 
 #vertexshader 
 
@@ -52,11 +52,11 @@ void main()
     // TBN 
     vec3 tangent = normalize(oasis_Normal * a_Tangent); 
     vec3 bitangent = normalize(cross(v_Normal, tangent)); 
-    v_TBN = (mat3(
+    v_TBN = mat3(
         tangent, 
         bitangent, 
         v_Normal
-    )); 
+    ); 
 }
 
 #fragmentshader 
@@ -79,7 +79,7 @@ void main()
         L = oasis_LightPosition.xyz - v_Position; 
     }
     
-    vec3 V = vec3(0, 0, 1); 
+    vec3 V = normalize(-v_Position); 
     
     vec3 diffuse = oasis_LightColor * Diffuse(N, L); 
     vec3 specular = oasis_LightColor * Specular(N, L, V, oasis_Specular.a); 

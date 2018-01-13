@@ -12,6 +12,7 @@ import oasis.graphics.Graphics;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
+import oasis.graphics.RenderTexture;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
@@ -28,6 +29,9 @@ public class GraphicsApp implements Application {
     private static final Logger log = new Logger(GraphicsApp.class); 
     
     private int ticks = 0; 
+    
+    private RenderTexture[] rts; 
+    private int drawRt = 0; 
     
     private Camera camera; 
     private float yaw, pitch; 
@@ -56,6 +60,11 @@ public class GraphicsApp implements Application {
         sphereMesh = ResourceManager.loadMesh("texture-sphere.obj");
         terrainMesh = ResourceManager.loadMesh("texture-terrain.obj"); 
         
+        rts = new RenderTexture[] {
+                new RenderTexture(Texture.Format.RGBA8, 1024, 1024), 
+                new RenderTexture(Texture.Format.RGBA8, 1024, 1024)
+        }; 
+        
         Shader bbpShader = ResourceManager.loadShader("blinn-phong.glsl"); 
         
         Texture2D normal = new Texture2D(Texture.Format.RGBA8, 1, 1); 
@@ -79,20 +88,20 @@ public class GraphicsApp implements Application {
         platinumMat = new Material(); 
         platinumMat.setShader(bbpShader); 
         platinumMat.setDiffuseColor(new Vector3(0.7f, 0.7f, 0.8f));
-        platinumMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/158_norm.JPG")); 
+        platinumMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/163_norm.JPG")); 
         platinumMat.setSpecularColor(new Vector3(0.7f)); 
         platinumMat.setSpecularPower(10); 
         
         silverMat = new Material(); 
         silverMat.setShader(bbpShader); 
-        silverMat.setDiffuseColor(new Vector3(0.508f, 0.508f, 0.508f));
+        silverMat.setDiffuseColor(new Vector3(0.608f, 0.608f, 0.608f));
         silverMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/160_norm.JPG")); 
         silverMat.setSpecularColor(new Vector3(0.508f, 0.508f, 0.508f)); 
         silverMat.setSpecularPower(128 * 0.4f); 
         
         bluePlasticMat = new Material(); 
         bluePlasticMat.setShader(bbpShader); 
-        bluePlasticMat.setDiffuseColor(new Vector3(0.0f, 0.510f, 0.510f));
+//        bluePlasticMat.setDiffuseColor(new Vector3(0.0f, 0.510f, 0.510f));
         bluePlasticMat.setSpecularColor(new Vector3(0.502f));
         bluePlasticMat.setSpecularPower(128 * 0.25f);
         
@@ -122,7 +131,7 @@ public class GraphicsApp implements Application {
         
         sunLight = new DirectionalLight(); 
         sunLight.setColor(new Vector3(0.8f)); 
-        sunLight.setDirection(new Vector3(-2, -10, -5)); 
+        sunLight.setDirection(new Vector3(0, -1, -1));
         
         Oasis.getMouse().setCursorVisible(false); 
         Oasis.getMouse().center(); 
@@ -184,10 +193,15 @@ public class GraphicsApp implements Application {
 
     @Override
     public void render() {
+        drawRt = (drawRt + 1) % 2; 
+        
         GraphicsDevice gd = Oasis.getGraphicsDevice(); 
         Graphics g = Oasis.getGraphics(); 
         
         gd.clearBuffers(new Vector4(skyColor, 1.0f), true); 
+        
+        camera.setRenderTexture(rts[drawRt]); 
+        bluePlasticMat.setDiffuseMap(rts[(drawRt + 1) % 2]);
         
         g.begin(); 
         g.addAmbient(ambientColor); 
@@ -199,7 +213,26 @@ public class GraphicsApp implements Application {
         
         Material[] mats = new Material[] { grassMat, bluePlasticMat, pinkRubberMat, stoneMat, silverMat, goldMat, platinumMat, emeraldMat }; 
         for (int i = 0; i < mats.length; i++) {
-            g.drawMesh(sphereMesh, 0, mats[i], Matrix4.translation(new Vector3(i * 2 - 7, 1, 0)).multiply(
+            g.drawMesh(sphereMesh, 0, mats[i], Matrix4.translation(new Vector3(i * 2.2f - 10, 1, 0)).multiply(
+                    Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
+        }
+        
+        g.finish(); 
+        
+        ////////////////////////////////////////////////////////
+        
+        camera.setRenderTexture(null); 
+        
+        g.begin(); 
+        g.addAmbient(ambientColor); 
+        g.addLight(sunLight); 
+        
+        g.setCamera(camera); 
+        
+        g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
+        
+        for (int i = 0; i < mats.length; i++) {
+            g.drawMesh(sphereMesh, 0, mats[i], Matrix4.translation(new Vector3(i * 2.2f - 10, 1, 0)).multiply(
                     Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
         }
         

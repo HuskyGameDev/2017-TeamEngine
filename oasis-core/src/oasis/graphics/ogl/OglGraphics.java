@@ -7,6 +7,7 @@ import oasis.graphics.Geometry;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.GraphicsState;
 import oasis.graphics.IndexBuffer;
+import oasis.graphics.RenderTexture;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
 import oasis.graphics.VertexBuffer;
@@ -51,28 +52,33 @@ public class OglGraphics implements GraphicsDevice {
 
 
     @Override
-    public void requestInternalVertexBuffer(VertexBuffer vb) {
+    public void requestInternal(VertexBuffer vb) {
         vb.setInternalResource(new OglVertexBuffer(ogl, vb)); 
     }
 
     @Override
-    public void requestInternalIndexBuffer(IndexBuffer ib) {
+    public void requestInternal(IndexBuffer ib) {
         ib.setInternalResource(new OglIndexBuffer(ogl, ib)); 
     }
 
     @Override
-    public void requestInternalGeometry(Geometry g) {
+    public void requestInternal(Geometry g) {
         g.setInternalResource(new OglGeometry(ogl, g)); 
     }
 
     @Override
-    public void requestInternalShader(Shader s) {
+    public void requestInternal(Shader s) {
         s.setInternalResource(new OglShader(ogl, s)); 
     }
 
     @Override
-    public void requestInternalTexture2D(Texture2D t) {
+    public void requestInternal(Texture2D t) {
         t.setInternalResource(new OglTexture2D(ogl, t)); 
+    }
+    
+    @Override
+    public void requestInternal(RenderTexture t) {
+        t.setInternalResource(new OglRenderTexture(ogl, t)); 
     }
 
     @Override
@@ -163,6 +169,22 @@ public class OglGraphics implements GraphicsDevice {
         }
         
         curState = new GraphicsState(state); 
+    }
+
+    @Override
+    public void setRenderTexture(RenderTexture rt) {
+        if (rt == null) {
+            ogl.glBindFramebuffer(Ogl.GL_FRAMEBUFFER, 0); 
+            ogl.glViewport(0, 0, Oasis.getDisplay().getWidth(), Oasis.getDisplay().getHeight()); 
+        }
+        else {
+            OglRenderTexture glRt = (OglRenderTexture) rt.getInternalResource(); 
+            
+            int fbo = glRt.getFboId(); 
+            
+            ogl.glBindFramebuffer(Ogl.GL_FRAMEBUFFER, fbo); 
+            ogl.glViewport(0, 0, rt.getWidth(), rt.getHeight()); 
+        }
     }
 
 }

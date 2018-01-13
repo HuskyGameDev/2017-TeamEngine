@@ -19,7 +19,7 @@ public class VertexBuffer extends GraphicsResource<InternalBuffer> {
         this.size = vertices * format.getFloatsPerElement(); 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 4).asFloatBuffer(); 
-        Oasis.getGraphicsDevice().requestInternalVertexBuffer(this); 
+        Oasis.getGraphicsDevice().requestInternal(this); 
     }
 
     public void upload() {

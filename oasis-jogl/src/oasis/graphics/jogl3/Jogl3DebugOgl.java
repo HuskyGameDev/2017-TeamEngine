@@ -370,5 +370,72 @@ public class Jogl3DebugOgl implements Ogl {
         gl.glViewport(x, y, w, h); 
         checkError("glViewport"); 
     }
+
+    @Override
+    public void glGenFramebuffers(int count, int[] ids, int offset) {
+        gl.glGenFramebuffers(count, ids, offset); 
+        checkError("glGenFramebuffers"); 
+    }
+
+    @Override
+    public void glDeleteFramebuffers(int count, int[] ids, int offset) {
+        gl.glDeleteFramebuffers(count, ids, offset); 
+        checkError("glDeleteFramebuffers"); 
+    }
+
+    @Override
+    public void glBindFramebuffer(int target, int id) {
+        gl.glBindFramebuffer(target, id); 
+        checkError("glBindFramebuffer"); 
+    }
+
+    @Override
+    public void glFramebufferTexture(int target, int attachment, int id, int level) {
+        gl.glFramebufferTexture(target, attachment, id, level); 
+        checkError("glFramebufferTexture"); 
+    }
+
+    @Override
+    public void glDrawBuffers(int count, int[] colorAttachments, int offset) {
+        gl.glDrawBuffers(count, colorAttachments, offset); 
+        checkError("glDrawBuffers"); 
+    }
+
+    @Override
+    public int glCheckFramebufferStatus(int target) {
+        int out = gl.glCheckFramebufferStatus(target); 
+        checkError("glCheckFramebufferState"); 
+        return out;
+    }
+
+    @Override
+    public void glGenRenderbuffers(int count, int[] ids, int offset) {
+        gl.glGenRenderbuffers(count, ids, offset);
+        checkError("glGenRenderbuffers"); 
+    }
+
+    @Override
+    public void glDeleteRenderbuffers(int count, int[] ids, int offset) {
+        gl.glDeleteRenderbuffers(count, ids, offset);
+        checkError("glDeleteRenderbuffers"); 
+    }
+
+    @Override
+    public void glBindRenderbuffer(int target, int id) {
+        gl.glBindRenderbuffer(target, id); 
+        checkError("glBindRenderbuffer"); 
+    }
+
+    @Override
+    public void glRenderbufferStorage(int target, int format, int width, int height) {
+        gl.glRenderbufferStorage(target, format, width, height); 
+        checkError("glRenderbufferStorage"); 
+    }
+
+    @Override
+    public void glFramebufferRenderbuffer(int target, int attachment, int type, int id) {
+        gl.glFramebufferRenderbuffer(target, attachment, type, id); 
+        checkError("glFramebufferRenderbuffer"); 
+    }
     
 }

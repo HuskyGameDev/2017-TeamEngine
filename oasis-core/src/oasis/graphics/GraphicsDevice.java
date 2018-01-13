@@ -8,21 +8,25 @@ public interface GraphicsDevice {
 
     void postRender();
 
-    void requestInternalVertexBuffer(VertexBuffer vb); 
+    void requestInternal(VertexBuffer vb); 
     
-    void requestInternalIndexBuffer(IndexBuffer ib); 
+    void requestInternal(IndexBuffer ib); 
     
-    void requestInternalGeometry(Geometry g); 
+    void requestInternal(Geometry g); 
     
-    void requestInternalShader(Shader s); 
+    void requestInternal(Shader s); 
     
-    void requestInternalTexture2D(Texture2D t); 
+    void requestInternal(Texture2D t); 
+    
+    void requestInternal(RenderTexture t); 
     
     void clearBuffers(Vector4 color, boolean depth); 
     
     void setState(GraphicsState state); 
     
     void setShader(Shader sp); 
+    
+    void setRenderTexture(RenderTexture rt); 
     
     void drawGeometry(Geometry geom); 
     

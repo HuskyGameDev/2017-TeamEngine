@@ -13,7 +13,7 @@ public class Geometry extends GraphicsResource<InternalGeometry> {
     private List<VertexBuffer> vbs = new ArrayList<>(); 
     
     public Geometry() {
-        Oasis.getGraphicsDevice().requestInternalGeometry(this); 
+        Oasis.getGraphicsDevice().requestInternal(this); 
     }
     
     public void upload() {

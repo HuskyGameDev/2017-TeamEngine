@@ -1,5 +1,7 @@
 package oasis.graphics.internal;
 
-public interface InternalRenderTexture {
+public interface InternalRenderTexture extends InternalTexture {
 
+    void onNewDepthFormat(); 
+    
 }

@@ -20,7 +20,7 @@ public class Shader extends GraphicsResource<InternalShader> {
         this.vs = vs; 
         this.fs = fs; 
         
-        Oasis.getGraphicsDevice().requestInternalShader(this); 
+        Oasis.getGraphicsDevice().requestInternal(this); 
     }
     
     private void checkResources() {

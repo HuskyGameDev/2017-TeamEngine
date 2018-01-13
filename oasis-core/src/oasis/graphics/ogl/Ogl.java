@@ -984,6 +984,81 @@ public interface Ogl {
     public static final int GL_TEXTURE_COMPARE_FUNC_ARB = 0x884D; 
     public static final int GL_COMPARE_R_TO_TEXTURE_ARB = 0x884E; 
     
+    public static final int GL_INVALID_FRAMEBUFFER_OPERATION = 0x0506; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING = 0x8210; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE = 0x8211; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE = 0x8212; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE = 0x8213; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE = 0x8214; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE = 0x8215; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE = 0x8216; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE = 0x8217; 
+    public static final int GL_FRAMEBUFFER_DEFAULT = 0x8218; 
+    public static final int GL_FRAMEBUFFER_UNDEFINED = 0x8219; 
+    public static final int GL_DEPTH_STENCIL_ATTACHMENT = 0x821A; 
+    public static final int GL_INDEX = 0x8222; 
+    public static final int GL_MAX_RENDERBUFFER_SIZE = 0x84E8; 
+    public static final int GL_DEPTH_STENCIL = 0x84F9; 
+    public static final int GL_UNSIGNED_INT_24_8 = 0x84FA; 
+    public static final int GL_DEPTH24_STENCIL8 = 0x88F0; 
+    public static final int GL_TEXTURE_STENCIL_SIZE = 0x88F1; 
+    public static final int GL_UNSIGNED_NORMALIZED = 0x8C17; 
+    public static final int GL_DRAW_FRAMEBUFFER_BINDING = 0x8CA6; 
+    public static final int GL_FRAMEBUFFER_BINDING = 0x8CA6; 
+    public static final int GL_RENDERBUFFER_BINDING = 0x8CA7; 
+    public static final int GL_READ_FRAMEBUFFER = 0x8CA8; 
+    public static final int GL_DRAW_FRAMEBUFFER = 0x8CA9; 
+    public static final int GL_READ_FRAMEBUFFER_BINDING = 0x8CAA; 
+    public static final int GL_RENDERBUFFER_SAMPLES = 0x8CAB; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE = 0x8CD0; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME = 0x8CD1; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL = 0x8CD2; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE = 0x8CD3; 
+    public static final int GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER = 0x8CD4; 
+    public static final int GL_FRAMEBUFFER_COMPLETE = 0x8CD5; 
+    public static final int GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT = 0x8CD6; 
+    public static final int GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT = 0x8CD7; 
+    public static final int GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER = 0x8CDB; 
+    public static final int GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER = 0x8CDC; 
+    public static final int GL_FRAMEBUFFER_UNSUPPORTED = 0x8CDD; 
+    public static final int GL_MAX_COLOR_ATTACHMENTS = 0x8CDF; 
+    public static final int GL_COLOR_ATTACHMENT0 = 0x8CE0; 
+    public static final int GL_COLOR_ATTACHMENT1 = 0x8CE1; 
+    public static final int GL_COLOR_ATTACHMENT2 = 0x8CE2;  
+    public static final int GL_COLOR_ATTACHMENT3 = 0x8CE3; 
+    public static final int GL_COLOR_ATTACHMENT4 = 0x8CE4; 
+    public static final int GL_COLOR_ATTACHMENT5 = 0x8CE5; 
+    public static final int GL_COLOR_ATTACHMENT6 = 0x8CE6; 
+    public static final int GL_COLOR_ATTACHMENT7 = 0x8CE7; 
+    public static final int GL_COLOR_ATTACHMENT8 = 0x8CE8; 
+    public static final int GL_COLOR_ATTACHMENT9 = 0x8CE9; 
+    public static final int GL_COLOR_ATTACHMENT10 = 0x8CEA; 
+    public static final int GL_COLOR_ATTACHMENT11 = 0x8CEB; 
+    public static final int GL_COLOR_ATTACHMENT12 = 0x8CEC; 
+    public static final int GL_COLOR_ATTACHMENT13 = 0x8CED; 
+    public static final int GL_COLOR_ATTACHMENT14 = 0x8CEE; 
+    public static final int GL_COLOR_ATTACHMENT15 = 0x8CEF; 
+    public static final int GL_DEPTH_ATTACHMENT = 0x8D00; 
+    public static final int GL_STENCIL_ATTACHMENT = 0x8D20; 
+    public static final int GL_FRAMEBUFFER = 0x8D40; 
+    public static final int GL_RENDERBUFFER = 0x8D41; 
+    public static final int GL_RENDERBUFFER_WIDTH = 0x8D42;
+    public static final int GL_RENDERBUFFER_HEIGHT = 0x8D43; 
+    public static final int GL_RENDERBUFFER_INTERNAL_FORMAT = 0x8D44; 
+    public static final int GL_STENCIL_INDEX1 = 0x8D46; 
+    public static final int GL_STENCIL_INDEX4 = 0x8D47; 
+    public static final int GL_STENCIL_INDEX8 = 0x8D48; 
+    public static final int GL_STENCIL_INDEX16 = 0x8D49; 
+    public static final int GL_RENDERBUFFER_RED_SIZE = 0x8D50; 
+    public static final int GL_RENDERBUFFER_GREEN_SIZE = 0x8D51; 
+    public static final int GL_RENDERBUFFER_BLUE_SIZE = 0x8D52; 
+    public static final int GL_RENDERBUFFER_ALPHA_SIZE = 0x8D53; 
+    public static final int GL_RENDERBUFFER_DEPTH_SIZE = 0x8D54; 
+    public static final int GL_RENDERBUFFER_STENCIL_SIZE = 0x8D55; 
+    public static final int GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE = 0x8D56; 
+    public static final int GL_MAX_SAMPLES = 0x8D57; 
+
+    
     // OpenGL 3.0
     public static final int GL_CLIP_DISTANCE0 = GL_CLIP_PLANE0;
     public static final int GL_CLIP_DISTANCE1 = GL_CLIP_PLANE1;
@@ -1265,6 +1340,28 @@ public interface Ogl {
     
     void glGenerateMipmap(int target); 
     
-    void glViewport(int x, int y, int w, int h); 
+    void glViewport(int x, int y, int w, int h);
+
+    void glGenFramebuffers(int count, int[] ids, int offset); 
+    
+    void glDeleteFramebuffers(int count, int[] ids, int offset); 
+    
+    void glBindFramebuffer(int target, int id); 
+    
+    void glFramebufferTexture(int target, int attachment, int id, int level); 
+    
+    void glDrawBuffers(int count, int[] colorAttachments, int offset); 
+    
+    int glCheckFramebufferStatus(int target); 
+    
+    void glGenRenderbuffers(int count, int[] ids, int offset); 
+    
+    void glDeleteRenderbuffers(int count, int[] ids, int offset); 
+    
+    void glBindRenderbuffer(int target, int id); 
+    
+    void glRenderbufferStorage(int target, int format, int width, int height); 
+    
+    void glFramebufferRenderbuffer(int target, int attachment, int type, int id);  
     
 }

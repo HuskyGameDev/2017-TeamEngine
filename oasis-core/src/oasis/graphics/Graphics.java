@@ -91,6 +91,11 @@ public class Graphics {
     }
     
     public void finish() {
+        GraphicsDevice gd = Oasis.getGraphicsDevice();  
+        
+        gd.setRenderTexture(camera.getRenderTexture()); 
+        gd.clearBuffers(new Vector4(0.5f, 0.6f, 0.8f, 1.0f), true);
+        
         drawQueue(camera, RenderQueue.OPAQUE); 
     }
     
@@ -193,8 +198,8 @@ public class Graphics {
         Vector4 diffuse = new Vector4(mat.getDiffuseColor(), mat.getAlpha()); 
         Vector4 specular = new Vector4(mat.getSpecularColor(), mat.getSpecularPower()); 
         Vector3 emissive = new Vector3(mat.getEmissiveColor()); 
-        Texture2D diffuseTex = mat.getDiffuseTexture(); 
-        Texture2D normalTex = mat.getNormalTexture(); 
+        Texture diffuseTex = mat.getDiffuseTexture(); 
+        Texture normalTex = mat.getNormalTexture(); 
         
         uniforms[UNIFORM_DIFFUSE_COL].setValue(diffuse); 
         uniforms[UNIFORM_SPECULAR_COL].setValue(specular); 

@@ -18,7 +18,7 @@ public class IndexBuffer extends GraphicsResource<InternalBuffer> {
         this.size = indices; 
         this.usage = usage; 
         this.buffer = Oasis.getDirectBufferAllocator().allocate(size * 2).asShortBuffer(); 
-        Oasis.getGraphicsDevice().requestInternalIndexBuffer(this); 
+        Oasis.getGraphicsDevice().requestInternal(this); 
     }
     
     public void upload() {

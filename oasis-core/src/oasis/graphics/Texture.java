@@ -101,6 +101,12 @@ public abstract class Texture<T extends InternalTexture> extends GraphicsResourc
          * 3D texture 
          */
         TEXTURE_3D, 
+        
+        /**
+         * Render texture
+         */
+        RENDER_TEXTURE;  
+        
     }
     
     /**
@@ -208,6 +214,8 @@ public abstract class Texture<T extends InternalTexture> extends GraphicsResourc
         this.width = width; 
         this.height = height; 
     }
+    
+    public abstract Type getType(); 
     
     public void upload() {
         if (needsParamUpdate) {
