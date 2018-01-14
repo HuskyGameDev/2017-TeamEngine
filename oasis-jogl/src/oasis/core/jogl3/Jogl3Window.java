@@ -19,7 +19,7 @@ import oasis.core.Display;
 import oasis.core.Logger;
 import oasis.core.Oasis;
 import oasis.graphics.jogl3.Jogl3DebugOgl;
-import oasis.graphics.ogl.OglGraphics;
+import oasis.graphics.ogl.OglGraphicsDevice;
 import oasis.input.jogl3.Jogl3Keyboard;
 import oasis.input.jogl3.Jogl3Mouse;
 
@@ -30,7 +30,7 @@ public class Jogl3Window implements Display, GLEventListener {
     private Jogl3Mouse mouse; 
     private Jogl3Keyboard keyboard; 
     private Jogl3DebugOgl ogl; 
-    private OglGraphics graphics; 
+    private OglGraphicsDevice graphics; 
     
     private GLContext context;
     private Frame frame;
@@ -75,7 +75,7 @@ public class Jogl3Window implements Display, GLEventListener {
         frame.add(canvas);
         
         ogl = new Jogl3DebugOgl(); 
-        graphics = new OglGraphics(ogl); 
+        graphics = new OglGraphicsDevice(ogl); 
         
         keyboard = new Jogl3Keyboard(); 
         mouse = new Jogl3Mouse(this); 
@@ -90,7 +90,7 @@ public class Jogl3Window implements Display, GLEventListener {
         return canvas; 
     }
     
-    public OglGraphics getGraphics() {
+    public OglGraphicsDevice getGraphics() {
         return graphics; 
     }
     

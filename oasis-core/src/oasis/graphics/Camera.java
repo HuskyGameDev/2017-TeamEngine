@@ -10,7 +10,7 @@ public class Camera {
 
     private static final Vector3 UP = new Vector3(0, 1, 0); 
     
-    private RenderTexture renderTexture; 
+    private RenderTarget renderTarget; 
     
     private Vector3 position; 
     private Quaternion rotation; 
@@ -26,8 +26,8 @@ public class Camera {
         far = 1000.0f; 
     }
     
-    public RenderTexture getRenderTexture() {
-        return renderTexture; 
+    public RenderTarget getRenderTarget() {
+        return renderTarget; 
     }
     
     public Vector3 getPosition() {
@@ -59,8 +59,8 @@ public class Camera {
         return Matrix4.perspective(fov, Oasis.getDisplay().getAspectRatio(), near, far); 
     }
     
-    public void setRenderTexture(RenderTexture rt) {
-        renderTexture = rt; 
+    public void setRenderTarget(RenderTarget rt) {
+        renderTarget = rt; 
     }
     
     public void setPosition(Vector3 pos) {

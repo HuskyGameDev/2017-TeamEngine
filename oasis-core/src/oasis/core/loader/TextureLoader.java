@@ -8,8 +8,8 @@ import javax.imageio.ImageIO;
 import oasis.core.Logger;
 import oasis.core.ResourceLoader;
 import oasis.file.PathList;
-import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
+import oasis.graphics.TextureFormat;
 
 /**
  * Loads and manages textures from the file system 
@@ -25,7 +25,7 @@ public class TextureLoader implements ResourceLoader<Texture2D> {
 	public Texture2D load(String filename) {
 		try {
 			BufferedImage image = ImageIO.read(new File(PathList.DEFAULT.find(filename)));
-			Texture2D tex = new Texture2D(Texture.Format.RGBA8, image.getWidth(), image.getHeight()); 
+			Texture2D tex = Texture2D.create(TextureFormat.RGBA8, image.getWidth(), image.getHeight()); 
 			
 			int width = image.getWidth(); 
 			int height = image.getHeight(); 
@@ -48,7 +48,7 @@ public class TextureLoader implements ResourceLoader<Texture2D> {
 			}
 			
 			// set pixels of texture
-			tex.setPixels(0, 0, width, height, data, 0);
+			tex.setPixels(data);
 			tex.upload(); 
 			
 			return tex; 

@@ -12,10 +12,11 @@ import oasis.graphics.Graphics;
 import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
+import oasis.graphics.RenderTarget;
 import oasis.graphics.RenderTexture;
 import oasis.graphics.Shader;
-import oasis.graphics.Texture;
 import oasis.graphics.Texture2D;
+import oasis.graphics.TextureFormat;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
 import oasis.math.Mathf;
@@ -30,6 +31,7 @@ public class GraphicsApp implements Application {
     
     private int ticks = 0; 
     
+    private RenderTarget[] rTargets; 
     private RenderTexture[] rts; 
     private int drawRt = 0; 
     
@@ -61,15 +63,19 @@ public class GraphicsApp implements Application {
         terrainMesh = ResourceManager.loadMesh("texture-terrain.obj"); 
         
         rts = new RenderTexture[] {
-                new RenderTexture(Texture.Format.RGBA8, 1024, 1024), 
-                new RenderTexture(Texture.Format.RGBA8, 1024, 1024)
+                RenderTexture.create(TextureFormat.RGBA8, 800, 600), 
+                RenderTexture.create(TextureFormat.RGBA8, 800, 600)
+        }; 
+        
+        rTargets = new RenderTarget[] {
+                RenderTarget.create(RenderTexture.create(TextureFormat.DEPTH24, 1024, 1024), rts[0]),
+                RenderTarget.create(RenderTexture.create(TextureFormat.DEPTH24, 1024, 1024), rts[1]) 
         }; 
         
         Shader bbpShader = ResourceManager.loadShader("blinn-phong.glsl"); 
         
-        Texture2D normal = new Texture2D(Texture.Format.RGBA8, 1, 1); 
-        normal.setPixels(0, 0, 1, 1, new int[] { 0x7F7FFFFF }, 0);
-        normal.upload(); 
+        Texture2D normal = Texture2D.create(TextureFormat.RGBA8, 1, 1); 
+        normal.setPixels(new int[] { 0x7F7FFFFF });
         
         stoneMat = new Material(); 
         stoneMat.setShader(bbpShader); 
@@ -200,7 +206,7 @@ public class GraphicsApp implements Application {
         
         gd.clearBuffers(new Vector4(skyColor, 1.0f), true); 
         
-        camera.setRenderTexture(rts[drawRt]); 
+        camera.setRenderTarget(rTargets[drawRt]); 
         bluePlasticMat.setDiffuseMap(rts[(drawRt + 1) % 2]);
         
         g.begin(); 
@@ -209,34 +215,40 @@ public class GraphicsApp implements Application {
         
         g.setCamera(camera); 
         
-        g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
-        
         Material[] mats = new Material[] { grassMat, bluePlasticMat, pinkRubberMat, stoneMat, silverMat, goldMat, platinumMat, emeraldMat }; 
-        for (int i = 0; i < mats.length; i++) {
-            g.drawMesh(sphereMesh, 0, mats[i], Matrix4.translation(new Vector3(i * 2.2f - 10, 1, 0)).multiply(
-                    Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
+        for (int k = 0; k < 2; k++) {
+            for (int j = 0; j < 10; j++) {
+                for (int i = 0; i < mats.length; i++) {
+                    g.drawMesh(sphereMesh, 0, mats[(k + j + i) % mats.length], Matrix4.translation(new Vector3(i * 2.2f - 10, 1 + k * 2.2f, j * 2.2f)).multiply(
+                            Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
+                }
+            }
         }
+        
+        g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
         
         g.finish(); 
         
         ////////////////////////////////////////////////////////
         
-        camera.setRenderTexture(null); 
+        g.blit(camera.getRenderTarget().getColorBuffer(0), null); 
         
-        g.begin(); 
-        g.addAmbient(ambientColor); 
-        g.addLight(sunLight); 
-        
-        g.setCamera(camera); 
-        
-        g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
-        
-        for (int i = 0; i < mats.length; i++) {
-            g.drawMesh(sphereMesh, 0, mats[i], Matrix4.translation(new Vector3(i * 2.2f - 10, 1, 0)).multiply(
-                    Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
-        }
-        
-        g.finish(); 
+//        camera.setRenderTarget(null); 
+//        
+//        g.begin(); 
+//        g.addAmbient(ambientColor); 
+//        g.addLight(sunLight); 
+//        
+//        g.setCamera(camera); 
+//        
+//        g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
+//        
+//        for (int i = 0; i < mats.length; i++) {
+//            g.drawMesh(sphereMesh, 0, mats[i], Matrix4.translation(new Vector3(i * 2.2f - 10, 1, 0)).multiply(
+//                    Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
+//        }
+//        
+//        g.finish(); 
     }
 
     @Override

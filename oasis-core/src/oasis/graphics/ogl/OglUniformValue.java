@@ -1,5 +1,4 @@
 package oasis.graphics.ogl;
-
 public class OglUniformValue {
 
     private int location; 

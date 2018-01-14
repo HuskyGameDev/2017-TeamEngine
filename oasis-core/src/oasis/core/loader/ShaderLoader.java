@@ -10,7 +10,7 @@ public class ShaderLoader implements ResourceLoader<Shader> {
     public Shader load(String filename) {
         String vs = GlslParser.getVertexSource(filename); 
         String fs = GlslParser.getFragmentSource(filename); 
-        Shader shader = new Shader(vs, fs); 
+        Shader shader = Shader.create(vs, fs); 
         
         return shader; 
     }

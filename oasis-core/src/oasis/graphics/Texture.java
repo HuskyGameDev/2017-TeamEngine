@@ -2,220 +2,24 @@ package oasis.graphics;
 
 public abstract class Texture {
 
-    /**
-     * Pixel format 
-     * 
-     * @author Nicholas Hamilton
-     *
-     */
-    public enum Format {
-        
-        /**
-         * Packed int with 8 bits for each of red, green, blue, alpha, in that order 
-         */
-        RGBA8(8, false), 
-        
-        /**
-         * Half-floats (16 bit) values for red, green, blue, alpha 
-         */
-        RGBA16F(64, false), 
-        
-        /**
-         * 32 bit float values for red, green, blue, alpha 
-         */
-        RGBA32F(128, false), 
-        
-        /**
-         * 24 bit depth values
-         */
-        DEPTH24(96, true), 
-        
-        /**
-         * 24 bit depth values with 8 bits for stencil 
-         */
-        DEPTH24STENCIL8(128, true), 
-        
-        /**
-         * 32 bit depth values
-         */
-        DEPTH32(128, true);
-
-        private final boolean depth;
-        private final int bytes; 
-        
-        private Format(int bytes, boolean depth) {
-            this.bytes = bytes; 
-            this.depth = depth;
-        }
-        
-        public int getBytesPerPixel() {
-            return bytes; 
-        }
-        
-        /**
-         * Check if format is a depth format 
-         * 
-         * @return If format is depth format 
-         */
-        public boolean isDepthFormat() {
-            return depth;
-        }
-        
-        /** 
-         * Check if format is a depth and stencil format 
-         * 
-         * @return If format is depth-stencil format 
-         */
-        public boolean isDepthStencilFormat() {
-            return this == DEPTH24STENCIL8; 
-        }
-        
-    }
+    protected TextureFormat format; 
+    protected int width; 
+    protected int height; 
+    protected MinFilter minFilter = MinFilter.LINEAR_MIPMAP_LINEAR; 
+    protected MagFilter magFilter = MagFilter.LINEAR; 
+    protected WrapMode wrapU = WrapMode.REPEAT; 
+    protected WrapMode wrapV = WrapMode.REPEAT; 
+    protected int levels = 4; 
     
-    /**
-     * Type of texture 
-     * 
-     * @author Nicholas Hamilton
-     *
-     */
-    public enum Type {
-        
-        /**
-         * 2D texture 
-         */
-        TEXTURE_2D, 
-        
-        /**
-         * Cubemap (6 2D textures) 
-         */
-        TEXTURE_CUBE, 
-        
-        /**
-         * Array of 2D textures 
-         */
-        TEXTURE_2D_ARRAY, 
-        
-        /**
-         * 3D texture 
-         */
-        TEXTURE_3D, 
-        
-        /**
-         * Render texture
-         */
-        RENDER_TEXTURE;  
-        
-    }
-    
-    /**
-     * Magnification filter for textures. Used 
-     * when an image is drawn larger than it 
-     * actually is
-     * 
-     * @author Nicholas Hamilton
-     *
-     */
-    public enum MagFilter {
-        
-        /**
-         * Sharp, pixelated sampling of textures. 
-         * Looks good for pixel art
-         */
-        NEAREST, 
-        
-        /**
-         * Blurs the sampling of textures. Looks good 
-         * on higher-res images
-         */
-        LINEAR;
-        
-    }
-
-    /**
-     * Minification filter for textures. Used
-     * when an image is drawn smaller than it 
-     * actually is 
-     * 
-     * @author Nicholas Hamilton
-     *
-     */
-    public enum MinFilter {
-        
-        /**
-         * Pixelated 
-         */
-        NEAREST, 
-        
-        /**
-         * Linearly interpolated, blurry 
-         */
-        LINEAR, 
-        
-        /**
-         * Pixelated, with mipmaps 
-         */
-        NEAREST_MIPMAP_NEAREST, 
-        
-        /**
-         * Pixelated, with linearly interpolated mipmaps 
-         */
-        NEAREST_MIPMAP_LINEAR, 
-        
-        /**
-         * Linearly interpolated, with mipmaps 
-         */
-        LINEAR_MIPMAP_NEAREST, 
-        
-        /**
-         * Linearly interpolated, with linearly interpolated
-         * mipmaps. Also known as Tri-linear filtering 
-         */
-        LINEAR_MIPMAP_LINEAR;
-        
-    }
-    
-    /**
-     * Wrap mode for sampling textures 
-     * 
-     * @author Nicholas Hamilton
-     *
-     */
-    public enum WrapMode {
-        
-        /**
-         * When sampling past the edge of a texture, return 
-         * the color of the edge of the texture 
-         */
-        CLAMP_TO_EDGE, 
-        
-        /**
-         * When sampling past the edge of a texture, return 
-         * value of the coordinate % 1 
-         */
-        REPEAT;
-        
-    }
-    
-    private Format format; 
-    private int width; 
-    private int height; 
-    private MinFilter minFilter = MinFilter.LINEAR_MIPMAP_LINEAR; 
-    private MagFilter magFilter = MagFilter.LINEAR; 
-    private WrapMode wrapU = WrapMode.REPEAT; 
-    private WrapMode wrapV = WrapMode.REPEAT; 
-    private int levels = 4; 
-    
-    protected boolean needsParamUpdate = true; 
-    
-    public Texture(Format format, int width, int height) {
+    public Texture(TextureFormat format, int width, int height) {
         this.format = format; 
         this.width = width; 
         this.height = height; 
     }
     
-    public abstract Type getType(); 
+    public abstract TextureType getType(); 
     
-    public Format getFormat() {
+    public TextureFormat getFormat() {
         return format; 
     }
     
@@ -249,12 +53,10 @@ public abstract class Texture {
     
     public void setMinFilter(MinFilter min) {
         minFilter = min; 
-        needsParamUpdate = true; 
     }
     
     public void setMagFilter(MagFilter mag) {
         magFilter = mag; 
-        needsParamUpdate = true; 
     }
     
     public void setFilters(MinFilter min, MagFilter mag) {
@@ -264,12 +66,10 @@ public abstract class Texture {
     
     public void setUWrapMode(WrapMode u) {
         wrapU = u; 
-        needsParamUpdate = true; 
     }
     
     public void setVWrapMode(WrapMode v) {
         wrapV = v; 
-        needsParamUpdate = true; 
     }
     
     public void setWrapModes(WrapMode u, WrapMode v) {
@@ -279,7 +79,6 @@ public abstract class Texture {
     
     public void setMipmapLevels(int levels) {
         this.levels = levels; 
-        needsParamUpdate = true; 
     }
     
 }

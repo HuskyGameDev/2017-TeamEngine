@@ -6,12 +6,14 @@ import java.util.List;
 import oasis.core.Logger;
 import oasis.core.Oasis;
 import oasis.core.OasisException;
+import oasis.core.ResourceManager;
 import oasis.graphics.sort.BasicLightSorter;
 import oasis.graphics.sort.BasicMeshSorter;
 import oasis.graphics.sort.LightSorter;
 import oasis.graphics.sort.MeshSorter;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
+import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
@@ -19,6 +21,7 @@ public class Graphics {
 
     private static final Logger log = new Logger(Graphics.class); 
     
+    private static final GraphicsState BLIT_STATE = new GraphicsState(); 
     private static final GraphicsState BASE_STATE = new GraphicsState(); 
     private static final GraphicsState ADD_STATE = new GraphicsState(); 
     
@@ -66,32 +69,74 @@ public class Graphics {
     private LightList lights = new LightList(); 
     private Camera camera = null; 
     
-    private Texture2D defaultNormalTex = null; 
-    private Texture2D defaultDiffuseTex = null; 
+    private boolean needInit = true; 
+    private Texture2D defaultNormalTex; 
+    private Texture2D defaultDiffuseTex; 
+    private Mesh quad; 
+    private Shader blitShader; 
     
     public Graphics() {}
+    
+    private void init() {
+        defaultNormalTex = Texture2D.create(TextureFormat.RGBA8, 1, 1); 
+        defaultNormalTex.setPixels(new int[] { 0x7F7FFFFF });
+        defaultNormalTex.upload(); 
+        
+        defaultDiffuseTex = Texture2D.create(TextureFormat.RGBA8, 1, 1); 
+        defaultDiffuseTex.setPixels(new int[] { 0xFFFFFFFF });
+        defaultDiffuseTex.upload(); 
+        
+        quad = Mesh.create(); 
+        quad.setPositions(new Vector3[] {
+                new Vector3(-1, -1, 0), 
+                new Vector3( 1, -1, 0), 
+                new Vector3( 1,  1, 0), 
+                new Vector3(-1,  1, 0)
+        });
+        quad.setTexCoords(new Vector2[] {
+                new Vector2(0, 0), 
+                new Vector2(1, 0), 
+                new Vector2(1, 1), 
+                new Vector2(0, 1)
+        });
+        quad.setIndices(0, new short[] {
+                0, 1, 2, 
+                0, 2, 3
+        });
+        
+        blitShader = ResourceManager.loadShader("blit.glsl"); 
+        
+        needInit = false; 
+    }
+    
+    public void blit(Texture texture, RenderTarget target) {
+        GraphicsDevice gd = Oasis.getGraphicsDevice();  
+        
+        gd.applyState(BLIT_STATE); 
+        gd.setRenderTarget(target); 
+        
+        int id = Shader.getUniformId("oasis_MainTex"); 
+        Shader.setTexture(id, texture); 
+        
+        gd.useShader(blitShader); 
+        gd.drawMesh(quad, 0); 
+        
+        Shader.clearValue(id); 
+    }
     
     public void begin() {
         opaqueQueue.clear(); 
         lights.clear(); 
         
-        if (defaultNormalTex == null) {
-            defaultNormalTex = new Texture2D(Texture.Format.RGBA8, 1, 1); 
-            defaultNormalTex.setPixels(0, 0, 1, 1, new int[] { 0x7F7FFFFF }, 0);
-            defaultNormalTex.upload(); 
-        }
-        
-        if (defaultDiffuseTex == null) {
-            defaultDiffuseTex = new Texture2D(Texture.Format.RGBA8, 1, 1); 
-            defaultDiffuseTex.setPixels(0, 0, 1, 1, new int[] { 0xFFFFFFFF }, 0);
-            defaultDiffuseTex.upload(); 
+        if (needInit) {
+            init(); 
         }
     }
     
     public void finish() {
         GraphicsDevice gd = Oasis.getGraphicsDevice();  
         
-        gd.setRenderTexture(camera.getRenderTexture()); 
+        gd.setRenderTarget(camera.getRenderTarget()); 
         gd.clearBuffers(new Vector4(0.5f, 0.6f, 0.8f, 1.0f), true);
         
         drawQueue(camera, RenderQueue.OPAQUE); 
@@ -145,10 +190,11 @@ public class Graphics {
             Shader.setMatrix3(UNIFORM_NAMES[UNIFORM_NORMAL_MAT], modelView.getNormalMatrix()); 
             
             Vector3 ambient = renderLights.getAmbient(); 
-            Geometry geom = data.getMesh().getGeometry(data.getSubmesh()); 
+            Mesh mesh = data.getMesh(); 
+            int submesh = data.getSubmesh(); 
             
             BASE_STATE.setFrontFace(mat.getFrontFace()); 
-            gd.setState(BASE_STATE); 
+            gd.applyState(BASE_STATE); 
             
             {
                 Light light = null; 
@@ -160,11 +206,11 @@ public class Graphics {
                 Shader.setVector3(UNIFORM_NAMES[UNIFORM_AMBIENT_COL], ambient); 
                 applyLight(viewMat, light); 
                 
-                renderGeometry(gd, shader, geom); 
+                renderGeometry(gd, shader, mesh, submesh); 
             }
             
             ADD_STATE.setFrontFace(mat.getFrontFace()); 
-            gd.setState(ADD_STATE); 
+            gd.applyState(ADD_STATE); 
             
             Shader.clearValue(UNIFORM_NAMES[UNIFORM_AMBIENT_COL]); 
             
@@ -173,14 +219,14 @@ public class Graphics {
                 
                 applyLight(viewMat, light); 
                 
-                renderGeometry(gd, shader, geom); 
+                renderGeometry(gd, shader, mesh, submesh); 
             }
         }
     }
     
-    private void renderGeometry(GraphicsDevice gd, Shader shader, Geometry geom) {
-        gd.setShader(shader); 
-        gd.drawGeometry(geom); 
+    private void renderGeometry(GraphicsDevice gd, Shader shader, Mesh mesh, int submesh) {
+        gd.useShader(shader); 
+        gd.drawMesh(mesh, submesh); 
     }
     
     private void applyMaterial(Material mat) {

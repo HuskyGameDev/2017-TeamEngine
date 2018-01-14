@@ -74,22 +74,14 @@ public class Material {
         this.diffuse.set(diffuse);
     }
     
-    public void setDiffuseMap(Texture2D tex) {
+    public void setDiffuseMap(Texture tex) {
         this.diffuseTex = tex; 
     }
     
-    public void setNormalMap(Texture2D tex) {
+    public void setNormalMap(Texture tex) {
         this.normalTex = tex; 
     }
     
-    public void setDiffuseMap(RenderTexture tex) {
-        this.diffuseTex = tex; 
-    }
-    
-    public void setNormalMap(RenderTexture tex) {
-        this.normalTex = tex; 
-    }
-
     public void setSpecularColor(Vector3 specular) {
         this.specular.set(specular);
     }

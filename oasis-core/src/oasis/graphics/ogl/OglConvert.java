@@ -6,11 +6,11 @@ import oasis.graphics.BlendMode;
 import oasis.graphics.BufferUsage;
 import oasis.graphics.FillMode;
 import oasis.graphics.FrontFace;
+import oasis.graphics.MagFilter;
+import oasis.graphics.MinFilter;
 import oasis.graphics.Primitive;
-import oasis.graphics.Texture.Format;
-import oasis.graphics.Texture.MagFilter;
-import oasis.graphics.Texture.MinFilter;
-import oasis.graphics.Texture.WrapMode;
+import oasis.graphics.TextureFormat;
+import oasis.graphics.WrapMode;
 
 public class OglConvert {
 
@@ -143,12 +143,22 @@ public class OglConvert {
         }
     }
 
-    public static int getTextureFormat(Format format) {
+    public static int getTextureFormat(TextureFormat format) {
         switch (format) {
         default: 
             throw new OasisException("Unknown Texture Format: " + format); 
         case RGBA8: 
             return Ogl.GL_RGBA8; 
+        case RGBA16F: 
+            return Ogl.GL_RGBA16F; 
+        case RGBA32F: 
+            return Ogl.GL_RGBA32F; 
+        case DEPTH24: 
+            return Ogl.GL_DEPTH_COMPONENT24; 
+        case DEPTH24STENCIL8: 
+            return Ogl.GL_DEPTH24_STENCIL8; 
+        case DEPTH32: 
+            return Ogl.GL_DEPTH_COMPONENT32; 
         }
     }
 

@@ -1,5 +1,4 @@
 package oasis.graphics.ogl;
-
 public enum OglUniformType {
 
     NONE, 

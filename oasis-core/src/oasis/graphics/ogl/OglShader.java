@@ -6,172 +6,168 @@ import java.util.Map;
 import oasis.core.Logger;
 import oasis.core.OasisException;
 import oasis.graphics.Attribute;
-import oasis.graphics.RenderTexture;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture;
-import oasis.graphics.Texture2D;
-import oasis.graphics.internal.InternalShader;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
-public class OglShader implements InternalShader {
+public class OglShader extends Shader {
 
-    private static final Logger log = new Logger(OglShader.class); 
+    private static final Logger log = new Logger(OglShader.class);
+
+    private static int currentId = -1; 
     
-    private static int currentId = 0; 
-    
-    private String vs, fs; 
-    private Ogl ogl; 
-    private OglGraphics graphics; 
+    private Ogl ogl;
+
     private int id;
-    private boolean valid = false; 
-    private boolean compiled = false; 
-    private String error = ""; 
-    
-//    private Shader shader; 
+    private boolean valid = false;
+    private String error = "";
     
     private boolean foundUniforms = false; 
     private OglUniformValue[] oglUniformValues; 
-    
-    public OglShader(Ogl ogl, OglGraphics graphics, Shader shader) {
-//        this.shader = shader; 
-        this.graphics = graphics; 
-        this.vs = shader.getVertexSource(); 
-        this.fs = shader.getFragmentSource(); 
-        this.ogl = ogl; 
-        
-        compileAndLink(); 
+
+    public OglShader(Ogl ogl, String vs, String fs) {
+        super(vs, fs);
+        this.ogl = ogl;
     }
-    
+
     protected static void bind(Ogl ogl, OglShader shader) {
         if (shader == null && currentId != 0) {
             ogl.glUseProgram(0); 
         }
-        else if (currentId != shader.getId()) {
-            shader.compileAndLink(); 
-            ogl.glUseProgram(shader.getId()); 
+        else if (currentId != shader.id) {
+            ogl.glUseProgram(shader.id); 
         }
     }
-
-    protected int getId() {
-        compileAndLink(); 
-        return id; 
-    }
     
+    public void bindAndApplyUniforms() {
+        validate(); 
+        bind(ogl, this); 
+        
+        collectUniforms(); 
+        uploadUniforms(); 
+    }
+
+    @Override
+    public boolean isValid() {
+        validate();
+        return valid;
+    }
+
+    @Override
+    public String getErrorMessage() {
+        validate();
+        return error;
+    }
+
+    private void validate() {
+        if (id != 0) return;
+
+        compileAndLink(); 
+    }
+
     private void compileAndLink() {
-        if (compiled) return; 
-        
-        compiled = true; 
-        
-        int[] status = new int[1]; 
-        int[] length = new int[1]; 
-        byte[] text = new byte[512]; 
-        
-        boolean validSoFar = true; 
-        
-        int vert, frag; 
-        id = ogl.glCreateProgram(); 
-        vert = ogl.glCreateShader(Ogl.GL_VERTEX_SHADER); 
-        frag = ogl.glCreateShader(Ogl.GL_FRAGMENT_SHADER); 
-        
-        ogl.glShaderSource(vert, 1, new String[] { vs }, new int[] { vs.length() }, 0);
+        error = "";
+        int[] status = new int[1];
+        int[] length = new int[1];
+        byte[] text = new byte[512];
+
+        boolean validSoFar = true;
+
+        int vert, frag;
+        id = ogl.glCreateProgram();
+        vert = ogl.glCreateShader(Ogl.GL_VERTEX_SHADER);
+        frag = ogl.glCreateShader(Ogl.GL_FRAGMENT_SHADER);
+
+        ogl.glShaderSource(vert, 1, new String[] { getBaseVertexSource() }, new int[] { getBaseVertexSource().length() }, 0);
         ogl.glCompileShader(vert);
         ogl.glGetShaderiv(vert, Ogl.GL_COMPILE_STATUS, status, 0);
         if (status[0] != Ogl.GL_TRUE) {
             ogl.glGetShaderInfoLog(vert, 512, length, 0, text, 0);
-            error = new String(text).trim(); 
+            addError(new String(text).trim());
             log.warning("Vertex Shader Compile Error: " + error);
-            validSoFar = false; 
-        }
-        else {
+            validSoFar = false;
+        } else {
             log.debug("Vertex Shader Compile Success!");
         }
-        
-        ogl.glShaderSource(frag, 1, new String[] { fs }, new int[] { fs.length() }, 0);
+
+        ogl.glShaderSource(frag, 1, new String[] { getBaseFragmentSource() }, new int[] { getBaseFragmentSource().length() }, 0);
         ogl.glCompileShader(frag);
         ogl.glGetShaderiv(frag, Ogl.GL_COMPILE_STATUS, status, 0);
         if (status[0] != Ogl.GL_TRUE) {
             ogl.glGetShaderInfoLog(frag, 512, length, 0, text, 0);
-            error = new String(text).trim(); 
+            addError(new String(text).trim());
             log.warning("Fragment Shader Compile Error: " + error);
-            validSoFar = false; 
-        }
-        else {
+            validSoFar = false;
+        } else {
             log.debug("Fragment Shader Compile Success!");
         }
-        
+
         ogl.glAttachShader(id, vert);
         ogl.glAttachShader(id, frag);
-        
-        bindAttributes(); 
-        
+
+        bindAttributes();
+
         ogl.glLinkProgram(id);
         ogl.glGetProgramiv(id, Ogl.GL_LINK_STATUS, status, 0);
         if (status[0] != Ogl.GL_TRUE) {
             ogl.glGetProgramInfoLog(id, 512, length, 0, text, 0);
-            error = new String(text).trim(); 
+            addError(new String(text).trim());
             log.warning("Link Error: " + error);
-            validSoFar = false; 
-        }
-        else {
+            validSoFar = false;
+        } else {
             log.debug("Shader Link Success!");
         }
-        
+
         ogl.glDeleteShader(vert);
         ogl.glDeleteShader(frag);
+
+        valid = validSoFar; 
         
-        if (validSoFar) {
-            valid = true; 
-        }
-        else {
-            throw new OasisException("Shader compilation failed!"); 
+        findUniforms(); 
+    }
+
+    private void addError(String err) {
+        if (error.equals("")) {
+            error = err;
+        } else {
+            error += "\n";
+            error += err;
         }
     }
-    
-    private void bindAttributes() { 
-        for (Attribute a : Attribute.values()) { 
-            ogl.glBindAttribLocation(
-                    id,
-                    OglConvert.getAttributeId(a), 
-                    OglConvert.getAttributeName(a)
-            );
+
+    private void bindAttributes() {
+        for (Attribute a : Attribute.values()) {
+            ogl.glBindAttribLocation(id, OglConvert.getAttributeId(a), OglConvert.getAttributeName(a));
         }
     }
-    
+
     private void findUniforms() {
-        compileAndLink(); 
-        
-        bind(ogl, this); 
-        
-        if (isValid() && !foundUniforms) {
-            foundUniforms = true; 
+        if (valid && !foundUniforms) {
+            bind(ogl, this);
             
-            int[] count = new int[1]; 
-            
+            foundUniforms = true;
+
+            int[] count = new int[1];
+
             ogl.glGetProgramiv(id, Ogl.GL_ACTIVE_UNIFORMS, count, 0);
-            
-            oglUniformValues = new OglUniformValue[count[0]]; 
-            
-            byte[] name = new byte[1024]; 
-            int[] length = new int[1]; 
-            int[] size = new int[1]; 
-            int[] type = new int[1]; 
-            
+
+            oglUniformValues = new OglUniformValue[count[0]];
+
+            byte[] name = new byte[1024];
+            int[] length = new int[1];
+            int[] size = new int[1];
+            int[] type = new int[1];
+
             for (int i = 0; i < count[0]; i++) {
                 ogl.glGetActiveUniform(id, i, 1024, length, 0, size, 0, type, 0, name, 0);
-                
-                String realName = new String(name).substring(0, length[0]); 
-                
-                oglUniformValues[i] = new OglUniformValue(
-                        realName, 
-                        ogl.glGetUniformLocation(id, realName), 
-                        Shader.getUniformId(realName), 
-                        OglConvert.getOglUniformType(type[0]), 
-                        null
-                ); 
+
+                String realName = new String(name).substring(0, length[0]);
+
+                oglUniformValues[i] = new OglUniformValue(realName, ogl.glGetUniformLocation(id, realName), Shader.getUniformId(realName), OglConvert.getOglUniformType(type[0]), null);
             }
         }
     }
@@ -210,8 +206,8 @@ public class OglShader implements InternalShader {
         }
     }
     
-    public void uploadUniforms() {
-        compileAndLink(); 
+    private void uploadUniforms() {
+        validate(); 
         
         if (isValid()) {
             findUniforms(); 
@@ -224,7 +220,8 @@ public class OglShader implements InternalShader {
             collectUniforms(); 
             
             for (int i = 0; i < oglUniformValues.length; i++) {
-                if (oglUniformValues[i].needsUpdate() || oglUniformValues[i].getType() == OglUniformType.TEXTURE_2D) {
+//                if (oglUniformValues[i].needsUpdate() || oglUniformValues[i].getType() == OglUniformType.TEXTURE_2D) {
+                {
                     OglUniformValue uv = oglUniformValues[i]; 
                     int location = uv.getLocation(); 
                     Object v = uv.getValue(); 
@@ -307,10 +304,10 @@ public class OglShader implements InternalShader {
                         default: 
                             throw new OasisException("Unsupported texture type for sampler2D: " + texture.getType()); 
                         case RENDER_TEXTURE:
-                            RenderTexture rt = (RenderTexture) texture; 
+                            OglRenderTexture rt = OglGraphicsDevice.safeCast(texture, OglRenderTexture.class); 
                             
                             if (rt != null) {
-                                int id = graphics.getTextureId(rt); 
+                                int id = rt.getId(); 
                                 
                                 Integer unit = mappedTextures.get(id); 
                                 if (unit == null) {
@@ -330,10 +327,10 @@ public class OglShader implements InternalShader {
                             
                             break; 
                         case TEXTURE_2D: 
-                            Texture2D tex = (Texture2D) texture; 
+                            OglTexture2D tex = OglGraphicsDevice.safeCast(texture, OglTexture2D.class); 
                             
                             if (tex != null) {
-                                int id = graphics.getTextureId(tex); 
+                                int id = tex.getId(); 
                                 Integer unit = mappedTextures.get(id); 
                                 if (unit == null) {
     //                                log.debug("Binding " + id + " to " + nextTexUnit + " for " + u.getName()); 
@@ -360,25 +357,6 @@ public class OglShader implements InternalShader {
                 }
             }
         }
-    }
-    
-    @Override
-    public void release() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public boolean isValid() {
-        compileAndLink(); 
-        return valid; 
-    }
-
-    // empty if none, otherwise the error message
-    @Override
-    public String getErrorMessage() {
-        compileAndLink(); 
-        return error; 
     }
 
 }

@@ -176,7 +176,7 @@ public class ObjLoader implements ResourceLoader<Mesh> {
             Vertex[] vertArray = verts.toArray(new Vertex[verts.size()]); 
             int[] indArray = ArrayUtil.toIntArray(inds.toArray(new Integer[inds.size()])); 
             
-            Mesh mesh = new Mesh(); 
+            Mesh mesh = Mesh.create(); 
             if (normals.isEmpty()) calculateNormals(vertArray, indArray);
             applyToMesh(vertArray, indArray, mesh); 
             

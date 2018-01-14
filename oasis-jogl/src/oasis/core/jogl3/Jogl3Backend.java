@@ -5,8 +5,8 @@ import oasis.core.DefaultDirectBufferAllocator;
 import oasis.core.DirectBufferAllocator;
 import oasis.core.Display;
 import oasis.core.Logger;
-import oasis.core.Backend;
 import oasis.graphics.GraphicsDevice;
+import oasis.core.Backend;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
 
