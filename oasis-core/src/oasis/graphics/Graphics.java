@@ -13,6 +13,7 @@ import oasis.graphics.sort.LightSorter;
 import oasis.graphics.sort.MeshSorter;
 import oasis.math.Matrix3;
 import oasis.math.Matrix4;
+import oasis.math.Quaternion;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
@@ -24,6 +25,7 @@ public class Graphics {
     private static final GraphicsState BLIT_STATE = new GraphicsState(); 
     private static final GraphicsState BASE_STATE = new GraphicsState(); 
     private static final GraphicsState ADD_STATE = new GraphicsState(); 
+    private static final GraphicsState SHADOW_STATE = new GraphicsState(); 
     
     private static final int UNIFORM_PROJ_MAT = 0; 
     private static final int UNIFORM_VIEW_MAT = 1; 
@@ -40,13 +42,20 @@ public class Graphics {
     private static final int UNIFORM_DIFFUSE_TEX = 12;
     private static final int UNIFORM_HAS_DIFFUSE_TEX = 13; 
     private static final int UNIFORM_NORMAL_TEX = 14; 
-    private static final int UNIFORM_COUNT = 15; 
+    private static final int UNIFORM_HAS_SHADOW = 15; 
+    private static final int UNIFORM_SHADOW_MAP = 16; 
+    private static final int UNIFORM_SHADOW_MVP = 17; 
+    private static final int UNIFORM_COUNT = 18; 
     
     private static final int[] UNIFORM_NAMES = new int[UNIFORM_COUNT]; 
     
     static {
         ADD_STATE.setSourceBlendMode(BlendMode.ONE); 
         ADD_STATE.setDestBlendMode(BlendMode.ONE); 
+        
+        SHADOW_STATE.setFrontFace(FrontFace.CW); 
+        
+//        BASE_STATE.setFillMode(FillMode.LINE);
         
         UNIFORM_NAMES[UNIFORM_PROJ_MAT] = Shader.getUniformId("oasis_Projection"); 
         UNIFORM_NAMES[UNIFORM_VIEW_MAT] = Shader.getUniformId("oasis_View"); 
@@ -62,7 +71,10 @@ public class Graphics {
         UNIFORM_NAMES[UNIFORM_LIGHT_ATTEN] = Shader.getUniformId("oasis_LightAtten"); 
         UNIFORM_NAMES[UNIFORM_DIFFUSE_TEX] = Shader.getUniformId("oasis_DiffuseMap");
         UNIFORM_NAMES[UNIFORM_HAS_DIFFUSE_TEX] = Shader.getUniformId("oasis_HasDiffuseMap"); 
-        UNIFORM_NAMES[UNIFORM_NORMAL_TEX] = Shader.getUniformId("oasis_NormalMap"); 
+        UNIFORM_NAMES[UNIFORM_NORMAL_TEX] = Shader.getUniformId("oasis_NormalMap");
+        UNIFORM_NAMES[UNIFORM_HAS_SHADOW] = Shader.getUniformId("oasis_HasShadow"); 
+        UNIFORM_NAMES[UNIFORM_SHADOW_MAP] = Shader.getUniformId("oasis_ShadowMap");
+        UNIFORM_NAMES[UNIFORM_SHADOW_MVP] = Shader.getUniformId("oasis_ShadowMVP"); 
     }
     
     private List<RenderData> opaqueQueue = new ArrayList<>(); 
@@ -74,6 +86,10 @@ public class Graphics {
     private Texture2D defaultDiffuseTex; 
     private Mesh quad; 
     private Shader blitShader; 
+    
+    private Shader shadowShader; 
+    private RenderTexture shadowMap; 
+    private RenderTarget shadowTarget; 
     
     public Graphics() {}
     
@@ -105,6 +121,14 @@ public class Graphics {
         });
         
         blitShader = ResourceManager.loadShader("blit.glsl"); 
+        shadowShader = ResourceManager.loadShader("shadow.glsl"); 
+        
+        shadowMap = RenderTexture.create(TextureFormat.DEPTH16, 1024, 1024); 
+//        shadowMap.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
+        shadowMap.setWrapModes(WrapMode.CLAMP_TO_EDGE, WrapMode.CLAMP_TO_EDGE); 
+        
+        shadowTarget = RenderTarget.create(); 
+        shadowTarget.setDepthBuffer(shadowMap); 
         
         needInit = false; 
     }
@@ -142,8 +166,42 @@ public class Graphics {
         drawQueue(camera, RenderQueue.OPAQUE); 
     }
     
-    private void drawQueue(Camera camera, RenderQueue queue) {
+    private void drawShadowMap(Camera camera, Matrix4 viewProjMat, RenderQueue queue, RenderTarget target) {
         GraphicsDevice gd = Oasis.getGraphicsDevice(); 
+        
+        gd.setRenderTarget(target); 
+        gd.clearBuffers(new Vector4(0, 0, 0, 0), true);
+        gd.applyState(SHADOW_STATE); 
+        
+        List<RenderData> meshes = getQueue(queue);
+        
+        for (RenderData data : meshes) {
+            Matrix4 mvp = viewProjMat.multiply(data.getModelMatrix()); 
+            Shader.setMatrix4(UNIFORM_NAMES[UNIFORM_SHADOW_MVP], mvp); 
+            
+            renderGeometry(gd, shadowShader, data.getMesh(), data.getSubmesh()); 
+        }
+    }
+    
+    private void drawQueue(Camera camera, RenderQueue queue) {
+        // TODO refactor 
+        Camera cam = new Camera(); 
+        DirectionalLight shadowLight = (DirectionalLight) lights.get(0); 
+        cam.setPosition(camera.getPosition());
+        cam.setRotation(Quaternion.direction(shadowLight.getDirection()));
+        
+        Matrix4 shadowProjMat = Matrix4.orthographic(new Vector3(-50, -50, 50), new Vector3(50, 50, -50)); 
+        Matrix4 bias = Matrix4.translation(new Vector3(0.5f)).multiply(Matrix4.scale(new Vector3(0.5f)));
+        Matrix4 shadowViewMat = cam.getViewMatrix(); 
+        
+        Matrix4 shadowViewProjMat = shadowProjMat.multiply(shadowViewMat); 
+        
+        drawShadowMap(cam, shadowViewProjMat, queue, shadowTarget); 
+        // apply bias after shadow map has been made 
+        shadowViewProjMat = bias.multiply(shadowViewProjMat); 
+        
+        GraphicsDevice gd = Oasis.getGraphicsDevice(); 
+        gd.setRenderTarget(camera.getRenderTarget()); 
         
         LightSorter lightSorter = new BasicLightSorter(); 
         MeshSorter meshSorter = new BasicMeshSorter(); 
@@ -196,6 +254,11 @@ public class Graphics {
             BASE_STATE.setFrontFace(mat.getFrontFace()); 
             gd.applyState(BASE_STATE); 
             
+            Shader.setInt(UNIFORM_NAMES[UNIFORM_HAS_SHADOW], 1); 
+            Shader.setTexture(UNIFORM_NAMES[UNIFORM_SHADOW_MAP], shadowMap); 
+            Matrix4 mvp = shadowViewProjMat.multiply(data.getModelMatrix()); 
+            Shader.setMatrix4(UNIFORM_NAMES[UNIFORM_SHADOW_MVP], mvp); 
+            
             {
                 Light light = null; 
                 
@@ -209,19 +272,21 @@ public class Graphics {
                 renderGeometry(gd, shader, mesh, submesh); 
             }
             
-            ADD_STATE.setFrontFace(mat.getFrontFace()); 
-            gd.applyState(ADD_STATE); 
-            
-            Shader.clearValue(UNIFORM_NAMES[UNIFORM_AMBIENT_COL]); 
-            
-            for (int i = 1; i < renderLights.getLightCount(); i++) {
-                Light light = renderLights.get(i); 
-                
-                applyLight(viewMat, light); 
-                
-                renderGeometry(gd, shader, mesh, submesh); 
-            }
+//            ADD_STATE.setFrontFace(mat.getFrontFace()); 
+//            gd.applyState(ADD_STATE); 
+//            
+//            Shader.clearValue(UNIFORM_NAMES[UNIFORM_AMBIENT_COL]); 
+//            
+//            for (int i = 1; i < renderLights.getLightCount(); i++) {
+//                Light light = renderLights.get(i); 
+//                
+//                applyLight(viewMat, light); 
+//                
+//                renderGeometry(gd, shader, mesh, submesh); 
+//            }
         }
+        
+//        blit(shadowMap, null); 
     }
     
     private void renderGeometry(GraphicsDevice gd, Shader shader, Mesh mesh, int submesh) {

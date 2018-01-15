@@ -19,12 +19,15 @@ uniform vec3 oasis_Ambient;
 uniform vec4 oasis_LightPosition; 
 uniform vec3 oasis_LightColor; 
 uniform vec3 oasis_LightAttenuation; 
+uniform mat4 oasis_ShadowMVP; 
+uniform sampler2DShadow oasis_ShadowMap; 
 
 // varying 
 varying vec3 v_Position; 
 varying vec3 v_Normal; 
 varying vec2 v_TexCoord; 
 varying mat3 v_TBN; 
+varying vec4 v_ShadowCoord; 
 
 #vertexshader 
 
@@ -38,6 +41,8 @@ attribute vec3 a_Tangent;
 void main() 
 {
     vec4 mvPos = oasis_ModelView * vec4(a_Position, 1.0); 
+    
+    v_ShadowCoord = oasis_ShadowMVP * vec4(a_Position, 1.0); 
     
     // position 
     v_Position = mvPos.xyz; 
@@ -84,6 +89,10 @@ void main()
     vec3 diffuse = oasis_LightColor * Diffuse(N, L); 
     vec3 specular = oasis_LightColor * Specular(N, L, V, oasis_Specular.a); 
     vec3 ambient = oasis_Ambient; 
+    
+    float amt = shadow2D(oasis_ShadowMap, v_ShadowCoord.xyz, 0.0005).r; 
+    diffuse *= amt; 
+    specular *= amt; 
     
     vec3 diffuseMat = oasis_Diffuse.rgb * texture2D(oasis_DiffuseMap, v_TexCoord).rgb; 
     vec3 specularMat = oasis_Specular.rgb; 

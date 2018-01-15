@@ -100,6 +100,8 @@ public class OglConvert {
             return OglUniformType.MATRIX3; 
         case Ogl.GL_FLOAT_MAT4: 
             return OglUniformType.MATRIX4; 
+        case Ogl.GL_SAMPLER_2D_SHADOW: 
+            return OglUniformType.TEXTURE_2D; 
         }
     }
 
@@ -153,6 +155,8 @@ public class OglConvert {
             return Ogl.GL_RGBA16F; 
         case RGBA32F: 
             return Ogl.GL_RGBA32F; 
+        case DEPTH16: 
+            return Ogl.GL_DEPTH_COMPONENT16; 
         case DEPTH24: 
             return Ogl.GL_DEPTH_COMPONENT24; 
         case DEPTH24STENCIL8: 

@@ -87,6 +87,18 @@ public final class Mathf {
         return (float) Math.tan(rad);
     }
     
+    public static float acos(float rad) {
+        return (float) Math.acos(rad);
+    }
+    
+    public static float asin(float rad) {
+        return (float) Math.asin(rad);
+    }
+    
+    public static float atan(float rad) {
+        return (float) Math.atan(rad); 
+    }
+    
     /**
      * Get square root 
      * 

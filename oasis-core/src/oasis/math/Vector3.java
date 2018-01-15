@@ -72,6 +72,8 @@ public class Vector3 {
     
     public float dot(Vector3 r) { return x * r.x + y * r.y + z * r.z; }
     
+    public float angle(Vector3 r) { return Mathf.acos(dot(r)); } 
+    
     public Vector3 multiply(float s) { return new Vector3(x * s, y * s, z * s); } 
     public Vector3 add(Vector3 r) { return new Vector3(x + r.x, y + r.y, z + r.z); } 
     public Vector3 subtract(Vector3 r) { return new Vector3(x - r.x, y - r.y, z - r.z); } 

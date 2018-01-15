@@ -24,6 +24,11 @@ public enum TextureFormat {
     RGBA32F(128, false),
 
     /**
+     * 16 bit depth 
+     */
+    DEPTH16(64, true), 
+    
+    /**
      * 24 bit depth values
      */
     DEPTH24(96, true),

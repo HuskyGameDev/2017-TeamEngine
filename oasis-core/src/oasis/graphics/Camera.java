@@ -56,7 +56,8 @@ public class Camera {
     }
     
     public Matrix4 getProjectionMatrix() {
-        return Matrix4.perspective(fov, Oasis.getDisplay().getAspectRatio(), near, far); 
+        float ar = Oasis.getDisplay().getAspectRatio(); 
+        return Matrix4.perspective(fov, ar, near, far); 
     }
     
     public void setRenderTarget(RenderTarget rt) {

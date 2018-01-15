@@ -8,6 +8,8 @@ package oasis.math;
  */
 public class Quaternion {
 
+    private static final Vector3 UP = new Vector3(0, 1, 0); 
+    
     public float x, y, z, w; 
     
     public Quaternion() {
@@ -50,6 +52,57 @@ public class Quaternion {
         float c = Mathf.cos(theta / 2f); 
         r = r.normalize(); 
         return new Quaternion(r.x * s, r.y * s, r.z * s, c); 
+    }
+    
+    public static Quaternion direction(Vector3 r) {
+        return direction(r, UP); 
+    }
+    
+    public static Quaternion direction(Vector3 dir, Vector3 up) {
+        return fromMatrix(Matrix4.lookAt(new Vector3(), dir, up)); 
+    }
+    
+    // TODO make sure this is correct 
+    public static Quaternion fromMatrix(Matrix4 mat) {
+        Quaternion q = new Quaternion(); 
+        
+        float[] m = mat.get(new float[16]); 
+        
+        float t = 1 + m[0] + m[5] + m[10]; 
+        
+        if (t > 0.001) {
+            float s = 1.0f / (2 * Mathf.sqrt(t)); 
+            q.x = (m[9] - m[6]) * s; 
+            q.y = (m[2] - m[8]) * s; 
+            q.z = (m[4] - m[1]) * s;
+            q.w = 0.25f / s; 
+            return q; 
+        }
+        
+        if (m[0] > m[5] && m[0] > m[10]) {
+            float s = 1.0f / (2 * Mathf.sqrt(1 + m[0] - m[5] - m[10])); 
+            q.x = 0.25f / s; 
+            q.y = (m[4] + m[1]) * s;
+            q.z = (m[2] + m[8]) * s; 
+            q.w = (m[9] - m[6]) * s; 
+            return q; 
+        }
+        else if (m[5] > m[10]) {
+            float s = 1.0f / (2 * Mathf.sqrt(1 + m[5] - m[0] - m[10])); 
+            q.x = (m[4] + m[1]) * s; 
+            q.y = 0.25f / s; 
+            q.z = (m[9] + m[6]) * s; 
+            q.w = (m[2] - m[8]) * s; 
+            return q; 
+        }
+        else {
+            float s = 1.0f / (2 * Mathf.sqrt(1 + m[10] - m[0] - m[5])); 
+            q.x = (m[2] + m[8]) * s; 
+            q.y = (m[9] + m[6]) * s; 
+            q.z = 0.25f / s; 
+            q.w = (m[4] - m[1]) * s; 
+            return q; 
+        }
     }
     
     public float getX() { return x; } 
