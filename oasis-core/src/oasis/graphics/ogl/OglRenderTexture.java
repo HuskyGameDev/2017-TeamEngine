@@ -30,6 +30,8 @@ public class OglRenderTexture extends RenderTexture {
                         Ogl.GL_DEPTH_COMPONENT, 
                         Ogl.GL_UNSIGNED_INT, 
                         null);
+                
+                ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_COMPARE_MODE, Ogl.GL_COMPARE_R_TO_TEXTURE);
             }
             else {
                 ogl.glTexImage2D(

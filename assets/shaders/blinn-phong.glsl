@@ -90,7 +90,17 @@ void main()
     vec3 specular = oasis_LightColor * Specular(N, L, V, oasis_Specular.a); 
     vec3 ambient = oasis_Ambient; 
     
-    float amt = shadow2D(oasis_ShadowMap, v_ShadowCoord.xyz, 0.0005).r; 
+    float amt; 
+    vec3 coord = v_ShadowCoord.xyz; 
+    coord.z -= 0.00001; 
+    if (clamp(coord, 0.0, 1.0) == coord) 
+    {
+        amt = shadow2D(oasis_ShadowMap, coord).r; 
+    }
+    else 
+    {
+        amt = 1.0; 
+    }
     diffuse *= amt; 
     specular *= amt; 
     

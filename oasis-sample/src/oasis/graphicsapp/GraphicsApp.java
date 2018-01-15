@@ -124,7 +124,7 @@ public class GraphicsApp implements Application {
         
         sunLight = new DirectionalLight(); 
         sunLight.setColor(new Vector3(0.8f)); 
-        sunLight.setDirection(new Vector3(0, -0.1f, -1));
+        sunLight.setDirection(new Vector3(0, -1, -1));
         
         Oasis.getMouse().setCursorVisible(false); 
         Oasis.getMouse().center(); 
@@ -179,7 +179,7 @@ public class GraphicsApp implements Application {
         
         mouse.center(); 
         
-        sunLight.setDirection(new Vector3(0, 0, -1).rotate(Quaternion.axisAngle(new Vector3(1, 0, 0), -ticks * 0.001f)));
+        sunLight.setDirection(new Vector3(1, 0, 0).rotate(Quaternion.axisAngle(new Vector3(0, 0, 1), -ticks * 0.001f)));
     }
     
     public static float randomize(float num) {
@@ -201,15 +201,17 @@ public class GraphicsApp implements Application {
         
         Material[] mats = new Material[] { grassMat, bluePlasticMat, pinkRubberMat, stoneMat, silverMat, goldMat, platinumMat, emeraldMat }; 
         for (int k = 0; k < 1; k++) {
-            for (int j = 0; j < 1; j++) {
+            for (int j = 0; j < mats.length; j++) {
                 for (int i = 0; i < mats.length; i++) {
-                    g.drawMesh(sphereMesh, 0, mats[(k + j + i) % mats.length], Matrix4.translation(new Vector3(i * 2.2f - 10, 1 + Mathf.sin(i * ticks * 0.001f) * 3.2f, j * 2.2f)).multiply(
+                    g.drawMesh(sphereMesh, 0, mats[(k + j + i) % mats.length], Matrix4.translation(new Vector3(i * 2.2f - 10, 1 + Mathf.sin(((j + 1) * (i + 1)) * ticks * 0.0001f) * 5.2f, j * 2.2f)).multiply(
                             Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
                 }
             }
         }
         
         g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
+        
+        g.drawMesh(sphereMesh, 0, grassMat, Matrix4.translation(camera.getPosition())); 
         
         g.finish(); 
     }
