@@ -1,5 +1,6 @@
 package oasis.core;
 
+import oasis.audio.AudioDevice;
 import oasis.file.FileSystem;
 import oasis.graphics.Graphics;
 import oasis.graphics.GraphicsDevice;
@@ -78,6 +79,7 @@ public final class Oasis {
     private static Display display; 
     private static Keyboard keyboard; 
     private static Mouse mouse; 
+    private static AudioDevice audioDevice; 
     private static FileSystem files = new FileSystem(); 
     
     public static Graphics getGraphics() {
@@ -86,6 +88,10 @@ public final class Oasis {
     
     public static GraphicsDevice getGraphicsDevice() {
         return graphicsDevice; 
+    }
+    
+    public static AudioDevice getAudioDevice() {
+        return audioDevice; 
     }
     
     public static DirectBufferAllocator getDirectBufferAllocator() {
@@ -134,6 +140,7 @@ public final class Oasis {
         engine = new Engine(config, backend, application); 
         graphics = new Graphics(); 
         graphicsDevice = backend.getGraphicsDevice(); 
+        audioDevice = backend.getAudioDevice(); 
         alloc = backend.getDirectBufferAllocator(); 
         display = backend.getDisplay(); 
         keyboard = backend.getKeyboard(); 

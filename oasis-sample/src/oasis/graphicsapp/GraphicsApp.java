@@ -204,7 +204,7 @@ public class GraphicsApp implements Application {
             for (int j = 0; j < mats.length; j++) {
                 for (int i = 0; i < mats.length; i++) {
                     g.drawMesh(sphereMesh, 0, mats[(k + j + i) % mats.length], Matrix4.translation(new Vector3(i * 2.2f - 10, 1 + Mathf.sin(((j + 1) * (i + 1)) * ticks * 0.0001f) * 5.2f, j * 2.2f)).multiply(
-                            Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f))));
+                            Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f * 0))));
                 }
             }
         }

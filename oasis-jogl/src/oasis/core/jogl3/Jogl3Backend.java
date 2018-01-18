@@ -1,12 +1,15 @@
 package oasis.core.jogl3;
 
+import oasis.audio.AudioDevice;
+import oasis.audio.jogl3.Jogl3DebugOal;
+import oasis.audio.oal.OalAudioDevice;
+import oasis.core.Backend;
 import oasis.core.Config;
 import oasis.core.DefaultDirectBufferAllocator;
 import oasis.core.DirectBufferAllocator;
 import oasis.core.Display;
 import oasis.core.Logger;
 import oasis.graphics.GraphicsDevice;
-import oasis.core.Backend;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
 
@@ -16,10 +19,12 @@ public class Jogl3Backend implements Backend {
     
     private Jogl3Window window; 
     private DirectBufferAllocator alloc; 
+    private OalAudioDevice oal; 
     
     public Jogl3Backend() {
         window = new Jogl3Window(); 
         alloc = new DefaultDirectBufferAllocator(); 
+        oal = new OalAudioDevice(new Jogl3DebugOal()); 
     }
     
     @Override
@@ -105,6 +110,11 @@ public class Jogl3Backend implements Backend {
     @Override
     public GraphicsDevice getGraphicsDevice() {
         return window.getGraphics(); 
+    }
+
+    @Override
+    public AudioDevice getAudioDevice() {
+        return oal; 
     }
 
 }

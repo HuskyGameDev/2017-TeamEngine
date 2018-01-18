@@ -123,7 +123,7 @@ public class Graphics {
         blitShader = ResourceManager.loadShader("blit.glsl"); 
         shadowShader = ResourceManager.loadShader("shadow.glsl"); 
         
-        shadowMap = RenderTexture.create(TextureFormat.DEPTH32, 4 * 1024, 4 * 1024); 
+        shadowMap = RenderTexture.create(TextureFormat.DEPTH16, 4 * 1024, 4 * 1024); 
 //        shadowMap.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
         shadowMap.setWrapModes(WrapMode.CLAMP_TO_EDGE, WrapMode.CLAMP_TO_EDGE); 
         
@@ -190,7 +190,9 @@ public class Graphics {
         cam.setPosition(camera.getPosition());
         cam.setRotation(Quaternion.direction(shadowLight.getDirection()));
         
-        Matrix4 shadowProjMat = Matrix4.orthographic(new Vector3(-100, -100, 100), new Vector3(100, 100, -100)); 
+        float rad = 100; 
+        
+        Matrix4 shadowProjMat = Matrix4.orthographic(new Vector3(-rad, -rad, rad), new Vector3(rad, rad, -rad)); 
         Matrix4 bias = Matrix4.translation(new Vector3(0.5f)).multiply(Matrix4.scale(new Vector3(0.5f)));
         Matrix4 shadowViewMat = cam.getViewMatrix(); 
         

@@ -1,5 +1,6 @@
 package oasis.core;
 
+import oasis.audio.AudioDevice;
 import oasis.graphics.GraphicsDevice;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
@@ -31,5 +32,7 @@ public interface Backend {
     Mouse getMouse(); 
     
     GraphicsDevice getGraphicsDevice(); 
+    
+    AudioDevice getAudioDevice(); 
     
 }
