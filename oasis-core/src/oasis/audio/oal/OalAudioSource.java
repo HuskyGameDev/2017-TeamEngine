@@ -1,13 +1,15 @@
 package oasis.audio.oal;
 
+import oasis.audio.AudioClip;
 import oasis.audio.AudioSource;
-import oasis.math.Vector3;
 
 public class OalAudioSource extends AudioSource {
 
     private Oal oal; 
-    private int[] id; 
+    private int[] id = new int[1]; 
     private boolean playing = false; 
+    
+    private float realGain = 0.0f; 
     
     public OalAudioSource(Oal oal) {
         this.oal = oal; 
@@ -20,10 +22,29 @@ public class OalAudioSource extends AudioSource {
     }
     
     @Override
-    public void play() {
+    public void setClip(AudioClip clip) {
+        super.setClip(clip); 
+        
         validate(); 
-        oal.alSourcePlay(id[0]); 
-        playing = true; 
+        if (this.clip == null) {
+            oal.alSourcei(id[0], Oal.AL_BUFFER, 0); 
+        }
+        else {
+            OalAudioClip c = (OalAudioClip) clip; 
+            
+            int bufferId = c.getId(); 
+            
+            oal.alSourcei(id[0], Oal.AL_BUFFER, bufferId); 
+        }
+    }
+    
+    @Override
+    public void play() {
+        if (!isPlaying()) {
+            validate(); 
+            oal.alSourcePlay(id[0]); 
+            playing = true; 
+        }
     }
 
     @Override
@@ -46,11 +67,26 @@ public class OalAudioSource extends AudioSource {
     }
     
     @Override
-    public void setPosition(Vector3 pos) {
-        super.setPosition(pos); 
+    public void setLoop(boolean loop) {
+        super.setLoop(loop); 
         
         validate(); 
-        oal.alSource3f(id[0], Oal.AL_POSITION, position.x, position.y, position.z);
+        oal.alSourcei(id[0], Oal.AL_LOOPING, this.loop ? Oal.AL_TRUE : Oal.AL_FALSE); 
+    }
+    
+    public void setRealGain(float gain) {
+        this.realGain = gain; 
+        
+        validate(); 
+        oal.alSourcef(id[0], Oal.AL_GAIN, this.realGain); 
+    }
+    
+    @Override
+    public void setPitch(float pitch) {
+        super.setPitch(pitch); 
+        
+        validate(); 
+        oal.alSourcef(id[0], Oal.AL_PITCH, this.pitch); 
     }
 
 }

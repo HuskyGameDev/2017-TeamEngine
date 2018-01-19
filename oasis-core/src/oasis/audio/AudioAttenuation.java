@@ -4,8 +4,6 @@ public enum AudioAttenuation {
 
     OFF, 
     
-    LINEAR, 
-    
-    LOGARITHMIC; 
+    LINEAR; 
     
 }

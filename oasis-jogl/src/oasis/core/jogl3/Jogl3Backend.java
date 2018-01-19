@@ -50,12 +50,12 @@ public class Jogl3Backend implements Backend {
     public void preUpdate(float dt) {
         window.getKeyboard().update(); 
         window.getMouse().update(); 
+        oal.preUpdate(); 
     }
 
     @Override
     public void postUpdate(float dt) {
-        // TODO Auto-generated method stub
-        
+        oal.postUpdate(); 
     }
 
     @Override

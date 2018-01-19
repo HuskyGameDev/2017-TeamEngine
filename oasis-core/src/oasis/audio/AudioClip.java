@@ -22,6 +22,7 @@ public abstract class AudioClip {
         this.is3D = is3D; 
     }
     
+    public abstract void setData(float[] in); 
     public abstract void setData(byte[] in); 
     
     public int getLength() {

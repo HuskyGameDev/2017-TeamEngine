@@ -6,8 +6,18 @@ import oasis.math.Vector3;
 
 public abstract class AudioListener {
 
+    private static AudioListener current; 
+    
     public static AudioListener create() {
         return Oasis.getAudioDevice().createListener(); 
+    }
+    
+    public static void setCurrent(AudioListener listener) {
+        current = listener; 
+    }
+    
+    public static AudioListener getCurrent() {
+        return current; 
     }
     
     protected final Vector3 position = new Vector3(); 

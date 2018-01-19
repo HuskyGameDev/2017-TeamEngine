@@ -3,9 +3,11 @@ package oasis.core;
 import java.util.HashMap;
 import java.util.Map;
 
+import oasis.audio.AudioClip;
 import oasis.core.loader.ObjLoader;
 import oasis.core.loader.ShaderLoader;
 import oasis.core.loader.TextureLoader;
+import oasis.core.loader.WavLoader;
 import oasis.graphics.Mesh;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
@@ -22,6 +24,7 @@ public final class ResourceManager {
         addLoader(ObjLoader.class, "obj");
         addLoader(TextureLoader.class, "png", "jpg", "jpeg"); 
         addLoader(ShaderLoader.class, "glsl"); 
+        addLoader(WavLoader.class, "wav"); 
     }
     
     private ResourceManager() {} 
@@ -106,6 +109,10 @@ public final class ResourceManager {
     
     public static Shader loadShader(String name) {
         return (Shader) load(name); 
+    }
+    
+    public static AudioClip loadAudioClip(String name) {
+        return (AudioClip) load(name); 
     }
     
 }

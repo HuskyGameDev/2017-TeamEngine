@@ -1,5 +1,8 @@
 package oasis.graphicsapp;
 
+import oasis.audio.AudioClip;
+import oasis.audio.AudioListener;
+import oasis.audio.AudioSource;
 import oasis.core.Application;
 import oasis.core.BackendType;
 import oasis.core.Config;
@@ -22,6 +25,7 @@ import oasis.math.Matrix4;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
+import oasis.util.QuickHash;
 
 public class GraphicsApp implements Application {
 
@@ -46,6 +50,10 @@ public class GraphicsApp implements Application {
     private Vector3 skyColor; 
     private Vector3 ambientColor; 
     private DirectionalLight sunLight; 
+    
+    private AudioClip clip, clip2; 
+    private AudioSource source, source2, source3, source4, source5; 
+    private AudioListener listener; 
     
     @Override
     public void init() {
@@ -128,10 +136,52 @@ public class GraphicsApp implements Application {
         
         Oasis.getMouse().setCursorVisible(false); 
         Oasis.getMouse().center(); 
+        
+        clip = ResourceManager.loadAudioClip("overworld.wav"); //AudioClip.create(44100 * 100, 48000, false, false, false); 
+        clip2 = ResourceManager.loadAudioClip("pitfall.wav"); 
+        source = AudioSource.create();
+        source2 = AudioSource.create(); 
+        source3 = AudioSource.create(); 
+        source4 = AudioSource.create(); 
+        source5 = AudioSource.create(); 
+        
+        listener = AudioListener.create(); 
+        
+        source.setClip(clip); 
+        source.setLoop(true); 
+        source.setGain(1.0f);
+        source.setMinDistance(10.0f); 
+        source.setMaxDistance(100.0f); 
+        source.play(); 
+        
+        source2.setPosition(new Vector3(10, 20, 10));
+        source2.setClip(clip2); 
+        source2.setLoop(true); 
+        source2.setMinDistance(2.0f); 
+        source2.setMaxDistance(20.0f); 
+        source2.play(); 
+        
+        source3.setPosition(new Vector3(10, 20, 20));
+        source3.setPitch(0.8f);
+        source3.setClip(clip2); 
+        source3.setLoop(true); 
+        source3.setMinDistance(2.0f); 
+        source3.setMaxDistance(20.0f); 
+        source3.play(); 
+        
+        source4.setPosition(new Vector3(20, 20, 10));
+        source4.setPitch(1.2f); 
+        source4.setClip(clip2); 
+        source4.setLoop(true); 
+        source4.setMinDistance(2.0f); 
+        source4.setMaxDistance(20.0f); 
+        source4.play(); 
     }
 
     @Override
     public void update(float dt) {
+        AudioListener.setCurrent(listener); 
+        
         Keyboard keys = Oasis.getKeyboard(); 
         if (keys.isKeyDown(Keyboard.KEY_ESCAPE)) {
             Oasis.stop();
@@ -170,6 +220,7 @@ public class GraphicsApp implements Application {
         camPos.addSelf(dir); 
         
         camera.setPosition(camPos); 
+        listener.setPosition(camera.getPosition()); 
         
         Mouse mouse = Oasis.getMouse(); 
         
@@ -203,7 +254,7 @@ public class GraphicsApp implements Application {
         for (int k = 0; k < 1; k++) {
             for (int j = 0; j < mats.length; j++) {
                 for (int i = 0; i < mats.length; i++) {
-                    g.drawMesh(sphereMesh, 0, mats[(k + j + i) % mats.length], Matrix4.translation(new Vector3(i * 2.2f - 10, 1 + Mathf.sin(((j + 1) * (i + 1)) * ticks * 0.0001f) * 5.2f, j * 2.2f)).multiply(
+                    g.drawMesh(sphereMesh, 0, mats[Math.abs(QuickHash.compute(i, j, k)) % mats.length], Matrix4.translation(new Vector3(i * 2.2f - 10, 1 + Mathf.sin((1 + QuickHash.compute(i, j, k) % 100) * ticks * 0.0003f) * 5.2f, j * 2.2f)).multiply(
                             Matrix4.rotation(Quaternion.axisAngle(new Vector3(0, 1, 0).normalize(), ticks * 0.003f * 0))));
                 }
             }
@@ -212,6 +263,10 @@ public class GraphicsApp implements Application {
         g.drawMesh(terrainMesh, 0, grassMat, Matrix4.translation(new Vector3(0, 0, 0))); 
         
         g.drawMesh(sphereMesh, 0, grassMat, Matrix4.translation(camera.getPosition())); 
+        
+        g.drawMesh(sphereMesh, 0, platinumMat, Matrix4.translation(source2.getPosition())); 
+        g.drawMesh(sphereMesh, 0, platinumMat, Matrix4.translation(source3.getPosition())); 
+        g.drawMesh(sphereMesh, 0, platinumMat, Matrix4.translation(source4.getPosition())); 
         
         g.finish(); 
     }

@@ -9,11 +9,11 @@ public abstract class AudioSource {
     protected boolean loop = false; 
     protected float gain = 1.0f; 
     protected float pitch = 1.0f; 
-    protected float minDistance = 0.0f; 
+    protected float minDistance = 1.0f; 
     protected float maxDistance = 100.0f; 
-    protected AudioAttenuation atten = AudioAttenuation.LOGARITHMIC; 
+    protected AudioAttenuation atten = AudioAttenuation.LINEAR; 
     
-    private AudioClip clip; 
+    protected AudioClip clip; 
     
     public static AudioSource create() {
         return Oasis.getAudioDevice().createSource(); 
@@ -26,6 +26,10 @@ public abstract class AudioSource {
     public abstract void pause(); 
     
     public abstract boolean isPlaying(); 
+    
+    public AudioAttenuation getAttenuation() {
+        return atten; 
+    }
     
     public Vector3 getPosition() {
         return new Vector3(position); 
@@ -73,6 +77,18 @@ public abstract class AudioSource {
     
     public void setClip(AudioClip clip) {
         this.clip = clip; 
+    }
+    
+    public void setMinDistance(float min) {
+        this.minDistance = min; 
+    }
+    
+    public void setMaxDistance(float max) {
+        this.maxDistance = max; 
+    }
+    
+    public void setAttenuation(AudioAttenuation atten) {
+        this.atten = atten == null ? AudioAttenuation.OFF : atten; 
     }
     
 }
