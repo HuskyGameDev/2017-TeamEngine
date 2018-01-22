@@ -36,6 +36,18 @@ public class Jogl3Backend implements Backend {
     public void preInit() {
         log.debug("preInit"); 
         window.show(); 
+        
+        try {
+            synchronized (window.contextWait) {
+                log.debug("Waiting for GLContext");
+                window.contextWait.wait();
+            }
+            Thread.sleep(100);
+        }
+        catch (Exception e) {
+            log.warning("Exception waiting for GLContext");
+        }
+        
         window.getCanvas().setFocusable(true); 
         window.getCanvas().requestFocus(); 
     }
@@ -48,6 +60,7 @@ public class Jogl3Backend implements Backend {
 
     @Override
     public void preUpdate(float dt) {
+        window.update(); 
         window.getKeyboard().update(); 
         window.getMouse().update(); 
         oal.preUpdate(); 
@@ -60,8 +73,7 @@ public class Jogl3Backend implements Backend {
 
     @Override
     public void preRender() {
-        // TODO Auto-generated method stub
-        
+        window.update(); 
     }
 
     @Override

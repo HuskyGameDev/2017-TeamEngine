@@ -26,6 +26,8 @@ import oasis.input.jogl3.Jogl3Mouse;
 public class Jogl3Window implements Display, GLEventListener {
 
     private static final Logger log = new Logger(Jogl3Window.class); 
+
+    public final Object contextWait = new Object(); 
     
     private Jogl3Mouse mouse; 
     private Jogl3Keyboard keyboard; 
@@ -42,6 +44,13 @@ public class Jogl3Window implements Display, GLEventListener {
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 shouldClose = true;
+            }
+        });
+        frame.addWindowStateListener(new WindowAdapter() {
+            public void windowStateChanged(WindowEvent e) {
+                int w = e.getWindow().getWidth(); 
+                int h = e.getWindow().getHeight(); 
+                System.out.println(w + " " + h);
             }
         });
         
@@ -84,6 +93,14 @@ public class Jogl3Window implements Display, GLEventListener {
         canvas.addMouseListener(mouse);
         canvas.addMouseMotionListener(mouse); 
         canvas.addMouseWheelListener(mouse); 
+    }
+    
+    public void update() {
+        frame.validate(); 
+        frame.revalidate(); 
+        
+//        setSize(1000, 1000); 
+//        System.out.println(canvas.getWidth() + " " + canvas.getHeight() + " " + frame.getSize());
     }
     
     public GLCanvas getCanvas() {
@@ -219,6 +236,10 @@ public class Jogl3Window implements Display, GLEventListener {
         
         log.debug("Changed context: " + context.getGLVersion());
         ogl.setOgl(gl); 
+        
+        synchronized (contextWait) {
+            contextWait.notify(); 
+        }
     }
 
     @Override
@@ -229,6 +250,8 @@ public class Jogl3Window implements Display, GLEventListener {
     @Override
     public void display(GLAutoDrawable drawable) {
         context = drawable.getContext();
+        
+        ogl.setOgl(context.getGL().getGL3());
     }
 
     @Override

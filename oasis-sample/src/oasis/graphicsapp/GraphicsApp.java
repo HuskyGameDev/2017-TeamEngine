@@ -52,7 +52,7 @@ public class GraphicsApp implements Application {
     private DirectionalLight sunLight; 
     
     private AudioClip clip, clip2; 
-    private AudioSource source, source2, source3, source4, source5; 
+    private AudioSource source, source2, source3, source4; 
     private AudioListener listener; 
     
     @Override
@@ -143,7 +143,6 @@ public class GraphicsApp implements Application {
         source2 = AudioSource.create(); 
         source3 = AudioSource.create(); 
         source4 = AudioSource.create(); 
-        source5 = AudioSource.create(); 
         
         listener = AudioListener.create(); 
         

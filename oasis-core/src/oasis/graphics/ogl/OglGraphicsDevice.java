@@ -46,6 +46,8 @@ public class OglGraphicsDevice implements GraphicsDevice {
 
     @Override
     public void preRender() {
+        ogl.glViewport(0, 0, Oasis.getDisplay().getWidth(), Oasis.getDisplay().getHeight());
+        
         ogl.glClearColor(0.7f, 0.8f, 1.0f, 0.0f); 
         ogl.glClear(Ogl.GL_COLOR_BUFFER_BIT | Ogl.GL_DEPTH_BUFFER_BIT); 
         
