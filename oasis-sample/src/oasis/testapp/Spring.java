@@ -1,4 +1,4 @@
-package oasis.ecsgraphicsapp;
+package oasis.testapp;
 
 import oasis.entity.EntityComponent;
 import oasis.math.Vector3;

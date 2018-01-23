@@ -1,4 +1,4 @@
-package oasis.ecsgraphicsapp;
+package oasis.testapp;
 
 import oasis.entity.ComponentId;
 import oasis.entity.Entity;

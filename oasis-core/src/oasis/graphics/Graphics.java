@@ -81,7 +81,7 @@ public class Graphics {
     }
     
     private List<RenderData> opaqueQueue = new ArrayList<>(); 
-    private LightList lights = new LightList(); 
+    private RenderLightList lights = new RenderLightList(); 
     private Transform camTfm = null; 
     private Camera camera = null; 
     
@@ -219,7 +219,7 @@ public class Graphics {
         
         meshSorter.sort(camera, tfm, lights, meshes);
         
-        LightList renderLights = new LightList(); 
+        RenderLightList renderLights = new RenderLightList(); 
         
         Material lastMat = null; 
         

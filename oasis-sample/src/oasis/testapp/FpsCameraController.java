@@ -1,4 +1,4 @@
-package oasis.ecsgraphicsapp;
+package oasis.testapp;
 
 import oasis.core.Oasis;
 import oasis.entity.Camera;

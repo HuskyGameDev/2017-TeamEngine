@@ -6,12 +6,12 @@ import java.util.List;
 
 import oasis.math.Vector3;
 
-public class LightList {
+public class RenderLightList {
 
     private List<RenderLight> lights; 
     private Vector3 ambient; 
     
-    public LightList() {
+    public RenderLightList() {
         lights = new ArrayList<>(); 
         ambient = new Vector3(); 
     }
