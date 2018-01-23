@@ -1,6 +1,6 @@
 package oasis.entity;
 
-public class DefaultComponentFactory<T extends Component> implements ComponentFactory<T> {
+public class DefaultComponentFactory<T extends EntityComponent> implements ComponentFactory<T> {
 
     private Class<T> type; 
     

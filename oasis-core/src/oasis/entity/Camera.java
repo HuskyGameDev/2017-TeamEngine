@@ -1,13 +1,13 @@
-package oasis.graphics;
+package oasis.entity;
 
 import oasis.core.Oasis;
-import oasis.entity.Component;
+import oasis.graphics.RenderTarget;
 import oasis.math.Mathf;
 import oasis.math.Matrix4;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
 
-public class Camera2 extends Component {
+public class Camera extends EntityComponent {
 
     private RenderTarget renderTarget; 
     
@@ -15,7 +15,7 @@ public class Camera2 extends Component {
     private float near; 
     private float far; 
     
-    public Camera2() {
+    public Camera() {
         activate(); 
     }
     

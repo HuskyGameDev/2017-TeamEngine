@@ -7,6 +7,9 @@ import oasis.core.Logger;
 import oasis.core.Oasis;
 import oasis.core.OasisException;
 import oasis.core.ResourceManager;
+import oasis.entity.Camera;
+import oasis.entity.Light;
+import oasis.entity.Transform;
 import oasis.graphics.sort.BasicLightSorter;
 import oasis.graphics.sort.BasicMeshSorter;
 import oasis.graphics.sort.LightSorter;
@@ -79,6 +82,7 @@ public class Graphics {
     
     private List<RenderData> opaqueQueue = new ArrayList<>(); 
     private LightList lights = new LightList(); 
+    private Transform camTfm = null; 
     private Camera camera = null; 
     
     private boolean needInit = true; 
@@ -165,7 +169,7 @@ public class Graphics {
         gd.setRenderTarget(camera.getRenderTarget()); 
         gd.clearBuffers(new Vector4(0.5f, 0.6f, 0.8f, 1.0f), true);
         
-        drawQueue(camera, RenderQueue.OPAQUE); 
+        drawQueue(camera, camTfm, RenderQueue.OPAQUE); 
     }
     
     private void drawShadowMap(Camera camera, Matrix4 viewProjMat, RenderQueue queue, RenderTarget target) {
@@ -185,18 +189,19 @@ public class Graphics {
         }
     }
     
-    private void drawQueue(Camera camera, RenderQueue queue) {
+    private void drawQueue(Camera camera, Transform tfm, RenderQueue queue) {
         // TODO refactor 
         Camera cam = new Camera(); 
-        DirectionalLight shadowLight = (DirectionalLight) lights.get(0); 
-        cam.setPosition(camera.getPosition());
-        cam.setRotation(Quaternion.direction(shadowLight.getDirection()));
+        Transform lightTfm = new Transform(); 
+        RenderLight shadowLight = lights.get(0); 
+        lightTfm.setPosition(tfm.getPosition());
+        lightTfm.setRotation(Quaternion.direction(shadowLight.transform.getRotation().getForward()));
         
         float rad = 100; 
         
         Matrix4 shadowProjMat = Matrix4.orthographic(new Vector3(-rad, -rad, rad), new Vector3(rad, rad, -rad)); 
         Matrix4 bias = Matrix4.translation(new Vector3(0.5f)).multiply(Matrix4.scale(new Vector3(0.5f)));
-        Matrix4 shadowViewMat = cam.getViewMatrix(); 
+        Matrix4 shadowViewMat = Camera.getViewMatrix(lightTfm.getPosition(), lightTfm.getRotation()); 
         
         Matrix4 shadowViewProjMat = shadowProjMat.multiply(shadowViewMat); 
         
@@ -212,15 +217,15 @@ public class Graphics {
         
         List<RenderData> meshes = getQueue(queue); 
         
-        meshSorter.sort(camera, lights, meshes);
+        meshSorter.sort(camera, tfm, lights, meshes);
         
         LightList renderLights = new LightList(); 
         
         Material lastMat = null; 
         
         Matrix4 projMat = camera.getProjectionMatrix(); 
-        Matrix4 viewMat = camera.getViewMatrix(); 
-        Vector3 camPos = camera.getPosition(); 
+        Matrix4 viewMat = Camera.getViewMatrix(tfm.getPosition(), tfm.getRotation()); 
+        Vector3 camPos = tfm.getPosition(); 
         
         for (RenderData data : meshes) {
             Material mat = data.getMaterial(); 
@@ -264,7 +269,7 @@ public class Graphics {
             Shader.setMatrix4(UNIFORM_NAMES[UNIFORM_SHADOW_MVP], mvp); 
             
             {
-                Light light = null; 
+                RenderLight light = null; 
                 
                 if (renderLights.getLightCount() > 0) {
                     light = renderLights.get(0); 
@@ -313,11 +318,17 @@ public class Graphics {
         Shader.setInt(UNIFORM_NAMES[UNIFORM_HAS_DIFFUSE_TEX], diffuseTex == null ? 0 : 1); 
     }
     
-    private void applyLight(Matrix4 view, Light light) {
-        if (light != null) {
-            Shader.setVector3(UNIFORM_NAMES[UNIFORM_LIGHT_COL], light.getColor()); 
-            Shader.setVector4(UNIFORM_NAMES[UNIFORM_LIGHT_POS], light.getPositionUniform(view)); 
-            Shader.setVector3(UNIFORM_NAMES[UNIFORM_LIGHT_ATTEN], light.getAttenuationUniform()); 
+    private void applyLight(Matrix4 view, RenderLight light) {
+        if (light != null && light.isValid()) {
+            switch (light.light.getType()) {
+            default: 
+                throw new OasisException("Unsupported light type: " + light.light.getType()); 
+            case DIRECTIONAL: 
+                Shader.setVector3(UNIFORM_NAMES[UNIFORM_LIGHT_COL], light.light.getColor()); 
+                Shader.setVector4(UNIFORM_NAMES[UNIFORM_LIGHT_POS], new Vector4(light.transform.getRotation().getForward(), 0.0f));  
+//                Shader.setVector3(UNIFORM_NAMES[UNIFORM_LIGHT_ATTEN], light.getAttenuationUniform());
+                break; 
+            }
         }
         else {
             Shader.clearValue(UNIFORM_NAMES[UNIFORM_LIGHT_COL]); 
@@ -326,12 +337,13 @@ public class Graphics {
         }
     }
     
-    public void setCamera(Camera camera) {
+    public void setCamera(Camera camera, Transform transform) {
         this.camera = camera; 
+        this.camTfm = transform; 
     }
     
-    public void addLight(Light light) {
-        lights.add(light); 
+    public void addLight(Light light, Transform tfm) {
+        lights.add(new RenderLight(light, tfm)); 
     }
     
     public void addAmbient(Vector3 color) {

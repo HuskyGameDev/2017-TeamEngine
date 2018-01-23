@@ -11,7 +11,7 @@ import oasis.math.Vector3;
  * @author Nicholas Hamilton 
  *
  */
-public class Transform extends Component {
+public class Transform extends EntityComponent {
 
     private Vector3 position; 
     private Quaternion rotation; 

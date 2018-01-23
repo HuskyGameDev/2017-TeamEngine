@@ -3,7 +3,7 @@ package oasis.entity;
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
 
-public class MeshContainer extends Component {
+public class MeshContainer extends EntityComponent {
 
     private Mesh mesh; 
     private Material material; 

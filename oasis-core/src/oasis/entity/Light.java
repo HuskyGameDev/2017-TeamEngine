@@ -1,10 +1,8 @@
-package oasis.graphics;
+package oasis.entity;
 
-import oasis.math.Matrix4;
 import oasis.math.Vector3;
-import oasis.math.Vector4;
 
-public abstract class Light {
+public class Light extends EntityComponent {
 
     public enum Type {
         
@@ -17,18 +15,22 @@ public abstract class Light {
     }
     
     private Vector3 color; 
+    private Type type; 
     
     public Light() {
         this.color = new Vector3(); 
     }
     
-    public abstract Type getType(); 
-    
-    protected abstract Vector4 getPositionUniform(Matrix4 viewMat); 
-    protected abstract Vector3 getAttenuationUniform(); 
+    public Type getType() {
+        return type; 
+    }
     
     public Vector3 getColor() {
         return new Vector3(color); 
+    }
+    
+    public void setType(Type type) {
+        this.type = type; 
     }
     
     public void setColor(Vector3 color) {

@@ -10,7 +10,7 @@ public abstract class BaseEntityBehavior extends Behavior {
     private Matcher matcher; 
     
     @SafeVarargs
-    public BaseEntityBehavior(int priority, Class<? extends Component>... require) {
+    public BaseEntityBehavior(int priority, Class<? extends EntityComponent>... require) {
         this(priority, Matcher.require(require).create()); 
     }
     

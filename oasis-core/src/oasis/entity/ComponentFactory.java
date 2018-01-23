@@ -1,6 +1,6 @@
 package oasis.entity;
 
-public interface ComponentFactory<T extends Component> {
+public interface ComponentFactory<T extends EntityComponent> {
 
     T create(); 
     

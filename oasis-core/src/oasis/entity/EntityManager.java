@@ -11,7 +11,7 @@ import java.util.Queue;
 
 public class EntityManager {
 
-    private Map<Class<? extends Component>, ComponentId<? extends Component>> compDict = new HashMap<>(); 
+    private Map<Class<? extends EntityComponent>, ComponentId<? extends EntityComponent>> compDict = new HashMap<>(); 
     
     private List<Entity> entities = new ArrayList<>(); 
     private List<BitSet> enabled = new ArrayList<>(); 
@@ -44,7 +44,7 @@ public class EntityManager {
     }
     
     @SuppressWarnings("unchecked")
-    public <T extends Component> ComponentId<T> getComponentId(Class<T> type) {
+    public <T extends EntityComponent> ComponentId<T> getComponentId(Class<T> type) {
         ComponentId<?> id = compDict.get(type); 
         
         if (id == null) {
@@ -54,11 +54,11 @@ public class EntityManager {
         return (ComponentId<T>) id; 
     }
     
-    public <T extends Component> boolean isComponentRegistered(Class<T> type) {
+    public <T extends EntityComponent> boolean isComponentRegistered(Class<T> type) {
         return compDict.get(type) != null; 
     }
     
-    public <T extends Component> void registerComponent(Class<T> type) {
+    public <T extends EntityComponent> void registerComponent(Class<T> type) {
         if (isComponentRegistered(type)) return; 
         
         ComponentPool<T> pool = new ComponentPool<T>(new DefaultComponentFactory<T>(type)); 
@@ -84,11 +84,11 @@ public class EntityManager {
     }
     
     @SuppressWarnings("unchecked")
-    public <T extends Component> T addComponent(int id, ComponentId<T> type) {
+    public <T extends EntityComponent> T addComponent(int id, ComponentId<T> type) {
         int cid = type.getId(); 
 
         // activate any data 
-        pools.get(cid).get(id).activate(); 
+        pools.get(cid).create(id); 
         
         enabled.get(id).set(cid, true); 
         
@@ -98,7 +98,7 @@ public class EntityManager {
     }
     
     @SuppressWarnings("unchecked")
-    public <T extends Component> T getComponent(int id, ComponentId<T> type) {
+    public <T extends EntityComponent> T getComponent(int id, ComponentId<T> type) {
         int cid = type.getId(); 
         
         if (!enabled.get(id).get(cid)) return null; 
@@ -106,17 +106,17 @@ public class EntityManager {
         return (T) pools.get(cid).get(id); 
     }
     
-    public <T extends Component> boolean hasComponent(int id, ComponentId<T> type) {
+    public <T extends EntityComponent> boolean hasComponent(int id, ComponentId<T> type) {
         int cid = type.getId(); 
         
         return enabled.get(id).get(cid); 
     }
     
-    public <T extends Component> boolean removeComponent(int id, ComponentId<T> type) {
+    public <T extends EntityComponent> boolean removeComponent(int id, ComponentId<T> type) {
         int cid = type.getId(); 
         
         // deactivate any data 
-        pools.get(cid).get(id).deactivate(); 
+        pools.get(cid).destroy(id); 
         
         boolean removed = enabled.get(id).get(cid); 
         enabled.get(id).set(cid, false); 

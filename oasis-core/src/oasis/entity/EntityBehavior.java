@@ -3,7 +3,7 @@ package oasis.entity;
 public abstract class EntityBehavior extends BaseEntityBehavior {
 
     @SafeVarargs
-    public EntityBehavior(int priority, Class<? extends Component>... require) {
+    public EntityBehavior(int priority, Class<? extends EntityComponent>... require) {
         super(priority, require); 
     }
     

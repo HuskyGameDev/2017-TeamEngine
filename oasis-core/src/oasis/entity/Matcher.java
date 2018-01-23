@@ -7,19 +7,19 @@ public class Matcher {
 
     private static final Matcher empty = new Matcher(); 
     
-    private List<Class<? extends Component>> require = new ArrayList<>(); 
-    private List<Class<? extends Component>> exclude = new ArrayList<>(); 
+    private List<Class<? extends EntityComponent>> require = new ArrayList<>(); 
+    private List<Class<? extends EntityComponent>> exclude = new ArrayList<>(); 
     
     private Matcher() {} 
     
     @SafeVarargs
-    public static Builder require(Class<? extends Component>... require) {
+    public static Builder require(Class<? extends EntityComponent>... require) {
         Builder b = new Builder(); 
         return b.require(require); 
     }
     
     @SafeVarargs
-    public static Builder exclude(Class<? extends Component>... exclude) {
+    public static Builder exclude(Class<? extends EntityComponent>... exclude) {
         Builder b = new Builder(); 
         return b.exclude(exclude); 
     }
@@ -45,7 +45,7 @@ public class Matcher {
         private Builder() {} 
         
         @SuppressWarnings("unchecked")
-        public Builder require(Class<? extends Component>... require) {
+        public Builder require(Class<? extends EntityComponent>... require) {
             if (require != null) {
                 for (int i = 0; i < require.length; i++) {
                     matcher.require.add(require[i]); 
@@ -55,7 +55,7 @@ public class Matcher {
         }
         
         @SuppressWarnings("unchecked")
-        public Builder exclude(Class<? extends Component>... exclude) {
+        public Builder exclude(Class<? extends EntityComponent>... exclude) {
             if (exclude != null) {
                 for (int i = 0; i < exclude.length; i++) {
                     matcher.exclude.add(exclude[i]); 

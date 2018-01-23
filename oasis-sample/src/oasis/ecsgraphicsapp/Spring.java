@@ -1,9 +1,9 @@
 package oasis.ecsgraphicsapp;
 
-import oasis.entity.Component;
+import oasis.entity.EntityComponent;
 import oasis.math.Vector3;
 
-public class Spring extends Component {
+public class Spring extends EntityComponent {
 
     public final Vector3 origin = new Vector3(); 
     public float offset = 0.0f; 

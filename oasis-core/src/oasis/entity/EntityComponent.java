@@ -1,6 +1,6 @@
 package oasis.entity;
 
-public abstract class Component {
+public abstract class EntityComponent {
 
     public void activate() {} 
     

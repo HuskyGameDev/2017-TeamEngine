@@ -1,41 +1,34 @@
 package oasis.ecsgraphicsapp;
 
+import oasis.audio.AudioClip;
+import oasis.audio.AudioSource;
 import oasis.core.Application;
 import oasis.core.BackendType;
 import oasis.core.Config;
 import oasis.core.Oasis;
 import oasis.core.ResourceManager;
+import oasis.entity.Camera;
 import oasis.entity.Entity;
 import oasis.entity.EntityManager;
+import oasis.entity.Light;
+import oasis.entity.LightRenderer;
 import oasis.entity.MeshContainer;
 import oasis.entity.MeshRenderer;
 import oasis.entity.Transform;
-import oasis.graphics.Camera;
-import oasis.graphics.DirectionalLight;
 import oasis.graphics.Graphics;
-import oasis.graphics.GraphicsDevice;
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
 import oasis.graphics.Shader;
 import oasis.input.Keyboard;
-import oasis.input.Mouse;
 import oasis.math.Mathf;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
-import oasis.math.Vector4;
 
 public class EcsGraphicsApp implements Application {
 
     private EntityManager entityManager; 
     
-    private Camera camera; 
-    private float yaw, pitch; 
-
-    private int ticks; 
-    
-    private Vector3 skyColor; 
     private Vector3 ambientColor; 
-    private DirectionalLight sunLight; 
     
     private Shader bbpShader; 
     private Mesh sphereMesh; 
@@ -48,6 +41,11 @@ public class EcsGraphicsApp implements Application {
     private Material bluePlasticMat; 
     private Material pinkRubberMat; 
     private Material emeraldMat; 
+    
+    private AudioClip music; 
+//    private AudioClip sfx; 
+    private AudioSource source1; 
+//    private AudioSource source2; 
     
     public static void main(String[] args) {
         Config conf = new Config(); 
@@ -65,13 +63,27 @@ public class EcsGraphicsApp implements Application {
         loadShaders(); 
         loadMaterials(); 
         loadMeshes(); 
+        loadSounds(); 
         
         entityManager = new EntityManager(); 
+        
         entityManager.registerComponent(Transform.class); 
         entityManager.registerComponent(MeshContainer.class); 
         entityManager.registerComponent(Spring.class); 
+        entityManager.registerComponent(Camera.class);
+        entityManager.registerComponent(FpsCamera.class); 
+        entityManager.registerComponent(Light.class); 
+        entityManager.registerComponent(SunLightTag.class); 
+        
         entityManager.addBehavior(new MeshRenderer()); 
+        entityManager.addBehavior(new LightRenderer()); 
         entityManager.addBehavior(new SpringBehavior()); 
+        entityManager.addBehavior(new FpsCameraController());
+        entityManager.addBehavior(new SunLightRotator()); 
+        
+        createCameraEntity(); 
+        
+        createSunLightEntity(); 
         
         createMeshEntity(false, new Vector3(0, 0, 0), terrainMesh, grassMat); 
         
@@ -85,17 +97,7 @@ public class EcsGraphicsApp implements Application {
             }
         }
         
-        camera = new Camera(); 
-        camera.setPosition(new Vector3(0, 3, 10));
-        camera.setFov(Mathf.toRadians(70.0f)); 
-        camera.setRotation(Quaternion.direction(new Vector3(0, 0, -1f)));
-        
-        skyColor = new Vector3(0.6f, 0.7f, 0.9f); 
         ambientColor = new Vector3(0.2f); 
-        
-        sunLight = new DirectionalLight(); 
-        sunLight.setColor(new Vector3(0.8f)); 
-        sunLight.setDirection(new Vector3(0, -1, -1));
         
         Oasis.getMouse().setCursorVisible(false); 
     }
@@ -107,67 +109,16 @@ public class EcsGraphicsApp implements Application {
             Oasis.stop();
         }
         
-        ticks++; 
-        
-        Vector3 camPos = camera.getPosition(); 
-        Quaternion camRot = camera.getRotation(); 
-        
-        Vector3 dir = new Vector3(); 
-        
-        if (keys.isKeyDown(Keyboard.KEY_I)) {
-            dir.addSelf(new Vector3(0, 0, -1)); 
-        }
-        if (keys.isKeyDown(Keyboard.KEY_K)) {
-            dir.addSelf(new Vector3(0, 0, 1)); 
-        }
-        if (keys.isKeyDown(Keyboard.KEY_J)) {
-            dir.addSelf(new Vector3(-1, 0, 0)); 
-        }
-        if (keys.isKeyDown(Keyboard.KEY_L)) {
-            dir.addSelf(new Vector3(1, 0, 0)); 
-        }
-        
-        dir.rotateSelf(camRot).setY(0); 
-        
-        if (keys.isKeyDown(Keyboard.KEY_SPACE)) {
-            dir.addSelf(new Vector3(0, 1, 0)); 
-        }
-        if (keys.isKeyDown(Keyboard.KEY_SHIFT)) {
-            dir.addSelf(new Vector3(0, -1, 0)); 
-        }
-        
-        dir.normalizeSelf().multiplySelf(30 * dt); 
-        camPos.addSelf(dir); 
-        
-        camera.setPosition(camPos); 
-//        listener.setPosition(camera.getPosition()); 
-        
-        Mouse mouse = Oasis.getMouse(); 
-        
-        yaw += -mouse.getDx() * 0.001f; 
-        pitch += -mouse.getDy() * 0.001f; 
-        camera.setRotation(yaw, pitch);
-        
-        mouse.center(); 
-        
-        sunLight.setDirection(new Vector3(1, 0, 0).rotate(Quaternion.axisAngle(new Vector3(0, 0, 1), -ticks * 0.001f)));
-        
         entityManager.update(dt); 
     }
 
     @Override
     public void render() {
-        GraphicsDevice gd = Oasis.getGraphicsDevice(); 
         Graphics g = Oasis.getGraphics();
-        
-        gd.clearBuffers(new Vector4(skyColor, 1.0f), true);
         
         g.begin(); 
         
         g.addAmbient(ambientColor); 
-        g.addLight(sunLight); 
-        
-        g.setCamera(camera); 
         
         entityManager.render(); 
         
@@ -182,6 +133,34 @@ public class EcsGraphicsApp implements Application {
     @Override
     public boolean closeAttempt() {
         return true; 
+    }
+    
+    private Entity createSunLightEntity() {
+        Entity e = entityManager.createEntity(); 
+        
+        Transform t = e.add(Transform.class); 
+        Light l = e.add(Light.class); 
+        e.add(SunLightTag.class); 
+        
+        t.setRotation(Quaternion.direction(new Vector3(0, -1, -1)));
+        l.setColor(new Vector3(0.8f));
+        l.setType(Light.Type.DIRECTIONAL); 
+        
+        return e; 
+    }
+    
+    private Entity createCameraEntity() {
+        Entity e = entityManager.createEntity(); 
+        
+        Camera c = e.add(Camera.class); 
+        Transform t = e.add(Transform.class); 
+        e.add(FpsCamera.class); 
+        
+        t.setPosition(new Vector3(0, 3, 10));
+        c.setFov(Mathf.toRadians(70.0f)); 
+        t.setRotation(Quaternion.direction(new Vector3(0, 0, -1f)));
+        
+        return e; 
     }
     
     private Entity createMeshEntity(boolean move, Vector3 position, Mesh mesh, Material material) {
@@ -266,4 +245,16 @@ public class EcsGraphicsApp implements Application {
         grassMat.setDiffuseMap(ResourceManager.loadTexture2D("grass.jpg")); 
     }
 
+    private void loadSounds() {
+        music = ResourceManager.loadAudioClip("sounds/overworld.wav"); 
+//        sfx = ResourceManager.loadAudioClip("sounds/pitfall.wav"); 
+        
+        source1 = AudioSource.create(); 
+        source1.setClip(music);
+        source1.play(); 
+        
+//        source2 = AudioSource.create(); 
+//        source2.setClip(sfx); 
+    }
+    
 }

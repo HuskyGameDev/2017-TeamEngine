@@ -1,6 +1,6 @@
 package oasis.entity;
 
-public class ComponentId<T extends Component> {
+public class ComponentId<T extends EntityComponent> {
 
     private Class<T> type; 
     private int id; 
