@@ -8,10 +8,13 @@ import oasis.entity.MeshContainer;
 import oasis.entity.MeshRenderer;
 import oasis.entity.Transform;
 import oasis.graphics.Graphics;
+import oasis.input.Keyboard;
+import oasis.math.Vector3;
 
 public abstract class BasicGame implements Application {
 
     protected final EntityManager entityManager = new EntityManager(); 
+    protected final Vector3 ambientColor = new Vector3(); 
     
     public BasicGame() {} 
     
@@ -43,6 +46,11 @@ public abstract class BasicGame implements Application {
     
     @Override
     public final void update(float dt) {
+        Keyboard keys = Oasis.getKeyboard(); 
+        if (keys.isKeyDown(Keyboard.KEY_ESCAPE)) {
+            Oasis.stop();
+        }
+        
         preUpdateGame(dt); 
         
         entityManager.update(dt); 
@@ -54,6 +62,7 @@ public abstract class BasicGame implements Application {
     public final void render() {
         Graphics g = Oasis.getGraphics(); 
         g.begin(); 
+        g.addAmbient(ambientColor); 
         preRenderGame(); 
         
         entityManager.render(); 
