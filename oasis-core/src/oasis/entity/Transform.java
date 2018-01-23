@@ -1,4 +1,8 @@
-package oasis.math;
+package oasis.entity;
+
+import oasis.math.Matrix4;
+import oasis.math.Quaternion;
+import oasis.math.Vector3;
 
 /**
  * 
@@ -7,7 +11,7 @@ package oasis.math;
  * @author Nicholas Hamilton 
  *
  */
-public class Transform {
+public class Transform extends Component {
 
     private Vector3 position; 
     private Quaternion rotation; 
@@ -20,14 +24,15 @@ public class Transform {
         rotation = new Quaternion(); 
         scale = new Vector3(1);
         matrix = Matrix4.identity(); 
+        dirty = true; 
     }
     
-    public Vector3 getWorldPosition() { return position; }
-    public Quaternion getWorldRotation() { return rotation; } 
-    public Vector3 getWorldScale() { return scale; } 
-    
-    public Matrix4 getWorldMatrix() { 
-        return getMatrix(); 
+    @Override
+    public void activate() {
+        position.set(0); 
+        rotation.set(0); 
+        scale.set(1); 
+        dirty = true; 
     }
     
     public Vector3 getPosition() { return position; } 

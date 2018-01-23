@@ -160,6 +160,8 @@ public class Graphics {
     public void finish() {
         GraphicsDevice gd = Oasis.getGraphicsDevice();  
         
+//        if (camera == null) return; 
+        
         gd.setRenderTarget(camera.getRenderTarget()); 
         gd.clearBuffers(new Vector4(0.5f, 0.6f, 0.8f, 1.0f), true);
         

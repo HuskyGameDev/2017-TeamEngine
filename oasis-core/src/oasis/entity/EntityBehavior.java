@@ -1,56 +1,48 @@
 package oasis.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+public abstract class EntityBehavior extends BaseEntityBehavior {
 
-public abstract class EntityBehavior extends Behavior {
-
-    protected final List<Entity> entities = new ArrayList<>(); 
-    
-    private Matcher matcher; 
-    
     @SafeVarargs
     public EntityBehavior(int priority, Class<? extends Component>... require) {
-        this(priority, Matcher.require(require).create()); 
+        super(priority, require); 
     }
     
     public EntityBehavior(int priority, Matcher matcher) {
-        super(priority); 
-        
-        if (matcher == null) {
-            this.matcher = Matcher.empty(); 
-        }
-        else {
-            this.matcher = matcher; 
-        }
+        super(priority, matcher); 
     }
     
-    public void updateIds(EntityManager em) {} 
+    public void preUpdate(float dt) {} 
     
-    public Matcher getMatcher() {
-        return matcher; 
-    }
+    public void update(Entity e, float dt) {} 
+
+    public void postUpdate(float dt) {} 
     
-    public void onManagerSet(EntityManager em) {
-        entities.clear(); 
+    public void preRender() {} 
+    
+    public void render(Entity e) {} 
+
+    public void postRender() {} 
+    
+    @Override
+    public void update(float dt) {
+        preUpdate(dt); 
         
-        for (int i = 0; i < em.getEntityCount(); i++) {
-            Entity e = em.getEntity(i); 
-            
-            if (matcher.matches(e)) {
-                entities.add(e); 
-            }
+        for (int i = 0; i < entities.size(); i++) {
+            update(entities.get(i), dt); 
         }
         
-        updateIds(em); 
+        postUpdate(dt); 
     }
     
-    public void onEntityChanged(Entity e) {
-        entities.remove(e); 
+    @Override
+    public void render() {
+        preRender(); 
         
-        if (matcher.matches(e)) {
-            entities.add(e); 
+        for (int i = 0; i < entities.size(); i++) {
+            render(entities.get(i)); 
         }
+        
+        postRender(); 
     }
     
 }

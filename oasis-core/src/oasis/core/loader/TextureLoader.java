@@ -10,6 +10,7 @@ import oasis.core.ResourceLoader;
 import oasis.file.PathList;
 import oasis.graphics.Texture2D;
 import oasis.graphics.TextureFormat;
+import oasis.graphics.WrapMode;
 
 /**
  * Loads and manages textures from the file system 
@@ -48,6 +49,7 @@ public class TextureLoader implements ResourceLoader<Texture2D> {
 			}
 			
 			// set pixels of texture
+			tex.setWrapModes(WrapMode.REPEAT, WrapMode.REPEAT);
 			tex.setPixels(data);
 			tex.upload(); 
 			
