@@ -40,9 +40,9 @@ public class TestApp extends BasicGame {
         
         Oasis.getMouse().setCursorVisible(false); 
         
-        Resources.musicSource.play(); 
+//        Resources.musicSource.play(); 
     }
-
+    
     private void populateScene() {
         Material[] mats = new Material[] {
                 Resources.stoneMat, 

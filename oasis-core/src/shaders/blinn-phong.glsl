@@ -131,6 +131,6 @@ void main()
     vec3 diffuseMat = oasis_Diffuse.rgb * texture2D(oasis_DiffuseMap, v_TexCoord).rgb; 
     vec3 specularMat = oasis_Specular.rgb; 
     
-    gl_FragColor.rgb = diffuseMat * (ambient + diffuse) + specular * specularMat; 
+    gl_FragColor.rgb = diffuseMat * (ambient + diffuse) + specular * specularMat + oasis_Emissive; 
     gl_FragColor.a = 1.0; 
 }

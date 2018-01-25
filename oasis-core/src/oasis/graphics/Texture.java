@@ -17,6 +17,8 @@ public abstract class Texture {
         this.height = height; 
     }
     
+    public abstract void dispose(); 
+    
     public abstract TextureType getType(); 
     
     public TextureFormat getFormat() {

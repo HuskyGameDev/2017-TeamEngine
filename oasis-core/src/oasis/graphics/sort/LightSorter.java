@@ -1,7 +1,7 @@
 package oasis.graphics.sort;
 
-import oasis.graphics.RenderLightList;
 import oasis.graphics.RenderData;
+import oasis.graphics.RenderLightList;
 
 public interface LightSorter {
 

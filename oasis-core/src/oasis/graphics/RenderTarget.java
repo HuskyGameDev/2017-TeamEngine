@@ -24,6 +24,22 @@ public abstract class RenderTarget {
     
     public RenderTarget() {}
     
+    public abstract void dispose(); 
+    
+    public void dispose(boolean renderTextures) {
+        dispose(); 
+        
+        if (renderTextures) {
+            if (depthBuffer != null) {
+                depthBuffer.dispose(); 
+            }
+            
+            for (int i = 0; i < colorBuffers.size(); i++) {
+                colorBuffers.get(i).dispose(); 
+            }
+        }
+    }
+    
     public boolean isValid() {
         return depthBuffer != null || colorBuffers.size() > 0; 
     }

@@ -1,4 +1,4 @@
-package oasis.testapp;
+package oasis.terrainapp;
 
 import oasis.audio.AudioClip;
 import oasis.audio.AudioSource;
@@ -13,6 +13,7 @@ public class Resources {
     public static Shader bbpShader; 
     public static Mesh sphereMesh; 
     public static Mesh terrainMesh; 
+    public static Mesh treeMesh; 
     public static Material stoneMat; 
     public static Material grassMat; 
     public static Material goldMat; 
@@ -22,6 +23,7 @@ public class Resources {
     public static Material pinkRubberMat; 
     public static Material emeraldMat; 
     public static Material sunMat; 
+    public static Material leafMat; 
     public static AudioClip music; 
     public static AudioSource musicSource; 
     
@@ -34,6 +36,7 @@ public class Resources {
         
         sphereMesh = ResourceManager.loadMesh("texture-sphere.obj");
         terrainMesh = ResourceManager.loadMesh("texture-terrain.obj");
+        treeMesh = ResourceManager.loadMesh("fir.obj"); 
         
         // materials 
         
@@ -72,6 +75,10 @@ public class Resources {
         bluePlasticMat.setDiffuseColor(new Vector3(0.0f, 0.510f, 0.510f));
         bluePlasticMat.setSpecularColor(new Vector3(0.502f));
         bluePlasticMat.setSpecularPower(128 * 0.25f);
+        
+        leafMat = new Material(); 
+        leafMat.setShader(bbpShader); 
+        leafMat.setDiffuseColor(new Vector3(0.2f, 0.6f, 0.2f));
         
         pinkRubberMat = new Material(); 
         pinkRubberMat.setShader(bbpShader); 

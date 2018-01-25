@@ -23,6 +23,13 @@ public class OglRenderTarget extends RenderTarget {
         }
     }
     
+    public void dispose() {
+        if (fbo[0] != 0) {
+            ogl.glDeleteFramebuffers(1, fbo, 0); 
+            fbo[0] = 0; 
+        }
+    }
+    
     private void validate() {
         if (fbo[0] == 0) {
             ogl.glGenFramebuffers(1, fbo, 0); 

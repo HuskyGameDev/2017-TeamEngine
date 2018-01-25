@@ -10,6 +10,8 @@ public abstract class Mesh {
         return Oasis.getGraphicsDevice().createMesh(); 
     }
     
+    public abstract void dispose(); 
+    
     public abstract void upload(); 
     
     public abstract void clear(); 

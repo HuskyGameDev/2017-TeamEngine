@@ -189,23 +189,39 @@ public class Graphics {
         }
     }
     
+    private void clearShadowMap(RenderTarget target) {
+        GraphicsDevice gd = Oasis.getGraphicsDevice(); 
+        
+        gd.setRenderTarget(target); 
+        gd.clearBuffers(new Vector4(0, 0, 0, 0), true);
+    }
+    
     private void drawQueue(Camera camera, Transform tfm, RenderQueue queue) {
         // TODO refactor 
-        Camera cam = new Camera(); 
-        Transform lightTfm = new Transform(); 
-        RenderLight shadowLight = lights.get(0); 
-        lightTfm.setPosition(tfm.getPosition());
-        lightTfm.setRotation(Quaternion.direction(shadowLight.transform.getRotation().getForward()));
-        
-        float rad = 100; 
+        float rad = 200; 
         
         Matrix4 shadowProjMat = Matrix4.orthographic(new Vector3(-rad, -rad, rad), new Vector3(rad, rad, -rad)); 
         Matrix4 bias = Matrix4.translation(new Vector3(0.5f)).multiply(Matrix4.scale(new Vector3(0.5f)));
-        Matrix4 shadowViewMat = Camera.getViewMatrix(lightTfm.getPosition(), lightTfm.getRotation()); 
+        Matrix4 shadowViewMat = Matrix4.identity(); 
         
-        Matrix4 shadowViewProjMat = shadowProjMat.multiply(shadowViewMat); 
+        Matrix4 shadowViewProjMat = Matrix4.identity(); 
         
-        drawShadowMap(cam, shadowViewProjMat, queue, shadowTarget); 
+        if (lights.getLightCount() == 0) {
+            clearShadowMap(shadowTarget); 
+        }
+        else {
+            Camera cam = new Camera(); 
+            Transform lightTfm = new Transform(); 
+            RenderLight shadowLight = lights.get(0); 
+            lightTfm.setPosition(tfm.getPosition());
+            lightTfm.setRotation(Quaternion.direction(shadowLight.transform.getRotation().getForward()));
+            
+            shadowViewMat = Camera.getViewMatrix(lightTfm.getPosition(), lightTfm.getRotation()); 
+            shadowViewProjMat = shadowProjMat.multiply(shadowViewMat); 
+            
+            drawShadowMap(cam, shadowViewProjMat, queue, shadowTarget); 
+        }
+        
         // apply bias after shadow map has been made 
         shadowViewProjMat = bias.multiply(shadowViewProjMat); 
         
@@ -325,7 +341,7 @@ public class Graphics {
                 throw new OasisException("Unsupported light type: " + light.light.getType()); 
             case DIRECTIONAL: 
                 Shader.setVector3(UNIFORM_NAMES[UNIFORM_LIGHT_COL], light.light.getColor()); 
-                Shader.setVector4(UNIFORM_NAMES[UNIFORM_LIGHT_POS], new Vector4(light.transform.getRotation().getForward(), 0.0f));  
+                Shader.setVector4(UNIFORM_NAMES[UNIFORM_LIGHT_POS], new Vector4(view.multiplyNoTransform(light.transform.getRotation().getForward(), 0.0f), 0.0f));  
 //                Shader.setVector3(UNIFORM_NAMES[UNIFORM_LIGHT_ATTEN], light.getAttenuationUniform());
                 break; 
             }

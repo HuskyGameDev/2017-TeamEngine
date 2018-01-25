@@ -15,6 +15,8 @@ public class OglTexture2D extends Texture2D {
     private int[] pixels; 
     private IntBuffer buffer; 
     
+    private boolean needUpload = false; 
+    
     public OglTexture2D(Ogl ogl, TextureFormat format, int width, int height) {
         super(format, width, height);
         this.ogl = ogl;
@@ -23,11 +25,24 @@ public class OglTexture2D extends Texture2D {
         buffer = Oasis.getDirectBufferAllocator().allocate(width * height * 4).asIntBuffer(); 
     }
 
+    public void dispose() {
+        if (id[0] != 0) {
+            ogl.glDeleteTextures(1, id, 0);
+            id[0] = 0; 
+            needUpload = true; 
+        }
+    }
+    
     private void validate() {
         if (id[0] != 0) return; 
         
         ogl.glGenTextures(1, id, 0);
         ogl.glBindTexture(Ogl.GL_TEXTURE_2D, id[0]);
+        
+        if (needUpload) {
+            upload(); 
+            needUpload = false; 
+        }
     }
     
     public int getId() {
@@ -39,11 +54,13 @@ public class OglTexture2D extends Texture2D {
     public void upload() {
         validate(); 
         
+        ogl.glBindTexture(Ogl.GL_TEXTURE_2D, id[0]);
+        
         ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_BASE_LEVEL, 0);
         ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_MAX_LEVEL, levels);
         
         ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_WRAP_S, OglConvert.getWrapMode(wrapU)); 
-        ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_WRAP_S, OglConvert.getWrapMode(wrapV)); 
+        ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_WRAP_T, OglConvert.getWrapMode(wrapV)); 
         ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_MIN_FILTER, OglConvert.getMinFilter(minFilter)); 
         ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_MAG_FILTER, OglConvert.getMagFilter(magFilter)); 
         

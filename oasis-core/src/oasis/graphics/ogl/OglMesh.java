@@ -42,6 +42,19 @@ public class OglMesh extends Mesh {
         this.ogl = ogl; 
     }
 
+    public void dispose() {
+        if (vbo[0] != 0) {
+            ogl.glDeleteBuffers(1, vbo, 0); 
+            vbo[0] = 0; 
+            updateVertices = true; 
+        }
+        if (ibo[0] != 0) {
+            ogl.glDeleteBuffers(1, ibo, 0); 
+            ibo[0] = 0; 
+            updateIndices = true; 
+        }
+    }
+    
     private void checkForNewPosition(int verts) {
         if (indices != null) checkInNewRange(indices, verts); 
         
@@ -243,8 +256,57 @@ public class OglMesh extends Mesh {
 
     @Override
     public void calculateNormals() {
-        // TODO Auto-generated method stub
+        if (positions == null) {
+            throw new OasisException("Position coordinates must be set before tangents can be calculated!"); 
+        }
+        if (indices == null) {
+            throw new OasisException("Index data must be set before tangents can be calculated!"); 
+        }
         
+        int vertCount = positions.length / 3; 
+        
+        float[] norm = new float[3 * vertCount]; 
+        
+        Vector3 a = new Vector3(); 
+        Vector3 b = new Vector3(); 
+        Vector3 c = new Vector3(); 
+        
+        for (int i = 0; i < indices.length; i += 3) {
+            short i1 = indices[i + 0]; 
+            short i2 = indices[i + 1]; 
+            short i3 = indices[i + 2]; 
+            
+            a.set(positions[i1 * 3 + 0], positions[i1 * 3 + 1], positions[i1 * 3 + 2]); 
+            b.set(positions[i2 * 3 + 0], positions[i2 * 3 + 1], positions[i2 * 3 + 2]); 
+            c.set(positions[i3 * 3 + 0], positions[i3 * 3 + 1], positions[i3 * 3 + 2]); 
+            
+            b.subtractSelf(a).normalizeSelf(); 
+            c.subtractSelf(a).normalizeSelf(); 
+            
+            b.crossSelf(c).normalizeSelf(); 
+            
+            norm[i1 * 3 + 0] += b.x; 
+            norm[i1 * 3 + 1] += b.y; 
+            norm[i1 * 3 + 2] += b.z; 
+            norm[i2 * 3 + 0] += b.x; 
+            norm[i2 * 3 + 1] += b.y; 
+            norm[i2 * 3 + 2] += b.z; 
+            norm[i3 * 3 + 0] += b.x; 
+            norm[i3 * 3 + 1] += b.y; 
+            norm[i3 * 3 + 2] += b.z; 
+        }
+        
+        for (int i = 0; i < vertCount; i++) {
+            a.set(norm[i * 3 + 0], norm[i * 3 + 1], norm[i * 3 + 2]);
+            a.normalizeSelf(); 
+            
+            norm[i * 3 + 0] = a.x; 
+            norm[i * 3 + 1] = a.y; 
+            norm[i * 3 + 2] = a.z; 
+        }
+        
+        normals = norm; 
+        updateVertices = true; 
     }
 
     @Override
@@ -322,6 +384,15 @@ public class OglMesh extends Mesh {
             tan2[i3 * 3 + 0] += tDir.x; 
             tan2[i3 * 3 + 1] += tDir.y; 
             tan2[i3 * 3 + 2] += tDir.z; 
+        }
+        
+        for (int i = 0; i < vertCount; i++) {
+            v1.set(tan1[i * 3 + 0], tan1[i * 3 + 1], tan1[i * 3 + 2]);
+            v1.normalizeSelf(); 
+            
+            tan1[i * 3 + 0] = v1.x; 
+            tan1[i * 3 + 1] = v1.y; 
+            tan1[i * 3 + 2] = v1.z; 
         }
         
         tangents = tan1; 

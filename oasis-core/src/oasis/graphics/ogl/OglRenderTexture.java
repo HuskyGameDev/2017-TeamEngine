@@ -14,6 +14,13 @@ public class OglRenderTexture extends RenderTexture {
         this.ogl = ogl; 
     }
     
+    public void dispose() {
+        if (id[0] != 0) {
+            ogl.glDeleteTextures(1, id, 0);
+            id[0] = 0; 
+        }
+    }
+    
     private void validate() {
         if (id[0] == 0) {
             ogl.glGenTextures(1, id, 0);

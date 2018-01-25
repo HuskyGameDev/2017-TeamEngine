@@ -1,4 +1,4 @@
-package oasis.testapp;
+package oasis.terrainapp;
 
 import oasis.entity.Camera;
 import oasis.entity.Entity;
@@ -11,6 +11,9 @@ import oasis.graphics.Mesh;
 import oasis.math.Mathf;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
+import oasis.terrainapp.component.FpsCamera;
+import oasis.terrainapp.component.SunLightTag;
+import oasis.terrainapp.component.Velocity;
 
 public class EntityFactory {
 
@@ -42,24 +45,21 @@ public class EntityFactory {
         
         Camera c = e.add(Camera.class); 
         Transform t = e.add(Transform.class); 
+        Velocity v = e.add(Velocity.class); 
+        
+        v.velocity.set(0, 10, 0); 
+        
         e.add(FpsCamera.class); 
         
-        t.setPosition(new Vector3(0, 3, 10));
+        t.setPosition(new Vector3(0, TerrainGenerator.heightAtPosition(0, 0) + 2, 0));
         c.setFov(Mathf.toRadians(70.0f)); 
         t.setRotation(Quaternion.direction(new Vector3(0, 0, -1f)));
         
         return e; 
     }
     
-    public Entity createMeshEntity(boolean move, Vector3 position, Mesh mesh, Material material) {
+    public Entity createMeshEntity(Vector3 position, Mesh mesh, Material material) {
         Entity e = em.createEntity(); 
-        
-        if (move) {
-            Spring s = e.add(Spring.class); 
-            s.origin.set(position); 
-            s.time = (float) Math.random() * 10; 
-            s.speed = (float) Math.random(); 
-        }
         
         Transform t = e.add(Transform.class); 
         MeshContainer mc = e.add(MeshContainer.class); 

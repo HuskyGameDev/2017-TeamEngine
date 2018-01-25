@@ -52,5 +52,6 @@ public class Transform extends EntityComponent {
     public void setPosition(Vector3 pos) { position.set(pos); } 
     public void setRotation(Quaternion rot) { rotation.set(rot); } 
     public void setScale(Vector3 scl) { scale.set(scl); } 
+    public void setScale(float scl) { scale.set(scl); } 
     
 }

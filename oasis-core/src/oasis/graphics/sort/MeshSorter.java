@@ -4,8 +4,8 @@ import java.util.List;
 
 import oasis.entity.Camera;
 import oasis.entity.Transform;
-import oasis.graphics.RenderLightList;
 import oasis.graphics.RenderData;
+import oasis.graphics.RenderLightList;
 
 public interface MeshSorter {
 

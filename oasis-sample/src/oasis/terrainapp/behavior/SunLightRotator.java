@@ -1,4 +1,4 @@
-package oasis.testapp;
+package oasis.terrainapp.behavior;
 
 import oasis.entity.ComponentId;
 import oasis.entity.Entity;
@@ -7,6 +7,7 @@ import oasis.entity.EntityManager;
 import oasis.entity.Transform;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
+import oasis.terrainapp.component.SunLightTag;
 
 public class SunLightRotator extends EntityBehavior {
 
