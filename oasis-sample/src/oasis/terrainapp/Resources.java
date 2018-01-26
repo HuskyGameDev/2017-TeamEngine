@@ -14,6 +14,7 @@ public class Resources {
     public static Mesh sphereMesh; 
     public static Mesh terrainMesh; 
     public static Mesh treeMesh; 
+    public static Mesh leavesMesh; 
     public static Material stoneMat; 
     public static Material grassMat; 
     public static Material goldMat; 
@@ -24,6 +25,7 @@ public class Resources {
     public static Material emeraldMat; 
     public static Material sunMat; 
     public static Material leafMat; 
+    public static Material woodMat; 
     public static AudioClip music; 
     public static AudioSource musicSource; 
     
@@ -36,7 +38,8 @@ public class Resources {
         
         sphereMesh = ResourceManager.loadMesh("texture-sphere.obj");
         terrainMesh = ResourceManager.loadMesh("texture-terrain.obj");
-        treeMesh = ResourceManager.loadMesh("fir.obj"); 
+        treeMesh = ResourceManager.loadMesh("realistic-trunk.obj"); 
+        leavesMesh = ResourceManager.loadMesh("realistic-leaves.obj"); 
         
         // materials 
         
@@ -46,8 +49,6 @@ public class Resources {
         stoneMat.setNormalMap(ResourceManager.loadTexture2D("diffuse-and-normals/164_norm.JPG")); 
         stoneMat.setSpecularColor(new Vector3(0.1f)); 
         stoneMat.setSpecularPower(20); 
-        
-        ResourceManager.loadTexture2D("diffuse-and-normals/164_norm.JPG").dispose(); 
         
         goldMat = new Material(); 
         goldMat.setShader(bbpShader); 
@@ -78,7 +79,12 @@ public class Resources {
         
         leafMat = new Material(); 
         leafMat.setShader(bbpShader); 
-        leafMat.setDiffuseColor(new Vector3(0.2f, 0.6f, 0.2f));
+//        leafMat.setDiffuseColor(new Vector3(0.2f, 0.6f, 0.2f));
+        leafMat.setDiffuseMap(ResourceManager.loadTexture2D("leaves.jpg"));
+        
+        woodMat = new Material(); 
+        woodMat.setShader(bbpShader); 
+        woodMat.setDiffuseMap(ResourceManager.loadTexture2D("bark.jpg"));
         
         pinkRubberMat = new Material(); 
         pinkRubberMat.setShader(bbpShader); 

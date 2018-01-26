@@ -60,13 +60,9 @@ public class OglRenderTexture extends RenderTexture {
             ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_MIN_FILTER, OglConvert.getMinFilter(minFilter)); 
             ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_MAG_FILTER, OglConvert.getMagFilter(magFilter)); 
             
-//            // needed for render-to-texture ? 
-//            ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_MIN_FILTER, Ogl.GL_NEAREST); 
-//            ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_MAG_FILTER, Ogl.GL_NEAREST); 
+            ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_WRAP_S, OglConvert.getWrapMode(wrapU)); 
+            ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_WRAP_T, OglConvert.getWrapMode(wrapV)); 
         }
-        
-        ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_WRAP_S, OglConvert.getWrapMode(wrapU)); 
-        ogl.glTexParameteri(Ogl.GL_TEXTURE_2D, Ogl.GL_TEXTURE_WRAP_S, OglConvert.getWrapMode(wrapV)); 
     }
     
     public int getId() {

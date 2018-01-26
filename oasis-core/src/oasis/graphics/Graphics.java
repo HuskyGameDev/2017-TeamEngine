@@ -127,7 +127,7 @@ public class Graphics {
         blitShader = ResourceManager.loadShader("blit.glsl"); 
         shadowShader = ResourceManager.loadShader("shadow.glsl"); 
         
-        shadowMap = RenderTexture.create(TextureFormat.DEPTH16, 4 * 1024, 4 * 1024); 
+        shadowMap = RenderTexture.create(TextureFormat.DEPTH16, 2 * 1024, 2 * 1024); 
 //        shadowMap.setFilters(MinFilter.NEAREST, MagFilter.NEAREST);
         shadowMap.setWrapModes(WrapMode.CLAMP_TO_EDGE, WrapMode.CLAMP_TO_EDGE); 
         

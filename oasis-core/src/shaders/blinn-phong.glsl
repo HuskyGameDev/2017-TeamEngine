@@ -61,14 +61,14 @@ void main()
         tangent, 
         bitangent, 
         v_Normal
-    ); 
+    );
 }
 
 #fragmentshader 
 
 const int SAMPLE_COUNT = 9; 
 
-const float INV_RADIUS = 1.0 / 1024.0 * 1.0; 
+const float INV_RADIUS = 1.0 / (1024.0 * 8.0);
 
 const vec2 KERNAL[SAMPLE_COUNT] = vec2[]
 (
@@ -86,7 +86,7 @@ void Sample(in vec3 coords, in vec2 offset, inout float factor, inout float numS
 // fragment shader main function 
 void main() 
 {
-    vec3 N = normalize(v_TBN * normalize(texture2D(oasis_NormalMap, v_TexCoord).rgb * 2.0 - 1.0)); 
+    vec3 N = normalize(v_TBN * normalize(texture2D(oasis_NormalMap, v_TexCoord).rgb * 2.0 - 1.0));
     
     vec3 L; 
     

@@ -47,8 +47,6 @@ public class EntityFactory {
         Transform t = e.add(Transform.class); 
         Velocity v = e.add(Velocity.class); 
         
-        v.velocity.set(0, 10, 0); 
-        
         e.add(FpsCamera.class); 
         
         t.setPosition(new Vector3(0, TerrainGenerator.heightAtPosition(0, 0) + 2, 0));

@@ -78,7 +78,6 @@ public class TerrainGenerator {
         mesh.setTexCoords(texCoords); 
         mesh.setIndices(0, indices); 
         mesh.setNormals(normals); 
-//        mesh.calculateNormals(); 
         mesh.calculateTangents(); 
         mesh.upload(); 
         return mesh; 
@@ -90,7 +89,7 @@ public class TerrainGenerator {
         
         float freq = INV_SCALE; 
         float amp = 1.0f; 
-        int seed = 0; 
+        int seed = 1000; 
         
         for (int i = 0; i < ITERATIONS; i++) {
             sumAmp += amp; 

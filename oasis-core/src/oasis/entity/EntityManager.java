@@ -149,6 +149,17 @@ public class EntityManager {
         }
     }
     
+    public void destroyEntity(Entity e) {
+        for (int i = 0; i < pools.size(); i++) {
+            pools.get(i).destroy(e.getId());
+        }
+        
+        enabled.get(e.getId()).clear(); 
+        onEntityUpdated(e.getId()); 
+        
+        freeIds.add(e.getId()); 
+    }
+    
     private void onEntityUpdated(int id) {
         Entity e = entities.get(id); 
         
