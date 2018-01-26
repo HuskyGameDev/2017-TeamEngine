@@ -30,7 +30,7 @@ public class SunLightRotator extends EntityBehavior {
     public void update(Entity e, float dt) {
         Transform t = e.get(transformId); 
         
-        Vector3 dir = new Vector3(1, 0, 0).rotate(Quaternion.axisAngle(new Vector3(0, 0, 1), -time * 0.1f)); 
+        Vector3 dir = new Vector3(1, 0, 0).rotate(Quaternion.axisAngle(new Vector3(0, 0, 1), -time * 0.01f)); 
         
         t.setRotation(Quaternion.direction(dir)); 
         t.setPosition(dir.multiply(-500));

@@ -9,7 +9,7 @@ public class TerrainGenerator {
 
     public static final float SIZE = 64.0f; 
     public static final float HALF_SIZE = SIZE * 0.5f; 
-    public static final int ITERATIONS = 6; 
+    public static final int ITERATIONS = 10; 
     public static final float PERSISTANCE = 0.45f; 
     public static final float LACUNARITY = 2.0f; 
     public static final float SCALE = 500f; 

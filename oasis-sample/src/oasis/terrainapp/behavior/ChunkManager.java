@@ -59,7 +59,7 @@ public class ChunkManager extends EntityBehavior {
         }
     } 
     
-    public static final int RADIUS = 4; 
+    public static final int RADIUS = 8; 
     
     private Map<Vector2i, Chunk> chunks = new HashMap<>(); 
     
@@ -86,7 +86,6 @@ public class ChunkManager extends EntityBehavior {
             if (camPos.subtract(pos).length() > RADIUS) {
                 c.delete(); 
                 chunks.remove(c.pos); 
-                System.out.println("delete");
                 break; 
             }
         }

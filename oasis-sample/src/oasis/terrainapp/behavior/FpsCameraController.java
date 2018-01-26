@@ -79,7 +79,7 @@ public class FpsCameraController extends EntityBehavior {
         }
         
         if (keys.isKeyJustDown(Keyboard.KEY_SPACE)) {
-            System.out.println("just down");
+//            System.out.println("just down");
             vel.velocity.addSelf(new Vector3(0, 5, 0)); 
         }
 //        if (keys.isKeyDown(Keyboard.KEY_SHIFT)) {
