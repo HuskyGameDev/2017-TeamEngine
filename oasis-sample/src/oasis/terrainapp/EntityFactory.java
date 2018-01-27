@@ -69,4 +69,18 @@ public class EntityFactory {
         return e; 
     }
     
+    public Entity createMeshEntity(Vector3 position, float angle, Mesh mesh, Material material) {
+        Entity e = em.createEntity(); 
+        
+        Transform t = e.add(Transform.class); 
+        MeshContainer mc = e.add(MeshContainer.class); 
+        
+        t.setPosition(position); 
+        t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), angle)); 
+        mc.setMesh(mesh); 
+        mc.setMaterial(material); 
+        
+        return e; 
+    }
+    
 }

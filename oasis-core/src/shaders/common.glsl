@@ -1,5 +1,10 @@
 #anyshader
 
+float LinearizeDepth(float depth, float near, float far) 
+{
+    return (2 * near) / (far + near - depth * (far - near)); 
+}
+
 float Diffuse(vec3 normal, vec3 lightDir)
 {
     return clamp(dot(lightDir, normal), 0.0, 1.0);

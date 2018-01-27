@@ -77,6 +77,10 @@ const vec2 KERNAL[SAMPLE_COUNT] = vec2[]
    vec2(0.11915, 0.78449),	vec2(-0.34296, 0.51575), vec2(-0.60380, -0.41527)
 ); 
 
+const vec3 FOG_COLOR = vec3(0.5, 0.6, 0.8); 
+const float FOG_START = 0.3; 
+const float FOG_END = 0.5; 
+
 void Sample(in vec3 coords, in vec2 offset, inout float factor, inout float numSamples) 
 {
     factor += shadow2D(oasis_ShadowMap, vec3(coords.xy + offset, coords.z)).r; 
@@ -109,7 +113,7 @@ void main()
     
     float amt; 
     vec3 coord = v_ShadowCoord.xyz; 
-    coord.z -= 0.00001; 
+    coord.z -= 0.0001; 
     if (clamp(coord, 0.0, 1.0) == coord) 
     {
         float numSamples = 0.0; 
@@ -131,6 +135,12 @@ void main()
     vec3 diffuseMat = oasis_Diffuse.rgb * texture2D(oasis_DiffuseMap, v_TexCoord).rgb; 
     vec3 specularMat = oasis_Specular.rgb; 
     
-    gl_FragColor.rgb = diffuseMat * (ambient + diffuse) + specular * specularMat + oasis_Emissive; 
+    vec3 fragCol = diffuseMat * (ambient + diffuse) + specular * specularMat + oasis_Emissive; 
+    
+    float depth = LinearizeDepth(gl_FragCoord.z, 0.1, 1000.0); 
+    
+    float fogAmt = 1.0 - (FOG_END - depth) / (FOG_END - FOG_START); 
+    
+    gl_FragColor.rgb = mix(fragCol, FOG_COLOR, clamp(fogAmt, 0.0, 1.0)); 
     gl_FragColor.a = 1.0; 
 }

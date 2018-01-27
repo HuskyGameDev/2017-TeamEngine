@@ -11,6 +11,7 @@ import oasis.entity.EntityBehavior;
 import oasis.entity.EntityManager;
 import oasis.entity.MeshContainer;
 import oasis.entity.Transform;
+import oasis.math.Mathf;
 import oasis.math.Vector2;
 import oasis.math.Vector2i;
 import oasis.math.Vector3;
@@ -34,18 +35,51 @@ public class ChunkManager extends EntityBehavior {
             
             terrain = factory.createMeshEntity(new Vector3(pos.x * SIZE, 0, pos.y * SIZE), TerrainGenerator.generate(pos.x, pos.y, (int) SIZE / 4), Resources.grassMat); 
         
-            final int treeCount = QuickHash.compute(pos.x, pos.y) % 8; 
-            
             Random r = new Random(QuickHash.compute(pos.x, pos.y)); 
             
+            int count = r.nextInt(8); 
+            
             Vector3 p = new Vector3(); 
-            for (int i = 0; i < treeCount; i++) {
+            for (int i = 0; i < count; i++) {
                 p.x = (float) (r.nextFloat() - 0.5f + pos.x) * SIZE; 
                 p.z = (float) (r.nextFloat() - 0.5f + pos.y) * SIZE; 
                 p.y = TerrainGenerator.heightAtPosition(p.x, p.z) - 0.5f; 
                 
-                trees.add(factory.createMeshEntity(p, Resources.leavesMesh, Resources.leafMat)); 
-                trees.add(factory.createMeshEntity(p, Resources.treeMesh, Resources.woodMat)); 
+                trees.add(factory.createMeshEntity(p, r.nextFloat() * Mathf.TWO_PI, Resources.leavesMesh, Resources.leafMat)); 
+                trees.add(factory.createMeshEntity(p, r.nextFloat() * Mathf.TWO_PI, Resources.treeMesh, Resources.woodMat)); 
+            }
+            
+            count = r.nextFloat() < 0.05f ? 1 : 0; 
+            
+            for (int i = 0; i < count; i++) {
+                p.x = (float) (r.nextFloat() - 0.5f + pos.x) * SIZE; 
+                p.z = (float) (r.nextFloat() - 0.5f + pos.y) * SIZE; 
+                p.y = TerrainGenerator.heightAtPosition(p.x, p.z) - 3f; 
+                
+                trees.add(factory.createMeshEntity(p, r.nextFloat() * Mathf.TWO_PI, Resources.buildingMesh, Resources.solidMats[r.nextInt(Resources.solidMats.length)]));  
+            }
+            
+            float percent = r.nextFloat() * 100; 
+            
+            if (percent < 10) {
+                count = 8; 
+            }
+            else if (percent < 20) {
+                count = 6; 
+            }
+            else if (percent < 40) {
+                count = 4;
+            }
+            else {
+                count = 2; 
+            }
+            
+            for (int i = 0; i < count; i++) {
+                p.x = (float) (r.nextFloat() - 0.5f + pos.x) * SIZE; 
+                p.z = (float) (r.nextFloat() - 0.5f + pos.y) * SIZE; 
+                p.y = TerrainGenerator.heightAtPosition(p.x, p.z) - 1f; 
+                
+                trees.add(factory.createMeshEntity(p, r.nextFloat() * Mathf.TWO_PI, Resources.houseMesh, Resources.solidMats[r.nextInt(Resources.solidMats.length)]));  
             }
         }
         

@@ -15,6 +15,8 @@ public class Resources {
     public static Mesh terrainMesh; 
     public static Mesh treeMesh; 
     public static Mesh leavesMesh; 
+    public static Mesh buildingMesh; 
+    public static Mesh houseMesh; 
     public static Material stoneMat; 
     public static Material grassMat; 
     public static Material goldMat; 
@@ -29,6 +31,8 @@ public class Resources {
     public static AudioClip music; 
     public static AudioSource musicSource; 
     
+    public static Material[] solidMats; 
+    
     public static void load() {
         // shaders 
         
@@ -40,6 +44,8 @@ public class Resources {
         terrainMesh = ResourceManager.loadMesh("texture-terrain.obj");
         treeMesh = ResourceManager.loadMesh("realistic-trunk.obj"); 
         leavesMesh = ResourceManager.loadMesh("realistic-leaves.obj"); 
+        buildingMesh = ResourceManager.loadMesh("texture-building.obj"); 
+        houseMesh = ResourceManager.loadMesh("house.obj"); 
         
         // materials 
         
@@ -106,6 +112,14 @@ public class Resources {
         sunMat = new Material(); 
         sunMat.setShader(bbpShader); 
         sunMat.setEmissiveColor(new Vector3(1, 1, 0));
+        
+        solidMats = new Material[] {
+                stoneMat, 
+                silverMat, 
+                goldMat, 
+                platinumMat, 
+                emeraldMat, 
+        }; 
         
         // sounds 
         

@@ -86,7 +86,7 @@ public class FpsCameraController extends EntityBehavior {
 //            dir.addSelf(new Vector3(0, -1, 0)); 
 //        }
         
-        dir.normalizeSelf().multiplySelf(6.5f * dt); 
+        dir.normalizeSelf().multiplySelf(60.5f * dt); 
         camPos.addSelf(dir); 
         
         tfm.setPosition(camPos); 

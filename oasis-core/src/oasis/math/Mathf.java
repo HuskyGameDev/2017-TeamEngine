@@ -22,6 +22,11 @@ public final class Mathf {
     public static final float INV_PI = 1.0f / PI;
     
     /**
+     * Two pi
+     */
+    public static final float TWO_PI = 2.0f * PI;
+    
+    /**
      * 180 degrees 
      */
     public static final float DEG_HALF = 180.0f;
