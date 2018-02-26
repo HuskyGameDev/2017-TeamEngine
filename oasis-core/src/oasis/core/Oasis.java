@@ -23,7 +23,7 @@ public final class Oasis {
     /**
      * Minor version number 
      */
-    public static final int VERSION_MINOR = 3;
+    public static final int VERSION_MINOR = 4;
     
     /**
      * Revision version number 

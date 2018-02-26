@@ -13,7 +13,7 @@ public class SunLightRotator extends EntityBehavior {
 
     private ComponentId<Transform> transformId; 
     
-    private float time = 0; 
+    private float time = 30; 
     
     public SunLightRotator() {
         super(DEFAULT_PRIORITY, Transform.class, SunLightTag.class); 
@@ -31,6 +31,8 @@ public class SunLightRotator extends EntityBehavior {
         Transform t = e.get(transformId); 
         
         Vector3 dir = new Vector3(1, 0, 0).rotate(Quaternion.axisAngle(new Vector3(0, 0, 1), -time * 0.01f)); 
+        
+        if (dir.y > 0) dir.y *= -1; 
         
         t.setRotation(Quaternion.direction(dir)); 
         t.setPosition(dir.multiply(-500));

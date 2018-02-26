@@ -51,25 +51,6 @@ public class TerrainApp extends BasicGame {
         factory.createCameraEntity(); 
         
         factory.createSunLightEntity(); 
-        
-//        final int RADIUS = 1; 
-//        final float SIZE = TerrainGenerator.SIZE; 
-//        
-//        for (int x = -RADIUS; x <= RADIUS; x++) {
-//            for (int y = -RADIUS; y <= RADIUS; y++) {
-//                factory.createMeshEntity(new Vector3(x * SIZE, 0, y * SIZE), TerrainGenerator.generate(x, y, (int) SIZE / 4), Resources.grassMat); 
-//            }
-//        }
-//        
-//        Vector3 pos = new Vector3(); 
-//        for (int i = 0; i < 20 * RADIUS * RADIUS; i++) {
-//            pos.x = (float) (Math.random() * 2 - 1) * SIZE * RADIUS; 
-//            pos.z = (float) (Math.random() * 2 - 1) * SIZE * RADIUS; 
-//            pos.y = TerrainGenerator.heightAtPosition(pos.x, pos.z) - 0.5f; 
-//            
-//            factory.createMeshEntity(pos, Resources.treeMesh, Resources.woodMat); 
-//            factory.createMeshEntity(pos, Resources.leavesMesh, Resources.leafMat); 
-//        }
     }
 
 }

@@ -56,17 +56,23 @@ public class FpsCameraController extends EntityBehavior {
         
         Vector3 dir = new Vector3(); 
         
-        if (keys.isKeyDown(Keyboard.KEY_I)) {
+        if (keys.isKeyDown(Keyboard.KEY_I) || keys.isKeyDown(Keyboard.KEY_W)) {
             dir.addSelf(new Vector3(0, 0, -1)); 
         }
-        if (keys.isKeyDown(Keyboard.KEY_K)) {
+        if (keys.isKeyDown(Keyboard.KEY_K) || keys.isKeyDown(Keyboard.KEY_S)) {
             dir.addSelf(new Vector3(0, 0, 1)); 
         }
-        if (keys.isKeyDown(Keyboard.KEY_J)) {
+        if (keys.isKeyDown(Keyboard.KEY_J) || keys.isKeyDown(Keyboard.KEY_A)) {
             dir.addSelf(new Vector3(-1, 0, 0)); 
         }
-        if (keys.isKeyDown(Keyboard.KEY_L)) {
+        if (keys.isKeyDown(Keyboard.KEY_L) || keys.isKeyDown(Keyboard.KEY_D)) {
             dir.addSelf(new Vector3(1, 0, 0)); 
+        }
+        
+        float scale = 1.0f; 
+        
+        if (keys.isKeyDown(Keyboard.KEY_SHIFT)) {
+            scale *= 16.0f; 
         }
         
         float minY = TerrainGenerator.heightAtPosition(camPos.x, camPos.z) + 2; 
@@ -80,13 +86,13 @@ public class FpsCameraController extends EntityBehavior {
         
         if (keys.isKeyJustDown(Keyboard.KEY_SPACE)) {
 //            System.out.println("just down");
-            vel.velocity.addSelf(new Vector3(0, 5, 0)); 
+            vel.velocity.addSelf(new Vector3(0, 10, 0)); 
         }
 //        if (keys.isKeyDown(Keyboard.KEY_SHIFT)) {
 //            dir.addSelf(new Vector3(0, -1, 0)); 
 //        }
         
-        dir.normalizeSelf().multiplySelf(60.5f * dt); 
+        dir.normalizeSelf().multiplySelf(8.5f * dt * scale); 
         camPos.addSelf(dir); 
         
         tfm.setPosition(camPos); 

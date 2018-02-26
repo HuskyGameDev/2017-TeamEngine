@@ -198,7 +198,7 @@ public class Graphics {
     
     private void drawQueue(Camera camera, Transform tfm, RenderQueue queue) {
         // TODO refactor 
-        float rad = 200; 
+        float rad = 100; 
         
         Matrix4 shadowProjMat = Matrix4.orthographic(new Vector3(-rad, -rad, rad), new Vector3(rad, rad, -rad)); 
         Matrix4 bias = Matrix4.translation(new Vector3(0.5f)).multiply(Matrix4.scale(new Vector3(0.5f)));

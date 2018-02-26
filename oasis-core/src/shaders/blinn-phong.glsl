@@ -78,8 +78,8 @@ const vec2 KERNAL[SAMPLE_COUNT] = vec2[]
 ); 
 
 const vec3 FOG_COLOR = vec3(0.5, 0.6, 0.8); 
-const float FOG_START = 0.3; 
-const float FOG_END = 0.5; 
+const float FOG_START = 0.1;
+const float FOG_END = 0.3;
 
 void Sample(in vec3 coords, in vec2 offset, inout float factor, inout float numSamples) 
 {
@@ -113,7 +113,7 @@ void main()
     
     float amt; 
     vec3 coord = v_ShadowCoord.xyz; 
-    coord.z -= 0.0001; 
+    coord.z -= 0.000001;
     if (clamp(coord, 0.0, 1.0) == coord) 
     {
         float numSamples = 0.0; 

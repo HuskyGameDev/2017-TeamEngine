@@ -35,7 +35,7 @@ public class ChunkManager extends EntityBehavior {
             
             terrain = factory.createMeshEntity(new Vector3(pos.x * SIZE, 0, pos.y * SIZE), TerrainGenerator.generate(pos.x, pos.y, (int) SIZE / 4), Resources.grassMat); 
         
-            Random r = new Random(QuickHash.compute(pos.x, pos.y)); 
+            Random r = new Random(QuickHash.compute(pos.x, pos.y) + 2); 
             
             int count = r.nextInt(8); 
             
@@ -62,16 +62,16 @@ public class ChunkManager extends EntityBehavior {
             float percent = r.nextFloat() * 100; 
             
             if (percent < 10) {
-                count = 8; 
+                count = 4; 
             }
             else if (percent < 20) {
-                count = 6; 
+                count = 2; 
             }
             else if (percent < 40) {
-                count = 4;
+                count = 1;
             }
             else {
-                count = 2; 
+                count = 0; 
             }
             
             for (int i = 0; i < count; i++) {
@@ -93,7 +93,7 @@ public class ChunkManager extends EntityBehavior {
         }
     } 
     
-    public static final int RADIUS = 8; 
+    public static final int RADIUS = 4; 
     
     private Map<Vector2i, Chunk> chunks = new HashMap<>(); 
     
