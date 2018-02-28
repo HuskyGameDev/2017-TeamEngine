@@ -6,6 +6,7 @@ import oasis.graphics.Graphics;
 import oasis.graphics.GraphicsDevice;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
+import oasis.scene.SceneManager;
 
 /**
  * Oasis engine constants 
@@ -81,6 +82,7 @@ public final class Oasis {
     private static Mouse mouse; 
     private static AudioDevice audioDevice; 
     private static FileSystem files = new FileSystem(); 
+    private static SceneManager sceneManager = new SceneManager(); 
     
     public static Graphics getGraphics() {
         return graphics; 
@@ -112,6 +114,10 @@ public final class Oasis {
     
     public static Mouse getMouse() {
         return mouse; 
+    }
+    
+    public static SceneManager getSceneManager() {
+        return sceneManager; 
     }
     
     public static void start(Config config, Application application) {

@@ -15,15 +15,31 @@ public interface Application {
     
     /**
      * Called when application is updating 
+     * before the scene is updated
      * 
      * @param dt Time since last update 
      */
-    void update(float dt);
+    void preUpdate(float dt);
+
+    /**
+     * Called when application is updating 
+     * after the scene is updated
+     * 
+     * @param dt Time since last update 
+     */
+    void postUpdate(float dt);
     
     /**
      * Called when application is rendering 
+     * before the scene is rendered
      */
-    void render();
+    void preRender();
+
+    /**
+     * Called when application is rendering 
+     * after the scene is rendered
+     */
+    void postRender();
     
     /**
      * Called when application is exiting 

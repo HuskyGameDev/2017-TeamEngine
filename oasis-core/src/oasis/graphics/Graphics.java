@@ -332,6 +332,8 @@ public class Graphics {
         Shader.setTexture(UNIFORM_NAMES[UNIFORM_DIFFUSE_TEX], diffuseTex == null ? defaultDiffuseTex : diffuseTex); 
         Shader.setTexture(UNIFORM_NAMES[UNIFORM_NORMAL_TEX], normalTex == null ? defaultNormalTex : normalTex); 
         Shader.setInt(UNIFORM_NAMES[UNIFORM_HAS_DIFFUSE_TEX], diffuseTex == null ? 0 : 1); 
+    
+        mat.applyCustomUniforms(); 
     }
     
     private void applyLight(Matrix4 view, RenderLight light) {

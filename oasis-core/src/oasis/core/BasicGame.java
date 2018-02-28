@@ -13,9 +13,6 @@ import oasis.math.Vector3;
 
 public abstract class BasicGame implements Application {
 
-    protected final EntityManager entityManager = new EntityManager(); 
-    protected final Vector3 ambientColor = new Vector3(); 
-    
     public BasicGame() {} 
     
     public abstract void initGame(); 
@@ -31,44 +28,32 @@ public abstract class BasicGame implements Application {
     
     @Override
     public final void init() {
-        Oasis.getDisplay().setResizable(true); 
-        
-        entityManager.registerComponent(Transform.class); 
-        entityManager.registerComponent(MeshContainer.class);
-        entityManager.registerComponent(Light.class);
-        entityManager.registerComponent(Camera.class); 
-        
-        entityManager.addBehavior(new MeshRenderer()); 
-        entityManager.addBehavior(new LightRenderer()); 
-        
         initGame(); 
     }
     
     @Override
-    public final void update(float dt) {
+    public final void preUpdate(float dt) {
         Keyboard keys = Oasis.getKeyboard(); 
         if (keys.isKeyDown(Keyboard.KEY_ESCAPE)) {
             Oasis.stop();
         }
         
         preUpdateGame(dt); 
-        
-        entityManager.update(dt); 
-        
+    }
+    
+    @Override
+    public final void postUpdate(float dt) {
         postUpdateGame(dt); 
     }
     
     @Override
-    public final void render() {
-        Graphics g = Oasis.getGraphics(); 
-        g.begin(); 
-        g.addAmbient(ambientColor); 
+    public final void preRender() {
         preRenderGame(); 
-        
-        entityManager.render(); 
-        
+    }
+
+    @Override
+    public final void postRender() {
         postRenderGame(); 
-        g.finish(); 
     }
     
     @Override

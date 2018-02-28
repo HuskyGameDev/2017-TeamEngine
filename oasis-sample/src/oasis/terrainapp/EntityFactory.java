@@ -45,7 +45,7 @@ public class EntityFactory {
         
         Camera c = e.add(Camera.class); 
         Transform t = e.add(Transform.class); 
-        Velocity v = e.add(Velocity.class); 
+        e.add(Velocity.class); 
         
         e.add(FpsCamera.class); 
         

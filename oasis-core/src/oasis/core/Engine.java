@@ -92,7 +92,9 @@ public class Engine {
         backend.preUpdate(dt); 
         backend.runOnMainThread(new Runnable() {
             public void run() {
-                app.update(dt); 
+                app.preUpdate(dt);
+                Oasis.getSceneManager().update(dt); 
+                app.postUpdate(dt);
             }
         });
         backend.postUpdate(dt); 
@@ -106,7 +108,9 @@ public class Engine {
         backend.runOnMainThread(new Runnable() {
             public void run() {
                 backend.getGraphicsDevice().preRender(); 
-                app.render(); 
+                app.preRender();
+                Oasis.getSceneManager().render(); 
+                app.postRender(); 
                 backend.getGraphicsDevice().postRender(); 
                 backend.getDisplay().swapBuffers(); 
             }
