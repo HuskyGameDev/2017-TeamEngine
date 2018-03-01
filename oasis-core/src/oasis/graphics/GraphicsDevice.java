@@ -2,6 +2,13 @@ package oasis.graphics;
 
 import oasis.math.Vector4;
 
+/**
+ * 
+ * Internal representation of graphics device 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public interface GraphicsDevice {
 
     void preRender(); 

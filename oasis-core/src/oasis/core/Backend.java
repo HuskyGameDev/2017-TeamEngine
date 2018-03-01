@@ -5,6 +5,14 @@ import oasis.graphics.GraphicsDevice;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
 
+/**
+ * 
+ * Engine backend, used for anything  
+ * necessary for the implementation 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public interface Backend {
 
     void applyConfig(Config config); 

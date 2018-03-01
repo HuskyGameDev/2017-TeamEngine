@@ -1,5 +1,12 @@
 package oasis.graphics;
 
+/**
+ * 
+ * Holds image data 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class Texture {
 
     protected TextureFormat format; 

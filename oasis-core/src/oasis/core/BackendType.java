@@ -1,5 +1,12 @@
 package oasis.core;
 
+/**
+ * 
+ * Determines and creates a backend 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class BackendType {
 
     private static final Logger log = new Logger(BackendType.class); 

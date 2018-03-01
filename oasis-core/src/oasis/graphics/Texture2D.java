@@ -3,6 +3,13 @@ package oasis.graphics;
 import oasis.core.Oasis;
 import oasis.core.OasisException;
 
+/**
+ * 
+ * Holds 2D texture data 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class Texture2D extends Texture {
 
     public static Texture2D create(TextureFormat format, int width, int height) {

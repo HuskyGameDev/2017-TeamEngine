@@ -2,6 +2,13 @@ package oasis.core;
 
 import oasis.input.Keyboard;
 
+/**
+ * 
+ * Base class for creating a game 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class BasicGame implements Application {
 
     public BasicGame() {} 

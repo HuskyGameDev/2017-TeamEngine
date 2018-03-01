@@ -13,6 +13,13 @@ import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
+/**
+ * 
+ * Used to render meshes 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class Shader {
 
     private static final List<String> uniformNames = new ArrayList<>(); 

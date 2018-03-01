@@ -12,6 +12,13 @@ import oasis.graphics.Mesh;
 import oasis.graphics.Shader;
 import oasis.graphics.Texture2D;
 
+/**
+ * 
+ * Loads and caches resources 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public final class ResourceManager {
 
     private static final Logger log = new Logger(ResourceManager.class); 
@@ -29,6 +36,13 @@ public final class ResourceManager {
     
     private ResourceManager() {} 
     
+    /**
+     * Add a custom resource loader
+     * 
+     * @param loader The loader class, the class should have a
+     *               default constructor 
+     * @param filetypes filetypes supported by the loader 
+     */
     public static <T extends ResourceLoader<?>> void addLoader(Class<T> loader, String... filetypes) {
         for (String filetype : filetypes) {
             loaders.put(filetype.toLowerCase(), loader); 

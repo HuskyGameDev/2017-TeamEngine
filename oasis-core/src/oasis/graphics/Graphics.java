@@ -21,6 +21,13 @@ import oasis.scene.Camera;
 import oasis.scene.Light;
 import oasis.scene.Transform;
 
+/**
+ * 
+ * Used to draw meshes, lights, etc. 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Graphics {
 
     private static final Logger log = new Logger(Graphics.class); 

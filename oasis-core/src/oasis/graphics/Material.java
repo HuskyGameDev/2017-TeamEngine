@@ -11,6 +11,13 @@ import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
+/**
+ * 
+ * Data about materials (diffuse, specular, etc.) 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class Material {
 
     private FrontFace frontFace = FrontFace.CCW; 

@@ -4,6 +4,14 @@ import oasis.core.Oasis;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
 
+/**
+ * 
+ * Used to determine position and orientation from 
+ * audio sources 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class AudioListener {
 
     private static AudioListener current; 
@@ -12,6 +20,10 @@ public abstract class AudioListener {
         return Oasis.getAudioDevice().createListener(); 
     }
     
+    /**
+     * Sets the current audio listener. 
+     * There can only be one current listener 
+     */
     public static void setCurrent(AudioListener listener) {
         current = listener; 
     }

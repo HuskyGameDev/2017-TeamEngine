@@ -2,6 +2,13 @@ package oasis.audio;
 
 import oasis.core.Oasis;
 
+/**
+ * 
+ * Holds audio data 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class AudioClip {
 
     protected int length; 
@@ -10,6 +17,16 @@ public abstract class AudioClip {
     protected boolean sixteenBit; 
     protected boolean is3D; 
     
+    /** 
+     * Create an audio clip 
+     * 
+     * @param length in frames 
+     * @param frequency 
+     * @param stereo 
+     * @param sixteenBit
+     * @param is3D if this is false, position will not matter  
+     * @return
+     */
     public static AudioClip create(int length, int frequency, boolean stereo, boolean sixteenBit, boolean is3D) {
         return Oasis.getAudioDevice().createClip(length, frequency, stereo, sixteenBit, is3D); 
     }
@@ -22,7 +39,14 @@ public abstract class AudioClip {
         this.is3D = is3D; 
     }
     
-    public abstract void setData(float[] in); 
+    /**
+     * Set the audio data 
+     */
+    public abstract void setData(float[] in);
+    
+    /**
+     * Set the audio data 
+     */
     public abstract void setData(byte[] in); 
     
     public int getLength() {

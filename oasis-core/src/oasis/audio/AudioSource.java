@@ -3,6 +3,13 @@ package oasis.audio;
 import oasis.core.Oasis;
 import oasis.math.Vector3;
 
+/**
+ * 
+ * Source of audio in the scene 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class AudioSource {
 
     protected final Vector3 position = new Vector3(); 

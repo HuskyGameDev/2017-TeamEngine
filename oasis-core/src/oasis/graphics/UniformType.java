@@ -1,5 +1,12 @@
 package oasis.graphics;
 
+/**
+ * 
+ * Different types of uniforms 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public enum UniformType {
 
     NONE, 

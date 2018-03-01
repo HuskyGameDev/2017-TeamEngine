@@ -1,5 +1,12 @@
 package oasis.graphics;
 
+/**
+ * 
+ * Various rendering state data 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class GraphicsState {
 
     private BlendMode srcBlendMode = BlendMode.ONE; 

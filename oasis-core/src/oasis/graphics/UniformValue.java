@@ -6,6 +6,13 @@ import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
 
+/**
+ * 
+ * Value of a uniform
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public class UniformValue {
 
         private UniformType type; 

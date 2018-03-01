@@ -4,6 +4,13 @@ import oasis.core.Oasis;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
 
+/**
+ * 
+ * Holds vertex data 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class Mesh {
 
     public static Mesh create() {

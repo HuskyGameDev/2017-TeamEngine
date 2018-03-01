@@ -6,6 +6,13 @@ import java.util.List;
 import oasis.core.Oasis;
 import oasis.core.OasisException;
 
+/**
+ * 
+ * Texture(s) that can be rendered to 
+ * 
+ * @author Nicholas Hamilton 
+ *
+ */
 public abstract class RenderTarget {
 
     public static RenderTarget create() {
