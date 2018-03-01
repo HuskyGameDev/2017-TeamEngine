@@ -4,17 +4,18 @@ import oasis.core.BackendType;
 import oasis.core.BasicGame;
 import oasis.core.Config;
 import oasis.core.Oasis;
-import oasis.terrainapp.behavior.ChunkManager;
-import oasis.terrainapp.behavior.FpsCameraController;
-import oasis.terrainapp.behavior.Gravity;
-import oasis.terrainapp.behavior.Movement;
-import oasis.terrainapp.behavior.SunLightRotator;
-import oasis.terrainapp.component.FpsCamera;
-import oasis.terrainapp.component.SunLightTag;
-import oasis.terrainapp.component.Velocity;
+import oasis.math.Vector3;
+import oasis.scene.Scene;
+import oasis.terrainapp.system.ChunkManager;
+import oasis.terrainapp.system.FpsCameraController;
+import oasis.terrainapp.system.Gravity;
+import oasis.terrainapp.system.Movement;
+import oasis.terrainapp.system.SunLightRotator;
 
 public class TerrainApp extends BasicGame {
 
+    private Scene scene; 
+    
     public static void main(String[] args) {
         Config conf = new Config(); 
         conf.backend = BackendType.AUTO; 
@@ -28,25 +29,26 @@ public class TerrainApp extends BasicGame {
     public void initGame() {
         Resources.load(); 
         
-        ambientColor.set(0.2f); 
+        scene = Oasis.getSceneManager().createAndSetScene("main_scene"); 
         
-        entityManager.registerComponent(FpsCamera.class); 
-        entityManager.registerComponent(SunLightTag.class); 
-        entityManager.registerComponent(Velocity.class);
-        
-        entityManager.addBehavior(new Gravity()); 
-        entityManager.addBehavior(new Movement());
-        entityManager.addBehavior(new FpsCameraController()); 
-        entityManager.addBehavior(new SunLightRotator()); 
-        entityManager.addBehavior(new ChunkManager());
+        scene.addSystem("Gravity", new Gravity()); 
+        scene.addSystem("Movement", new Movement());
+        scene.addSystem("FpsCameraController", new FpsCameraController()); 
+        scene.addSystem("SunLightRotator", new SunLightRotator()); 
+        scene.addSystem("ChunkManager", new ChunkManager());
         
         addEntities(); 
         
         Oasis.getMouse().setCursorVisible(false); 
+        Oasis.getDisplay().setResizable(true); 
+    }
+    
+    public void preRenderGame() {
+        Oasis.getGraphics().addAmbient(new Vector3(0.2f)); 
     }
     
     private void addEntities() {
-        EntityFactory factory = new EntityFactory(entityManager); 
+        EntityFactory factory = new EntityFactory(scene); 
         
         factory.createCameraEntity(); 
         

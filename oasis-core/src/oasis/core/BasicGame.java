@@ -1,15 +1,6 @@
 package oasis.core;
 
-import oasis.entity.Camera;
-import oasis.entity.EntityManager;
-import oasis.entity.Light;
-import oasis.entity.LightRenderer;
-import oasis.entity.MeshContainer;
-import oasis.entity.MeshRenderer;
-import oasis.entity.Transform;
-import oasis.graphics.Graphics;
 import oasis.input.Keyboard;
-import oasis.math.Vector3;
 
 public abstract class BasicGame implements Application {
 
@@ -48,12 +39,14 @@ public abstract class BasicGame implements Application {
     
     @Override
     public final void preRender() {
+        Oasis.getGraphics().begin(); 
         preRenderGame(); 
     }
 
     @Override
     public final void postRender() {
         postRenderGame(); 
+        Oasis.getGraphics().finish(); 
     }
     
     @Override

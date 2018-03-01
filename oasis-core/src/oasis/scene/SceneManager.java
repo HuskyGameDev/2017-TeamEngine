@@ -14,9 +14,17 @@ public class SceneManager {
     
     public SceneManager() {} 
     
-    public void update(float dt) {} 
+    public void update(float dt) {
+        if (hasCurrentScene()) {
+            current.update(dt); 
+        }
+    } 
     
-    public void render() {} 
+    public void render() {
+        if (hasCurrentScene()) {
+            current.render(); 
+        }
+    } 
     
     public boolean hasCurrentScene() {
         return current != null; 
@@ -34,6 +42,12 @@ public class SceneManager {
         }
         
         current = scene; 
+    }
+    
+    public Scene createAndSetScene(String name) {
+        Scene s = createScene(name); 
+        setCurrentScene(name); 
+        return s; 
     }
     
     public Scene createScene(String name) {

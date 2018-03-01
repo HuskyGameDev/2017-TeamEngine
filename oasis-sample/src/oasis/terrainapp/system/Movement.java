@@ -1,12 +1,12 @@
-package oasis.terrainapp.behavior;
+package oasis.terrainapp.system;
 
-import oasis.entity.Entity;
-import oasis.entity.EntityBehavior;
-import oasis.entity.Transform;
 import oasis.math.Vector3;
+import oasis.scene.Entity;
+import oasis.scene.EntitySystem;
+import oasis.scene.Transform;
 import oasis.terrainapp.component.Velocity;
 
-public class Movement extends EntityBehavior {
+public class Movement extends EntitySystem {
 
     public Movement() {
         super(Transform.class, Velocity.class); 

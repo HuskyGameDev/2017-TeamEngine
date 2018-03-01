@@ -1,13 +1,13 @@
 package oasis.terrainapp.component;
 
-import oasis.entity.EntityComponent;
+import oasis.scene.EntityComponent;
 
 public class FpsCamera extends EntityComponent {
 
     public float yaw; 
     public float pitch; 
     
-    public void activate() {
+    protected void attach() {
         yaw = pitch = 0; 
     }
     

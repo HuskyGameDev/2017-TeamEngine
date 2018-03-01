@@ -13,7 +13,7 @@ public final class Entity {
     }
     
     protected void removedFromScene() {
-        detachAllComponents(); 
+        detachAll(); 
         scene = null; 
     }
     
@@ -21,12 +21,12 @@ public final class Entity {
         return scene; 
     }
     
-    public <T extends EntityComponent> boolean hasComponent(Class<T> type) {
+    public <T extends EntityComponent> boolean has(Class<T> type) {
         return components.containsKey(type); 
     }
     
     @SuppressWarnings("unchecked")
-    public <T extends EntityComponent> T getComponent(Class<T> type) {
+    public <T extends EntityComponent> T get(Class<T> type) {
         EntityComponent comp = components.get(type);
         
         if (comp == null) return null; 
@@ -34,15 +34,15 @@ public final class Entity {
         return (T) comp; 
     }
     
-    public boolean detachAllComponents() {
+    public boolean detachAll() {
         boolean removed = false; 
         for (Class<? extends EntityComponent> type : components.keySet()) {
-            removed |= detachComponent(type); 
+            removed |= detach(type); 
         } 
         return removed; 
     }
     
-    public <T extends EntityComponent> boolean detachComponent(Class<T> type) {
+    public <T extends EntityComponent> boolean detach(Class<T> type) {
         EntityComponent comp = components.get(type);
         
         if (comp != null) {
@@ -56,8 +56,8 @@ public final class Entity {
         }
     }
     
-    public void attachComponent(EntityComponent comp) {
-        if (comp == null) return; 
+    public <T extends EntityComponent> T attach(T comp) {
+        if (comp == null) return null; 
         
         Class<? extends EntityComponent> type = comp.getClass(); 
         EntityComponent old = components.get(type); 
@@ -70,18 +70,20 @@ public final class Entity {
         comp.setEntity(this); 
         
         updateInScene(); 
+        
+        return comp; 
     }
     
-    public void attachComponents(EntityComponent... comps) {
+    public void attach(EntityComponent... comps) {
         if (comps == null) return; 
         
         for (EntityComponent comp : comps) {
-            attachComponent(comp); 
+            attach(comp); 
         }
     }
     
     private void updateInScene() {
-        scene.updateEntity(this); 
+        scene.checkEntity(this); 
     }
     
 }

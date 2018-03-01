@@ -30,10 +30,10 @@ public class Matcher {
     
     public boolean matches(Entity node) {
         for (int i = 0; i < require.size(); i++) {
-            if (!node.hasComponent(require.get(i))) return false; 
+            if (!node.has(require.get(i))) return false; 
         }
         for (int i = 0; i < exclude.size(); i++) {
-            if (node.hasComponent(exclude.get(i))) return false; 
+            if (node.has(exclude.get(i))) return false; 
         }
         return true; 
     }

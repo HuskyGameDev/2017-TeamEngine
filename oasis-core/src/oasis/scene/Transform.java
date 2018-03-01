@@ -1,4 +1,4 @@
-package oasis.entity;
+package oasis.scene;
 
 import oasis.math.Matrix4;
 import oasis.math.Quaternion;
@@ -28,7 +28,7 @@ public class Transform extends EntityComponent {
     }
     
     @Override
-    public void activate() {
+    protected void attach() {
         position.set(0); 
         rotation.set(0); 
         scale.set(1); 

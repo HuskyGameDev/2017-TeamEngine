@@ -7,9 +7,6 @@ import oasis.core.Logger;
 import oasis.core.Oasis;
 import oasis.core.OasisException;
 import oasis.core.ResourceManager;
-import oasis.entity.Camera;
-import oasis.entity.Light;
-import oasis.entity.Transform;
 import oasis.graphics.sort.BasicLightSorter;
 import oasis.graphics.sort.BasicMeshSorter;
 import oasis.graphics.sort.LightSorter;
@@ -20,6 +17,9 @@ import oasis.math.Quaternion;
 import oasis.math.Vector2;
 import oasis.math.Vector3;
 import oasis.math.Vector4;
+import oasis.scene.Camera;
+import oasis.scene.Light;
+import oasis.scene.Transform;
 
 public class Graphics {
 

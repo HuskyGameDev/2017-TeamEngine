@@ -1,11 +1,11 @@
-package oasis.terrainapp.behavior;
+package oasis.terrainapp.system;
 
-import oasis.entity.Entity;
-import oasis.entity.EntityBehavior;
 import oasis.math.Vector3;
+import oasis.scene.Entity;
+import oasis.scene.EntitySystem;
 import oasis.terrainapp.component.Velocity;
 
-public class Gravity extends EntityBehavior {
+public class Gravity extends EntitySystem {
 
     private static final Vector3 GRAVITY = new Vector3(0, -16.8f, 0); 
     

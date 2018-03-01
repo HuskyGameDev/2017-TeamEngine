@@ -1,35 +1,35 @@
 package oasis.terrainapp;
 
-import oasis.entity.Camera;
-import oasis.entity.Entity;
-import oasis.entity.EntityManager;
-import oasis.entity.Light;
-import oasis.entity.MeshContainer;
-import oasis.entity.Transform;
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
 import oasis.math.Mathf;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
+import oasis.scene.Camera;
+import oasis.scene.Entity;
+import oasis.scene.Light;
+import oasis.scene.MeshContainer;
+import oasis.scene.Scene;
+import oasis.scene.Transform;
 import oasis.terrainapp.component.FpsCamera;
 import oasis.terrainapp.component.SunLightTag;
 import oasis.terrainapp.component.Velocity;
 
 public class EntityFactory {
 
-    private EntityManager em; 
+    private Scene scene; 
     
-    public EntityFactory(EntityManager em) {
-        this.em = em; 
+    public EntityFactory(Scene scene) {
+        this.scene = scene; 
     }
     
     public Entity createSunLightEntity() {
-        Entity e = em.createEntity(); 
+        Entity e = scene.createEntity(); 
         
-        Transform t = e.add(Transform.class); 
-        MeshContainer mc = e.add(MeshContainer.class); 
-        Light l = e.add(Light.class); 
-        e.add(SunLightTag.class); 
+        Transform t = e.attach(new Transform()); 
+        MeshContainer mc = e.attach(new MeshContainer()); 
+        Light l = e.attach(new Light());  
+        e.attach(new SunLightTag()); 
         
         mc.setMaterial(Resources.sunMat);
         mc.setMesh(Resources.sphereMesh);
@@ -41,13 +41,13 @@ public class EntityFactory {
     }
     
     public Entity createCameraEntity() {
-        Entity e = em.createEntity(); 
+        Entity e = scene.createEntity(); 
         
-        Camera c = e.add(Camera.class); 
-        Transform t = e.add(Transform.class); 
-        e.add(Velocity.class); 
+        Camera c = e.attach(new Camera()); 
+        Transform t = e.attach(new Transform()); 
+        e.attach(new Velocity()); 
         
-        e.add(FpsCamera.class); 
+        e.attach(new FpsCamera()); 
         
         t.setPosition(new Vector3(0, TerrainGenerator.heightAtPosition(0, 0) + 2, 0));
         c.setFov(Mathf.toRadians(70.0f)); 
@@ -57,10 +57,10 @@ public class EntityFactory {
     }
     
     public Entity createMeshEntity(Vector3 position, Mesh mesh, Material material) {
-        Entity e = em.createEntity(); 
+        Entity e = scene.createEntity(); 
         
-        Transform t = e.add(Transform.class); 
-        MeshContainer mc = e.add(MeshContainer.class); 
+        Transform t = e.attach(new Transform()); 
+        MeshContainer mc = e.attach(new MeshContainer()); 
         
         t.setPosition(position); 
         mc.setMesh(mesh); 
@@ -70,10 +70,10 @@ public class EntityFactory {
     }
     
     public Entity createMeshEntity(Vector3 position, float angle, Mesh mesh, Material material) {
-        Entity e = em.createEntity(); 
+        Entity e = scene.createEntity(); 
         
-        Transform t = e.add(Transform.class); 
-        MeshContainer mc = e.add(MeshContainer.class); 
+        Transform t = e.attach(new Transform()); 
+        MeshContainer mc = e.attach(new MeshContainer()); 
         
         t.setPosition(position); 
         t.setRotation(Quaternion.axisAngle(new Vector3(0, 1, 0), angle)); 

@@ -32,10 +32,10 @@ public abstract class EntityComponent {
         return entity.getScene(); 
     }
     
-    protected abstract void attach(); 
+    protected void attach() {}
     
-    protected abstract void detach();  
+    protected void detach() {} 
     
-    public abstract void copy(Entity e); 
+    // protected abstract void copy(Entity e); 
     
 }

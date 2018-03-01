@@ -1,43 +1,28 @@
-package oasis.demo.rpg.behavior;
+package oasis.terrainapp.system;
 
 import oasis.core.Oasis;
-import oasis.entity.Camera;
-import oasis.entity.ComponentId;
-import oasis.entity.Entity;
-import oasis.entity.EntityBehavior;
-import oasis.entity.EntityManager;
-import oasis.entity.Transform;
 import oasis.input.Keyboard;
 import oasis.input.Mouse;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
+import oasis.scene.Camera;
+import oasis.scene.Entity;
+import oasis.scene.EntitySystem;
+import oasis.scene.Transform;
 import oasis.terrainapp.TerrainGenerator;
 import oasis.terrainapp.component.FpsCamera;
 import oasis.terrainapp.component.Velocity;
 
-public class FpsCameraController extends EntityBehavior {
+public class FpsCameraController extends EntitySystem {
 
-    private ComponentId<Transform> transformId; 
-    private ComponentId<FpsCamera> fpsCameraId; 
-    private ComponentId<Camera> cameraId; 
-    private ComponentId<Velocity> velocityId; 
-    
     public FpsCameraController() {
         super(DEFAULT_PRIORITY, Transform.class, Camera.class, FpsCamera.class, Velocity.class); 
     }
     
     @Override
-    public void updateIds(EntityManager em) {
-        transformId = em.getComponentId(Transform.class); 
-        fpsCameraId = em.getComponentId(FpsCamera.class); 
-        cameraId = em.getComponentId(Camera.class); 
-        velocityId = em.getComponentId(Velocity.class); 
-    }
-    
-    @Override
     public void render(Entity e) {
-        Transform t = e.get(transformId); 
-        Camera c = e.get(cameraId); 
+        Transform t = e.get(Transform.class); 
+        Camera c = e.get(Camera.class);  
         
         Oasis.getGraphics().setCamera(c, t);
     }
@@ -47,9 +32,9 @@ public class FpsCameraController extends EntityBehavior {
         Keyboard keys = Oasis.getKeyboard(); 
         Mouse mouse = Oasis.getMouse(); 
         
-        Transform tfm = e.get(transformId); 
-        FpsCamera cam = e.get(fpsCameraId); 
-        Velocity vel = e.get(velocityId); 
+        Transform tfm = e.get(Transform.class); 
+        FpsCamera cam = e.get(FpsCamera.class);  
+        Velocity vel = e.get(Velocity.class);  
         
         Vector3 camPos = tfm.getPosition(); 
         Quaternion camRot = tfm.getRotation(); 

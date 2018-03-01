@@ -1,4 +1,4 @@
-package oasis.entity;
+package oasis.scene;
 
 import oasis.math.Vector3;
 
@@ -14,11 +14,12 @@ public class Light extends EntityComponent {
         
     }
     
-    private Vector3 color; 
+    private final Vector3 color = new Vector3(); 
     private Type type; 
     
-    public Light() {
-        this.color = new Vector3(); 
+    protected void attach() {
+        this.color.set(1); 
+        this.type = Type.POINT; 
     }
     
     public Type getType() {

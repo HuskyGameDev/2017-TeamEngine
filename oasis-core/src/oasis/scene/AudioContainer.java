@@ -1,4 +1,4 @@
-package oasis.entity;
+package oasis.scene;
 
 import oasis.audio.AudioSource;
 
@@ -6,7 +6,7 @@ public class AudioContainer extends EntityComponent {
 
     private AudioSource source; 
     
-    public void deactivate() {
+    public void detach() {
         source = null; 
     }
     

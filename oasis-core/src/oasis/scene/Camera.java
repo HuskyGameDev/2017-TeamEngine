@@ -1,4 +1,4 @@
-package oasis.entity;
+package oasis.scene;
 
 import oasis.core.Oasis;
 import oasis.graphics.RenderTarget;
@@ -16,10 +16,10 @@ public class Camera extends EntityComponent {
     private float far; 
     
     public Camera() {
-        activate(); 
+        attach(); 
     }
     
-    public void activate() {
+    protected void attach() {
         fov = Mathf.toRadians(70.0f); 
         near = 0.1f; 
         far = 1000.0f; 

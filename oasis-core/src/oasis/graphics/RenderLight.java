@@ -1,7 +1,7 @@
 package oasis.graphics;
 
-import oasis.entity.Light;
-import oasis.entity.Transform;
+import oasis.scene.Light;
+import oasis.scene.Transform;
 
 public class RenderLight {
 

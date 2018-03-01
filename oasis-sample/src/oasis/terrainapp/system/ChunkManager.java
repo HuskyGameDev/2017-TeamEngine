@@ -1,4 +1,4 @@
-package oasis.terrainapp.behavior;
+package oasis.terrainapp.system;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,22 +6,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import oasis.entity.Entity;
-import oasis.entity.EntityBehavior;
-import oasis.entity.EntityManager;
-import oasis.entity.MeshContainer;
-import oasis.entity.Transform;
 import oasis.math.Mathf;
 import oasis.math.Vector2;
 import oasis.math.Vector2i;
 import oasis.math.Vector3;
+import oasis.scene.Entity;
+import oasis.scene.EntitySystem;
+import oasis.scene.MeshContainer;
+import oasis.scene.Scene;
+import oasis.scene.Transform;
 import oasis.terrainapp.EntityFactory;
 import oasis.terrainapp.Resources;
 import oasis.terrainapp.TerrainGenerator;
 import oasis.terrainapp.component.FpsCamera;
 import oasis.util.QuickHash;
 
-public class ChunkManager extends EntityBehavior {
+public class ChunkManager extends EntitySystem {
 
     private class Chunk {
         public Vector2i pos = new Vector2i(); 
@@ -86,9 +86,9 @@ public class ChunkManager extends EntityBehavior {
         public void delete() {
             terrain.get(MeshContainer.class).getMesh().dispose(); 
             terrain.get(MeshContainer.class).setMesh(null); 
-            getManager().destroyEntity(terrain); 
+            getScene().removeEntity(terrain); 
             for (int i = 0; i < trees.size(); i++) {
-                getManager().destroyEntity(trees.get(i)); 
+                getScene().removeEntity(trees.get(i)); 
             }
         }
     } 
@@ -103,8 +103,8 @@ public class ChunkManager extends EntityBehavior {
         super(Transform.class, FpsCamera.class); 
     }
     
-    public void updateIds(EntityManager em) {
-        factory = new EntityFactory(em); 
+    protected void onSceneSet(Scene s) {
+        factory = new EntityFactory(s); 
     }
     
     public void update(Entity e, float dt) {

@@ -1,6 +1,6 @@
 package oasis.terrainapp.component;
 
-import oasis.entity.EntityComponent;
+import oasis.scene.EntityComponent;
 
 public class SunLightTag extends EntityComponent {
 

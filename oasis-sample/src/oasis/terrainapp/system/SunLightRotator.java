@@ -1,26 +1,18 @@
-package oasis.terrainapp.behavior;
+package oasis.terrainapp.system;
 
-import oasis.entity.ComponentId;
-import oasis.entity.Entity;
-import oasis.entity.EntityBehavior;
-import oasis.entity.EntityManager;
-import oasis.entity.Transform;
 import oasis.math.Quaternion;
 import oasis.math.Vector3;
+import oasis.scene.Entity;
+import oasis.scene.EntitySystem;
+import oasis.scene.Transform;
 import oasis.terrainapp.component.SunLightTag;
 
-public class SunLightRotator extends EntityBehavior {
+public class SunLightRotator extends EntitySystem {
 
-    private ComponentId<Transform> transformId; 
-    
     private float time = 30; 
     
     public SunLightRotator() {
         super(DEFAULT_PRIORITY, Transform.class, SunLightTag.class); 
-    }
-    
-    public void updateIds(EntityManager em) {
-        transformId = em.getComponentId(Transform.class);
     }
     
     public void preUpdate(float dt) {
@@ -28,7 +20,7 @@ public class SunLightRotator extends EntityBehavior {
     }
     
     public void update(Entity e, float dt) {
-        Transform t = e.get(transformId); 
+        Transform t = e.get(Transform.class);  
         
         Vector3 dir = new Vector3(1, 0, 0).rotate(Quaternion.axisAngle(new Vector3(0, 0, 1), -time * 0.01f)); 
         

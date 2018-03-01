@@ -11,12 +11,14 @@ import oasis.math.Vector3;
 public class Resources {
 
     public static Shader bbpShader; 
+    
     public static Mesh sphereMesh; 
     public static Mesh terrainMesh; 
     public static Mesh treeMesh; 
     public static Mesh leavesMesh; 
     public static Mesh buildingMesh; 
     public static Mesh houseMesh; 
+    
     public static Material stoneMat; 
     public static Material grassMat; 
     public static Material goldMat; 
@@ -28,7 +30,9 @@ public class Resources {
     public static Material sunMat; 
     public static Material leafMat; 
     public static Material woodMat; 
+    
     public static AudioClip music; 
+    
     public static AudioSource musicSource; 
     
     public static Material[] solidMats; 

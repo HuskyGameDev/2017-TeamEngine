@@ -1,4 +1,4 @@
-package oasis.entity;
+package oasis.scene;
 
 import oasis.graphics.Material;
 import oasis.graphics.Mesh;
@@ -17,11 +17,11 @@ public class MeshContainer extends EntityComponent {
         material = null; 
     }
     
-    public void activate() {
+    protected void attach() {
         reset(); 
     }
     
-    public void deactivate() {
+    protected void detach() {
         reset(); 
     }
     
