@@ -3,3 +3,11 @@
 .classpath
 hs_err*
 
+/Binaries/
+/obj/
+/ThirdParty/
+glew32.dll
+SDL2.dll 
+*.cbp
+*.depend
+*.layout 

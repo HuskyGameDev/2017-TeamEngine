@@ -1,2 +1,3 @@
 # oasis-engine
-Modular game engine written in Java
+Open source game engine written in C++ and Java 
+
