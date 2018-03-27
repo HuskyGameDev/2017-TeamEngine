@@ -30,21 +30,27 @@ void TestApp::Init()
 
     geom = g->CreateGeometry();
 
-    VertexBuffer* vb = g->CreateVertexBuffer(6, VertexFormat::POSITION);
+    VertexBuffer* vb = g->CreateVertexBuffer(4, VertexFormat::POSITION);
+    IndexBuffer* ib = g->CreateIndexBuffer(6);
 
     float verts[] =
     {
         -0.5, -0.5, 0,
          0.5, -0.5, 0,
          0.5,  0.5, 0,
-
-        -0.5, -0.5, 0,
-         0.5,  0.5, 0,
         -0.5,  0.5, 0,
     };
 
-    vb->SetData(6, verts);
+    short inds[] =
+    {
+        0, 1, 2,
+        0, 2, 3
+    };
+
+    vb->SetData(0, 4, verts);
+    ib->SetData(0, 6, inds);
     geom->SetVertexBuffer(vb);
+    geom->SetIndexBuffer(ib);
 }
 
 void TestApp::Update(float dt)
@@ -69,7 +75,7 @@ void TestApp::Render()
     g->SetUniform("oa_Proj", Matrix4::Perspective(70 * OASIS_TO_RAD, 1.3333, 0.1, 100.0));
 
     g->SetGeometry(geom);
-    g->DrawArrays(PRIMITIVE_TRIANGLE_LIST, 0, 2);
+    g->DrawIndexed(PRIMITIVE_TRIANGLE_LIST, 0, 2);
 }
 
 void TestApp::Exit()

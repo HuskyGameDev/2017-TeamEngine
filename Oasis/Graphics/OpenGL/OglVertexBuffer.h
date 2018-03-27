@@ -4,6 +4,8 @@
 
 #include <GL/glew.h>
 
+#include <vector>
+
 namespace Oasis
 {
 
@@ -20,11 +22,11 @@ public:
     const VertexFormat& GetFormat() const;
 
     int GetElementCount() const;
-
     void GetData(int start, int numElements, float* out) const;
 
+    void SetElementCount(int numElements);
     void SetUsage(BufferUsage usage);
-    void SetData(int numElements, const float* in);
+    void SetData(int start, int numElements, const float* in);
 
     GLuint GetId() const;
 

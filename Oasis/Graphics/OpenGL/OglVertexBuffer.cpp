@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+#include <iostream>
+
 using namespace std;
 
 namespace Oasis
@@ -17,9 +19,11 @@ OglVertexBuffer::OglVertexBuffer(int elements, const VertexFormat& format, Buffe
     , m_usage(usage)
     , m_data()
 {
+    m_data.resize(elements * format.GetSize());
+
     glGenBuffers(1, &m_id);
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
-    glBufferData(GL_ARRAY_BUFFER, elements * format.GetSize(), NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, elements * format.GetSize() * sizeof (float), NULL, GL_DYNAMIC_DRAW);
 }
 
 OglVertexBuffer::~OglVertexBuffer()
@@ -64,19 +68,25 @@ void OglVertexBuffer::SetUsage(BufferUsage usage)
     m_usage = usage;
 }
 
-void OglVertexBuffer::SetData(int numElements, const float* in)
+void OglVertexBuffer::SetElementCount(int numElements)
 {
-    m_data.clear();
-
-    for (int i = 0; i < numElements * m_format.GetSize(); i++)
-    {
-        m_data.push_back(in[i]);
-    }
-
-    // TODO glBufferSubData
+    m_data.resize(numElements * m_format.GetSize());
 
     glBindBuffer(GL_ARRAY_BUFFER, m_id);
     glBufferData(GL_ARRAY_BUFFER, m_data.size() * sizeof (float), &m_data[0], GL_DYNAMIC_DRAW);
+}
+
+void OglVertexBuffer::SetData(int start, int numElements, const float* in)
+{
+    start *= m_format.GetSize();
+
+    for (int i = 0; i < numElements * m_format.GetSize(); i++)
+    {
+        m_data[start + i] = in[i];
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_id);
+    glBufferSubData(GL_ARRAY_BUFFER, start * sizeof (float), numElements * m_format.GetSize() * sizeof (float), &m_data[start]);
 }
 
 GLuint OglVertexBuffer::GetId() const

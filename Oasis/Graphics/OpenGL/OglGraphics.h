@@ -2,6 +2,7 @@
 
 #include "Oasis/Graphics/Graphics.h"
 
+#include "Oasis/Graphics/OpenGL/OglIndexBuffer.h"
 #include "Oasis/Graphics/OpenGL/OglGeometry.h"
 #include "Oasis/Graphics/OpenGL/OglShader.h"
 #include "Oasis/Graphics/OpenGL/OglVertexBuffer.h"

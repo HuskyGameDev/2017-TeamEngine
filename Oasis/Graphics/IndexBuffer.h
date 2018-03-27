@@ -18,11 +18,13 @@ public:
 
     virtual int GetElementCount() const = 0;
 
-    virtual void GetData(int start, int numElements, int* out) const = 0;
+    virtual void GetData(int start, int numElements, short* out) const = 0;
 
     virtual void SetUsage(BufferUsage usage) = 0;
 
-    virtual void SetData(int numElements, const int* in) = 0;
+    virtual void SetElementCount(int numElements) = 0;
+
+    virtual void SetData(int start, int numElements, const short* in) = 0;
 };
 
 }

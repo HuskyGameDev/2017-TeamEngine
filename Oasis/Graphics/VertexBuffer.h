@@ -25,7 +25,9 @@ public:
 
     virtual void SetUsage(BufferUsage usage) = 0;
 
-    virtual void SetData(int numElements, const float* in) = 0;
+    virtual void SetElementCount(int numElements) = 0;
+
+    virtual void SetData(int start, int numElements, const float* in) = 0;
 };
 
 }

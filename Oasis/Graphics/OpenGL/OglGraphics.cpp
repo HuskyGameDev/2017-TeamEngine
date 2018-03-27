@@ -43,6 +43,17 @@ void OglGraphics::BindGeometry()
 {
     if (!m_geometry) return;
 
+    OglIndexBuffer* ib = (OglIndexBuffer*) m_geometry->GetIndexBuffer();
+
+    if (ib)
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib->GetId());
+    }
+    else
+    {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
     int attribs[ATTRIBUTE_COUNT];
 
     for (int i = 0; i < ATTRIBUTE_COUNT; i++) attribs[i] = -1;
@@ -169,7 +180,16 @@ void OglGraphics::SetGeometry(Geometry* geom)
 
 void OglGraphics::SetShader(Shader* shader)
 {
+    m_shader = (OglShader*) shader;
 
+    if (m_shader)
+    {
+        glUseProgram(m_shader->GetId());
+    }
+    else
+    {
+        glUseProgram(0);
+    }
 }
 
 void OglGraphics::SetTexture(int unit, Texture* tex)
@@ -189,12 +209,17 @@ void OglGraphics::DrawArrays(Primitive prim, int start, int primCount)
 
 void OglGraphics::DrawIndexed(Primitive prim, int start, int primCount)
 {
+    if (!m_geometry) return;
 
+    BindGeometry();
+
+    // TODO primitive size
+    glDrawElements(OGL_PRIMITIVE[prim], primCount * 3, GL_UNSIGNED_SHORT, (void*)(start * sizeof(short)));
 }
 
 IndexBuffer* OglGraphics::CreateIndexBuffer(int numElements, BufferUsage usage)
 {
-    return NULL;
+    return new OglIndexBuffer(numElements, usage);
 }
 
 VertexBuffer* OglGraphics::CreateVertexBuffer(int numElements, const VertexFormat& format, BufferUsage usage)
