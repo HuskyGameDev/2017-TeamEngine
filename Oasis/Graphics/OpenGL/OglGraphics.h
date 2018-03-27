@@ -3,7 +3,7 @@
 #include "Oasis/Graphics/Graphics.h"
 
 #include "Oasis/Graphics/OpenGL/OglGeometry.h"
-//#include "Oasis/Graphics/OpenGL/OglIndexBuffer.h"
+#include "Oasis/Graphics/OpenGL/OglShader.h"
 #include "Oasis/Graphics/OpenGL/OglVertexBuffer.h"
 
 namespace Oasis
@@ -30,6 +30,17 @@ public:
 
     void SetTexture(int unit, Texture* tex);
 
+    Uniform GetUniform(const std::string& name);
+    bool HasUniform(const std::string& name);
+    bool ClearUniform(const std::string& name);
+    bool SetUniform(const std::string& name, int value);
+    bool SetUniform(const std::string& name, float value);
+    bool SetUniform(const std::string& name, const Vector2& value);
+    bool SetUniform(const std::string& name, const Vector3& value);
+    bool SetUniform(const std::string& name, const Vector4& value);
+    bool SetUniform(const std::string& name, const Matrix3& value);
+    bool SetUniform(const std::string& name, const Matrix4& value);
+
     void DrawArrays(Primitive prim, int start, int primCount);
     void DrawIndexed(Primitive prim, int start, int primCount);
 
@@ -43,6 +54,7 @@ private:
     void BindGeometry();
 
     OglGeometry* m_geometry;
+    OglShader* m_shader;
 };
 
 }

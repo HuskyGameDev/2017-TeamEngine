@@ -23,6 +23,22 @@ static const string OGL_ATTRIBUTE_NAME[ATTRIBUTE_COUNT] =
     "a_Color"
 };
 
+Uniform OglShader::GetUniformType(GLenum type)
+{
+    switch (type)
+    {
+    case GL_SAMPLER_2D: return UNIFORM_INT;
+    case GL_INT: return UNIFORM_INT;
+    case GL_FLOAT: return UNIFORM_FLOAT;
+    case GL_FLOAT_VEC2: return UNIFORM_VECTOR2;
+    case GL_FLOAT_VEC3: return UNIFORM_VECTOR3;
+    case GL_FLOAT_VEC4: return UNIFORM_VECTOR4;
+    case GL_FLOAT_MAT3: return UNIFORM_MATRIX3;
+    case GL_FLOAT_MAT4: return UNIFORM_MATRIX4;
+    default: return UNIFORM_UNKNOWN;
+    }
+}
+
 int OglShader::GetAttributeIndex(Attribute attrib)
 {
     return OGL_ATTRIBUTE_INDEX[attrib];
@@ -50,6 +66,11 @@ OglShader::OglShader(const string& vs, const string& fs)
     m_valid &= Compile(vId, GL_VERTEX_SHADER, "vertex shader", m_vSource);
     m_valid &= Compile(fId, GL_FRAGMENT_SHADER, "fragment shader", m_fSource);
     m_valid &= Link(vId, fId);
+
+    if (m_valid)
+    {
+        FindUniforms();
+    }
 
     glDeleteShader(vId);
     glDeleteShader(fId);
@@ -158,5 +179,37 @@ bool OglShader::Link(GLuint vs, GLuint fs)
     return true;
 }
 
+void OglShader::FindUniforms()
+{
+    int count;
+
+    glGetProgramiv(m_id, GL_ACTIVE_UNIFORMS, &count);
+
+    char name[1024];
+    GLsizei length;
+    GLint size;
+    GLenum type;
+
+    for (int i = 0; i < count; i++)
+    {
+        glGetActiveUniform(m_id, i, 1024, &length, &size, &type, name);
+
+        m_uniformValues[name] = UniformValue(i, GetUniformType(type));
+    }
+}
+
+UniformValue* OglShader::GetUniformValue(const std::string& name)
+{
+    unordered_map<string, UniformValue>::iterator it = m_uniformValues.find(name);
+
+    if (it == m_uniformValues.end())
+    {
+        return NULL;
+    }
+    else
+    {
+        return &it->second;
+    }
+}
 
 }

@@ -213,5 +213,89 @@ Texture2D* OglGraphics::CreateTexture2D()
     return NULL;
 }
 
+Uniform OglGraphics::GetUniform(const std::string& name)
+{
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            return uv->GetUniform();
+        }
+        else
+        {
+            return UNIFORM_NONE;
+        }
+    }
+    else
+    {
+        return UNIFORM_NONE;
+    }
+}
+
+bool OglGraphics::HasUniform(const std::string& name)
+{
+    return GetUniform(name) != UNIFORM_NONE;
+}
+
+bool OglGraphics::ClearUniform(const std::string& name)
+{
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            uv->Clear();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+#define OASIS_OGL_SHADER_TRY_SET(name, value) \
+    if (m_shader) { \
+        UniformValue* uv = m_shader->GetUniformValue(name); \
+        if (uv) return uv->SetValue(value); \
+    } \
+    return false;
+
+bool OglGraphics::SetUniform(const std::string& name, int value)
+{
+    OASIS_OGL_SHADER_TRY_SET(name, value);
+}
+
+bool OglGraphics::SetUniform(const std::string& name, float value)
+{
+    OASIS_OGL_SHADER_TRY_SET(name, value);
+}
+
+bool OglGraphics::SetUniform(const std::string& name, const Vector2& value)
+{
+    OASIS_OGL_SHADER_TRY_SET(name, value);
+}
+
+bool OglGraphics::SetUniform(const std::string& name, const Vector3& value)
+{
+    OASIS_OGL_SHADER_TRY_SET(name, value);
+}
+
+bool OglGraphics::SetUniform(const std::string& name, const Vector4& value)
+{
+    OASIS_OGL_SHADER_TRY_SET(name, value);
+}
+
+bool OglGraphics::SetUniform(const std::string& name, const Matrix3& value)
+{
+    OASIS_OGL_SHADER_TRY_SET(name, value);
+}
+
+bool OglGraphics::SetUniform(const std::string& name, const Matrix4& value)
+{
+    OASIS_OGL_SHADER_TRY_SET(name, value);
+}
+
 
 }

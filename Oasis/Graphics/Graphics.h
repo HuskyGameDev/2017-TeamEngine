@@ -7,9 +7,10 @@
 
 #include "Oasis/Graphics/Geometry.h"
 #include "Oasis/Graphics/IndexBuffer.h"
+#include "Oasis/Graphics/Shader.h"
 #include "Oasis/Graphics/VertexBuffer.h"
 
-#include "Oasis/Math/Vector4.h"
+#include "Oasis/Math/MathUtil.h"
 
 #include <string>
 
@@ -55,16 +56,18 @@ public:
 
     virtual void DrawArrays(Primitive prim, int start, int primCount) = 0;
     virtual void DrawIndexed(Primitive prim, int start, int primCount) = 0;
-/*
-    virtual void ClearUniform(const std::string& name) = 0;
-    virtual void SetUniformInt(const std::string& name, int value) = 0;
-    virtual void SetUniformFloat(const std::string& name, float value) = 0;
-    virtual void SetUniformVector2(const std::string& name, const Vector2& value) = 0;
-    virtual void SetUniformVector3(const std::string& name, const Vector3& value) = 0;
-    virtual void SetUniformVector4(const std::string& name, const Vector4& value) = 0;
-    virtual void SetUniformMatrix3(const std::string& name, const Matrix3& value) = 0;
-    virtual void SetUniformMatrix4(const std::string& name, const Matrix4& value) = 0;
-*/
+
+    virtual Uniform GetUniform(const std::string& name) = 0;
+    virtual bool HasUniform(const std::string& name) = 0;
+    virtual bool ClearUniform(const std::string& name) = 0;
+    virtual bool SetUniform(const std::string& name, int value) = 0;
+    virtual bool SetUniform(const std::string& name, float value) = 0;
+    virtual bool SetUniform(const std::string& name, const Vector2& value) = 0;
+    virtual bool SetUniform(const std::string& name, const Vector3& value) = 0;
+    virtual bool SetUniform(const std::string& name, const Vector4& value) = 0;
+    virtual bool SetUniform(const std::string& name, const Matrix3& value) = 0;
+    virtual bool SetUniform(const std::string& name, const Matrix4& value) = 0;
+
     virtual IndexBuffer* CreateIndexBuffer(int numElements, BufferUsage usage = BUFFER_USAGE_DYNAMIC) = 0;
 
     virtual VertexBuffer* CreateVertexBuffer(int numElements, const VertexFormat& format, BufferUsage usage = BUFFER_USAGE_DYNAMIC) = 0;

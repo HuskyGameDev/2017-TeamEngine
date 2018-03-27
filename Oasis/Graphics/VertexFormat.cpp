@@ -76,7 +76,7 @@ int VertexFormat::GetOffset(Attribute attrib) const
 {
     int off = 0;
 
-    for (int i = 0; i < m_elements.size(); i++)
+    for (unsigned i = 0; i < m_elements.size(); i++)
     {
         if (m_elements[i] == attrib) return off;
 

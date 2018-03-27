@@ -7,6 +7,21 @@
 namespace Oasis
 {
 
+enum Uniform
+{
+    UNIFORM_NONE,
+    UNIFORM_UNKNOWN,
+    UNIFORM_INT,
+    UNIFORM_FLOAT,
+    UNIFORM_VECTOR2,
+    UNIFORM_VECTOR3,
+    UNIFORM_VECTOR4,
+    UNIFORM_MATRIX3,
+    UNIFORM_MATRIX4,
+
+    UNIFORM_COUNT
+};
+
 class OASIS_API Shader
 {
 public:
