@@ -17,14 +17,18 @@ namespace Oasis
 static const string OGL_VS = ""
     "#version 120 \n"
     "attribute vec3 a_Position; \n"
+    "uniform mat4 oa_Model; \n"
+    "uniform mat4 oa_View; \n"
+    "uniform mat4 oa_Proj; \n"
     "void main() { \n"
-    "  gl_Position = vec4(a_Position, 1.0); \n"
+    "  gl_Position = oa_Proj * oa_View * oa_Model * vec4(a_Position, 1.0); \n"
     "} \n";
 
 static const string OGL_FS = ""
     "#version 120 \n"
+    "uniform vec3 u_Color; \n"
     "void main() { \n"
-    "  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); \n"
+    "  gl_FragColor = vec4(u_Color, 1.0); \n"
     "} \n";
 
 static const GLuint OGL_PRIMITIVE[PRIMITIVE_COUNT] =
@@ -87,7 +91,7 @@ void OglGraphics::BindGeometry()
 OglGraphics::OglGraphics()
     : m_geometry(NULL)
 {
-    OglShader* shader = (OglShader*) CreateShader(OGL_VS, OGL_FS);
+    m_shader = (OglShader*) CreateShader(OGL_VS, OGL_FS);
 
     /*GLuint shader, vert, frag;
 
@@ -118,7 +122,7 @@ OglGraphics::OglGraphics()
 
     glLinkProgram(shader);*/
 
-    glUseProgram(shader->GetId());
+    glUseProgram(m_shader->GetId());
 }
 
 OglGraphics::~OglGraphics()
@@ -221,7 +225,7 @@ Uniform OglGraphics::GetUniform(const std::string& name)
 
         if (uv)
         {
-            return uv->GetUniform();
+            return uv->type;
         }
         else
         {
@@ -247,7 +251,32 @@ bool OglGraphics::ClearUniform(const std::string& name)
 
         if (uv)
         {
-            uv->Clear();
+            switch (uv->type)
+            {
+            case UNIFORM_INT: return SetUniform(name, 0);
+            case UNIFORM_FLOAT: return SetUniform(name, 0);
+            case UNIFORM_VECTOR2: return SetUniform(name, (Vector2){0, 0});
+            case UNIFORM_VECTOR3: return SetUniform(name, (Vector3){0, 0, 0});
+            case UNIFORM_VECTOR4: return SetUniform(name, (Vector4){0, 0, 0, 1});
+            case UNIFORM_MATRIX3: return SetUniform(name, Matrix3::Identity());
+            case UNIFORM_MATRIX4: return SetUniform(name, Matrix4::Identity());
+            default: return false;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool OglGraphics::SetUniform(const std::string& name, int value)
+{
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            glUniform1i(uv->location, value);
             return true;
         }
     }
@@ -255,46 +284,100 @@ bool OglGraphics::ClearUniform(const std::string& name)
     return false;
 }
 
-#define OASIS_OGL_SHADER_TRY_SET(name, value) \
-    if (m_shader) { \
-        UniformValue* uv = m_shader->GetUniformValue(name); \
-        if (uv) return uv->SetValue(value); \
-    } \
-    return false;
-
-bool OglGraphics::SetUniform(const std::string& name, int value)
-{
-    OASIS_OGL_SHADER_TRY_SET(name, value);
-}
-
 bool OglGraphics::SetUniform(const std::string& name, float value)
 {
-    OASIS_OGL_SHADER_TRY_SET(name, value);
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            glUniform1f(uv->location, value);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool OglGraphics::SetUniform(const std::string& name, const Vector2& value)
 {
-    OASIS_OGL_SHADER_TRY_SET(name, value);
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            glUniform2fv(uv->location, 1, &value[0]);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool OglGraphics::SetUniform(const std::string& name, const Vector3& value)
 {
-    OASIS_OGL_SHADER_TRY_SET(name, value);
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            glUniform3fv(uv->location, 1, &value[0]);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool OglGraphics::SetUniform(const std::string& name, const Vector4& value)
 {
-    OASIS_OGL_SHADER_TRY_SET(name, value);
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            glUniform4fv(uv->location, 1, &value[0]);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool OglGraphics::SetUniform(const std::string& name, const Matrix3& value)
 {
-    OASIS_OGL_SHADER_TRY_SET(name, value);
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            glUniformMatrix3fv(uv->location, 1, GL_FALSE, &value[0]);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool OglGraphics::SetUniform(const std::string& name, const Matrix4& value)
 {
-    OASIS_OGL_SHADER_TRY_SET(name, value);
+    if (m_shader)
+    {
+        UniformValue* uv = m_shader->GetUniformValue(name);
+
+        if (uv)
+        {
+            glUniformMatrix4fv(uv->location, 1, GL_FALSE, &value[0]);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 

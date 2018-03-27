@@ -73,7 +73,7 @@ struct OASIS_API Matrix4
         m.m00 = c;
         m.m02 = s;
         m.m20 = -s;
-        m.m20 = c;
+        m.m22 = c;
         return m;
     }
 

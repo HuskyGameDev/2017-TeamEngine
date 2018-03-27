@@ -14,51 +14,21 @@ namespace Oasis
 
 class OglShader;
 
-class OASIS_API UniformValue
+struct OASIS_API UniformValue
 {
-public:
-    UniformValue() : m_dirty(true), m_id(0), m_type(UNIFORM_UNKNOWN), m_matrix4Value(0) {}
-    UniformValue(GLuint id, Uniform type) : m_dirty(true), m_id(id), m_type(type), m_matrix4Value(0) {}
-    UniformValue(const UniformValue& uv) : m_dirty(true), m_id(uv.m_id), m_type(uv.m_type), m_matrix4Value(uv.m_matrix4Value) {}
+    UniformValue() : location(0), type(UNIFORM_UNKNOWN) {}
+    UniformValue(GLuint loc, Uniform type) : location(loc), type(type) {}
+    UniformValue(const UniformValue& uv) : location(uv.location), type(uv.type) {}
     UniformValue& operator=(const UniformValue& uv)
     {
         if (this == &uv) return *this;
-        m_dirty = uv.m_dirty;
-        m_id = uv.m_id;
-        m_type = uv.m_type;
-        m_matrix4Value = uv.m_matrix4Value;
+        location = uv.location;
+        type = uv.type;
         return *this;
     }
 
-    GLuint GetId() const { return m_id; }
-    Uniform GetUniform() const { return m_type; }
-
-    bool SetValue(int value);
-    bool SetValue(float value);
-    bool SetValue(const Vector2& value);
-    bool SetValue(const Vector3& value);
-    bool SetValue(const Vector4& value);
-    bool SetValue(const Matrix3& value);
-    bool SetValue(const Matrix4& value);
-
-    void Clear() { m_matrix4Value = 0; m_dirty = true; }
-
-private:
-    friend class OglShader;
-
-    bool m_dirty;
-    GLuint m_id;
-    Uniform m_type;
-    union
-    {
-        int m_intValue;
-        float m_floatValue;
-        Vector2 m_vector2Value;
-        Vector3 m_vector3Value;
-        Vector4 m_vector4Value;
-        Matrix3 m_matrix3Value;
-        Matrix4 m_matrix4Value;
-    };
+    GLuint location;
+    Uniform type;
 };
 
 class OASIS_API OglShader : public Shader
