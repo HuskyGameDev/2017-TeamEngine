@@ -4,9 +4,27 @@
 #include <Oasis/Graphics/Graphics.h>
 
 #include <iostream>
+#include <string>
 
 using namespace Oasis;
 using namespace std;
+
+static const string OGL_VS = ""
+    "#version 120 \n"
+    "attribute vec3 a_Position; \n"
+    "uniform mat4 oa_Model; \n"
+    "uniform mat4 oa_View; \n"
+    "uniform mat4 oa_Proj; \n"
+    "void main() { \n"
+    "  gl_Position = oa_Proj * oa_View * oa_Model * vec4(a_Position, 1.0); \n"
+    "} \n";
+
+static const string OGL_FS = ""
+    "#version 120 \n"
+    "uniform vec3 u_Color; \n"
+    "void main() { \n"
+    "  gl_FragColor = vec4(1, 0, 1, 1.0); \n"
+    "} \n";
 
 class TestApp : public Application
 {
@@ -19,6 +37,7 @@ public:
     void Exit();
 
 private:
+    Shader* shader;
     Geometry* geom;
     Vector3 pos;
     float angle;
@@ -28,6 +47,7 @@ void TestApp::Init()
 {
     Graphics* g = Engine::GetGraphics();
 
+    shader = g->CreateShader(OGL_VS, OGL_FS);
     geom = g->CreateGeometry();
 
     VertexBuffer* vb = g->CreateVertexBuffer(4, VertexFormat::POSITION);
@@ -69,6 +89,7 @@ void TestApp::Render()
 
     cout << pos << " " << angle << endl;
 
+    g->SetShader(shader);
     g->SetUniform("u_Color", Vector3(1, 1, 0));
     g->SetUniform("oa_Model", Matrix4::Translation(pos) * Matrix4::RotationY(angle));
     g->SetUniform("oa_View", Matrix4::Identity());
