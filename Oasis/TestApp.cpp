@@ -63,6 +63,7 @@ void TestApp::Update(float dt)
 void TestApp::Render()
 {
     Graphics* g = Engine::GetGraphics();
+    Window* w = Engine::GetWindow();
 
     g->SetClearColor({0.6, 0.7, 0.9, 1.0});
     g->Clear();
@@ -72,7 +73,7 @@ void TestApp::Render()
     g->SetUniform("u_Color", Vector3(1, 1, 0));
     g->SetUniform("oa_Model", Matrix4::Translation(pos) * Matrix4::RotationY(angle));
     g->SetUniform("oa_View", Matrix4::Identity());
-    g->SetUniform("oa_Proj", Matrix4::Perspective(70 * OASIS_TO_RAD, 1.3333, 0.1, 100.0));
+    g->SetUniform("oa_Proj", Matrix4::Perspective(70 * OASIS_TO_RAD, w->GetAspectRatio(), 0.1, 100.0));
 
     g->SetGeometry(geom);
     g->DrawIndexed(PRIMITIVE_TRIANGLE_LIST, 0, 2);

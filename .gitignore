@@ -11,3 +11,4 @@ SDL2.dll
 *.cbp
 *.depend
 *.layout 
+/bin/
