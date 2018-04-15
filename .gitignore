@@ -14,3 +14,4 @@ SDL2.dll
 *.depend
 *.layout 
 /bin/
+oasis-engine

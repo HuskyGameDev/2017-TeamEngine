@@ -22,12 +22,6 @@ namespace // private data
     Window* m_window = NULL;
 }
 
-void PreUpdate(float dt);
-void PostUpdate(float dt);
-
-void PreRender();
-void PostRender();
-
 bool Engine::IsRunning()
 {
     return m_running;

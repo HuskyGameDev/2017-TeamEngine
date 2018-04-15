@@ -75,8 +75,6 @@ public:
     virtual Geometry* CreateGeometry() = 0;
 
     virtual Shader* CreateShader(const std::string& vertexSource, const std::string& fragmentSource) = 0;
-
-    virtual Texture2D* CreateTexture2D() = 0;
 };
 
 }

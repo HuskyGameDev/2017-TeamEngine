@@ -23,7 +23,7 @@ static const string OGL_FS = ""
     "#version 120 \n"
     "uniform vec3 u_Color; \n"
     "void main() { \n"
-    "  gl_FragColor = vec4(1, 0, 1, 1.0); \n"
+    "  gl_FragColor = vec4(u_Color, 1.0); \n"
     "} \n";
 
 class TestApp : public Application
@@ -92,8 +92,8 @@ void TestApp::Render()
 
     g->SetShader(shader);
     g->SetUniform("u_Color", Vector3(1, 1, 0));
-    g->SetUniform("oa_Model", Matrix4::Translation(pos) * Matrix4::RotationY(angle));
-    g->SetUniform("oa_View", Matrix4::Identity());
+    g->SetUniform("oa_Model", Matrix4::Identity());
+    g->SetUniform("oa_View", Matrix4::LookAt(0, Quaternion::AxisAngle(Vector3(0,1,0), angle) * pos, Vector3(0, 1, 0)));
     g->SetUniform("oa_Proj", Matrix4::Perspective(70 * OASIS_TO_RAD, w->GetAspectRatio(), 0.1, 100.0));
 
     g->SetGeometry(geom);
