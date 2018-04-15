@@ -21,6 +21,8 @@ public:
         return (float) GetWidth() / GetHeight();
     }
 
+    virtual bool IsCloseRequested() const = 0;
+
     virtual void SetTitle(const std::string& title) = 0;
     virtual void SetSize(int width, int height) = 0;
 

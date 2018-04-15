@@ -5,7 +5,6 @@
 namespace Oasis
 {
 
-class Application;
 class Config;
 class Graphics;
 class Window;
@@ -15,13 +14,14 @@ namespace Engine
 
 OASIS_API bool IsRunning();
 
-OASIS_API int Start(Application* app);
+OASIS_API void Start(const Config& config);
 OASIS_API void Stop();
 
-OASIS_API double GetFps();
-OASIS_API double GetUps();
+OASIS_API void PreUpdate(float dt);
+OASIS_API void PostUpdate(float dt);
 
-OASIS_API Application* GetApplication();
+OASIS_API void PreRender();
+OASIS_API void PostRender();
 
 OASIS_API Graphics* GetGraphics();
 
