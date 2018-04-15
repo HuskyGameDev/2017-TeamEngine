@@ -16,6 +16,13 @@ public:
     virtual int GetWidth() const = 0;
     virtual int GetHeight() const = 0;
 
+    virtual float GetAspectRatio() const
+    {
+        return (float) GetWidth() / GetHeight();
+    }
+
+    virtual bool IsCloseRequested() const = 0;
+
     virtual void SetTitle(const std::string& title) = 0;
     virtual void SetSize(int width, int height) = 0;
 

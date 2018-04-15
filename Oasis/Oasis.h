@@ -17,5 +17,5 @@
 #define OASIS_MAIN(AppName) \
     int main(int argc, char** argv) { \
         AppName oasisApp; \
-        return Oasis::Engine::Start(&oasisApp); \
+        return oasisApp.Start(); \
     }

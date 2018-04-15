@@ -15,6 +15,7 @@ SdlWindow::SdlWindow(const std::string& title)
     : m_title(title)
     , m_window(NULL)
     , m_context(NULL)
+    , m_close(false)
 {
     // init SDL if it has not already been
     if (!m_sdlInit) SDL_Init(SDL_INIT_EVERYTHING);
@@ -92,7 +93,7 @@ void SdlWindow::PollEvents()
         switch (e.type)
         {
         case SDL_QUIT:
-            Engine::Stop();
+            m_close = true;
         }
     }
 }

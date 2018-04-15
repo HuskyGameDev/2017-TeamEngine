@@ -17,6 +17,8 @@ public:
     virtual int GetWidth() const;
     virtual int GetHeight() const;
 
+    bool IsCloseRequested() const { return m_close; }
+
     virtual void SetTitle(const std::string& title);
     virtual void SetSize(int width, int height);
 
@@ -31,6 +33,7 @@ private:
     std::string m_title;
     SDL_Window* m_window;
     SDL_GLContext m_context;
+    bool m_close;
 };
 
 }
