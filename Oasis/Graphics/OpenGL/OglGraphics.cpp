@@ -79,23 +79,23 @@ void OglGraphics::BindGeometry()
         if (attribs[i] == -1)
         {
             glDisableVertexAttribArray(OglShader::GetAttributeIndex((Attribute) i));
-            cout << "Disabling " << OglShader::GetAttributeName((Attribute) i) << endl;
+            //cout << "Disabling " << OglShader::GetAttributeName((Attribute) i) << endl;
             continue;
         }
 
         OglVertexBuffer* vb = (OglVertexBuffer*) m_geometry->GetVertexBuffer(attribs[i]);
-        cout << "Binding " << vb->GetId() << endl;
+        //cout << "Binding " << vb->GetId() << endl;
         glBindBuffer(GL_ARRAY_BUFFER, vb->GetId());
 
-        cout << "Enabling " << OglShader::GetAttributeName((Attribute) i) << endl;
+        //cout << "Enabling " << OglShader::GetAttributeName((Attribute) i) << endl;
         glEnableVertexAttribArray(OglShader::GetAttributeIndex((Attribute) i));
 
-        cout << "attrib pointer "
+        /*cout << "attrib pointer "
             << i << " "
             << GetAttributeSize((Attribute) i) << " "
             << vb->GetFormat().GetSize() * sizeof (float) << " "
             << (vb->GetFormat().GetOffset((Attribute) i) * sizeof (float)) << endl;
-        glVertexAttribPointer(i, GetAttributeSize((Attribute) i), GL_FLOAT, GL_FALSE, vb->GetFormat().GetSize() * sizeof (float), (void*) (vb->GetFormat().GetOffset((Attribute) i) * sizeof (float)));
+        glVertexAttribPointer(i, GetAttributeSize((Attribute) i), GL_FLOAT, GL_FALSE, vb->GetFormat().GetSize() * sizeof (float), (void*) (vb->GetFormat().GetOffset((Attribute) i) * sizeof (float)));*/
     }
 }
 

@@ -14,6 +14,9 @@ class VertexBuffer;
 
 struct OASIS_API Submesh
 {
+    Submesh();
+
+    bool update;
     Geometry* geometry;
     IndexBuffer* indexBuffer;
     Primitive primitive;
@@ -40,8 +43,7 @@ public:
 
     // attributes
 
-    void SetVertexCount(int count);
-    void SetPositions(const Vector3* positions);
+    void SetPositions(int count, const Vector3* positions);
     void SetNormals(const Vector3* normals);
     void SetTexCoord(const Vector2* texCoords);
     void SetTangents(const Vector3* tangents);
@@ -57,20 +59,19 @@ public:
     // submeshes
 
     void SetSubmeshCount(int count);
-    void SetIndexCount(int submesh, int count);
-    void SetIndices(const short* indices);
+    void SetIndices(int submesh, int count, const short* indices);
 
     int GetSubmeshCount() const;
     int GetIndexCount(int submesh) const;
-    int GetIndices(int start, int count, short* in) const;
+    void GetIndices(int submesh, int start, int count, short* in) const;
 
     Geometry* GetGeometry(int submesh);
     IndexBuffer* GetIndexBuffer(int submesh);
 
 private:
-    bool m_updateVertices;
-    bool m_updateIndices;
+    void ClearAttributes();
 
+    bool m_updateVertices;
     int m_vertexCount;
     std::vector<Vector3> m_positions;
     std::vector<Vector3> m_normals;

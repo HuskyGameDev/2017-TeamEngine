@@ -56,8 +56,8 @@ OglShader::OglShader(const string& vs, const string& fs)
     , m_vSource(vs)
     , m_fSource(fs)
 {
-    cout << "Vertex source: " << vs << endl;
-    cout << "Fragment source: " << fs << endl;
+    //cout << "Vertex source: " << vs << endl;
+    //cout << "Fragment source: " << fs << endl;
 
     m_id = glCreateProgram();
     GLuint vId = glCreateShader(GL_VERTEX_SHADER);
@@ -151,7 +151,7 @@ bool OglShader::Link(GLuint vs, GLuint fs)
     for (int i = 0; i < ATTRIBUTE_COUNT; i++)
     {
         glBindAttribLocation(m_id, OGL_ATTRIBUTE_INDEX[i], OGL_ATTRIBUTE_NAME[i].c_str());
-        cout << "Binding attrib location " << OGL_ATTRIBUTE_INDEX[i] << " " << OGL_ATTRIBUTE_NAME[i] << endl;
+        //cout << "Binding attrib location " << OGL_ATTRIBUTE_INDEX[i] << " " << OGL_ATTRIBUTE_NAME[i] << endl;
     }
 
     glLinkProgram(m_id);

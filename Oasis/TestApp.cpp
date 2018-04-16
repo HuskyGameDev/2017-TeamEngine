@@ -2,6 +2,7 @@
 #include <Oasis/Core/Application.h>
 #include <Oasis/Core/Window.h>
 #include <Oasis/Graphics/Graphics.h>
+#include <Oasis/Graphics/Mesh.h>
 
 #include <iostream>
 #include <string>
@@ -41,6 +42,7 @@ private:
     Geometry* geom;
     Vector3 pos;
     float angle;
+    Mesh mesh;
 };
 
 void TestApp::Init()
@@ -71,6 +73,18 @@ void TestApp::Init()
     ib->SetData(0, 6, inds);
     geom->SetVertexBuffer(vb);
     geom->SetIndexBuffer(ib);
+
+    Vector3 positions[] =
+    {
+        { -0.5, -0.5, 0 },
+        {  0.5, -0.5, 0 },
+        {  0.5,  0.5, 0 },
+        { -0.5,  0.5, 0 },
+    };
+
+    mesh.SetPositions(4, positions);
+    mesh.SetIndices(0, 6, inds);
+    mesh.Upload();
 }
 
 void TestApp::Update(float dt)
@@ -88,13 +102,15 @@ void TestApp::Render()
     g->SetClearColor({0.6, 0.7, 0.9, 1.0});
     g->Clear();
 
-    cout << pos << " " << angle << endl;
-
     g->SetShader(shader);
-    g->SetUniform("u_Color", Vector3(1, 1, 0));
-    g->SetUniform("oa_Model", Matrix4::Identity());
-    g->SetUniform("oa_View", Matrix4::LookAt(0, Quaternion::AxisAngle(Vector3(0,1,0), angle) * pos, Vector3(0, 1, 0)));
+    g->SetUniform("u_Color", (Vector3){1, 1, 0});
+    g->SetUniform("oa_Model", Matrix4::Translation(pos));
+    g->SetUniform("oa_View", Matrix4::Identity());
     g->SetUniform("oa_Proj", Matrix4::Perspective(70 * OASIS_TO_RAD, w->GetAspectRatio(), 0.1, 100.0));
+
+    cout << pos << endl;
+    cout << " " << Quaternion::AxisAngle(Vector3(0,1,0), angle) * pos << endl;
+    cout << Matrix4::Translation(pos) << endl;
 
     g->SetGeometry(geom);
     g->DrawIndexed(PRIMITIVE_TRIANGLE_LIST, 0, 2);
