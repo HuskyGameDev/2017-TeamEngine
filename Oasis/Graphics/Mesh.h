@@ -12,23 +12,12 @@ class Geometry;
 class IndexBuffer;
 class VertexBuffer;
 
-class OASIS_API Submesh
+struct OASIS_API Submesh
 {
-public:
-    Submesh();
-    ~Submesh();
-
-    Geometry* GetGeometry() { return m_geometry; }
-    IndexBuffer* GetIndexBuffer() { return m_indexBuffer; }
-
-    Primitive GetPrimitive() { return m_primitive; }
-
-private:
-    Geometry* m_geometry;
-    IndexBuffer* m_indexBuffer;
-    Primitive m_primitive;
-
-    short* m_indices;
+    Geometry* geometry;
+    IndexBuffer* indexBuffer;
+    Primitive primitive;
+    std::vector<short> indices;
 };
 
 class OASIS_API Mesh

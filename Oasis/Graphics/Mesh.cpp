@@ -3,29 +3,16 @@
 namespace Oasis
 {
 
-Submesh::Submesh()
-{
-
-}
-
-Submesh::~Submesh()
-{
-
-}
-
 Mesh::Mesh()
-    : m_updateVertices(false)
-    , m_updateIndices(false)
+    : m_updateVertices(true)
+    , m_updateIndices(true)
     , m_vertexCount(0)
     , m_positions()
     , m_normals()
     , m_texCoords()
     , m_tangents()
     , m_vertexBuffer(NULL)
-    , m_submeshes()
-{
-
-}
+    , m_submeshes() {}
 
 Mesh::~Mesh()
 {
@@ -34,19 +21,53 @@ Mesh::~Mesh()
 
 void Mesh::Release()
 {
-    m_vertexBuffer->Release();
+    m_updateIndices = true;
+    m_updateVertices = true;
 
+    for (int i = 0; i < m_submeshes.size(); i++)
+    {
+        Submesh& sm = m_submeshes[i];
 
+        if (sm.geometry) sm.geometry->Release();
+        if (sm.indexBuffer) sm.indexBuffer->Release();
+    }
+
+    m_submeshes.clear();
+
+    if (m_vertexBuffer)
+    {
+        m_vertexBuffer->Release();
+        delete m_vertexBuffer;
+        m_vertexBuffer = NULL;
+    }
 }
 
 void Mesh::Clear()
 {
+    // clear vertices
+    m_vertexCount = 0;
+    m_positions.clear();
+    m_normals.clear();
+    m_texCoords.clear();
+    m_tangents.clear();
+    m_updateVertices = true;
 
+    // clear indices
+    for (int i = 0; i < m_submeshes.size(); i++)
+    {
+        Submesh& sm = m_submeshes[i];
+
+        if (sm.geometry) sm.geometry->Release();
+        if (sm.indexBuffer) sm.indexBuffer->Release();
+    }
+
+    m_submeshes.clear();
+    m_updateIndices = true;
 }
 
 void Mesh::Upload()
 {
-
+    // TODO finish
 }
 
 bool Mesh::CalculateNormals()
