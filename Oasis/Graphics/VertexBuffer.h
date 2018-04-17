@@ -5,29 +5,30 @@
 #include "Oasis/Graphics/HardwareBuffer.h"
 #include "Oasis/Graphics/VertexFormat.h"
 
+#include <vector>
+
 namespace Oasis
 {
 
-class OASIS_API VertexBuffer
+class OASIS_API VertexBuffer : public HardwareBuffer
 {
 public:
-    virtual ~VertexBuffer() {}
+    VertexBuffer(int startElements, const VertexFormat& format, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
+    virtual ~VertexBuffer();
 
-    virtual void Release() = 0;
+    const VertexFormat& GetFormat() const { return format; }
 
-    virtual BufferUsage GetUsage() const = 0;
+    int GetElementCount() const { return data.size() / format.GetSize(); }
 
-    virtual const VertexFormat& GetFormat() const = 0;
+    void GetData(int start, int numElements, float* out) const;
 
-    virtual int GetElementCount() const = 0;
+    void SetElementCount(int numElements);
 
-    virtual void GetData(int start, int numElements, float* out) const = 0;
+    void SetData(int start, int numElements, const float* in);
 
-    virtual void SetUsage(BufferUsage usage) = 0;
-
-    virtual void SetElementCount(int numElements) = 0;
-
-    virtual void SetData(int start, int numElements, const float* in) = 0;
+protected:
+    VertexFormat format;
+    std::vector<float> data;
 };
 
 }

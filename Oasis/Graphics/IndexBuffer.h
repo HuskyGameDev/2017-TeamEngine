@@ -4,27 +4,27 @@
 
 #include "Oasis/Graphics/HardwareBuffer.h"
 
+#include <vector>
+
 namespace Oasis
 {
 
-class OASIS_API IndexBuffer
+class OASIS_API IndexBuffer : public HardwareBuffer
 {
 public:
-    virtual ~IndexBuffer() {}
+    IndexBuffer(int startElements, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
+    virtual ~IndexBuffer();
 
-    virtual void Release() = 0;
+    int GetElementCount() const { return data.size(); }
 
-    virtual BufferUsage GetUsage() const = 0;
+    void GetData(int start, int numElements, short* out) const;
 
-    virtual int GetElementCount() const = 0;
+    void SetElementCount(int numElements);
 
-    virtual void GetData(int start, int numElements, short* out) const = 0;
+    void SetData(int start, int numElements, const short* in);
 
-    virtual void SetUsage(BufferUsage usage) = 0;
-
-    virtual void SetElementCount(int numElements) = 0;
-
-    virtual void SetData(int start, int numElements, const short* in) = 0;
+protected:
+    std::vector<short> data;
 };
 
 }

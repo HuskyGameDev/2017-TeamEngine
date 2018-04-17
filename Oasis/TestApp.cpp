@@ -2,7 +2,6 @@
 #include <Oasis/Core/Application.h>
 #include <Oasis/Core/Window.h>
 #include <Oasis/Graphics/Graphics.h>
-#include <Oasis/Graphics/Mesh.h>
 
 #include <iostream>
 #include <string>
@@ -42,7 +41,6 @@ private:
     Geometry* geom;
     Vector3 pos;
     float angle;
-    Mesh mesh;
 };
 
 void TestApp::Init()
@@ -74,7 +72,7 @@ void TestApp::Init()
     geom->SetVertexBuffer(vb);
     geom->SetIndexBuffer(ib);
 
-    Vector3 positions[] =
+    /*Vector3 positions[] =
     {
         { -0.5, -0.5, 0 },
         {  0.5, -0.5, 0 },
@@ -84,7 +82,7 @@ void TestApp::Init()
 
     mesh.SetPositions(4, positions);
     mesh.SetIndices(0, 6, inds);
-    mesh.Upload();
+    mesh.Upload();*/
 }
 
 void TestApp::Update(float dt)
@@ -118,9 +116,6 @@ void TestApp::Render()
 
 void TestApp::Exit()
 {
-    geom->GetVertexBuffer(0)->Release();
-    geom->Release();
-
     delete geom->GetVertexBuffer(0);
     delete geom;
 }

@@ -12,30 +12,15 @@ namespace Oasis
 class OASIS_API OglVertexBuffer : public VertexBuffer
 {
 public:
-    OglVertexBuffer(int elements, const VertexFormat& format, BufferUsage usage);
+    OglVertexBuffer(int elements, const VertexFormat& format, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
     ~OglVertexBuffer();
 
-    void Release();
-
-    BufferUsage GetUsage() const;
-
-    const VertexFormat& GetFormat() const;
-
-    int GetElementCount() const;
-    void GetData(int start, int numElements, float* out) const;
-
-    void SetElementCount(int numElements);
-    void SetUsage(BufferUsage usage);
-    void SetData(int start, int numElements, const float* in);
-
-    GLuint GetId() const;
+    GLuint GetId() const { return m_id; };
 
 private:
-    void Validate();
-
-    VertexFormat m_format;
-    BufferUsage m_usage;
-    std::vector<float> m_data;
+    void UploadGpuData(int bytes, const void* data);
+    void UploadGpuSubData(int offset, int bytes, const void* data);
+    void ReleaseGpuData();
 
     GLuint m_id;
 };

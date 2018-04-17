@@ -14,4 +14,23 @@ enum BufferUsage
     BUFFER_USAGE_COUNT
 };
 
+class HardwareBuffer
+{
+public:
+    HardwareBuffer(BufferUsage usage = BUFFER_USAGE_DYNAMIC) : usage(usage) {}
+    virtual ~HardwareBuffer() {}
+
+    void Release() { ReleaseGpuData(); }
+
+    BufferUsage GetUsage() const { return usage; }
+    void SetUsage(BufferUsage usage) { usage = usage; }
+
+protected:
+    virtual void UploadGpuData(int bytes, const void* data) = 0;
+    virtual void UploadGpuSubData(int offset, int bytes, const void* data) = 0;
+    virtual void ReleaseGpuData() = 0;
+
+    BufferUsage usage;
+};
+
 }

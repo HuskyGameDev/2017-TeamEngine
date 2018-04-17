@@ -12,26 +12,15 @@ namespace Oasis
 class OASIS_API OglIndexBuffer : public IndexBuffer
 {
 public:
-    OglIndexBuffer(int elements, BufferUsage usage);
+    OglIndexBuffer(int elements, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
     ~OglIndexBuffer();
 
-    void Release();
-
-    BufferUsage GetUsage() const;
-    int GetElementCount() const;
-    void GetData(int start, int numElements, short* out) const;
-
-    void SetElementCount(int numElements);
-    void SetUsage(BufferUsage usage);
-    void SetData(int start, int numElements, const short* in);
-
-    GLuint GetId() const;
+    GLuint GetId() const { return m_id; }
 
 private:
-    void Validate();
-
-    BufferUsage m_usage;
-    std::vector<short> m_data;
+    void UploadGpuData(int bytes, const void* data);
+    void UploadGpuSubData(int offset, int bytes, const void* data);
+    void ReleaseGpuData();
 
     GLuint m_id;
 };
