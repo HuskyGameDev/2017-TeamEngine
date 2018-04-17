@@ -1,11 +1,15 @@
 #include "Oasis/Graphics/Mesh.h"
 
+#include <iostream>
+
+using namespace std;
+
 namespace Oasis
 {
 
 Submesh::Submesh()
     : update(true)
-    , geometry(NULL)
+    , vertexArray(NULL)
     , indexBuffer(NULL)
     , primitive(PRIMITIVE_TRIANGLE_LIST)
     , indices() {}
@@ -36,7 +40,7 @@ void Mesh::Release()
     {
         Submesh& sm = m_submeshes[i];
 
-        if (sm.geometry) sm.geometry->Release();
+        if (sm.vertexArray) sm.vertexArray->Release();
         if (sm.indexBuffer) sm.indexBuffer->Release();
     }
 
@@ -65,7 +69,7 @@ void Mesh::Clear()
     {
         Submesh& sm = m_submeshes[i];
 
-        if (sm.geometry) sm.geometry->Release();
+        if (sm.vertexArray) sm.vertexArray->Release();
         if (sm.indexBuffer) sm.indexBuffer->Release();
     }
 
@@ -75,7 +79,88 @@ void Mesh::Clear()
 
 void Mesh::Upload()
 {
+    Graphics* g = Engine::GetGraphics();
     // TODO finish
+
+    if (m_updateVertices)
+    {
+        if (m_positions.size())
+        {
+            int floatsPerElement = 3;
+
+            VertexFormat format;
+            format.AddAttribute(ATTRIBUTE_POSITION);
+
+            if (m_normals.size()) { floatsPerElement += 3; format.AddAttribute(ATTRIBUTE_NORMAL); }
+            if (m_texCoords.size()) { floatsPerElement += 2; format.AddAttribute(ATTRIBUTE_TEXTURE); }
+            if (m_tangents.size()) { floatsPerElement += 3; format.AddAttribute(ATTRIBUTE_TANGENT); }
+
+            if (!m_vertexBuffer)
+            {
+                m_vertexBuffer = g->CreateVertexBuffer(m_vertexCount, format);
+            }
+            else
+            {
+                m_vertexBuffer->SetElementCount(m_vertexCount);
+            }
+
+            float element[floatsPerElement];
+
+            for (int i = 0; i < m_vertexCount; i++)
+            {
+                int j = 0;
+
+                element[j++] = m_positions[i].x;
+                element[j++] = m_positions[i].y;
+                element[j++] = m_positions[i].z;
+
+                if (m_normals.size())
+                {
+                    element[j++] = m_normals[i].x;
+                    element[j++] = m_normals[i].y;
+                    element[j++] = m_normals[i].z;
+                }
+
+                if (m_texCoords.size())
+                {
+                    element[j++] = m_texCoords[i].x;
+                    element[j++] = m_texCoords[i].y;
+                }
+
+                if (m_tangents.size())
+                {
+                    element[j++] = m_tangents[i].x;
+                    element[j++] = m_tangents[i].y;
+                    element[j++] = m_tangents[i].z;
+                }
+
+                m_vertexBuffer->SetData(i, 1, element);
+            }
+
+            m_vertexBuffer->Upload();
+        }
+        else if (m_vertexBuffer)
+        {
+            m_vertexBuffer->Release();
+            delete m_vertexBuffer;
+            m_vertexBuffer = NULL;
+        }
+    }
+
+    // set buffers of all submeshes
+    for (unsigned i = 0; i < m_submeshes.size(); i++)
+    {
+        Submesh& s = m_submeshes[i];
+
+        if (!s.indexBuffer) s.indexBuffer = g->CreateIndexBuffer(s.indices.size());
+        s.indexBuffer->SetData(0, s.indices.size(), &s.indices[0]);
+        s.indexBuffer->Upload();
+
+        if (!s.vertexArray) s.vertexArray = g->CreateVertexArray();
+        s.vertexArray->SetVertexBuffer(m_vertexBuffer);
+        s.vertexArray->SetIndexBuffer(s.indexBuffer);
+        s.vertexArray->Upload();
+    }
 }
 
 bool Mesh::CalculateNormals()
@@ -181,7 +266,7 @@ VertexBuffer* Mesh::GetVertexBuffer()
 void Mesh::SetSubmeshCount(int count)
 {
     int curSize = (int) m_submeshes.size();
-    // TODO
+
     for (int i = curSize; i > count; i--)
     {
         // remove more than count submeshes
@@ -229,9 +314,9 @@ void Mesh::GetIndices(int submesh, int start, int count, short* in) const
     }
 }
 
-Geometry* Mesh::GetGeometry(int submesh)
+VertexArray* Mesh::GetVertexArray(int submesh)
 {
-    return m_submeshes[submesh].geometry;
+    return m_submeshes[submesh].vertexArray;
 }
 
 IndexBuffer* Mesh::GetIndexBuffer(int submesh)

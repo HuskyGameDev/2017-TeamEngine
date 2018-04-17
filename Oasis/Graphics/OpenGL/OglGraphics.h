@@ -3,7 +3,7 @@
 #include "Oasis/Graphics/Graphics.h"
 
 #include "Oasis/Graphics/OpenGL/OglIndexBuffer.h"
-#include "Oasis/Graphics/OpenGL/OglGeometry.h"
+#include "Oasis/Graphics/OpenGL/OglVertexArray.h"
 #include "Oasis/Graphics/OpenGL/OglShader.h"
 #include "Oasis/Graphics/OpenGL/OglVertexBuffer.h"
 
@@ -26,7 +26,7 @@ public:
     void SetClearColor(const Vector4& color);
     void Clear();
 
-    void SetGeometry(Geometry* geom);
+    void SetVertexArray(VertexArray* geom);
     void SetShader(Shader* shader);
 
     void SetTexture(int unit, Texture* tex);
@@ -47,14 +47,14 @@ public:
 
     IndexBuffer* CreateIndexBuffer(int numElements, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
     VertexBuffer* CreateVertexBuffer(int numElements, const VertexFormat& format, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
-    Geometry* CreateGeometry();
+    VertexArray* CreateVertexArray();
     Shader* CreateShader(const std::string& vs, const std::string& fs);
     Texture2D* CreateTexture2D();
 
 private:
-    void BindGeometry();
+    void BindVertexArray();
 
-    OglGeometry* m_geometry;
+    OglVertexArray* m_VertexArray;
     OglShader* m_shader;
 };
 

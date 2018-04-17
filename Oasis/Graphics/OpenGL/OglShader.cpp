@@ -151,7 +151,7 @@ bool OglShader::Link(GLuint vs, GLuint fs)
     for (int i = 0; i < ATTRIBUTE_COUNT; i++)
     {
         glBindAttribLocation(m_id, OGL_ATTRIBUTE_INDEX[i], OGL_ATTRIBUTE_NAME[i].c_str());
-        //cout << "Binding attrib location " << OGL_ATTRIBUTE_INDEX[i] << " " << OGL_ATTRIBUTE_NAME[i] << endl;
+        cout << "Binding attrib location " << OGL_ATTRIBUTE_INDEX[i] << " " << OGL_ATTRIBUTE_NAME[i] << endl;
     }
 
     glLinkProgram(m_id);

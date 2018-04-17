@@ -5,7 +5,7 @@
 #include "Oasis/Graphics/HardwareBuffer.h"
 #include "Oasis/Graphics/VertexFormat.h"
 
-#include "Oasis/Graphics/Geometry.h"
+#include "Oasis/Graphics/VertexArray.h"
 #include "Oasis/Graphics/IndexBuffer.h"
 #include "Oasis/Graphics/Shader.h"
 #include "Oasis/Graphics/VertexBuffer.h"
@@ -18,7 +18,7 @@ namespace Oasis
 {
 
 class IndexBuffer;
-class Geometry;
+class VertexArray;
 class Shader;
 class Texture;
 class Texture2D;
@@ -49,7 +49,7 @@ public:
     virtual void SetClearColor(const Vector4& color) = 0;
     virtual void Clear() = 0;
 
-    virtual void SetGeometry(Geometry* geom) = 0;
+    virtual void SetVertexArray(VertexArray* geom) = 0;
     virtual void SetShader(Shader* shader) = 0;
 
     virtual void SetTexture(int unit, Texture* tex) = 0;
@@ -72,7 +72,7 @@ public:
 
     virtual VertexBuffer* CreateVertexBuffer(int numElements, const VertexFormat& format, BufferUsage usage = BUFFER_USAGE_DYNAMIC) = 0;
 
-    virtual Geometry* CreateGeometry() = 0;
+    virtual VertexArray* CreateVertexArray() = 0;
 
     virtual Shader* CreateShader(const std::string& vertexSource, const std::string& fragmentSource) = 0;
 };

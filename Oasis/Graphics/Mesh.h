@@ -8,7 +8,7 @@
 namespace Oasis
 {
 
-class Geometry;
+class VertexArray;
 class IndexBuffer;
 class VertexBuffer;
 
@@ -17,7 +17,7 @@ struct OASIS_API Submesh
     Submesh();
 
     bool update;
-    Geometry* geometry;
+    VertexArray* vertexArray;
     IndexBuffer* indexBuffer;
     Primitive primitive;
     std::vector<short> indices;
@@ -65,7 +65,7 @@ public:
     int GetIndexCount(int submesh) const;
     void GetIndices(int submesh, int start, int count, short* in) const;
 
-    Geometry* GetGeometry(int submesh);
+    VertexArray* GetVertexArray(int submesh);
     IndexBuffer* GetIndexBuffer(int submesh);
 
 private:

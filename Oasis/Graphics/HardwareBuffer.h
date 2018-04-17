@@ -22,6 +22,8 @@ public:
 
     void Release() { ReleaseGpuData(); }
 
+    virtual void Upload() = 0;
+
     BufferUsage GetUsage() const { return usage; }
     void SetUsage(BufferUsage usage) { usage = usage; }
 

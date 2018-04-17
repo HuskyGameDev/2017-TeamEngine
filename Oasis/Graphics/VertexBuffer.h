@@ -16,6 +16,8 @@ public:
     VertexBuffer(int startElements, const VertexFormat& format, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
     virtual ~VertexBuffer();
 
+    void Upload();
+
     const VertexFormat& GetFormat() const { return format; }
 
     int GetElementCount() const { return data.size() / format.GetSize(); }
@@ -29,6 +31,7 @@ public:
 protected:
     VertexFormat format;
     std::vector<float> data;
+    bool dirty;
 };
 
 }

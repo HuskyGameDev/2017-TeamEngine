@@ -11,7 +11,7 @@ enum Attribute
 {
     ATTRIBUTE_POSITION,
     ATTRIBUTE_NORMAL,
-    ATTRIBUTE_BITANGENT,
+    ATTRIBUTE_TANGENT,
     ATTRIBUTE_TEXTURE,
     ATTRIBUTE_COLOR,
 
@@ -25,7 +25,7 @@ class OASIS_API VertexFormat
 public:
     static const VertexFormat POSITION;
     static const VertexFormat NORMAL;
-    static const VertexFormat BITANGENT;
+    static const VertexFormat TANGENT;
     static const VertexFormat TEXTURE;
     static const VertexFormat COLOR;
 

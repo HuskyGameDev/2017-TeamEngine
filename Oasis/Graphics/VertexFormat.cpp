@@ -5,7 +5,7 @@ namespace Oasis
 
 const VertexFormat VertexFormat::POSITION = VertexFormat().AddAttribute(ATTRIBUTE_POSITION);
 const VertexFormat VertexFormat::NORMAL = VertexFormat().AddAttribute(ATTRIBUTE_NORMAL);
-const VertexFormat VertexFormat::BITANGENT = VertexFormat().AddAttribute(ATTRIBUTE_BITANGENT);
+const VertexFormat VertexFormat::TANGENT = VertexFormat().AddAttribute(ATTRIBUTE_TANGENT);
 const VertexFormat VertexFormat::TEXTURE = VertexFormat().AddAttribute(ATTRIBUTE_TEXTURE);
 const VertexFormat VertexFormat::COLOR = VertexFormat().AddAttribute(ATTRIBUTE_COLOR);
 
@@ -13,7 +13,7 @@ int GetAttributeSize(Attribute attrib)
 {
     switch (attrib)
     {
-    case ATTRIBUTE_BITANGENT: return 3;
+    case ATTRIBUTE_TANGENT: return 3;
     case ATTRIBUTE_POSITION: return 3;
     case ATTRIBUTE_NORMAL: return 3;
     case ATTRIBUTE_COLOR: return 4;

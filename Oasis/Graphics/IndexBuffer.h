@@ -15,6 +15,8 @@ public:
     IndexBuffer(int startElements, BufferUsage usage = BUFFER_USAGE_DYNAMIC);
     virtual ~IndexBuffer();
 
+    void Upload();
+
     int GetElementCount() const { return data.size(); }
 
     void GetData(int start, int numElements, short* out) const;
@@ -25,6 +27,7 @@ public:
 
 protected:
     std::vector<short> data;
+    bool dirty;
 };
 
 }

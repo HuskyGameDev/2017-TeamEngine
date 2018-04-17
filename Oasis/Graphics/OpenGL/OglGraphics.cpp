@@ -39,14 +39,15 @@ static const GLuint OGL_PRIMITIVE[PRIMITIVE_COUNT] =
     GL_TRIANGLE_STRIP
 };
 
-void OglGraphics::BindGeometry()
+void OglGraphics::BindVertexArray()
 {
-    if (!m_geometry) return;
+    if (!m_VertexArray) return;
 
-    OglIndexBuffer* ib = (OglIndexBuffer*) m_geometry->GetIndexBuffer();
+    OglIndexBuffer* ib = (OglIndexBuffer*) m_VertexArray->GetIndexBuffer();
 
     if (ib)
     {
+        ib->Upload();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ib->GetId());
     }
     else
@@ -58,9 +59,10 @@ void OglGraphics::BindGeometry()
 
     for (int i = 0; i < ATTRIBUTE_COUNT; i++) attribs[i] = -1;
 
-    for (int i = 0; i < m_geometry->GetVertexBufferCount(); i++)
+    for (int i = 0; i < m_VertexArray->GetVertexBufferCount(); i++)
     {
-        OglVertexBuffer* vb = (OglVertexBuffer*) m_geometry->GetVertexBuffer(i);
+        OglVertexBuffer* vb = (OglVertexBuffer*) m_VertexArray->GetVertexBuffer(i);
+        vb->Upload();
         const VertexFormat& format = vb->GetFormat();
 
         for (int j = 0; j < format.GetAttributeCount(); j++)
@@ -83,7 +85,7 @@ void OglGraphics::BindGeometry()
             continue;
         }
 
-        OglVertexBuffer* vb = (OglVertexBuffer*) m_geometry->GetVertexBuffer(attribs[i]);
+        OglVertexBuffer* vb = (OglVertexBuffer*) m_VertexArray->GetVertexBuffer(attribs[i]);
         //cout << "Binding " << vb->GetId() << endl;
         glBindBuffer(GL_ARRAY_BUFFER, vb->GetId());
 
@@ -94,13 +96,13 @@ void OglGraphics::BindGeometry()
             << i << " "
             << GetAttributeSize((Attribute) i) << " "
             << vb->GetFormat().GetSize() * sizeof (float) << " "
-            << (vb->GetFormat().GetOffset((Attribute) i) * sizeof (float)) << endl;
-        glVertexAttribPointer(i, GetAttributeSize((Attribute) i), GL_FLOAT, GL_FALSE, vb->GetFormat().GetSize() * sizeof (float), (void*) (vb->GetFormat().GetOffset((Attribute) i) * sizeof (float)));*/
+            << (vb->GetFormat().GetOffset((Attribute) i) * sizeof (float)) << endl;*/
+        glVertexAttribPointer(i, GetAttributeSize((Attribute) i), GL_FLOAT, GL_FALSE, vb->GetFormat().GetSize() * sizeof (float), (void*) (vb->GetFormat().GetOffset((Attribute) i) * sizeof (float)));
     }
 }
 
 OglGraphics::OglGraphics()
-    : m_geometry(NULL)
+    : m_VertexArray(NULL)
 {
     m_shader = (OglShader*) CreateShader(OGL_VS, OGL_FS);
 
@@ -173,9 +175,9 @@ void OglGraphics::Clear()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
-void OglGraphics::SetGeometry(Geometry* geom)
+void OglGraphics::SetVertexArray(VertexArray* geom)
 {
-    m_geometry = (OglGeometry*) geom;
+    m_VertexArray = (OglVertexArray*) geom;
 }
 
 void OglGraphics::SetShader(Shader* shader)
@@ -199,9 +201,9 @@ void OglGraphics::SetTexture(int unit, Texture* tex)
 
 void OglGraphics::DrawArrays(Primitive prim, int start, int primCount)
 {
-    if (!m_geometry) return;
+    if (!m_VertexArray) return;
 
-    BindGeometry();
+    BindVertexArray();
 
     // TODO primitive size
     glDrawArrays(OGL_PRIMITIVE[prim], start, primCount * 3);
@@ -209,9 +211,9 @@ void OglGraphics::DrawArrays(Primitive prim, int start, int primCount)
 
 void OglGraphics::DrawIndexed(Primitive prim, int start, int primCount)
 {
-    if (!m_geometry) return;
+    if (!m_VertexArray) return;
 
-    BindGeometry();
+    BindVertexArray();
 
     // TODO primitive size
     glDrawElements(OGL_PRIMITIVE[prim], primCount * 3, GL_UNSIGNED_SHORT, (void*)(start * sizeof(short)));
@@ -227,9 +229,9 @@ VertexBuffer* OglGraphics::CreateVertexBuffer(int numElements, const VertexForma
     return new OglVertexBuffer(numElements, format, usage);
 }
 
-Geometry* OglGraphics::CreateGeometry()
+VertexArray* OglGraphics::CreateVertexArray()
 {
-    return new OglGeometry();
+    return new OglVertexArray();
 }
 
 Shader* OglGraphics::CreateShader(const std::string& vs, const std::string& fs)

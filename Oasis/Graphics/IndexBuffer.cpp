@@ -8,11 +8,19 @@ namespace Oasis
 IndexBuffer::IndexBuffer(int startElements, BufferUsage usage)
     : HardwareBuffer(usage)
     , data()
+    , dirty(true)
 {
     data.resize(startElements);
 }
 
 IndexBuffer::~IndexBuffer() {}
+
+void IndexBuffer::Upload()
+{
+    if (dirty) UploadGpuData(data.size() * sizeof (short), &data[0]);
+
+    dirty = false;
+}
 
 void IndexBuffer::GetData(int start, int numElements, short* out) const
 {
@@ -24,19 +32,19 @@ void IndexBuffer::GetData(int start, int numElements, short* out) const
 
 void IndexBuffer::SetElementCount(int numElements)
 {
-    data.resize(numElements);
+    if (data.size() != (unsigned) numElements) dirty = true;
 
-    UploadGpuData(data.size() * sizeof (short), &data[0]);
+    data.resize(numElements);
 }
 
 void IndexBuffer::SetData(int start, int numElements, const short* in)
 {
+    dirty = true;
+
     for (int i = 0; i < numElements; i++)
     {
         data[start + i] = in ? in[i] : 0;
     }
-
-    UploadGpuSubData(start * sizeof (short), numElements * sizeof (short), in ? in : NULL);
 }
 
 }

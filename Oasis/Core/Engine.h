@@ -7,6 +7,7 @@ namespace Oasis
 
 class Config;
 class Graphics;
+class Renderer;
 class Window;
 
 namespace Engine
@@ -26,6 +27,8 @@ OASIS_API void PostRender();
 OASIS_API Graphics* GetGraphics();
 
 OASIS_API Window* GetWindow();
+
+OASIS_API Renderer* GetRenderer();
 
 }
 
