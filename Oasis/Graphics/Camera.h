@@ -2,6 +2,8 @@
 
 #include "Oasis/Oasis.h"
 
+#include "Oasis/Math/Transform.h"
+
 namespace Oasis
 {
 
@@ -12,6 +14,7 @@ public:
     ~Camera();
 
 private:
+    Transform m_transform;
 };
 
 }
