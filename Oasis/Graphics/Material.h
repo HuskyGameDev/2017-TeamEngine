@@ -4,39 +4,13 @@
 
 #include "Oasis/Math/MathUtil.h"
 
+#include "Oasis/Graphics/Parameter.h"
+
 #include <string>
 #include <unordered_map>
 
 namespace Oasis
 {
-
-enum ParameterType
-{
-    PARAMETER_INT,
-    PARAMETER_FLOAT,
-    PARAMETER_VECTOR2,
-    PARAMETER_VECTOR3,
-    PARAMETER_VECTOR4,
-    PARAMETER_MATRIX3,
-    PARAMETER_MATRIX4,
-
-    PARAMETER_COUNT
-};
-
-struct OASIS_API Parameter
-{
-    ParameterType type;
-    union
-    {
-        int intValue;
-        float floatValue;
-        Vector2 vector2Type;
-        Vector3 vector3Type;
-        Vector4 vector4Type;
-        Matrix3 matrix3Type;
-        Matrix4 matrix4Type;
-    };
-};
 
 class OASIS_API Material
 {

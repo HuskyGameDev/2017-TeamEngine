@@ -11,6 +11,8 @@ namespace Oasis
 
 struct OASIS_API Vector4
 {
+    static const Vector4 ZERO;
+
     float x, y, z, w;
 
     Vector4() : x(0), y(0), z(0), w(0) {}
@@ -42,6 +44,9 @@ struct OASIS_API Vector4
     Vector4(float a, const Vector3& r) : x(a), y(r.x), z(r.y), w(r.z) {}
 
     Vector4(const Vector4& r) : x(r.x), y(r.y), z(r.z), w(r.w) {}
+
+    bool operator==(const Vector4& r) const { return x == r.x && y == r.y && z == r.z && w == r.w; }
+    bool operator!=(const Vector4& r) const { return !(*this == r); }
 
     Vector4& operator=(const Vector4& r)
     {

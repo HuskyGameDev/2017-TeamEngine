@@ -41,9 +41,9 @@ static const GLuint OGL_PRIMITIVE[PRIMITIVE_COUNT] =
 
 void OglGraphics::BindVertexArray()
 {
-    if (!m_VertexArray) return;
+    if (!m_vertexArray) return;
 
-    OglIndexBuffer* ib = (OglIndexBuffer*) m_VertexArray->GetIndexBuffer();
+    OglIndexBuffer* ib = (OglIndexBuffer*) m_vertexArray->GetIndexBuffer();
 
     if (ib)
     {
@@ -59,9 +59,9 @@ void OglGraphics::BindVertexArray()
 
     for (int i = 0; i < ATTRIBUTE_COUNT; i++) attribs[i] = -1;
 
-    for (int i = 0; i < m_VertexArray->GetVertexBufferCount(); i++)
+    for (int i = 0; i < m_vertexArray->GetVertexBufferCount(); i++)
     {
-        OglVertexBuffer* vb = (OglVertexBuffer*) m_VertexArray->GetVertexBuffer(i);
+        OglVertexBuffer* vb = (OglVertexBuffer*) m_vertexArray->GetVertexBuffer(i);
         vb->Upload();
         const VertexFormat& format = vb->GetFormat();
 
@@ -85,7 +85,7 @@ void OglGraphics::BindVertexArray()
             continue;
         }
 
-        OglVertexBuffer* vb = (OglVertexBuffer*) m_VertexArray->GetVertexBuffer(attribs[i]);
+        OglVertexBuffer* vb = (OglVertexBuffer*) m_vertexArray->GetVertexBuffer(attribs[i]);
         //cout << "Binding " << vb->GetId() << endl;
         glBindBuffer(GL_ARRAY_BUFFER, vb->GetId());
 
@@ -102,7 +102,7 @@ void OglGraphics::BindVertexArray()
 }
 
 OglGraphics::OglGraphics()
-    : m_VertexArray(NULL)
+    : m_vertexArray(NULL)
 {
     m_shader = (OglShader*) CreateShader(OGL_VS, OGL_FS);
 
@@ -177,7 +177,7 @@ void OglGraphics::Clear()
 
 void OglGraphics::SetVertexArray(VertexArray* geom)
 {
-    m_VertexArray = (OglVertexArray*) geom;
+    m_vertexArray = (OglVertexArray*) geom;
 }
 
 void OglGraphics::SetShader(Shader* shader)
@@ -201,7 +201,7 @@ void OglGraphics::SetTexture(int unit, Texture* tex)
 
 void OglGraphics::DrawArrays(Primitive prim, int start, int primCount)
 {
-    if (!m_VertexArray) return;
+    if (!m_vertexArray) return;
 
     BindVertexArray();
 
@@ -211,7 +211,7 @@ void OglGraphics::DrawArrays(Primitive prim, int start, int primCount)
 
 void OglGraphics::DrawIndexed(Primitive prim, int start, int primCount)
 {
-    if (!m_VertexArray) return;
+    if (!m_vertexArray) return;
 
     BindVertexArray();
 

@@ -17,8 +17,6 @@ struct OASIS_API Matrix4
     static const Matrix4 ZERO;
     static const Matrix4 IDENTITY;
 
-
-
     float m00, m10, m20, m30;
     float m01, m11, m21, m31;
     float m02, m12, m22, m32;
@@ -131,20 +129,29 @@ struct OASIS_API Matrix4
         , m02(m2.x), m12(m2.y), m22(m2.z), m32(m2.w)
         , m03(m3.x), m13(m3.y), m23(m3.z), m33(m3.w) {}
 
-    Matrix4()
+    Matrix4(float value = 0)
     {
-        for (int i = 0; i < 16; i++) (*this)[i] = 0;
+        for (int i = 0; i < 16; i++) (*this)[i] = value;
     }
 
-    Matrix4(const float m[])
+    static Matrix4 FromArray(const float m[])
     {
-        for (int i = 0; i < 16; i++) (*this)[i] = m[i];
+        Matrix4 out;
+        for (int i = 0; i < 16; i++) out[i] = m[i];
+        return out;
     }
 
     Matrix4(const Matrix4& r)
     {
         for (int i = 0; i < 16; i++) (*this)[i] = r[i];
     }
+
+    bool operator==(const Matrix4& r) const
+    {
+        for (int i = 0; i < 16; i++) if ((*this)[i] != r[i]) return false;
+        return true;
+    }
+    bool operator!=(const Matrix4& r) const { return !(*this == r); }
 
     Matrix4& operator=(const Matrix4& r)
     {
@@ -406,7 +413,7 @@ struct OASIS_API Matrix4
 
         for (int i = 0; i < 16; i++) inv[i] *= det;
 
-        return Matrix4(inv);
+        return FromArray(inv);
     }
 
     Matrix4 operator-() const { return Matrix4(*this) *= -1; }

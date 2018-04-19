@@ -60,6 +60,9 @@ struct OASIS_API Quaternion
 
     Quaternion(const Quaternion& r) : x(r.x), y(r.y), z(r.z), w(r.w) {}
 
+    bool operator==(const Quaternion& r) const { return x == r.x && y == r.y && z == r.z && w == r.w; }
+    bool operator!=(const Quaternion& r) const { return !(*this == r); }
+
     Quaternion& operator=(const Quaternion& r)
     {
         if (this == &r) return *this;

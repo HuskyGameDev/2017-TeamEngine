@@ -13,6 +13,9 @@ namespace Oasis
 
 struct OASIS_API Matrix3
 {
+    static const Matrix3 ZERO;
+    static const Matrix3 IDENTITY;
+
     float m00, m10, m20;
     float m01, m11, m21;
     float m02, m12, m22;
@@ -67,14 +70,16 @@ struct OASIS_API Matrix3
         , m01(m1.x), m11(m1.y), m21(m1.z)
         , m02(m2.x), m12(m2.y), m22(m2.z) {}
 
-    Matrix3()
+    Matrix3(float value = 0)
     {
-        for (int i = 0; i < 9; i++) (*this)[i] = 0;
+        for (int i = 0; i < 9; i++) (*this)[i] = value;
     }
 
-    Matrix3(const float m[])
+    static Matrix3 FromArray(const float m[])
     {
-        for (int i = 0; i < 9; i++) (*this)[i] = m[i];
+        Matrix3 out;
+        for (int i = 0; i < 9; i++) out[i] = m[i];
+        return out;
     }
 
     Matrix3(const Matrix3& r)
@@ -95,6 +100,13 @@ struct OASIS_API Matrix3
 
         return *this;
     }
+
+    bool operator==(const Matrix3& r) const
+    {
+        for (int i = 0; i < 9; i++) if ((*this)[i] != r[i]) return false;
+        return true;
+    }
+    bool operator!=(const Matrix3& r) const { return !(*this == r); }
 
     const Vector3& Column(int index) const { return reinterpret_cast<const Vector3*>(&m00)[index]; }
     Vector3& Column(int index) { return reinterpret_cast<Vector3*>(&m00)[index]; }

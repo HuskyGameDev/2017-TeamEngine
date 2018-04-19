@@ -10,6 +10,12 @@ namespace Oasis
 
 struct OASIS_API Vector2
 {
+    static const Vector2 ZERO;
+    static const Vector2 UP;
+    static const Vector2 DOWN;
+    static const Vector2 LEFT;
+    static const Vector2 RIGHT;
+
     float x, y;
 
     Vector2() : x(0), y(0) {}
@@ -27,6 +33,9 @@ struct OASIS_API Vector2
         y = r.y;
         return *this;
     }
+
+    bool operator==(const Vector2& r) const { return x == r.x && y == r.y; }
+    bool operator!=(const Vector2& r) const { return !(*this == r); }
 
     const float& operator[](int index) const { return (&x)[index]; };
     float& operator[](int index) { return (&x)[index]; };

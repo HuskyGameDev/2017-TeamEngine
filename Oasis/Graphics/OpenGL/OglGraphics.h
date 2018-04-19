@@ -54,7 +54,7 @@ public:
 private:
     void BindVertexArray();
 
-    OglVertexArray* m_VertexArray;
+    OglVertexArray* m_vertexArray;
     OglShader* m_shader;
 };
 

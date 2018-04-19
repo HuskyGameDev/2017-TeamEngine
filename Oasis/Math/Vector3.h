@@ -10,6 +10,14 @@ namespace Oasis
 
 struct OASIS_API Vector3
 {
+    static const Vector3 ZERO;
+    static const Vector3 UP;
+    static const Vector3 DOWN;
+    static const Vector3 LEFT;
+    static const Vector3 RIGHT;
+    static const Vector3 FORWARD;
+    static const Vector3 BACKWARD;
+
     float x, y, z;
 
     Vector3() : x(0), y(0), z(0) {}
@@ -27,6 +35,9 @@ struct OASIS_API Vector3
     Vector3(float a, const Vector2& bc) : x(a), y(bc.x), z(bc.y) {}
 
     Vector3(const Vector3& r) : x(r.x), y(r.y), z(r.z) {}
+
+    bool operator==(const Vector3& r) const { return x == r.x && y == r.y && z == r.z; }
+    bool operator!=(const Vector3& r) const { return !(*this == r); }
 
     Vector3& operator=(const Vector3& r)
     {

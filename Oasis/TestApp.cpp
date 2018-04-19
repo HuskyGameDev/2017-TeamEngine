@@ -3,6 +3,7 @@
 #include <Oasis/Core/Window.h>
 #include <Oasis/Graphics/Graphics.h>
 #include <Oasis/Graphics/Mesh.h>
+#include <Oasis/Graphics/Parameter.h>
 
 #include <iostream>
 #include <string>
@@ -47,6 +48,16 @@ private:
 
 void TestApp::Init()
 {
+    cout << "Init" << endl;
+
+    Parameter p = 3.2;
+
+    cout << "type = " << (int) p.GetType() << " " << (int) PARAMETER_INT << endl;
+
+    cout << p.GetInt() << " " << p.GetFloat() << " " << p.GetVector2() << endl;
+
+    cout << (p == 3.2) << endl;
+
     Graphics* g = Engine::GetGraphics();
 
     shader = g->CreateShader(OGL_VS, OGL_FS);
@@ -106,9 +117,9 @@ void TestApp::Render()
 
     g->SetShader(shader);
     g->SetUniform("u_Color", (Vector3){1, 1, 0});
-    g->SetUniform("oa_Model", Matrix4::Identity());
+    g->SetUniform("oa_Model", Matrix4::Translation({0, 0, -5}));
     g->SetUniform("oa_View", Matrix4::Identity());
-    g->SetUniform("oa_Proj", Matrix4::Identity()); //Matrix4::Perspective(70 * OASIS_TO_RAD, w->GetAspectRatio(), 0.1, 100.0));
+    g->SetUniform("oa_Proj", Matrix4::Matrix4::Perspective(70 * OASIS_TO_RAD, w->GetAspectRatio(), 0.1, 100.0));
 
     g->SetVertexArray(mesh.GetVertexArray(0));
     g->DrawIndexed(PRIMITIVE_TRIANGLE_LIST, 0, 2);
